@@ -1,0 +1,75 @@
+<div class="auth">
+  <div class="auth-container">
+    <!-- Auth Img -->
+    <div class="auth-img">
+      <img src="assets/images/auth-img.png" alt="" />
+    </div>
+    <!-- Auth Form -->
+    <div class="auth-form">
+      <!-- Logo -->
+      <div class="auth-form--logo">
+        <img src="assets/images/auth-logo.png" alt="" />
+      </div>
+
+      <!-- Form -->
+      <form class="auth-form--inputs" action="">
+        <!-- Email input -->
+        <div class="auth-form--group">
+          <label for="email"> {{ "E-Mail Address" | translate }} </label>
+          <div class="input-container">
+            <img
+              src="./assets/icons/email.svg"
+              alt="mail icon"
+              class="input-icon"
+            />
+            <input
+              type="email"
+              name="email"
+              id="email"
+              [placeholder]="'Enter your Email' | translate"
+              required
+            />
+          </div>
+        </div>
+        <!-- Password input -->
+        <div class="auth-form--group">
+          <label for="password"> {{ "Password" | translate }} </label>
+          <div class="input-container">
+            <img
+              src="./assets/icons/password.svg"
+              alt="lock icon"
+              class="input-icon"
+            />
+            <input
+              [type]="passwordType"
+              name="password"
+              id="password"
+              [placeholder]="'Enter your password' | translate"
+              required
+            />
+            <img
+              src="./assets/icons/eye.svg"
+              alt="eye icon"
+              class="toggle-password"
+              (click)="togglePasswordType()"
+            />
+          </div>
+        </div>
+        <!-- Save login info -->
+        <div class="auth-form--group2">
+          <input type="checkbox" name="remember" id="remember" />
+          <label for="remember">
+            {{ "Save login information" | translate }}
+          </label>
+        </div>
+        <!-- Submit -->
+        <button class="auth-form--submit">{{ "Login" | translate }}</button>
+      </form>
+
+      <!-- Language Switcher -->
+      <button (click)="toggleLanguage()" class="lang-btn">
+        {{ translate.currentLang === "en" ? "عربي" : "EN" }}
+      </button>
+    </div>
+  </div>
+</div>

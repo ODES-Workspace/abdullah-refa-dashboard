@@ -1,1 +1,27 @@
 /* You can add global styles to this file, and also import other style files */
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Cairo", sans-serif;
+}
+
+button {
+  border: none;
+  outline: none;
+  font-family: inherit;
+}
+
+input {
+  font-family: inherit;
+}
+
+html[dir="rtl"] .input-container .input-icon {
+  transform: translateY(-50%) translateX(-12px) !important;
+}
+html[dir="rtl"] .input-container .toggle-password {
+  transform: translateY(-50%) translateX(30px) !important;
+}
