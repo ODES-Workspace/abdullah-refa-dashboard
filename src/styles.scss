@@ -19,9 +19,16 @@ input {
   font-family: inherit;
 }
 
-html[dir="rtl"] .input-container .input-icon {
-  transform: translateY(-50%) translateX(-12px) !important;
-}
-html[dir="rtl"] .input-container .toggle-password {
-  transform: translateY(-50%) translateX(30px) !important;
+// styles for rtl
+
+html[dir="rtl"] {
+  .input-container .input-icon {
+    transform: translateY(-50%) translateX(-12px) !important;
+  }
+  .input-container .toggle-password {
+    transform: translateY(-50%) translateX(30px) !important;
+  }
+  .submenu {
+    padding-right: 20px;
+  }
 }

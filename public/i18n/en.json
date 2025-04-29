@@ -4,5 +4,12 @@
   "Password": "Password",
   "Enter your password": "Enter your password",
   "Save login information": "Save login information",
-  "Login": "Login"
+  "Login": "Login",
+  "Welcome Back": "Welcome Back",
+  "lang": "عربي",
+  "sidebar": {
+    "dashboard": "Dashboard",
+    "agenciesOwner": "Agencies Owner",
+    "listOfApprovals": "List of Approvals"
+  }
 }

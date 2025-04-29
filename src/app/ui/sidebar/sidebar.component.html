@@ -1,0 +1,99 @@
+<nav class="sidebar">
+  <div class="sidebar-head">
+    <img src="/assets/icons/sidebar-logo.svg" alt="logo" />
+    <div class="sidebar-welcome">{{ "Welcome Back" | translate }}, Admin</div>
+  </div>
+
+  <div class="sidebar-nav">
+    <ul>
+      <li *ngFor="let item of menuItems">
+        <div
+          class="menu-item"
+          [class.active]="
+            activeMenu === item.name ||
+            (!item.submenu && isActiveRoute(item.route)) ||
+            isChildRouteActive(item)
+          "
+          (click)="navigateTo(item)"
+        >
+          <div class="nav-label">
+            <img
+              [src]="
+                item.route
+                  ? isActiveRoute(item.route)
+                    ? item.icon.active
+                    : item.icon.inactive
+                  : activeMenu === item.name || isChildRouteActive(item)
+                  ? item.icon.active
+                  : item.icon.inactive
+              "
+              alt="menu icon"
+            />
+
+            <a
+              *ngIf="!item.submenu"
+              [routerLink]="item.route"
+              class="link"
+              [class.active]="isActiveRoute(item.route)"
+            >
+              {{ item.label | translate }}
+            </a>
+
+            <span *ngIf="item.submenu">
+              {{ item.label | translate }}
+            </span>
+          </div>
+
+          <span *ngIf="item.submenu" class="submenu-arrow">
+            <svg
+              *ngIf="item.submenu"
+              width="16"
+              height="17"
+              viewBox="0 0 16 17"
+              fill="none"
+              xmlns="[http://www.w3.org/2000/svg"
+            >
+              ](http://www.w3.org/2000/svg">)
+              <path
+                fill-rule="evenodd"
+                clip-rule="evenodd"
+                d="M7.99981 1.18726C7.5898 1.18726 7.25741 1.51964 7.25741 1.92966V12.4625L3.27518 8.48024C2.98525 8.19032 2.51518 8.19032 2.22526 8.48024C1.93533 8.77017 1.93533 9.24024 2.22526 9.53016L7.47485 14.7798C7.76478 15.0697 8.23485 15.0697 8.52477 14.7798L13.7744 9.53016C14.0643 9.24024 14.0643 8.77017 13.7744 8.48024C13.4844 8.19032 13.0144 8.19032 12.7245 8.48024L8.74222 12.4625V1.92966C8.74222 1.51964 8.40983 1.18726 7.99981 1.18726Z"
+                fill="#404040"
+                fill-opacity="0.7"
+              />
+            </svg>
+          </span>
+        </div>
+
+        <ul
+          *ngIf="
+            item.submenu &&
+            (activeMenu === item.name || isChildRouteActive(item))
+          "
+          class="submenu"
+        >
+          <li *ngFor="let subItem of item.submenu">
+            <a
+              [routerLink]="subItem.route"
+              class="link"
+              [class.active]="isActiveRoute(subItem.route)"
+            >
+              {{ subItem.label | translate }}
+            </a>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+
+  <div class="sidebar-logout">
+    <div class="sidebar-logout--btn">
+      <img src="/assets/icons/user-icon.svg" alt="settings icon" />
+      <div>
+        <span>admin user</span>
+        <span>admin&#64;refa.com</span>
+      </div>
+      <img src="/assets/icons/logout-btn.svg" alt="logout icon" />
+    </div>
+  </div>
+</nav>

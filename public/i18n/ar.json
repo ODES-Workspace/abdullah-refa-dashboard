@@ -4,5 +4,12 @@
   "Password": "كلمة المرور",
   "Enter your password": "أدخل كلمة المرور",
   "Save login information": "حفظ معلومات تسجيل الدخول",
-  "Login": "تسجيل الدخول"
+  "Login": "تسجيل الدخول",
+  "Welcome Back": "مرحبا بك",
+  "lang": "EN",
+  "sidebar": {
+    "dashboard": "لوحة التحكم",
+    "agenciesOwner": "ملاك الوكالات",
+    "listOfApprovals": "قائمة الموافقات"
+  }
 }

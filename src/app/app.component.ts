@@ -1,6 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { LanguageService } from './pages/services/language.service';
 
 @Component({
   selector: 'app-root',
@@ -9,5 +10,7 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
   styleUrl: './app.component.scss',
 })
 export class AppComponent {
+  constructor(public languageService: LanguageService) {}
+
   title = 'refa-dashboard';
 }

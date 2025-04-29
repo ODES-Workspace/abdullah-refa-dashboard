@@ -1,0 +1,126 @@
+.sidebar {
+  width: 280px;
+  background: #fff;
+  background: #ffffff;
+  box-shadow: 0px 4px 25px -3px rgba(0, 0, 0, 0.1);
+  padding: 25px 0px;
+  height: 100%;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  gap: 16px;
+
+  &-head {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border-bottom: 0.5px solid var(--neutral-Gray-Clarity-20, #40404033);
+    padding-bottom: 16px;
+    justify-content: center;
+  }
+
+  &-welcome {
+    font-weight: 700;
+    font-size: 16px;
+    color: #0c1892;
+    text-transform: capitalize;
+  }
+
+  &-nav {
+    padding: 0 25px;
+  }
+
+  &-logout {
+    padding: 16px 25px;
+    border-top: 0.5px solid var(--neutral-Gray-Clarity-20, #40404033);
+
+    &--btn {
+      display: flex;
+      align-items: center;
+      padding: 12px 15px;
+      background: #fafafa;
+      border-radius: 6px;
+      cursor: pointer;
+      justify-content: space-between;
+
+      div {
+        display: flex;
+        flex-direction: column;
+        span:first-child {
+          font-size: 16px;
+          display: block;
+          line-height: 20px;
+          font-weight: 700;
+          text-transform: capitalize;
+        }
+
+        span:nth-child(2) {
+          display: block;
+          font-size: 12px;
+          line-height: 10px;
+        }
+      }
+    }
+  }
+}
+
+.menu-item {
+  cursor: pointer;
+  padding: 10px 8px;
+  margin-bottom: 16px;
+  border-radius: 6px;
+  transition: background 0.3s;
+  color: var(--neutral-Gray-Clarity-60, #404040b2);
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  justify-content: space-between;
+}
+
+.nav-label {
+  display: flex;
+  gap: 5px;
+}
+
+.menu-item.active {
+  background: #e7f1ff;
+  color: #0311d0;
+  font-weight: 700;
+}
+
+.link {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+
+.menu-item:has(.link.active) {
+  background: #e7f1ff;
+  color: #0311d0;
+  font-weight: 700;
+}
+
+.submenu {
+  padding-left: 20px;
+  margin-top: 5px;
+}
+
+.submenu li {
+  padding: 5px 0;
+}
+
+.menu-item.active .submenu-arrow svg {
+  transform: rotate(180deg);
+}
+
+.menu-item.active .submenu-arrow svg path {
+  fill: #0311d0;
+}
+
+.submenu .link.active {
+  font-weight: 600;
+}
+
+ul {
+  list-style: none;
+}
