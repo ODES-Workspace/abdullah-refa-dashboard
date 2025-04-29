@@ -11,7 +11,7 @@
             (change)="onMonthChange(selectedMonths)"
           >
             <option *ngFor="let option of monthOptions" [value]="option.value">
-              {{ option.label }}
+              {{ option.label | translate }}
             </option>
           </select>
         </div>

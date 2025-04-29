@@ -23,5 +23,9 @@
     "weeksAgo": "منذ {{count}} أسبوع",
     "monthsAgo": "منذ {{count}} شهر",
     "yearsAgo": "منذ {{count}} سنة"
+  },
+  "rentRequests": {
+    "residential": "سكني",
+    "commercial": "تجاري"
   }
 }
