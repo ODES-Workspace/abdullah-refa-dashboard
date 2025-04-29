@@ -1,5 +1,21 @@
 .admin-layout {
   display: grid;
   grid-template-columns: auto 1fr;
+  grid-template-rows: 97px 1fr;
   height: 100dvh;
+  grid-template-areas:
+    "sidebar header"
+    "sidebar content";
+}
+
+.sidebar-container {
+  grid-area: sidebar;
+}
+
+.header-container {
+  grid-area: header;
+}
+
+.main-content {
+  grid-area: content;
 }

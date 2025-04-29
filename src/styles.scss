@@ -31,4 +31,14 @@ html[dir="rtl"] {
   .submenu {
     padding-right: 20px;
   }
+
+  .header-notifications {
+    right: unset;
+    left: 0;
+  }
+
+  .notification-count {
+    right: 31px;
+    left: unset;
+  }
 }

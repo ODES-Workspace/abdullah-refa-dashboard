@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { TranslateModule } from '@ngx-translate/core';
-import { LanguageService } from '../services/language.service'; // make sure path is correct!
+import { LanguageService } from '../../../services/language.service'; // make sure path is correct!
 
 @Component({
   selector: 'app-login',

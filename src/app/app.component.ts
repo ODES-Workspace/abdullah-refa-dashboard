@@ -1,7 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { LanguageService } from './pages/services/language.service';
+import { LanguageService } from '../services/language.service';
 
 @Component({
   selector: 'app-root',

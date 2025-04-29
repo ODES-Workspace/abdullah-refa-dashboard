@@ -11,5 +11,17 @@
     "dashboard": "لوحة التحكم",
     "agenciesOwner": "ملاك الوكالات",
     "listOfApprovals": "قائمة الموافقات"
+  },
+  "Notifications": "الإشعارات",
+  "Mark all as read": "عرض كل الإشعارات",
+  "New Property Listed": "عقار جديد",
+  "time": {
+    "secondsAgo": "منذ {{count}} ثانية",
+    "minutesAgo": "منذ {{count}} دقيقة",
+    "hoursAgo": "منذ {{count}} ساعة",
+    "daysAgo": "منذ {{count}} يوم",
+    "weeksAgo": "منذ {{count}} أسبوع",
+    "monthsAgo": "منذ {{count}} شهر",
+    "yearsAgo": "منذ {{count}} سنة"
   }
 }

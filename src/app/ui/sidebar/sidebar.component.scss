@@ -1,20 +1,18 @@
 .sidebar {
   width: 280px;
-  background: #fff;
   background: #ffffff;
   box-shadow: 0px 4px 25px -3px rgba(0, 0, 0, 0.1);
-  padding: 25px 0px;
   height: 100%;
   display: grid;
-  grid-template-rows: auto 1fr auto;
+  grid-template-rows: 97px 1fr auto;
   gap: 16px;
+  padding: 0 0px;
 
   &-head {
     display: flex;
     flex-direction: column;
     align-items: center;
     border-bottom: 0.5px solid var(--neutral-Gray-Clarity-20, #40404033);
-    padding-bottom: 16px;
     justify-content: center;
   }
 

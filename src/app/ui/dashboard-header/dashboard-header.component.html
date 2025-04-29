@@ -1,0 +1,46 @@
+<div class="header">
+  <!-- Header Text -->
+  <div class="header-text">
+    {{ headerText }}
+  </div>
+  <!-- Header actions -->
+  <div class="header-actions">
+    <button (click)="toggleLanguage()" class="header-lang-btn">
+      {{ "lang" | translate }}
+    </button>
+    <div class="header-notifications-icon" (click)="toggleNotifications()">
+      <img src="/assets/icons/notifications-icon.svg" alt="notification icon" />
+      <span class="notification-count" *ngIf="unreadCount > 0">{{
+        unreadCount
+      }}</span>
+    </div>
+  </div>
+
+  <!-- Header notifications -->
+  <div class="header-notifications" *ngIf="showNotifications">
+    <div class="top">
+      <h2>{{ "Notifications" | translate }}</h2>
+      <div (click)="markAllAsRead()">{{ "Mark all as read" | translate }}</div>
+    </div>
+
+    <div class="notification-content">
+      <div
+        class="notification"
+        *ngFor="let notif of notifications"
+        [class.unread]="!notif.read"
+      >
+        <h3 [class.unread-title]="!notif.read">
+          {{ notif.title | translate }}
+        </h3>
+        <div>
+          <p>{{ notif.description }}</p>
+          <p>ID: {{ notif.propertyId }}</p>
+        </div>
+        <div class="time">
+          <img src="/assets/icons/time-icon.svg" alt="" />
+          {{ notif.time | relativeTime }}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

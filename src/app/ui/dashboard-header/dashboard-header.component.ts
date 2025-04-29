@@ -1,0 +1,104 @@
+import { Component, ElementRef, HostListener } from '@angular/core';
+import { Router } from '@angular/router';
+import { LanguageService } from '../../../services/language.service';
+import { TranslateModule } from '@ngx-translate/core';
+import { NgFor, NgIf } from '@angular/common';
+import { RelativeTimePipe } from '../../../services/relative-time.pipe';
+
+@Component({
+  selector: 'app-dashboard-header',
+  imports: [TranslateModule, NgFor, RelativeTimePipe, NgIf],
+  templateUrl: './dashboard-header.component.html',
+  styleUrl: './dashboard-header.component.scss',
+})
+export class DashboardHeaderComponent {
+  headerText: string = '';
+  showNotifications = false;
+
+  constructor(
+    public languageService: LanguageService,
+    private router: Router,
+    private elementRef: ElementRef
+  ) {
+    this.router.events.subscribe(() => {
+      this.setHeaderText();
+    });
+  }
+
+  getPastTime(minutesAgo: number): string {
+    const date = new Date(Date.now() - minutesAgo * 60 * 1000);
+    return date.toISOString();
+  }
+
+  notifications = [
+    {
+      title: 'New Property Listed',
+      description:
+        'A new luxury apartment has been listed in Riyadh city center.',
+      propertyId: 'RYD-2024-001',
+      time: this.getPastTime(5), // 5 minutes ago
+      read: false,
+    },
+    {
+      title: 'New Property Listed',
+      description:
+        'A new luxury apartment has been listed in Riyadh city center.',
+      propertyId: 'RYD-2024-002',
+      time: this.getPastTime(60), // 1 hour ago
+      read: true,
+    },
+    {
+      title: 'New Property Listed',
+      description:
+        'A new luxury apartment has been listed in Riyadh city center.',
+      propertyId: 'RYD-2024-003',
+      time: this.getPastTime(1440), // 1 day ago
+      read: true,
+    },
+    {
+      title: 'New Property Listed',
+      description: 'A user is interested in one of your properties.',
+      propertyId: 'RYD-2024-004',
+      time: this.getPastTime(10080), // 7 days ago
+      read: true,
+    },
+  ];
+
+  markAllAsRead() {
+    this.notifications.forEach((n) => (n.read = true));
+  }
+
+  setHeaderText() {
+    const url = this.router.url;
+
+    if (url.includes('/admin/dashboard')) {
+      this.headerText = 'Overview';
+    } else if (url.includes('/admin/settings')) {
+      this.headerText = 'Settings';
+    } else if (/\/admin\/Properties\/\d+$/.test(url)) {
+      this.headerText = 'Properties Details';
+    } else {
+      this.headerText = 'Dashbaord';
+    }
+  }
+
+  toggleLanguage() {
+    this.languageService.toggleLanguage();
+  }
+
+  toggleNotifications() {
+    this.showNotifications = !this.showNotifications;
+  }
+
+  get unreadCount(): number {
+    return this.notifications.filter((n) => !n.read).length;
+  }
+
+  @HostListener('document:click', ['$event'])
+  onClickOutside(event: Event) {
+    const clickedInside = this.elementRef.nativeElement.contains(event.target);
+    if (!clickedInside) {
+      this.showNotifications = false;
+    }
+  }
+}

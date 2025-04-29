@@ -1,0 +1,139 @@
+.header {
+  box-shadow: 0px 2px 6.8px rgba(0, 0, 0, 0.1);
+  background: #ffffff;
+  height: 100%;
+  padding: 20px 30px;
+  gap: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
+
+  &-text {
+    font-weight: 600;
+    font-size: 20px;
+  }
+
+  &-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  &-lang-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: rgba(64, 64, 64, 0.7);
+    border-radius: 6px;
+    padding: 8px;
+    color: #ffffff;
+    font-size: 12px;
+    line-height: 14px;
+
+    cursor: pointer;
+  }
+
+  &-notifications-icon {
+    display: flex;
+    position: relative;
+    cursor: pointer;
+
+    .notification-count {
+      position: absolute;
+      width: 19px;
+      height: 19px;
+      top: 0px;
+      left: 31px;
+      border-radius: 100%;
+      font-size: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: #f8285a;
+      color: #ffffff;
+    }
+  }
+
+  &-notifications {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    top: 100%;
+    background: #fff;
+    border-radius: 6px;
+    overflow: hidden;
+    max-width: 533px;
+    width: 100%;
+    right: 0;
+    box-shadow: 0px 2px 6.8px 0px #0000001a;
+
+    .notification-content {
+      max-height: 360px;
+      overflow-y: scroll;
+    }
+
+    .top {
+      padding: 24px 24px 7px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #eee;
+    }
+
+    .top h2 {
+      margin: 0;
+      font-size: 20px;
+    }
+
+    .top div {
+      color: #0311d0;
+      text-decoration: none;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .notification {
+      padding: 16px 24px;
+      border-bottom: 1px solid #eee;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .notification.unread {
+      background-color: #e6e6e6;
+    }
+
+    .notification h3 {
+      font-size: 18px;
+      line-height: 12px;
+      margin-bottom: 10px;
+    }
+
+    .notification h3.unread-title {
+      color: #0c1892;
+    }
+
+    .notification p {
+      color: #404040b2;
+      font-size: 14px;
+      line-height: 20px;
+    }
+
+    .time {
+      display: flex;
+      align-items: center;
+      color: #666;
+      line-height: 20px;
+      margin-top: 5px;
+      font-size: 14px;
+      gap: 2px;
+      margin-left: auto;
+
+      img {
+        display: flex;
+      }
+    }
+  }
+}
