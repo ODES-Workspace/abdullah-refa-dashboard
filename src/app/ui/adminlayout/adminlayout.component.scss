@@ -18,4 +18,9 @@
 
 .main-content {
   grid-area: content;
+  overflow-y: auto;
+}
+
+.main-content {
+  padding: 30px;
 }

@@ -1,0 +1,81 @@
+<div class="rent-requests-container">
+  <div class="charts-container">
+    <div class="bar-chart-wrapper">
+      <div class="bar-chart-heading">
+        <h3 class="bar-chart-title">Request Status</h3>
+
+        <div class="filter-section">
+          <select
+            id="monthSelect"
+            [(ngModel)]="selectedMonths"
+            (change)="onMonthChange(selectedMonths)"
+          >
+            <option *ngFor="let option of monthOptions" [value]="option.value">
+              {{ option.label }}
+            </option>
+          </select>
+        </div>
+      </div>
+      <div class="status-bars">
+        <div class="status-item">
+          <div class="bar-container">
+            <div class="label">Accepted applications</div>
+
+            <div
+              class="bar accepted"
+              [style.width.%]="
+                calculateWidth(currentData.accepted, getRequestMax())
+              "
+            >
+              {{ currentData.accepted }}%
+            </div>
+          </div>
+        </div>
+
+        <div class="status-item">
+          <div class="bar-container">
+            <div class="label">Rejected requests</div>
+
+            <div
+              class="bar rejected"
+              [style.width.%]="
+                calculateWidth(currentData.rejected, getRequestMax())
+              "
+            >
+              {{ currentData.rejected }}%
+            </div>
+          </div>
+        </div>
+
+        <div class="status-item">
+          <div class="bar-container">
+            <div class="label">Requests under review</div>
+
+            <div
+              class="bar under-review"
+              [style.width.%]="
+                calculateWidth(currentData.underReview, getRequestMax())
+              "
+            >
+              {{ currentData.underReview }}%
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="donut-chart-wrapper">
+      <h3 class="donut-chart-title">Property Types</h3>
+      <div class="chart-container">
+        <canvas
+          baseChart
+          [type]="donutChartType"
+          [data]="donutChartData"
+          [options]="donutChartOptions"
+          [legend]="donutChartLegend"
+          height="200"
+        >
+        </canvas>
+      </div>
+    </div>
+  </div>
+</div>

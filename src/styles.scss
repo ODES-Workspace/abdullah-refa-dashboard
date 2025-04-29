@@ -41,4 +41,11 @@ html[dir="rtl"] {
     right: 31px;
     left: unset;
   }
+
+  .status-item {
+    .label {
+      margin-left: 0;
+      margin-right: 10px;
+    }
+  }
 }

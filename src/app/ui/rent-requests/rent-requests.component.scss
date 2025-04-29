@@ -1,0 +1,109 @@
+.filter-section {
+  select {
+    padding: 8px 12px;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+    font-size: 14px;
+  }
+}
+
+.charts-container {
+  display: grid;
+  grid-template-columns: 1fr 0.5fr;
+  gap: 16px;
+
+  h3 {
+    margin-top: 0;
+    font-size: 18px;
+    font-weight: 600;
+  }
+
+  .bar-chart-title {
+    font-size: 16px;
+    line-height: 16px;
+  }
+
+  .donut-chart-title {
+    text-align: center;
+  }
+}
+
+.donut-chart-wrapper,
+.bar-chart-wrapper {
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0px 2px 6.8px rgba(0, 0, 0, 0.1);
+}
+
+.bar-chart-wrapper {
+  display: grid;
+  grid-template-rows: auto 1fr;
+}
+
+.bar-chart-heading {
+  display: flex;
+  justify-content: space-between;
+  padding-bottom: 20px;
+  align-items: center;
+}
+
+.chart-container {
+  position: relative;
+
+  .chart {
+    height: 250px;
+  }
+}
+
+.status-bars {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  justify-content: center;
+  .status-item {
+    .label {
+      font-size: 12px;
+      line-height: 10px;
+
+      color: #ffffff;
+      position: absolute;
+      z-index: 100;
+      top: 50%;
+      transform: translateY(-50%);
+      margin-left: 10px;
+    }
+
+    .bar-container {
+      height: 30px;
+      border-radius: 4px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .bar {
+      height: 100%;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      padding-inline: 10px;
+      font-size: 13px;
+      font-weight: bold;
+      transition: width 0.5s ease;
+      border-radius: 4px;
+
+      &.accepted {
+        background-color: #1b84ff;
+      }
+
+      &.rejected {
+        background-color: #17c653;
+      }
+
+      &.under-review {
+        background-color: #ff6f1e;
+      }
+    }
+  }
+}

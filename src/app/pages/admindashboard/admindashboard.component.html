@@ -1,1 +1,39 @@
-<p>admindashboard works!</p>
+<div class="overview">
+  <!-- Stats -->
+  <div class="overview-stats">
+    <div *ngFor="let stat of stats" class="overview-statcard">
+      <div class="stat-details">
+        <img src="{{ stat.icon }}" alt="{{ stat.title }}" />
+        <h2 class="stat-value">{{ stat.value }}</h2>
+        <div
+          *ngIf="stat.percentageChange !== undefined"
+          class="percentage-badge"
+          [ngClass]="getPercentageClass(stat.percentageChange)"
+        >
+          {{ formatPercentage(stat.percentageChange) }}
+        </div>
+      </div>
+      <p class="stat-title">{{ stat.title }}</p>
+    </div>
+  </div>
+
+  <!-- Financial -->
+  <div class="overview-financial">
+    <div class="card" *ngFor="let card of financialCards">
+      <div class="card-title">
+        <div>
+          {{ card.title }}
+        </div>
+        <img src="{{ card.icon }}" alt="{{ card.title }}" />
+      </div>
+      <div class="card-value">
+        <img src="/assets/icons/financial-icon.svg" alt="{{ card.title }}" />
+        <span>
+          {{ card.value }}
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <app-rent-requests></app-rent-requests>
+</div>
