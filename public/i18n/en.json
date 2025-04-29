@@ -24,8 +24,21 @@
     "monthsAgo": "{{count}} months ago",
     "yearsAgo": "{{count}} years ago"
   },
-  "rentRequests": {
-    "residential": "Residential",
-    "commercial": "Commercial"
-  }
+  "CHART": {
+    "RESIDENTIAL": "Residential",
+    "COMMERCIAL": "Commercial"
+  },
+
+  "Total Properties": "Total Properties",
+  "Total Tenants": "Total Tenants",
+  "Total Users": "Total Users",
+  "Total Agencies-Owner": "Total Agencies-Owner",
+  "Total Rent Request": "Total Rent Request",
+  "Total Contracts": "Total Contracts",
+  "CONTRACT AMOUNTS": "CONTRACT AMOUNTS",
+  "REFA FEES": "REFA FEES",
+  "1 month": "1 month",
+  "3 months": "3 months",
+  "6 months": "6 months",
+  "12 months": "12 months"
 }

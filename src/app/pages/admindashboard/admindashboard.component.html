@@ -13,7 +13,7 @@
           {{ formatPercentage(stat.percentageChange) }}
         </div>
       </div>
-      <p class="stat-title">{{ stat.title }}</p>
+      <p class="stat-title">{{ stat.title | translate }}</p>
     </div>
   </div>
 
@@ -22,7 +22,7 @@
     <div class="card" *ngFor="let card of financialCards">
       <div class="card-title">
         <div>
-          {{ card.title }}
+          {{ card.title | translate }}
         </div>
         <img src="{{ card.icon }}" alt="{{ card.title }}" />
       </div>

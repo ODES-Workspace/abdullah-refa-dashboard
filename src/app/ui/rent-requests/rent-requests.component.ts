@@ -8,10 +8,9 @@ import { Chart, ChartConfiguration, ChartType } from 'chart.js';
 import { NgChartsModule, BaseChartDirective } from 'ng2-charts';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { default as ChartDataLabels } from 'chartjs-plugin-datalabels';
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 import { ArcElement, Tooltip, Legend } from 'chart.js';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 Chart.register(ArcElement, Tooltip, Legend);
 
 interface RentData {
@@ -32,6 +31,8 @@ interface RentData {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RentRequestsComponent implements OnInit {
+  chartLabels = ['Residential', 'Commercial'];
+  translatedLabels: string[] = [];
   selectedMonths: string = '12';
   monthOptions = [
     { value: '1', label: '1 month' },
@@ -81,9 +82,6 @@ export class RentRequestsComponent implements OnInit {
     maintainAspectRatio: false,
     cutout: '70%',
     radius: '90%',
-    animation: {
-      duration: 0, // Disable animations
-    },
     plugins: {
       legend: {
         position: 'right',
@@ -91,28 +89,21 @@ export class RentRequestsComponent implements OnInit {
           padding: 20,
           usePointStyle: true,
           pointStyle: 'circle',
-          font: {
-            size: 12,
-          },
           generateLabels: (chart: any) => {
             const datasets = chart.data.datasets;
-            return chart.data.labels.map((label: string, i: number) => {
-              const total = datasets[0].data.reduce(
-                (a: number, b: number) => a + b,
-                0
-              );
-              const percentage = ((datasets[0].data[i] / total) * 100).toFixed(
-                0
-              );
+            return chart.data.labels.map((label: any, i: number) => {
+              const meta = chart.getDatasetMeta(0);
+              const value = datasets[0].data[i];
+              const backgroundColor = datasets[0].backgroundColor[i];
+
               return {
-                text: `${label} ${percentage}%`,
-                fillStyle: datasets[0].backgroundColor[i],
+                text: `${label} ${value}%`,
+                fillStyle: backgroundColor,
                 strokeStyle: datasets[0].borderColor,
                 lineWidth: datasets[0].borderWidth,
-                hidden:
-                  isNaN(datasets[0].data[i]) ||
-                  chart.getDatasetMeta(0).data[i].hidden,
+                hidden: !chart.getDataVisibility(i),
                 index: i,
+                borderRadius: datasets[0].borderRadius,
               };
             });
           },
@@ -120,27 +111,7 @@ export class RentRequestsComponent implements OnInit {
       },
       tooltip: {
         callbacks: {
-          label: (context: any) => {
-            const total = context.dataset.data.reduce(
-              (a: number, b: number) => a + b,
-              0
-            );
-            const percentage = ((context.raw / total) * 100).toFixed(1);
-            return `${context.label}: ${percentage}%`;
-          },
-        },
-      },
-      datalabels: {
-        formatter: (value: number, context: any) => {
-          const total = context.dataset.data.reduce(
-            (a: number, b: number) => a + b,
-            0
-          );
-          return ((value / total) * 100).toFixed(1) + '%';
-        },
-        color: '#fff',
-        font: {
-          weight: 'bold',
+          label: (context: any) => `${context.label}: ${context.raw}%`,
         },
       },
     },
@@ -152,13 +123,6 @@ export class RentRequestsComponent implements OnInit {
   public donutChartType: ChartType = 'doughnut';
   public donutChartLegend = true;
 
-  constructor(private translate: TranslateService) {
-    // Subscribe to language changes
-    this.translate.onLangChange.subscribe(() => {
-      this.updateChartLabels();
-    });
-  }
-
   get currentData(): RentData {
     return (
       this.rentDataByMonth[this.selectedMonths] || this.rentDataByMonth['12']
@@ -166,7 +130,9 @@ export class RentRequestsComponent implements OnInit {
   }
 
   public donutChartData: ChartConfiguration['data'] = {
-    labels: ['', ''],
+    labels: this.translatedLabels.length
+      ? this.translatedLabels
+      : this.chartLabels,
     datasets: [
       {
         data: [0, 0],
@@ -183,41 +149,33 @@ export class RentRequestsComponent implements OnInit {
   // Reference to the chart
   @ViewChild(BaseChartDirective) chartDirective?: BaseChartDirective;
 
+  constructor(private translateService: TranslateService) {}
+
   ngOnInit(): void {
+    this.translateService.onLangChange.subscribe(() => {
+      this.translateLabels();
+    });
+    // Initialize chart data
     this.updateChartData();
   }
 
-  private updateChartData(): void {
-    if (
-      this.donutChartData &&
-      this.donutChartData.datasets &&
-      this.donutChartData.datasets[0]
-    ) {
-      // Update dataset values
-      this.donutChartData.datasets[0].data[0] = this.currentData.residential;
-      this.donutChartData.datasets[0].data[1] = this.currentData.commercial;
-
-      // Force chart update
-      if (this.chartDirective && this.chartDirective.chart) {
-        this.chartDirective.chart.update();
-      }
-    }
-  }
-
-  private updateChartLabels(): void {
-    if (this.donutChartData) {
-      this.translate
-        .get(['rentRequests.residential', 'rentRequests.commercial'])
-        .subscribe((translations) => {
-          this.donutChartData.labels = [
-            translations['rentRequests.residential'],
-            translations['rentRequests.commercial'],
-          ];
-          if (this.chartDirective?.chart) {
-            this.chartDirective.chart.update();
+  translateLabels(): void {
+    this.translatedLabels = [];
+    this.chartLabels.forEach((label) => {
+      this.translateService
+        .get(`CHART.${label.toUpperCase()}`)
+        .subscribe((translation) => {
+          this.translatedLabels.push(translation);
+          // Update chart data labels
+          if (
+            this.donutChartData &&
+            this.translatedLabels.length === this.chartLabels.length
+          ) {
+            this.donutChartData.labels = [...this.translatedLabels];
+            this.updateChart();
           }
         });
-    }
+    });
   }
 
   getRequestMax(): number {
@@ -231,6 +189,32 @@ export class RentRequestsComponent implements OnInit {
 
   onMonthChange(months: string): void {
     this.selectedMonths = months;
-    this.updateChartData();
+
+    // Update chart data and force redraw
+    setTimeout(() => {
+      this.updateChartData();
+    });
+  }
+
+  // Method to update chart data without creating new references
+  private updateChartData(): void {
+    if (
+      this.donutChartData &&
+      this.donutChartData.datasets &&
+      this.donutChartData.datasets[0]
+    ) {
+      // Update dataset values
+      this.donutChartData.datasets[0].data[0] = this.currentData.residential;
+      this.donutChartData.datasets[0].data[1] = this.currentData.commercial;
+
+      this.updateChart(); // CHANGED: Now calls the helper method
+    }
+  }
+
+  private updateChart(): void {
+    // Force chart update
+    if (this.chartDirective && this.chartDirective.chart) {
+      this.chartDirective.chart.update();
+    }
   }
 }

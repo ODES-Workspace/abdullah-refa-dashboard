@@ -1,10 +1,11 @@
 import { NgClass, NgFor, NgIf } from '@angular/common';
 import { Component } from '@angular/core';
 import { RentRequestsComponent } from '../../ui/rent-requests/rent-requests.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-admindashboard',
-  imports: [NgFor, NgIf, NgClass, RentRequestsComponent],
+  imports: [NgFor, NgIf, NgClass, RentRequestsComponent, TranslateModule],
   templateUrl: './admindashboard.component.html',
   styleUrl: './admindashboard.component.scss',
 })

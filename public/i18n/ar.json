@@ -24,8 +24,25 @@
     "monthsAgo": "منذ {{count}} شهر",
     "yearsAgo": "منذ {{count}} سنة"
   },
-  "rentRequests": {
-    "residential": "سكني",
-    "commercial": "تجاري"
-  }
+  "CHART": {
+    "RESIDENTIAL": "سكني",
+    "COMMERCIAL": "تجاري"
+  },
+  "Total Properties": "إجمالي العقارات",
+  "Total Tenants": "إجمالي المستأجرين",
+  "Total Users": "إجمالي المستخدمين",
+  "Total Agencies-Owner": "إجمالي ملاك الوكالات",
+  "Total Rent Request": "إجمالي طلبات الإيجار",
+  "Total Contracts": "إجمالي العقود",
+  "CONTRACT AMOUNTS": "مبالغ العقود",
+  "REFA FEES": "رسوم REFA",
+  "Request Status": "حالة الطلب",
+  "Property Types": "نوع العقار",
+  "Accepted applications": "طلبات مقبولة",
+  "Rejected requests": "طلبات مرفوضة",
+  "Requests under review": "طلبات قيد المراجعة",
+  "1 month": "1 شهر",
+  "3 months": "3 شهور",
+  "6 months": "6 شهور",
+  "12 months": "12 شهر"
 }
