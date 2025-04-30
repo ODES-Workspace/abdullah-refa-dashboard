@@ -9,6 +9,7 @@
   "lang": "EN",
   "sidebar": {
     "dashboard": "لوحة التحكم",
+    "properties": "العقارات",
     "agenciesOwner": "ملاك الوكالات",
     "listOfApprovals": "قائمة الموافقات"
   },
@@ -54,5 +55,6 @@
   "No data found": "لا يوجد بيانات",
   "Show": "اظهار",
   "per page": "بالصفحة",
-  "of": "من"
+  "of": "من",
+  "Properties": "العقارات"
 }

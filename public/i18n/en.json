@@ -9,6 +9,7 @@
   "lang": "عربي",
   "sidebar": {
     "dashboard": "Dashboard",
+    "properties": "Properties",
     "agenciesOwner": "Agencies Owner",
     "listOfApprovals": "List of Approvals"
   },
@@ -50,5 +51,6 @@
   "No data found": "No data found",
   "Show": "Show",
   "per page": "per page",
-  "of": "of"
+  "of": "of",
+  "Properties": "Properties"
 }

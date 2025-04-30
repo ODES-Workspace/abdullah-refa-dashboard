@@ -1,0 +1,152 @@
+<div class="property-details-container">
+  <div *ngIf="isLoading" class="loading">Loading property details...</div>
+
+  <div *ngIf="error" class="error">{{ error }}</div>
+
+  <div *ngIf="property && !isLoading" class="property-card">
+    <div>
+      <div>{{ property.title }}</div>
+      <div>
+        <span
+          class="color-tag"
+          [style.background-color]="property.color_tag.toLowerCase()"
+        ></span>
+        {{ property.address.district }}, {{ property.address.city }}
+      </div>
+    </div>
+
+    <!-- Image Grid -->
+    <div *ngIf="property.images?.length" class="image-grid">
+      <div *ngFor="let image of property.images" class="image-container">
+        <img [src]="image" [alt]="property.title + ' image'" />
+      </div>
+    </div>
+
+    <div>
+      <div class="details-grid">
+        <!-- Property Details -->
+        <div class="detail-section">
+          <h3>Property Details</h3>
+          <div class="detail-item">
+            <span class="label">Price:</span>
+            <span class="value"
+              >{{ property.property_details.price.value | number }}
+              {{ property.property_details.price.currency }}</span
+            >
+          </div>
+          <div class="detail-item">
+            <span class="label">Area:</span>
+            <span class="value"
+              >{{ property.property_details.area.value }}
+              {{ property.property_details.area.unit }}</span
+            >
+          </div>
+          <div class="detail-item">
+            <span class="label">Bathrooms:</span>
+            <span class="value">{{ property.property_details.bathrooms }}</span>
+          </div>
+          <div class="detail-item">
+            <span class="label">Available From:</span>
+            <span class="value">{{
+              property.property_details.available_from
+            }}</span>
+          </div>
+          <div class="detail-item">
+            <span class="label">Deposit:</span>
+            <span class="value"
+              >{{ property.deposit_amount.value | number }}
+              {{ property.deposit_amount.currency }}</span
+            >
+          </div>
+        </div>
+
+        <!-- Address Section -->
+        <div class="detail-section">
+          <h3>Address</h3>
+          <div class="detail-item">
+            <span class="label">Street:</span>
+            <span class="value">{{ property.address.street }}</span>
+          </div>
+          <div class="detail-item">
+            <span class="label">District:</span>
+            <span class="value">{{ property.address.district }}</span>
+          </div>
+          <div class="detail-item">
+            <span class="label">City:</span>
+            <span class="value">{{ property.address.city }}</span>
+          </div>
+          <div class="detail-item">
+            <span class="label">Region:</span>
+            <span class="value">{{ property.address.region }}</span>
+          </div>
+          <div class="detail-item">
+            <span class="label">Postal Code:</span>
+            <span class="value">{{ property.address.postal_code }}</span>
+          </div>
+          <div class="detail-item">
+            <a
+              [href]="property.location.google_maps_link"
+              target="_blank"
+              class="maps-link"
+            >
+              <div>map</div>
+              View on Google Maps
+            </a>
+          </div>
+        </div>
+
+        <!-- Owner Details -->
+        <div class="detail-section">
+          <h3>Owner Details</h3>
+          <div class="detail-item">
+            <span class="label">Name:</span>
+            <span class="value">{{ property.owner_details.name }}</span>
+          </div>
+          <div class="detail-item">
+            <span class="label">Mobile:</span>
+            <span class="value">
+              <a href="tel:{{ property.owner_details.contact.mobile }}">{{
+                property.owner_details.contact.mobile
+              }}</a>
+            </span>
+          </div>
+          <div class="detail-item">
+            <span class="label">Email:</span>
+            <span class="value">
+              <a href="mailto:{{ property.owner_details.contact.email }}">{{
+                property.owner_details.contact.email
+              }}</a>
+            </span>
+          </div>
+          <div class="detail-item">
+            <span class="label">Address:</span>
+            <span class="value">
+              {{ property.owner_details.address.street }},
+              {{ property.owner_details.address.city }},
+              {{ property.owner_details.address.region }}
+            </span>
+          </div>
+        </div>
+
+        <!-- License Details -->
+        <div class="detail-section">
+          <h3>License Information</h3>
+          <div class="detail-item">
+            <span class="label">ADV License:</span>
+            <span class="value">{{ property.license.adv_license }}</span>
+          </div>
+          <div class="detail-item">
+            <span class="label">FAL License:</span>
+            <span class="value">{{ property.license.fal_license_id }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <button mat-raised-button color="primary" routerLink="/properties">
+        Back to Properties
+      </button>
+    </div>
+  </div>
+</div>

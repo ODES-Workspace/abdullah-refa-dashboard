@@ -1,0 +1,262 @@
+[
+  {
+    "id": 1,
+    "title": "Elite Fitness, Riyadh",
+    "address": {
+      "street": "King Abdullah Road",
+      "city": "Riyadh",
+      "district": "Al Olaya",
+      "region": "Riyadh",
+      "postal_code": "12211"
+    },
+    "location": {
+      "latitude": 24.7136,
+      "longitude": 46.6753,
+      "google_maps_link": "https://www.google.com/maps?q=24.7136,46.6753"
+    },
+    "color_tag": "Blue",
+    "deposit_amount": {
+      "value": 5000,
+      "currency": "SAR"
+    },
+    "license": {
+      "adv_license": "RIY54321",
+      "fal_license_id": "RIY987654321"
+    },
+    "property_details": {
+      "bathrooms": 2,
+      "area": {
+        "value": 750,
+        "unit": "m²"
+      },
+      "price": {
+        "value": 65000,
+        "currency": "SAR"
+      },
+      "posted_date": "15-10-2024",
+      "available_from": "01-12-2024"
+    },
+    "owner_details": {
+      "name": "Golden Fitness Co.",
+      "contact": {
+        "mobile": "+966501234567",
+        "email": "contact@goldenfitness.com"
+      },
+      "address": {
+        "street": "789, King Fahd Road",
+        "city": "Riyadh",
+        "region": "Riyadh",
+        "country": "Saudi Arabia"
+      }
+    },
+    "images": ["assets/images/gym1.png", "assets/images/gym2.png"]
+  },
+  {
+    "id": 2,
+    "title": "Power Gym, Jeddah",
+    "address": {
+      "street": "Prince Sultan Street",
+      "city": "Jeddah",
+      "district": "Al Khalidiya",
+      "region": "Makkah",
+      "postal_code": "23422"
+    },
+    "location": {
+      "latitude": 21.5432,
+      "longitude": 39.1728,
+      "google_maps_link": "https://www.google.com/maps?q=21.5432,39.1728"
+    },
+    "color_tag": "Red",
+    "deposit_amount": {
+      "value": 3000,
+      "currency": "SAR"
+    },
+    "license": {
+      "adv_license": "JED67890",
+      "fal_license_id": "JED123456789"
+    },
+    "property_details": {
+      "bathrooms": 1,
+      "area": {
+        "value": 500,
+        "unit": "m²"
+      },
+      "price": {
+        "value": 45000,
+        "currency": "SAR"
+      },
+      "posted_date": "05-11-2024",
+      "available_from": "15-01-2025"
+    },
+    "owner_details": {
+      "name": "Power Gym Franchise",
+      "contact": {
+        "mobile": "+966502345678",
+        "email": "info@powergym.com"
+      },
+      "address": {
+        "street": "456, Corniche Road",
+        "city": "Jeddah",
+        "region": "Makkah",
+        "country": "Saudi Arabia"
+      }
+    },
+    "images": ["assets/images/gym1.png", "assets/images/gym2.png"]
+  },
+  {
+    "id": 3,
+    "title": "Flex Fitness, Dammam",
+    "address": {
+      "street": "King Abdulaziz Road",
+      "city": "Dammam",
+      "district": "Al Khobar",
+      "region": "Eastern Province",
+      "postal_code": "34445"
+    },
+    "location": {
+      "latitude": 26.2891,
+      "longitude": 50.208,
+      "google_maps_link": "https://www.google.com/maps?q=26.2891,50.2080"
+    },
+    "color_tag": "Green",
+    "deposit_amount": {
+      "value": 4000,
+      "currency": "SAR"
+    },
+    "license": {
+      "adv_license": "DAM45678",
+      "fal_license_id": "DAM987123456"
+    },
+    "property_details": {
+      "bathrooms": 2,
+      "area": {
+        "value": 600,
+        "unit": "m²"
+      },
+      "price": {
+        "value": 55000,
+        "currency": "SAR"
+      },
+      "posted_date": "20-09-2024",
+      "available_from": "10-11-2024"
+    },
+    "owner_details": {
+      "name": "Flex Fitness Group",
+      "contact": {
+        "mobile": "+966503456789",
+        "email": "support@flexfitness.com"
+      },
+      "address": {
+        "street": "321, Dhahran Street",
+        "city": "Dammam",
+        "region": "Eastern Province",
+        "country": "Saudi Arabia"
+      }
+    },
+    "images": ["assets/images/gym1.png", "assets/images/gym2.png"]
+  },
+  {
+    "id": 4,
+    "title": "Iron House Gym, Medina",
+    "address": {
+      "street": "Qurban Street",
+      "city": "Medina",
+      "district": "Al Qiblatain",
+      "region": "Al Madinah",
+      "postal_code": "42311"
+    },
+    "location": {
+      "latitude": 24.5247,
+      "longitude": 39.5692,
+      "google_maps_link": "https://www.google.com/maps?q=24.5247,39.5692"
+    },
+    "color_tag": "Black",
+    "deposit_amount": {
+      "value": 2500,
+      "currency": "SAR"
+    },
+    "license": {
+      "adv_license": "MED78901",
+      "fal_license_id": "MED654321987"
+    },
+    "property_details": {
+      "bathrooms": 1,
+      "area": {
+        "value": 450,
+        "unit": "m²"
+      },
+      "price": {
+        "value": 38000,
+        "currency": "SAR"
+      },
+      "posted_date": "12-12-2024",
+      "available_from": "01-02-2025"
+    },
+    "owner_details": {
+      "name": "Iron House LLC",
+      "contact": {
+        "mobile": "+966504567890",
+        "email": "ironhouse@medina.com"
+      },
+      "address": {
+        "street": "159, Sultanah Street",
+        "city": "Medina",
+        "region": "Al Madinah",
+        "country": "Saudi Arabia"
+      }
+    },
+    "images": ["assets/images/gym1.png", "assets/images/gym2.png"]
+  },
+  {
+    "id": 5,
+    "title": "Royal Gym, Abha",
+    "address": {
+      "street": "Prince Sultan Road",
+      "city": "Abha",
+      "district": "Al Salamah",
+      "region": "Asir",
+      "postal_code": "62521"
+    },
+    "location": {
+      "latitude": 18.2208,
+      "longitude": 42.5111,
+      "google_maps_link": "https://www.google.com/maps?q=18.2208,42.5111"
+    },
+    "color_tag": "Gold",
+    "deposit_amount": {
+      "value": 3500,
+      "currency": "SAR"
+    },
+    "license": {
+      "adv_license": "ABH23456",
+      "fal_license_id": "ABH789456123"
+    },
+    "property_details": {
+      "bathrooms": 1,
+      "area": {
+        "value": 550,
+        "unit": "m²"
+      },
+      "price": {
+        "value": 42000,
+        "currency": "SAR"
+      },
+      "posted_date": "03-10-2024",
+      "available_from": "20-12-2024"
+    },
+    "owner_details": {
+      "name": "Royal Sports Club",
+      "contact": {
+        "mobile": "+966505678901",
+        "email": "royal@abha.com"
+      },
+      "address": {
+        "street": "753, Al Andalus Street",
+        "city": "Abha",
+        "region": "Asir",
+        "country": "Saudi Arabia"
+      }
+    },
+    "images": ["assets/images/gym1.png", "assets/images/gym2.png"]
+  }
+]

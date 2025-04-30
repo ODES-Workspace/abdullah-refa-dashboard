@@ -1,0 +1,76 @@
+<div class="table">
+  <!-- Table header -->
+  <div class="table-header">
+    <div class="table-title">Featured Properties</div>
+    <div class="table-search">
+      <img src="/assets/icons/search-icon.svg" alt="Search" />
+      <input
+        type="text"
+        placeholder="Search properties"
+        [(ngModel)]="searchTerm"
+        (input)="currentPage = 1"
+      />
+    </div>
+  </div>
+
+  <!-- No data -->
+  <div class="table-no-data" *ngIf="filteredProperties.length === 0">
+    No data found
+  </div>
+
+  <!-- properties -->
+  <div class="table-properties">
+    <div *ngFor="let item of paginatedProperties" class="property-item">
+      <div class="property-actions">
+        <!-- Eye icon - View -->
+        <span class="action-icon" (click)="viewProperty(item.id)"> 👁️ </span>
+
+        <!-- Delete icon -->
+        <span class="action-icon" (click)="deleteProperty(item.id)"> 🗑️ </span>
+
+        <!-- Edit icon -->
+        <span class="action-icon" (click)="editProperty(item.id)"> ✏️ </span>
+      </div>
+      <div class="property-details">
+        <div>ID: {{ item.id }}</div>
+        <div>Title: {{ item.title }}</div>
+        <!-- Add more property details as needed -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Table pagination -->
+  <div class="table-pagination" *ngIf="filteredProperties.length > 0">
+    <div class="table-pagination--show">
+      <span> Show</span>
+      <select [(ngModel)]="itemsPerPage" (change)="onItemsPerPageChange()">
+        <option [value]="10">10</option>
+        <option [value]="20">20</option>
+        <option [value]="30">30</option>
+      </select>
+      <span> per page </span>
+    </div>
+
+    <div class="table-pagination--pages">
+      <div class="table-pagination--pages--count">
+        {{ (currentPage - 1) * itemsPerPage + 1 }}-{{
+          Math.min(currentPage * itemsPerPage, filteredProperties.length)
+        }}
+        of {{ filteredProperties.length }}
+      </div>
+
+      <div class="table-pagination--pages--buttons" dir="ltr">
+        <button (click)="prevPage()" [disabled]="currentPage === 1">
+          <img src="/assets/icons/arrow-left.svg" alt="prev icon" />
+        </button>
+        <span>{{ currentPage }}</span>
+        <button
+          (click)="nextPage()"
+          [disabled]="currentPage * itemsPerPage >= filteredProperties.length"
+        >
+          <img src="/assets/icons/arrow-right.svg" alt="next icon" />
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
