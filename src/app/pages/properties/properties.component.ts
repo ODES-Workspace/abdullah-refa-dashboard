@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { PropertiesService } from '../../../services/properties.service';
-import { NgFor, NgIf } from '@angular/common';
+import { CommonModule, NgFor, NgIf } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router'; // Add this import
 import { TranslateModule } from '@ngx-translate/core';
@@ -8,7 +8,7 @@ import { TranslateModule } from '@ngx-translate/core';
 @Component({
   selector: 'app-properties',
   standalone: true,
-  imports: [NgFor, NgIf, FormsModule, TranslateModule],
+  imports: [NgFor, NgIf, FormsModule, TranslateModule, CommonModule],
   templateUrl: './properties.component.html',
   styleUrl: './properties.component.scss',
 })

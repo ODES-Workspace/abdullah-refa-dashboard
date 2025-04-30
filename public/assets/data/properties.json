@@ -53,5 +53,115 @@
     },
     "images": ["assets/images/gym1.png", "assets/images/gym2.png"],
     "cardImage": "assets/images/gym0.png"
+  },
+  {
+    "id": 2,
+    "annual_rent": "60000",
+    "title": "Premium Fitness Center, Jeddah",
+    "address": {
+      "street": "Prince Sultan Road",
+      "city": "Jeddah",
+      "district": "Al Shati",
+      "region": "Makkah",
+      "postal_code": "23456"
+    },
+    "location": {
+      "latitude": 21.5432,
+      "longitude": 39.1728,
+      "google_maps_link": "https://www.google.com/maps?q=21.5432,39.1728"
+    },
+    "deposit_amount": {
+      "value": 6000,
+      "currency": "SAR"
+    },
+    "license": {
+      "adv_license": "JED12345",
+      "fal_license_id": "JED987654321"
+    },
+    "property_details": {
+      "bathrooms": 3,
+      "bedrooms": 4,
+      "parking": true,
+      "area": {
+        "value": 800,
+        "unit": "m²"
+      },
+      "price": {
+        "value": 75000,
+        "currency": "SAR"
+      },
+      "posted_date": "20-10-2024",
+      "available_from": "15-12-2024"
+    },
+    "owner_details": {
+      "name": "Jeddah Fitness Group",
+      "contact": {
+        "mobile": "+966502345678",
+        "email": "info@jeddahfitness.com"
+      },
+      "address": {
+        "street": "456, Corniche Road",
+        "city": "Jeddah",
+        "region": "Makkah",
+        "country": "Saudi Arabia"
+      }
+    },
+    "images": ["assets/images/gym1.png", "assets/images/gym2.png"],
+    "cardImage": "assets/images/gym0.png"
+  },
+  {
+    "id": 3,
+    "annual_rent": "45000",
+    "title": "City Gym, Dammam",
+    "address": {
+      "street": "King Abdulaziz Road",
+      "city": "Dammam",
+      "district": "Al Khobar",
+      "region": "Eastern Province",
+      "postal_code": "34456"
+    },
+    "location": {
+      "latitude": 26.4207,
+      "longitude": 50.0888,
+      "google_maps_link": "https://www.google.com/maps?q=26.4207,50.0888"
+    },
+    "deposit_amount": {
+      "value": 4500,
+      "currency": "SAR"
+    },
+    "license": {
+      "adv_license": "DAM67890",
+      "fal_license_id": "DAM123456789"
+    },
+    "property_details": {
+      "bathrooms": 2,
+      "bedrooms": 2,
+      "parking": true,
+      "area": {
+        "value": 600,
+        "unit": "m²"
+      },
+      "price": {
+        "value": 55000,
+        "currency": "SAR"
+      },
+      "posted_date": "10-10-2024",
+      "available_from": "01-11-2024"
+    },
+    "owner_details": {
+      "name": "Eastern Fitness LLC",
+      "contact": {
+        "mobile": "+966503456789",
+        "email": "contact@easternfitness.com"
+      },
+      "address": {
+        "street": "123, Dhahran Street",
+        "city": "Dhahran",
+        "region": "Eastern Province",
+        "country": "Saudi Arabia"
+      }
+    },
+    "images": ["assets/images/gym1.png", "assets/images/gym2.png"],
+    "cardImage": "assets/images/gym0.png"
   }
 ]

@@ -8,13 +8,13 @@
     (ngSubmit)="onSubmit()"
     class="edit-form"
   >
-    <h2>Edit Property</h2>
+    <h2>{{ "Edit Property" | translate }}</h2>
 
     <!-- Basic Information -->
     <div class="form-section">
-      <h3>Basic Information</h3>
+      <h3>{{ "Basic Information" | translate }}</h3>
       <div class="form-group">
-        <label for="title">Title</label>
+        <label for="title">{{ "Title" | translate }}</label>
         <input
           type="text"
           id="title"
@@ -27,9 +27,9 @@
 
     <!-- Property Details -->
     <div class="form-section">
-      <h3>Property Details</h3>
+      <h3>{{ "Property Details" | translate }}</h3>
       <div class="form-group">
-        <label for="price">Price</label>
+        <label for="price">{{ "Price" | translate }}</label>
         <input
           type="number"
           id="price"
@@ -46,7 +46,7 @@
         </select>
       </div>
       <div class="form-group">
-        <label for="area">Area</label>
+        <label for="area">{{ "Area" | translate }}</label>
         <input
           type="number"
           id="area"
@@ -55,12 +55,12 @@
           required
         />
         <select [(ngModel)]="property.property_details.area.unit" name="unit">
-          <option value="sqft">Square Feet</option>
-          <option value="sqm">Square Meters</option>
+          <option value="sqft">{{ "Square Feet" | translate }}</option>
+          <option value="sqm">{{ "Square Meters" | translate }}</option>
         </select>
       </div>
       <div class="form-group">
-        <label for="bathrooms">Bathrooms</label>
+        <label for="bathrooms">{{ "Bathrooms" | translate }}</label>
         <input
           type="number"
           id="bathrooms"
@@ -70,7 +70,7 @@
         />
       </div>
       <div class="form-group">
-        <label for="available_from">Available From</label>
+        <label for="available_from">{{ "Available From" | translate }}</label>
         <input
           type="date"
           id="available_from"
@@ -82,9 +82,9 @@
 
     <!-- Address -->
     <div class="form-section">
-      <h3>Address</h3>
+      <h3>{{ "Address" | translate }}</h3>
       <div class="form-group">
-        <label for="street">Street</label>
+        <label for="street">{{ "Street" | translate }}</label>
         <input
           type="text"
           id="street"
@@ -94,7 +94,7 @@
         />
       </div>
       <div class="form-group">
-        <label for="district">District</label>
+        <label for="district">{{ "District" | translate }}</label>
         <input
           type="text"
           id="district"
@@ -104,7 +104,7 @@
         />
       </div>
       <div class="form-group">
-        <label for="city">City</label>
+        <label for="city">{{ "City" | translate }}</label>
         <input
           type="text"
           id="city"
@@ -114,7 +114,7 @@
         />
       </div>
       <div class="form-group">
-        <label for="region">Region</label>
+        <label for="region">{{ "Region" | translate }}</label>
         <input
           type="text"
           id="region"
@@ -124,7 +124,7 @@
         />
       </div>
       <div class="form-group">
-        <label for="postal_code">Postal Code</label>
+        <label for="postal_code">{{ "Postal Code" | translate }}</label>
         <input
           type="text"
           id="postal_code"
@@ -136,9 +136,9 @@
 
     <!-- Owner Details -->
     <div class="form-section">
-      <h3>Owner Details</h3>
+      <h3>{{ "Owner Details" | translate }}</h3>
       <div class="form-group">
-        <label for="owner_name">Owner Name</label>
+        <label for="owner_name">{{ "Owner Name" | translate }}</label>
         <input
           type="text"
           id="owner_name"
@@ -148,7 +148,7 @@
         />
       </div>
       <div class="form-group">
-        <label for="owner_mobile">Mobile</label>
+        <label for="owner_mobile">{{ "Mobile" | translate }}</label>
         <input
           type="tel"
           id="owner_mobile"
@@ -158,7 +158,7 @@
         />
       </div>
       <div class="form-group">
-        <label for="owner_email">Email</label>
+        <label for="owner_email">{{ "Email" | translate }}</label>
         <input
           type="email"
           id="owner_email"
@@ -171,9 +171,9 @@
 
     <!-- License Information -->
     <div class="form-section">
-      <h3>License Information</h3>
+      <h3>{{ "License Information" | translate }}</h3>
       <div class="form-group">
-        <label for="adv_license">ADV License</label>
+        <label for="adv_license">{{ "Adv. License" | translate }}</label>
         <input
           type="text"
           id="adv_license"
@@ -183,7 +183,7 @@
         />
       </div>
       <div class="form-group">
-        <label for="fal_license">FAL License</label>
+        <label for="fal_license">{{ "FAL License ID" | translate }}</label>
         <input
           type="text"
           id="fal_license"
@@ -196,9 +196,11 @@
 
     <div class="form-actions">
       <button type="button" (click)="onCancel()" class="cancel-button">
-        Cancel
+        {{ "Cancel" | translate }}
       </button>
-      <button type="submit" class="save-button">Save Changes</button>
+      <button type="submit" class="save-button">
+        {{ "Save Changes" | translate }}
+      </button>
     </div>
   </form>
 </div>
