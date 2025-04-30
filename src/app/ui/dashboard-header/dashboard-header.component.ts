@@ -75,7 +75,9 @@ export class DashboardHeaderComponent {
       this.headerText = 'Overview';
     } else if (url.includes('/admin/properties')) {
       this.headerText = 'Properties';
-    } else if (/\/admin\/Properties\/\d+$/.test(url)) {
+    } else if (/\/admin\/property\/edit\/\d+$/.test(url)) {
+      this.headerText = 'Edit Property Details';
+    } else if (/\/admin\/property\/\d+$/.test(url)) {
       this.headerText = 'Properties Details';
     } else {
       this.headerText = 'Dashbaord';

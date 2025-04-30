@@ -7,7 +7,7 @@
   &-title {
     font-size: 16px;
     line-height: 14px;
-    font-weight: 700;
+    font-weight: 600;
   }
 
   &-header {
@@ -15,7 +15,7 @@
     justify-content: space-between;
     padding: 17px 20px;
     align-items: center;
-
+    border-bottom: 1px solid #f1f1f4;
     input {
       padding: 8px 28px 8px 28px;
       width: 305px;
@@ -32,7 +32,7 @@
 
   &-properties {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(3, auto);
     padding: 30px;
     row-gap: 30px;
     column-gap: 66px;
@@ -113,5 +113,125 @@
         }
       }
     }
+  }
+}
+
+.property {
+  &-item {
+    width: 100%;
+    border-radius: 12px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  &-actions {
+    position: absolute;
+    top: 18px;
+    right: 14px;
+    padding: 3px 5px;
+    border-radius: 30px;
+    display: flex;
+    gap: 5px;
+    background-color: #ffffff;
+
+    .action-icon {
+      width: 30px;
+      height: 30px;
+      border-radius: 100px;
+      cursor: pointer;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      &:first-child {
+        background-color: #ffeef3;
+      }
+
+      &:nth-child(2) {
+        background-color: #e7f1ff;
+      }
+
+      &:nth-child(3) {
+        background-color: #fff8dd;
+      }
+    }
+  }
+
+  &-image {
+    width: 100%;
+    height: 200px;
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+
+  &-info {
+    border: 1px solid #f1f1f4;
+    border-bottom-left-radius: 12px;
+    border-bottom-right-radius: 12px;
+    padding: 18px 14px 14px 14px;
+
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+
+    &--title {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    &--price {
+      display: flex;
+      gap: 10px;
+      justify-content: space-between;
+      align-items: center;
+    }
+  }
+
+  &-title {
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 16px;
+  }
+
+  &-address {
+    color: #404040b2;
+    font-size: 12px;
+    line-height: 14px;
+    display: flex;
+    gap: 4px;
+  }
+
+  &-price {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  &-annual {
+    font-size: 13px;
+    line-height: 14px;
+    color: #4b5675;
+  }
+
+  &-rent {
+    font-size: 20px;
+    line-height: 14px;
+    color: #0c1892;
+    font-weight: 700;
+  }
+
+  &-date {
+    display: flex;
+    color: #404040b2;
+    font-size: 12px;
+    line-height: 14px;
+    gap: 4px;
+    padding: 5px;
+    border-radius: 4px;
+    background-color: #f8f8f8;
   }
 }

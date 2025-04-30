@@ -1,6 +1,7 @@
 [
   {
     "id": 1,
+    "annual_rent": "50,000",
     "title": "Elite Fitness, Riyadh",
     "address": {
       "street": "King Abdullah Road",
@@ -14,7 +15,6 @@
       "longitude": 46.6753,
       "google_maps_link": "https://www.google.com/maps?q=24.7136,46.6753"
     },
-    "color_tag": "Blue",
     "deposit_amount": {
       "value": 5000,
       "currency": "SAR"
@@ -49,10 +49,15 @@
         "country": "Saudi Arabia"
       }
     },
-    "images": ["assets/images/gym1.png", "assets/images/gym2.png"]
+    "images": [
+      "assets/images/gym0.png",
+      "assets/images/gym1.png",
+      "assets/images/gym2.png"
+    ]
   },
   {
     "id": 2,
+    "annual_rent": "50,000",
     "title": "Power Gym, Jeddah",
     "address": {
       "street": "Prince Sultan Street",
@@ -66,7 +71,6 @@
       "longitude": 39.1728,
       "google_maps_link": "https://www.google.com/maps?q=21.5432,39.1728"
     },
-    "color_tag": "Red",
     "deposit_amount": {
       "value": 3000,
       "currency": "SAR"
@@ -101,10 +105,15 @@
         "country": "Saudi Arabia"
       }
     },
-    "images": ["assets/images/gym1.png", "assets/images/gym2.png"]
+    "images": [
+      "assets/images/gym0.png",
+      "assets/images/gym1.png",
+      "assets/images/gym2.png"
+    ]
   },
   {
     "id": 3,
+    "annual_rent": "50,000",
     "title": "Flex Fitness, Dammam",
     "address": {
       "street": "King Abdulaziz Road",
@@ -118,7 +127,6 @@
       "longitude": 50.208,
       "google_maps_link": "https://www.google.com/maps?q=26.2891,50.2080"
     },
-    "color_tag": "Green",
     "deposit_amount": {
       "value": 4000,
       "currency": "SAR"
@@ -153,10 +161,15 @@
         "country": "Saudi Arabia"
       }
     },
-    "images": ["assets/images/gym1.png", "assets/images/gym2.png"]
+    "images": [
+      "assets/images/gym0.png",
+      "assets/images/gym1.png",
+      "assets/images/gym2.png"
+    ]
   },
   {
     "id": 4,
+    "annual_rent": "50,000",
     "title": "Iron House Gym, Medina",
     "address": {
       "street": "Qurban Street",
@@ -170,7 +183,6 @@
       "longitude": 39.5692,
       "google_maps_link": "https://www.google.com/maps?q=24.5247,39.5692"
     },
-    "color_tag": "Black",
     "deposit_amount": {
       "value": 2500,
       "currency": "SAR"
@@ -205,10 +217,15 @@
         "country": "Saudi Arabia"
       }
     },
-    "images": ["assets/images/gym1.png", "assets/images/gym2.png"]
+    "images": [
+      "assets/images/gym0.png",
+      "assets/images/gym1.png",
+      "assets/images/gym2.png"
+    ]
   },
   {
     "id": 5,
+    "annual_rent": "50,000",
     "title": "Royal Gym, Abha",
     "address": {
       "street": "Prince Sultan Road",
@@ -222,7 +239,6 @@
       "longitude": 42.5111,
       "google_maps_link": "https://www.google.com/maps?q=18.2208,42.5111"
     },
-    "color_tag": "Gold",
     "deposit_amount": {
       "value": 3500,
       "currency": "SAR"
@@ -257,6 +273,10 @@
         "country": "Saudi Arabia"
       }
     },
-    "images": ["assets/images/gym1.png", "assets/images/gym2.png"]
+    "images": [
+      "assets/images/gym0.png",
+      "assets/images/gym1.png",
+      "assets/images/gym2.png"
+    ]
   }
 ]

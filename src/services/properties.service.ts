@@ -35,6 +35,18 @@ export class PropertiesService {
     );
   }
 
+  updateProperty(id: number, property: any): Observable<boolean> {
+    const index = this.propertiesData.findIndex((p) => p.id === id);
+    if (index !== -1) {
+      this.propertiesData[index] = {
+        ...this.propertiesData[index],
+        ...property,
+      };
+      return of(true);
+    }
+    return of(false);
+  }
+
   deleteProperty(id: number): Observable<boolean> {
     const index = this.propertiesData.findIndex((p) => p.id === id);
     if (index !== -1) {

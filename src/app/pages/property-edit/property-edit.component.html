@@ -1,0 +1,204 @@
+<div class="property-edit-container">
+  <div *ngIf="isLoading" class="loading">Loading property details...</div>
+  <div *ngIf="error" class="error">{{ error }}</div>
+  <div *ngIf="successMessage" class="success">{{ successMessage }}</div>
+
+  <form
+    *ngIf="property && !isLoading"
+    (ngSubmit)="onSubmit()"
+    class="edit-form"
+  >
+    <h2>Edit Property</h2>
+
+    <!-- Basic Information -->
+    <div class="form-section">
+      <h3>Basic Information</h3>
+      <div class="form-group">
+        <label for="title">Title</label>
+        <input
+          type="text"
+          id="title"
+          [(ngModel)]="property.title"
+          name="title"
+          required
+        />
+      </div>
+    </div>
+
+    <!-- Property Details -->
+    <div class="form-section">
+      <h3>Property Details</h3>
+      <div class="form-group">
+        <label for="price">Price</label>
+        <input
+          type="number"
+          id="price"
+          [(ngModel)]="property.property_details.price.value"
+          name="price"
+          required
+        />
+        <select
+          [(ngModel)]="property.property_details.price.currency"
+          name="currency"
+        >
+          <option value="AED">AED</option>
+          <option value="USD">USD</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="area">Area</label>
+        <input
+          type="number"
+          id="area"
+          [(ngModel)]="property.property_details.area.value"
+          name="area"
+          required
+        />
+        <select [(ngModel)]="property.property_details.area.unit" name="unit">
+          <option value="sqft">Square Feet</option>
+          <option value="sqm">Square Meters</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="bathrooms">Bathrooms</label>
+        <input
+          type="number"
+          id="bathrooms"
+          [(ngModel)]="property.property_details.bathrooms"
+          name="bathrooms"
+          required
+        />
+      </div>
+      <div class="form-group">
+        <label for="available_from">Available From</label>
+        <input
+          type="date"
+          id="available_from"
+          [(ngModel)]="property.property_details.available_from"
+          name="available_from"
+        />
+      </div>
+    </div>
+
+    <!-- Address -->
+    <div class="form-section">
+      <h3>Address</h3>
+      <div class="form-group">
+        <label for="street">Street</label>
+        <input
+          type="text"
+          id="street"
+          [(ngModel)]="property.address.street"
+          name="street"
+          required
+        />
+      </div>
+      <div class="form-group">
+        <label for="district">District</label>
+        <input
+          type="text"
+          id="district"
+          [(ngModel)]="property.address.district"
+          name="district"
+          required
+        />
+      </div>
+      <div class="form-group">
+        <label for="city">City</label>
+        <input
+          type="text"
+          id="city"
+          [(ngModel)]="property.address.city"
+          name="city"
+          required
+        />
+      </div>
+      <div class="form-group">
+        <label for="region">Region</label>
+        <input
+          type="text"
+          id="region"
+          [(ngModel)]="property.address.region"
+          name="region"
+          required
+        />
+      </div>
+      <div class="form-group">
+        <label for="postal_code">Postal Code</label>
+        <input
+          type="text"
+          id="postal_code"
+          [(ngModel)]="property.address.postal_code"
+          name="postal_code"
+        />
+      </div>
+    </div>
+
+    <!-- Owner Details -->
+    <div class="form-section">
+      <h3>Owner Details</h3>
+      <div class="form-group">
+        <label for="owner_name">Owner Name</label>
+        <input
+          type="text"
+          id="owner_name"
+          [(ngModel)]="property.owner_details.name"
+          name="owner_name"
+          required
+        />
+      </div>
+      <div class="form-group">
+        <label for="owner_mobile">Mobile</label>
+        <input
+          type="tel"
+          id="owner_mobile"
+          [(ngModel)]="property.owner_details.contact.mobile"
+          name="owner_mobile"
+          required
+        />
+      </div>
+      <div class="form-group">
+        <label for="owner_email">Email</label>
+        <input
+          type="email"
+          id="owner_email"
+          [(ngModel)]="property.owner_details.contact.email"
+          name="owner_email"
+          required
+        />
+      </div>
+    </div>
+
+    <!-- License Information -->
+    <div class="form-section">
+      <h3>License Information</h3>
+      <div class="form-group">
+        <label for="adv_license">ADV License</label>
+        <input
+          type="text"
+          id="adv_license"
+          [(ngModel)]="property.license.adv_license"
+          name="adv_license"
+          required
+        />
+      </div>
+      <div class="form-group">
+        <label for="fal_license">FAL License</label>
+        <input
+          type="text"
+          id="fal_license"
+          [(ngModel)]="property.license.fal_license_id"
+          name="fal_license"
+          required
+        />
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <button type="button" (click)="onCancel()" class="cancel-button">
+        Cancel
+      </button>
+      <button type="submit" class="save-button">Save Changes</button>
+    </div>
+  </form>
+</div>

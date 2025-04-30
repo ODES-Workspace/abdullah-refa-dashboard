@@ -6,13 +6,7 @@
   <div *ngIf="property && !isLoading" class="property-card">
     <div>
       <div>{{ property.title }}</div>
-      <div>
-        <span
-          class="color-tag"
-          [style.background-color]="property.color_tag.toLowerCase()"
-        ></span>
-        {{ property.address.district }}, {{ property.address.city }}
-      </div>
+      <div>{{ property.address.district }}, {{ property.address.city }}</div>
     </div>
 
     <!-- Image Grid -->

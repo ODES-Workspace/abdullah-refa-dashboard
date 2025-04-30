@@ -1,12 +1,12 @@
 <div class="table">
   <!-- Table header -->
   <div class="table-header">
-    <div class="table-title">Featured Properties</div>
+    <div class="table-title">{{ "Featured Properties" | translate }}</div>
     <div class="table-search">
       <img src="/assets/icons/search-icon.svg" alt="Search" />
       <input
         type="text"
-        placeholder="Search properties"
+        [placeholder]="'Search properties' | translate"
         [(ngModel)]="searchTerm"
         (input)="currentPage = 1"
       />
@@ -15,26 +15,58 @@
 
   <!-- No data -->
   <div class="table-no-data" *ngIf="filteredProperties.length === 0">
-    No data found
+    {{ "No data found" | translate }}
   </div>
 
   <!-- properties -->
   <div class="table-properties">
-    <div *ngFor="let item of paginatedProperties" class="property-item">
+    <div
+      *ngFor="let item of paginatedProperties"
+      class="property-item"
+      dir="ltr"
+    >
       <div class="property-actions">
-        <!-- Eye icon - View -->
-        <span class="action-icon" (click)="viewProperty(item.id)"> 👁️ </span>
+        <span class="action-icon" (click)="deleteProperty(item.id)">
+          <img src="/assets/icons/delete-icon.svg" alt="delete icon" />
+        </span>
+        <span class="action-icon" (click)="viewProperty(item.id)">
+          <img src="/assets/icons/eye-icon.svg" alt="eye icon" />
+        </span>
 
-        <!-- Delete icon -->
-        <span class="action-icon" (click)="deleteProperty(item.id)"> 🗑️ </span>
-
-        <!-- Edit icon -->
-        <span class="action-icon" (click)="editProperty(item.id)"> ✏️ </span>
+        <span class="action-icon" (click)="editProperty(item.id)">
+          <img src="/assets/icons/edit-icon.svg" alt="edit icon" />
+        </span>
       </div>
       <div class="property-details">
-        <div>ID: {{ item.id }}</div>
-        <div>Title: {{ item.title }}</div>
-        <!-- Add more property details as needed -->
+        <div class="property-image">
+          <img [src]="item.images[0]" alt="property image" />
+        </div>
+        <div class="property-info">
+          <div class="property-info--title">
+            <div class="property-title">{{ item.title }}</div>
+            <div class="property-address">
+              <img src="/assets/icons/property-location.svg" alt="" />
+              <div>{{ item.address.street }}, {{ item.address.city }}</div>
+            </div>
+          </div>
+
+          <div class="property-info--price">
+            <div class="property-price">
+              <div class="property-annual">Annual Rent</div>
+              <div class="property-rent">
+                {{ item.annual_rent }}
+                <span>SAR</span>
+              </div>
+            </div>
+
+            <div class="property-date">
+              <img src="/assets/icons/date-icon.svg" alt="" />
+              <div>
+                {{ item.property_details.posted_date }}
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -42,13 +74,13 @@
   <!-- Table pagination -->
   <div class="table-pagination" *ngIf="filteredProperties.length > 0">
     <div class="table-pagination--show">
-      <span> Show</span>
+      <span> {{ "Show" | translate }} </span>
       <select [(ngModel)]="itemsPerPage" (change)="onItemsPerPageChange()">
         <option [value]="10">10</option>
         <option [value]="20">20</option>
         <option [value]="30">30</option>
       </select>
-      <span> per page </span>
+      <span> {{ "per page" | translate }} </span>
     </div>
 
     <div class="table-pagination--pages">
@@ -56,7 +88,10 @@
         {{ (currentPage - 1) * itemsPerPage + 1 }}-{{
           Math.min(currentPage * itemsPerPage, filteredProperties.length)
         }}
-        of {{ filteredProperties.length }}
+
+        {{ "of" | translate }}
+
+        {{ filteredProperties.length }}
       </div>
 
       <div class="table-pagination--pages--buttons" dir="ltr">

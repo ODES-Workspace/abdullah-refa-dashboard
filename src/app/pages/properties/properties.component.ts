@@ -3,11 +3,12 @@ import { PropertiesService } from '../../../services/properties.service';
 import { NgFor, NgIf } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router'; // Add this import
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-properties',
   standalone: true,
-  imports: [NgFor, NgIf, FormsModule],
+  imports: [NgFor, NgIf, FormsModule, TranslateModule],
   templateUrl: './properties.component.html',
   styleUrl: './properties.component.scss',
 })
@@ -33,6 +34,8 @@ export class PropertiesComponent {
       next: (data) => {
         this.properties = data;
         this.totalItems = data.length;
+        // Log the properties to console
+        console.log(this.properties);
       },
       error: (err) => {
         console.error('Error loading properties:', err);
@@ -41,11 +44,11 @@ export class PropertiesComponent {
   }
 
   viewProperty(id: number): void {
-    this.router.navigate(['/property', id]);
+    this.router.navigate(['admin/property', id]);
   }
 
   editProperty(id: number): void {
-    this.router.navigate(['/property/edit', id]);
+    this.router.navigate(['admin/property/edit', id]);
   }
 
   deleteProperty(id: number): void {
