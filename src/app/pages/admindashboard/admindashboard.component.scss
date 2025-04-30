@@ -4,7 +4,7 @@
   // stats
   &-stats {
     display: grid;
-    grid-template-columns: repeat(6, minmax(200px, 1fr));
+    grid-template-columns: repeat(6, 1fr);
     gap: 16px;
   }
 
@@ -21,6 +21,7 @@
 
     p {
       color: #404040b2;
+      font-size: 14px;
     }
   }
 

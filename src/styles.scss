@@ -48,4 +48,30 @@ html[dir="rtl"] {
       margin-right: 10px;
     }
   }
+
+  .table {
+    &-search {
+      img {
+        transform: translateY(-50%) translateX(-8px) !important;
+      }
+    }
+
+    &-row {
+      div {
+        &:not(:last-child) {
+          border-right: none !important;
+          border-left: 1px solid #f1f1f4 !important;
+        }
+      }
+    }
+
+    &-titles {
+      div {
+        &:not(:last-child) {
+          border-right: none !important;
+          border-left: 1px solid #f1f1f4 !important;
+        }
+      }
+    }
+  }
 }

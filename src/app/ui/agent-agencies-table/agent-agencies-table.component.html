@@ -1,0 +1,86 @@
+<div class="table">
+  <!-- Table header -->
+  <div class="table-header">
+    <div class="table-title">{{ "Action items" | translate }}</div>
+    <div class="table-search">
+      <img src="/assets/icons/search-icon.svg" alt="" />
+      <input
+        type="text"
+        [placeholder]="'Search users' | translate"
+        [(ngModel)]="searchTerm"
+        (input)="onSearch()"
+      />
+    </div>
+  </div>
+  <!-- Table titles -->
+  <div class="table-titles">
+    <div>
+      <span>{{ "S.ON" | translate }}</span>
+      <span>
+        <img src="/assets/icons/sort-img.svg" alt="" (click)="sortBy('id')" />
+      </span>
+    </div>
+    <div>
+      <span>{{ "Action performed" | translate }}</span>
+      <span>
+        <img
+          src="/assets/icons/sort-img.svg"
+          alt=""
+          (click)="sortBy('action')"
+        />
+      </span>
+    </div>
+    <div>
+      <span>{{ "User details" | translate }}</span>
+      <span>
+        <img src="/assets/icons/sort-img.svg" alt="" (click)="sortBy('user')" />
+      </span>
+    </div>
+  </div>
+
+  <!-- No data -->
+  <div *ngIf="filteredItems.length === 0" class="table-no-data">
+    {{ "No data found" | translate }}
+  </div>
+  <!-- Table rows -->
+  <div class="table-row" *ngFor="let item of paginatedItems">
+    <div class="table-id">{{ item.id }}</div>
+    <div>{{ item.action }}</div>
+    <div>{{ item.user }}</div>
+  </div>
+  <!-- Table pagination -->
+  <div class="table-pagination">
+    <div class="table-pagination--show">
+      <span> {{ "Show" | translate }} </span>
+      <select [(ngModel)]="itemsPerPage" (change)="updatePagination()">
+        <option *ngFor="let num of [10, 20, 30]" [value]="num">
+          {{ num }}
+        </option>
+      </select>
+      <span> {{ "per page" | translate }} </span>
+    </div>
+
+    <div class="table-pagination--pages">
+      <div class="table-pagination--pages--count">
+        {{ paginationStart + 1 }}-{{ paginationEnd }}
+        {{ "of" | translate }}
+        {{ filteredItems.length }}
+      </div>
+
+      <div class="table-pagination--pages--buttons" dir="ltr">
+        <button (click)="prevPage()" [disabled]="currentPage === 1">
+          <img src="/assets/icons/arrow-left.svg" alt="prev icon" />
+        </button>
+        <span
+          *ngFor="let page of totalPagesArray"
+          (click)="goToPage(page)"
+          [class.active]="page === currentPage"
+          >{{ page }}</span
+        >
+        <button (click)="nextPage()" [disabled]="currentPage === totalPages">
+          <img src="/assets/icons/arrow-right.svg" alt=" next icon " />
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
