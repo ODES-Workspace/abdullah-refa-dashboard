@@ -270,5 +270,13 @@
         </span>
       </div>
     </div>
+
+    <!-- property map -->
+    <div class="property-map">
+      <app-map
+        [lat]="property.location.latitude"
+        [lng]="property.location.longitude"
+      ></app-map>
+    </div>
   </div>
 </div>

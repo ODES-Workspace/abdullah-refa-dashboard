@@ -3,11 +3,12 @@ import { ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { PropertiesService } from '../../../services/properties.service';
 import { TranslateModule } from '@ngx-translate/core';
+import { MapComponent } from '../../ui/map/map.component';
 
 @Component({
   selector: 'app-property-details',
   standalone: true,
-  imports: [CommonModule, TranslateModule],
+  imports: [CommonModule, TranslateModule, MapComponent],
   templateUrl: './property-details.component.html',
   styleUrl: './property-details.component.scss',
 })
