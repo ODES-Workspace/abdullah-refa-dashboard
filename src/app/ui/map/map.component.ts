@@ -1,9 +1,5 @@
 import { Component, Input, OnInit, AfterViewInit } from '@angular/core';
-import Map from 'ol/Map';
-import View from 'ol/View';
-import TileLayer from 'ol/layer/Tile';
-import OSM from 'ol/source/OSM';
-import { fromLonLat } from 'ol/proj';
+import * as L from 'leaflet';
 
 @Component({
   selector: 'app-map',
@@ -15,17 +11,19 @@ export class MapComponent implements OnInit, AfterViewInit {
   @Input() lat!: number;
   @Input() lng!: number;
 
-  map!: Map;
+  private map!: L.Map;
+  private marker!: L.Marker;
 
   ngOnInit(): void {}
 
   ngAfterViewInit(): void {
-    const center = fromLonLat([this.lng, this.lat]);
+    this.map = L.map('map').setView([this.lat, this.lng], 12);
 
-    this.map = new Map({
-      target: 'map',
-      layers: [new TileLayer({ source: new OSM() })],
-      view: new View({ center, zoom: 12 }),
-    });
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '© OpenStreetMap contributors',
+    }).addTo(this.map);
+
+    // Add default marker
+    this.marker = L.marker([this.lat, this.lng]).addTo(this.map);
   }
 }
