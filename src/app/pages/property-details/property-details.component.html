@@ -1,15 +1,14 @@
-<div class="property-details-container">
+<div class="property-page">
   <div *ngIf="isLoading" class="loading">Loading property details...</div>
 
   <div *ngIf="error" class="error">{{ error }}</div>
 
-  <div *ngIf="property && !isLoading" class="property-card">
+  <!-- <div *ngIf="property && !isLoading" class="property-card">
     <div>
       <div>{{ property.title }}</div>
       <div>{{ property.address.district }}, {{ property.address.city }}</div>
     </div>
 
-    <!-- Image Grid -->
     <div *ngIf="property.images?.length" class="image-grid">
       <div *ngFor="let image of property.images" class="image-container">
         <img [src]="image" [alt]="property.title + ' image'" />
@@ -18,7 +17,6 @@
 
     <div>
       <div class="details-grid">
-        <!-- Property Details -->
         <div class="detail-section">
           <h3>Property Details</h3>
           <div class="detail-item">
@@ -54,7 +52,6 @@
           </div>
         </div>
 
-        <!-- Address Section -->
         <div class="detail-section">
           <h3>Address</h3>
           <div class="detail-item">
@@ -89,7 +86,6 @@
           </div>
         </div>
 
-        <!-- Owner Details -->
         <div class="detail-section">
           <h3>Owner Details</h3>
           <div class="detail-item">
@@ -122,7 +118,6 @@
           </div>
         </div>
 
-        <!-- License Details -->
         <div class="detail-section">
           <h3>License Information</h3>
           <div class="detail-item">
@@ -136,11 +131,144 @@
         </div>
       </div>
     </div>
+  </div> -->
 
-    <div>
-      <button mat-raised-button color="primary" routerLink="/properties">
-        Back to Properties
-      </button>
+  <div class="property-card" *ngIf="property && !isLoading">
+    <!-- property details -->
+    <div class="property-details">
+      <div class="property-info">
+        <div class="property-title-location">
+          <span class="property-title">{{ property.title }}</span>
+          <span class="property-location">
+            <img src="/assets/icons/property-location.svg" alt="" />
+            <span>
+              {{ property.address.district }}, {{ property.address.city }}
+            </span>
+          </span>
+        </div>
+
+        <div class="property-rent-date">
+          <span class="property-rent">
+            {{ property.annual_rent | number }}
+            <span>{{ "SAR" | translate }}</span>
+          </span>
+          <span class="property-date">
+            <img src="/assets/icons/date-icon.svg" alt="date-icon" />
+            {{ "Posted on" | translate }}
+            {{ property.property_details.posted_date }}
+          </span>
+        </div>
+      </div>
+
+      <div class="property-includes">
+        <div class="property-includes-item">
+          <img src="/assets/icons/bed.svg" alt="bed icon" />
+          {{ property.property_details.bathrooms }} {{ "Bed" | translate }}
+        </div>
+        <div class="property-includes-item">
+          <img src="/assets/icons/bath.svg" alt="bath icon" />
+          {{ property.property_details.bathrooms }} {{ "Bath" | translate }}
+        </div>
+        <div class="property-includes-item">
+          <img src="/assets/icons/location.svg" alt="location icon" />
+          {{ property.property_details.area.value }}
+          {{ property.property_details.area.unit | translate }}
+        </div>
+        <div class="property-includes-item">
+          <img src="/assets/icons/parking.svg" alt="" />
+          {{
+            property.property_details.parking
+              ? ("Parking" | translate)
+              : ("No Parking" | translate)
+          }}
+        </div>
+      </div>
+
+      <div class="property-deposit-license">
+        <div class="property-deposit-license-item">
+          <img src="/assets/icons/deposit.svg" alt="deposit icon" />
+          <div>
+            <span class="deposit-label">{{
+              "Deposit Amount" | translate
+            }}</span>
+            <span class="deposit-value">
+              {{ property.deposit_amount.value | number }}
+              {{ property.deposit_amount.currency | translate }}
+            </span>
+          </div>
+        </div>
+        <div class="property-deposit-license-item">
+          <img src="/assets/icons/adv.svg" alt="adv icon" />
+          <div>
+            <span class="license-label">{{ "Adv. License" | translate }}</span>
+            <span class="license-value">
+              {{ property.license.adv_license }}
+            </span>
+          </div>
+        </div>
+        <div class="property-deposit-license-item">
+          <img src="/assets/icons/fal.svg" alt="" />
+          <div>
+            <span class="license-label">{{
+              "FAL License ID" | translate
+            }}</span>
+            <span class="license-value">
+              {{ property.license.fal_license_id }}
+            </span>
+          </div>
+        </div>
+        <div class="property-deposit-license-item">
+          <img src="/assets/icons/date-blue.svg" alt="" />
+          <div>
+            <span class="availability-label">{{
+              "Available From" | translate
+            }}</span>
+            <span class="availability-value">
+              {{ property.property_details.available_from }}
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- property images -->
+    <div *ngIf="property.images?.length" class="property-images">
+      <div *ngFor="let image of property.images" class="property-image">
+        <img [src]="image" [alt]="property.title + ' image'" />
+      </div>
+    </div>
+
+    <!-- owner details -->
+    <div class="property-owner-details">
+      <h3>{{ "Owner Details" | translate }}</h3>
+      <div class="owner-name property-owner-item">
+        <span class="owner-name-label">{{ "Name" | translate }}</span>
+        <span class="owner-name-value">
+          {{ property.owner_details.name }}
+        </span>
+      </div>
+      <div class="owner-contact property-owner-item">
+        <span class="owner-contact-label">{{ "Mobile" | translate }}</span>
+        <span class="owner-contact-value">
+          {{ property.owner_details.contact.mobile }}
+        </span>
+      </div>
+      <div class="owner-contact property-owner-item">
+        <span class="owner-contact-label">{{
+          "Email Address" | translate
+        }}</span>
+        <span class="owner-contact-value">
+          {{ property.owner_details.contact.email }}
+        </span>
+      </div>
+      <div class="owner-address property-owner-item">
+        <span class="owner-address-label">{{ "Address" | translate }}</span>
+        <span class="owner-address-value">
+          {{ property.owner_details.address.street }},
+          {{ property.owner_details.address.city }},
+          {{ property.owner_details.address.region }}
+        </span>
+      </div>
     </div>
   </div>
 </div>

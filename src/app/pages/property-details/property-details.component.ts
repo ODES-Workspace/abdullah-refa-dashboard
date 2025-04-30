@@ -2,11 +2,12 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { PropertiesService } from '../../../services/properties.service';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-property-details',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, TranslateModule],
   templateUrl: './property-details.component.html',
   styleUrl: './property-details.component.scss',
 })

@@ -58,5 +58,21 @@
   "of": "من",
   "Properties": "العقارات",
   "Featured Properties": "العقارات المميزة",
-  "Search properties": "بحث عن العقارات"
+  "Search properties": "بحث عن العقارات",
+  "SAR": "ريال سعودي",
+  "Posted on": "نشر في",
+  "Bed": "سرير",
+  "Bath": "حمام",
+  "m²": "متر مربع",
+  "Parking": "موقف سيارات",
+  "No Parking": "لا يوجد موقف سيارات",
+  "Deposit Amount": "مبلغ الوديعة",
+  "Adv. License": "رخصة ADV",
+  "FAL License ID": "رخصة FAL",
+  "Available From": "متاح من",
+  "Owner Details": "تفاصيل المالك",
+  "Name": "الاسم",
+  "Mobile": "الموبايل",
+  "Email Address": "عنوان البريد",
+  "Address": "العنوان"
 }

@@ -54,5 +54,21 @@
   "of": "of",
   "Properties": "Properties",
   "Featured Properties": "Featured Properties",
-  "Search properties": "Search properties"
+  "Search properties": "Search properties",
+  "SAR": "SAR",
+  "Posted on": "Posted on",
+  "Bed": "Bed",
+  "Bath": "Bath",
+  "m²": "m²",
+  "Parking": "Parking",
+  "No Parking": "No Parking",
+  "Deposit Amount": "Deposit Amount",
+  "Adv. License": "Adv. License",
+  "FAL License ID": "FAL License ID",
+  "Available From": "Available From",
+  "Owner Details": "Owner Details",
+  "Name": "Name",
+  "Mobile": "Mobile",
+  "Email Address": "Email Address",
+  "Address": "Address"
 }
