@@ -14,6 +14,7 @@ import { RelativeTimePipe } from '../../../services/relative-time.pipe';
 export class DashboardHeaderComponent {
   headerText: string = '';
   showNotifications = false;
+  isPropertyDetailsPage = false;
 
   constructor(
     public languageService: LanguageService,
@@ -22,6 +23,7 @@ export class DashboardHeaderComponent {
   ) {
     this.router.events.subscribe(() => {
       this.setHeaderText();
+      this.checkPropertyDetailsPage();
     });
   }
 
@@ -102,5 +104,14 @@ export class DashboardHeaderComponent {
     if (!clickedInside) {
       this.showNotifications = false;
     }
+  }
+
+  checkPropertyDetailsPage() {
+    const url = this.router.url;
+    this.isPropertyDetailsPage = /\/admin\/property\/\d+$/.test(url);
+  }
+
+  goBack() {
+    this.router.navigate(['/admin/properties']);
   }
 }

@@ -22,6 +22,9 @@ input {
 // styles for rtl
 
 html[dir="rtl"] {
+  .back-button {
+    transform: rotate(180deg);
+  }
   .input-container .input-icon {
     transform: translateY(-50%) translateX(-12px) !important;
   }

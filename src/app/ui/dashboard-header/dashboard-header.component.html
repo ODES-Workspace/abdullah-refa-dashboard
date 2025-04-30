@@ -1,6 +1,13 @@
 <div class="header">
   <!-- Header Text -->
   <div class="header-text">
+    <img
+      *ngIf="isPropertyDetailsPage"
+      src="/assets/icons/back.svg"
+      alt="back"
+      class="back-button"
+      (click)="goBack()"
+    />
     {{ headerText | translate }}
   </div>
   <!-- Header actions -->
