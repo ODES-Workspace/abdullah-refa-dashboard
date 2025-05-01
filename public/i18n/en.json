@@ -11,6 +11,7 @@
     "dashboard": "Dashboard",
     "properties": "Properties",
     "agenciesOwner": "Agencies Owner",
+    "tenants": "Tenants",
     "listOfApprovals": "List of Approvals"
   },
   "Notifications": "Notifications",
@@ -91,5 +92,7 @@
   "License Information": "License Information",
   "Email": "Email",
   "Cancel": "Cancel",
-  "Save Changes": "Save Changes"
+  "Save Changes": "Save Changes",
+  "list of tenants": "List Of Tenants",
+  "tenants": "Tenants"
 }

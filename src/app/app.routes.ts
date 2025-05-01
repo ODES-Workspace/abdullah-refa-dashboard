@@ -6,6 +6,7 @@ import { AdminaprovalsComponent } from './pages/adminaprovals/adminaprovals.comp
 import { PropertiesComponent } from './pages/properties/properties.component';
 import { PropertyDetailsComponent } from './pages/property-details/property-details.component';
 import { PropertyEditComponent } from './pages/property-edit/property-edit.component';
+import { TenantsComponent } from './pages/tenants/tenants.component';
 
 export const routes: Routes = [
   {
@@ -17,6 +18,7 @@ export const routes: Routes = [
       { path: 'properties', component: PropertiesComponent },
       { path: 'property/:id', component: PropertyDetailsComponent },
       { path: 'property/edit/:id', component: PropertyEditComponent },
+      { path: 'tenants', component: TenantsComponent },
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
     ],
   },

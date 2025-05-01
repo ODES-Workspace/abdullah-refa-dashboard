@@ -81,6 +81,8 @@ export class DashboardHeaderComponent {
       this.headerText = 'Edit Property Details';
     } else if (/\/admin\/property\/\d+$/.test(url)) {
       this.headerText = 'Properties Details';
+    } else if (url.includes('/admin/tenants')) {
+      this.headerText = 'list of tenants';
     } else {
       this.headerText = 'Dashbaord';
     }
