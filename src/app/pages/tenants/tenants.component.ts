@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 
 interface TableItem {
+  id: number;
   name: string;
   mobile: string;
   email: string;
@@ -21,6 +22,7 @@ interface TableItem {
 export class TenantsComponent {
   allItems: TableItem[] = [
     {
+      id: 1,
       name: 'Ahmed bin Said',
       mobile: '+966558441496',
       email: 'vMq6W@example.com',
@@ -28,6 +30,7 @@ export class TenantsComponent {
       DateAdded: 'Cody Mayer',
     },
     {
+      id: 2,
       name: 'Rashid Rashid',
       mobile: '+966558441495',
       email: 'vMq6W@example.com',
@@ -35,6 +38,7 @@ export class TenantsComponent {
       DateAdded: 'Cody Cayer',
     },
     {
+      id: 3,
       name: 'Nora Al Kaabi',
       mobile: '+966558441492',
       email: 'vMq6W@example.com',
@@ -48,6 +52,9 @@ export class TenantsComponent {
   paginatedItems: TableItem[] = [];
   currentPage = 1;
   itemsPerPage = 10;
+  showViewModal = false;
+  showEditModal = false;
+  selectedTenant: TableItem | null = null;
 
   // Track sorting state
   currentSortColumn: keyof TableItem | null = null;
@@ -77,8 +84,11 @@ export class TenantsComponent {
   }
 
   onSearch(): void {
-    this.filteredItems = this.allItems.filter((item) =>
-      item.name.toLowerCase().includes(this.searchTerm.toLowerCase())
+    const searchTermLower = this.searchTerm.toLowerCase();
+    this.filteredItems = this.allItems.filter(
+      (item) =>
+        item.name.toLowerCase().includes(searchTermLower) ||
+        item.mobile.toLowerCase().includes(searchTermLower)
     );
     this.currentPage = 1;
     this.updatePagination();
@@ -132,5 +142,44 @@ export class TenantsComponent {
   goToPage(page: number): void {
     this.currentPage = page;
     this.updatePagination();
+  }
+
+  openViewModal(tenant: TableItem): void {
+    this.selectedTenant = { ...tenant };
+    this.showViewModal = true;
+  }
+
+  closeViewModal(): void {
+    this.showViewModal = false;
+    this.selectedTenant = null;
+  }
+
+  openEditModal(tenant: TableItem): void {
+    this.selectedTenant = { ...tenant };
+    this.showEditModal = true;
+  }
+
+  closeEditModal(): void {
+    this.showEditModal = false;
+    this.selectedTenant = null;
+  }
+
+  saveTenantChanges(): void {
+    if (this.selectedTenant) {
+      const index = this.allItems.findIndex(
+        (item) => item.id === this.selectedTenant?.id
+      );
+
+      if (index !== -1) {
+        this.allItems[index] = { ...this.selectedTenant };
+
+        this.filteredItems = this.allItems.filter((item) =>
+          item.name.toLowerCase().includes(this.searchTerm.toLowerCase())
+        );
+
+        this.updatePagination();
+      }
+    }
+    this.closeEditModal();
   }
 }

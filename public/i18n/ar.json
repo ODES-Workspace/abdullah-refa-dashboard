@@ -98,5 +98,12 @@
   "Cancel": "الغاء",
   "Save Changes": "حفظ التغييرات",
   "list of tenants": "قائمة المستاجرين",
-  "tenants": "المستاجرين"
+  "tenants": "المستاجرين",
+  "Search by name or phone number": "البحث بالاسم أو رقم الهاتف",
+  "Date added": "تاريخ الاضافة",
+  "Actions": "الاجراءات",
+  "Mobile Number": "رقم الهاتف",
+  "View Tenant Details": "عرض تفاصيل المستاجر",
+  "Edit Tenant Details": "تعديل تفاصيل المستاجر",
+  "Agency/Owner": "الوكالة/المالك"
 }

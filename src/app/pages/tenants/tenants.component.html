@@ -15,13 +15,13 @@
   <!-- Table titles -->
   <div class="table-titles">
     <div>
-      <span>Name</span>
+      <span>{{ "Name" | translate }}</span>
       <span>
         <img src="/assets/icons/sort-img.svg" alt="" (click)="sortBy('name')" />
       </span>
     </div>
     <div>
-      <span>Mobile Number </span>
+      <span>{{ "Mobile Number" | translate }}</span>
       <span>
         <img
           src="/assets/icons/sort-img.svg"
@@ -31,7 +31,7 @@
       </span>
     </div>
     <div>
-      <span>Email</span>
+      <span>{{ "Email" | translate }}</span>
       <span>
         <img
           src="/assets/icons/sort-img.svg"
@@ -41,13 +41,13 @@
       </span>
     </div>
     <div>
-      <span>City</span>
+      <span>{{ "City" | translate }}</span>
       <span>
         <img src="/assets/icons/sort-img.svg" alt="" (click)="sortBy('city')" />
       </span>
     </div>
     <div>
-      <span>Date added</span>
+      <span>{{ "Date added" | translate }}</span>
       <span>
         <img
           src="/assets/icons/sort-img.svg"
@@ -57,7 +57,7 @@
       </span>
     </div>
     <div>
-      <span>Actions</span>
+      <span>{{ "Actions" | translate }}</span>
     </div>
   </div>
 
@@ -72,13 +72,17 @@
     <div>{{ item.email }}</div>
     <div>{{ item.city }}</div>
     <div>{{ item.DateAdded }}</div>
-    <div>
-      <span>show</span>
-      <span>edit</span>
+    <div class="table-actions">
+      <span (click)="openViewModal(item)">
+        <img src="/assets/icons/show-icon.svg" alt="show icon" />
+      </span>
+      <span (click)="openEditModal(item)">
+        <img src="/assets/icons/edit-table-icon.svg" alt="edit icon" />
+      </span>
     </div>
   </div>
   <!-- Table pagination -->
-  <div class="table-pagination">
+  <div class="table-pagination" *ngIf="filteredItems.length > 0">
     <div class="table-pagination--show">
       <span> {{ "Show" | translate }} </span>
       <select [(ngModel)]="itemsPerPage" (change)="updatePagination()">
@@ -110,6 +114,78 @@
           <img src="/assets/icons/arrow-right.svg" alt=" next icon " />
         </button>
       </div>
+    </div>
+  </div>
+</div>
+
+<!-- View Modal -->
+<div class="modal" *ngIf="showViewModal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2>{{ "View Tenant Details" | translate }}</h2>
+      <span class="close" (click)="closeViewModal()">&times;</span>
+    </div>
+    <div class="modal-body">
+      <div class="modal-row">
+        <span class="label">{{ "Name" | translate }}:</span>
+        <span class="value">{{ selectedTenant?.name }}</span>
+      </div>
+      <div class="modal-row">
+        <span class="label">{{ "Mobile Number" | translate }}:</span>
+        <span class="value">{{ selectedTenant?.mobile }}</span>
+      </div>
+      <div class="modal-row">
+        <span class="label">{{ "Email" | translate }}:</span>
+        <span class="value">{{ selectedTenant?.email }}</span>
+      </div>
+      <div class="modal-row">
+        <span class="label">{{ "City" | translate }}:</span>
+        <span class="value">{{ selectedTenant?.city }}</span>
+      </div>
+      <div class="modal-row">
+        <span class="label">{{ "Date added" | translate }}:</span>
+        <span class="value">{{ selectedTenant?.DateAdded }}</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Edit Modal -->
+<div class="modal" *ngIf="showEditModal && selectedTenant">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2>{{ "Edit Tenant Details" | translate }}</h2>
+      <span class="close" (click)="closeEditModal()">&times;</span>
+    </div>
+    <div class="modal-body">
+      <div class="modal-row">
+        <span class="label">{{ "Name" | translate }}:</span>
+        <input type="text" [(ngModel)]="selectedTenant!.name" />
+      </div>
+      <div class="modal-row">
+        <span class="label">{{ "Mobile Number" | translate }}:</span>
+        <input type="text" [(ngModel)]="selectedTenant!.mobile" />
+      </div>
+      <div class="modal-row">
+        <span class="label">{{ "Email" | translate }}:</span>
+        <input type="email" [(ngModel)]="selectedTenant!.email" />
+      </div>
+      <div class="modal-row">
+        <span class="label">{{ "City" | translate }}:</span>
+        <input type="text" [(ngModel)]="selectedTenant!.city" />
+      </div>
+      <div class="modal-row">
+        <span class="label">{{ "Date added" | translate }}:</span>
+        <input type="text" [(ngModel)]="selectedTenant!.DateAdded" />
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="cancel-btn" (click)="closeEditModal()">
+        {{ "Cancel" | translate }}
+      </button>
+      <button class="save-btn" (click)="saveTenantChanges()">
+        {{ "Save Changes" | translate }}
+      </button>
     </div>
   </div>
 </div>

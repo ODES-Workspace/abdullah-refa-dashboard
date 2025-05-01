@@ -82,25 +82,20 @@
 
       button {
         padding: 10px 20px;
-        border-radius: 4px;
+        border-radius: 6px;
         font-weight: 500;
         cursor: pointer;
         transition: all 0.2s;
 
         &.cancel-button {
-          background: #f8f9fa;
-          border: 1px solid #ddd;
-          color: #333;
-
-          &:hover {
-            background: #e9ecef;
-          }
+          background: transparent;
+          color: #404040;
         }
 
         &.save-button {
-          background: #0c1892;
+          color: #0c1892;
           border: none;
-          color: white;
+          background-color: #e7f1ff;
         }
       }
     }

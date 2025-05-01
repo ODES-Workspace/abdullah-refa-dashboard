@@ -83,6 +83,8 @@ export class DashboardHeaderComponent {
       this.headerText = 'Properties Details';
     } else if (url.includes('/admin/tenants')) {
       this.headerText = 'list of tenants';
+    } else if (url.includes('/admin/approvals')) {
+      this.headerText = 'Agency/Owner';
     } else {
       this.headerText = 'Dashbaord';
     }
