@@ -17,7 +17,7 @@
     <div>
       <span>{{ "S.ON" | translate }}</span>
       <span>
-        <img src="/assets/icons/sort-img.svg" alt="" (click)="sortBy('name')" />
+        <img src="/assets/icons/sort-img.svg" alt="" (click)="sortBy('id')" />
       </span>
     </div>
     <div>
@@ -52,7 +52,7 @@
         <img
           src="/assets/icons/sort-img.svg"
           alt=""
-          (click)="sortBy('status')"
+          (click)="sortBy('angency')"
         />
       </span>
     </div>
@@ -82,7 +82,7 @@
         <img
           src="/assets/icons/sort-img.svg"
           alt=""
-          (click)="sortBy('DateAdded')"
+          (click)="sortBy('DateModified')"
         />
       </span>
     </div>
@@ -101,20 +101,34 @@
     <div>{{ item.name }}</div>
     <div>{{ item.mobile }}</div>
     <div>{{ item.email }}</div>
-    <div>{{ item.angency }}</div>
-    <div>{{ item.status }}</div>
+    <div>
+      <span class="angency">
+        {{ item.angency }}
+      </span>
+    </div>
+    <div [class]="getStatusClass(item.status)">
+      <span>
+        {{ item.status }}
+      </span>
+    </div>
     <div>{{ item.DateAdded }}</div>
     <div>{{ item.DateModified }}</div>
 
     <div class="table-actions">
-      <span>
+      <span (click)="toggleDropdown(item.id)">
         <img src="/assets/icons/more.svg" alt="more icon" />
       </span>
 
-      <ul>
-        <li>Approve</li>
-        <li>Reject</li>
-        <li>Delete</li>
+      <ul *ngIf="activeDropdown === item.id">
+        <li (click)="handleAction(item, 'approve')">
+          {{ "Approve" | translate }}
+        </li>
+        <li (click)="handleAction(item, 'reject')">
+          {{ "Reject" | translate }}
+        </li>
+        <li (click)="handleAction(item, 'delete')">
+          {{ "Delete" | translate }}
+        </li>
       </ul>
     </div>
   </div>
@@ -151,78 +165,6 @@
           <img src="/assets/icons/arrow-right.svg" alt=" next icon " />
         </button>
       </div>
-    </div>
-  </div>
-</div>
-
-<!-- View Modal -->
-<div class="modal" *ngIf="showViewModal">
-  <div class="modal-content">
-    <div class="modal-header">
-      <h2>{{ "View Tenant Details" | translate }}</h2>
-      <span class="close" (click)="closeViewModal()">&times;</span>
-    </div>
-    <div class="modal-body">
-      <div class="modal-row">
-        <span class="label">{{ "Name" | translate }}:</span>
-        <span class="value">{{ selectedTenant?.name }}</span>
-      </div>
-      <div class="modal-row">
-        <span class="label">{{ "Mobile Number" | translate }}:</span>
-        <span class="value">{{ selectedTenant?.mobile }}</span>
-      </div>
-      <div class="modal-row">
-        <span class="label">{{ "Email" | translate }}:</span>
-        <span class="value">{{ selectedTenant?.email }}</span>
-      </div>
-      <div class="modal-row">
-        <span class="label">{{ "City" | translate }}:</span>
-        <span class="value">{{ selectedTenant?.status }}</span>
-      </div>
-      <div class="modal-row">
-        <span class="label">{{ "Date added" | translate }}:</span>
-        <span class="value">{{ selectedTenant?.DateAdded }}</span>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- Edit Modal -->
-<div class="modal" *ngIf="showEditModal && selectedTenant">
-  <div class="modal-content">
-    <div class="modal-header">
-      <h2>{{ "Edit Tenant Details" | translate }}</h2>
-      <span class="close" (click)="closeEditModal()">&times;</span>
-    </div>
-    <div class="modal-body">
-      <div class="modal-row">
-        <span class="label">{{ "Name" | translate }}:</span>
-        <input type="text" [(ngModel)]="selectedTenant!.name" />
-      </div>
-      <div class="modal-row">
-        <span class="label">{{ "Mobile Number" | translate }}:</span>
-        <input type="text" [(ngModel)]="selectedTenant!.mobile" />
-      </div>
-      <div class="modal-row">
-        <span class="label">{{ "Email" | translate }}:</span>
-        <input type="email" [(ngModel)]="selectedTenant!.email" />
-      </div>
-      <div class="modal-row">
-        <span class="label">{{ "City" | translate }}:</span>
-        <input type="text" [(ngModel)]="selectedTenant!.status" />
-      </div>
-      <div class="modal-row">
-        <span class="label">{{ "Date added" | translate }}:</span>
-        <input type="text" [(ngModel)]="selectedTenant!.DateAdded" />
-      </div>
-    </div>
-    <div class="modal-footer">
-      <button class="cancel-btn" (click)="closeEditModal()">
-        {{ "Cancel" | translate }}
-      </button>
-      <button class="save-btn" (click)="saveTenantChanges()">
-        {{ "Save Changes" | translate }}
-      </button>
     </div>
   </div>
 </div>

@@ -108,5 +108,8 @@
   "Mobile Number": "رقم الهاتف",
   "View Tenant Details": "عرض تفاصيل المستاجر",
   "Edit Tenant Details": "تعديل تفاصيل المستاجر",
-  "Agency/Owner": "الوكالة/المالك"
+  "Agency/Owner": "الوكالة/المالك",
+  "Approve": "قبول",
+  "Reject": "رفض",
+  "Delete": "حذف"
 }

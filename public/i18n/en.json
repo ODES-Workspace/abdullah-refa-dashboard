@@ -104,5 +104,8 @@
   "Mobile Number": "Mobile Number",
   "View Tenant Details": "View Tenant Details",
   "Edit Tenant Details": "Edit Tenant Details",
-  "Agency/Owner": "Agency/Owner"
+  "Agency/Owner": "Agency/Owner",
+  "Approve": "Approve",
+  "Reject": "Reject",
+  "Delete": "Delete"
 }
