@@ -109,5 +109,6 @@
   "Agency/Owner": "Agency/Owner",
   "Approve": "Approve",
   "Reject": "Reject",
-  "Delete": "Delete"
+  "Delete": "Delete",
+  "ListofAgency/Owner": "List of Agency/Owner"
 }

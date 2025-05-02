@@ -83,7 +83,11 @@ export class DashboardHeaderComponent {
       this.headerText = 'Properties Details';
     } else if (url.includes('/admin/tenants')) {
       this.headerText = 'list of tenants';
-    } else if (url.includes('/admin/approvals')) {
+    } else if (
+      url.includes('/admin/agencies-owner/approvals') ||
+      url.includes('/admin/agencies-owner/list-of-angency-owner') ||
+      url.includes('/admin/agencies-owner/rejections')
+    ) {
       this.headerText = 'Agency/Owner';
     } else {
       this.headerText = 'Dashbaord';

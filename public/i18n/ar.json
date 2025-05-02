@@ -113,5 +113,6 @@
   "Agency/Owner": "الوكالة/المالك",
   "Approve": "قبول",
   "Reject": "رفض",
-  "Delete": "حذف"
+  "Delete": "حذف",
+  "ListofAgency/Owner": "قائمة وكالة/مالك"
 }
