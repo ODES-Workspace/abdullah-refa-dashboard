@@ -64,6 +64,8 @@ html[dir="rtl"] {
         &:not(:last-child) {
           border-right: none !important;
           border-left: 1px solid #f1f1f4 !important;
+          padding-left: 0;
+          padding-right: 20px !important;
         }
       }
     }
@@ -73,6 +75,8 @@ html[dir="rtl"] {
         &:not(:last-child) {
           border-right: none !important;
           border-left: 1px solid #f1f1f4 !important;
+          padding-left: 0;
+          padding-right: 20px !important;
         }
       }
     }

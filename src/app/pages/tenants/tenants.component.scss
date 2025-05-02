@@ -49,6 +49,8 @@
 
     div {
       display: flex;
+      word-break: break-all;
+
       align-items: center;
       font-size: 14px;
       line-height: 14px;
@@ -75,6 +77,7 @@
     grid-template-columns: repeat(6, 1fr);
     border-bottom: 1px solid #f1f1f4;
     div {
+      word-break: break-all;
       padding: 0 20px;
       height: 56px;
       font-size: 14px;
