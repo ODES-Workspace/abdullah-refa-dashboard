@@ -7,6 +7,8 @@ import { PropertiesComponent } from './pages/properties/properties.component';
 import { PropertyDetailsComponent } from './pages/property-details/property-details.component';
 import { PropertyEditComponent } from './pages/property-edit/property-edit.component';
 import { TenantsComponent } from './pages/tenants/tenants.component';
+import { ListofrejectionsComponent } from './pages/listofrejections/listofrejections.component';
+import { ListofAgencyOwnerComponent } from './pages/listof-agency-owner/listof-agency-owner.component';
 
 export const routes: Routes = [
   {
@@ -14,11 +16,19 @@ export const routes: Routes = [
     component: AdminlayoutComponent,
     children: [
       { path: 'dashboard', component: AdmindashboardComponent },
-      { path: 'approvals', component: AdminaprovalsComponent },
+      { path: 'agencies-owner/approvals', component: AdminaprovalsComponent },
       { path: 'properties', component: PropertiesComponent },
       { path: 'property/:id', component: PropertyDetailsComponent },
       { path: 'property/edit/:id', component: PropertyEditComponent },
       { path: 'tenants', component: TenantsComponent },
+      {
+        path: 'agencies-owner/list-of-angency-owner',
+        component: ListofAgencyOwnerComponent,
+      },
+      {
+        path: 'agencies-owner/rejections',
+        component: ListofrejectionsComponent,
+      },
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
     ],
   },

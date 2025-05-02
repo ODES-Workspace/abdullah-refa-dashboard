@@ -49,11 +49,17 @@ export class SidebarComponent implements OnInit {
       label: 'sidebar.agenciesOwner',
       route: '',
       submenu: [
-        { label: 'sidebar.listOfApprovals', route: '/admin/approvals' },
-        { label: 'sidebar.ListofAgency/Owner', route: '/admin/agency-owner' },
+        {
+          label: 'sidebar.listOfApprovals',
+          route: '/admin/agencies-owner/approvals',
+        },
+        {
+          label: 'sidebar.ListofAgency/Owner',
+          route: '/admin/agencies-owner/list-of-angency-owner',
+        },
         {
           label: 'sidebar.ListofRejections',
-          route: '/admin/agencies-owner-rejections',
+          route: '/admin/agencies-owner/rejections',
         },
       ],
       icon: {

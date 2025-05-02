@@ -13,14 +13,13 @@ interface TableItem {
   DateAdded: string;
   DateModified: string;
 }
-
 @Component({
-  selector: 'app-adminaprovals',
+  selector: 'app-listof-agency-owner',
   imports: [FormsModule, NgFor, NgIf, TranslateModule],
-  templateUrl: './adminaprovals.component.html',
-  styleUrl: './adminaprovals.component.scss',
+  templateUrl: './listof-agency-owner.component.html',
+  styleUrl: './listof-agency-owner.component.scss',
 })
-export class AdminaprovalsComponent {
+export class ListofAgencyOwnerComponent {
   allItems: TableItem[] = [
     {
       id: 1,
