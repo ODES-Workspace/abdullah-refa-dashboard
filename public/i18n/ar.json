@@ -12,7 +12,9 @@
     "properties": "العقارات",
     "tenants": "المستأجرين",
     "agenciesOwner": "ملاك الوكالات",
-    "listOfApprovals": "قائمة الموافقات"
+    "listOfApprovals": "قائمة الموافقات",
+    "ListofAgency/Owner": "قائمة الوكالات/المالكين",
+    "ListofRejections": "قائمة الرفض"
   },
   "Notifications": "الإشعارات",
   "Mark all as read": "عرض كل الإشعارات",

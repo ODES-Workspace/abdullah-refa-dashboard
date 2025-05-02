@@ -50,6 +50,11 @@ export class SidebarComponent implements OnInit {
       route: '',
       submenu: [
         { label: 'sidebar.listOfApprovals', route: '/admin/approvals' },
+        { label: 'sidebar.ListofAgency/Owner', route: '/admin/agency-owner' },
+        {
+          label: 'sidebar.ListofRejections',
+          route: '/admin/agencies-owner-rejections',
+        },
       ],
       icon: {
         active: '/assets/icons/agenciesowner-active.svg',

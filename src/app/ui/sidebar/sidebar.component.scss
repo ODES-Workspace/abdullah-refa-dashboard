@@ -115,7 +115,12 @@
   fill: #0311d0;
 }
 
+.submenu .link {
+  color: #404040b2;
+}
+
 .submenu .link.active {
+  color: #000000;
   font-weight: 600;
 }
 
