@@ -51,15 +51,15 @@ export class SidebarComponent implements OnInit {
       submenu: [
         {
           label: 'sidebar.listOfApprovals',
-          route: '/admin/agencies-owner/approvals',
+          route: '/admin/agencies-owner-approvals',
         },
         {
           label: 'sidebar.ListofAgency/Owner',
-          route: '/admin/agencies-owner/list-of-angency-owner',
+          route: '/admin/list-of-angency-owner',
         },
         {
           label: 'sidebar.ListofRejections',
-          route: '/admin/agencies-owner/rejections',
+          route: '/admin/agencies-owner-rejections',
         },
       ],
       icon: {
@@ -74,7 +74,7 @@ export class SidebarComponent implements OnInit {
       submenu: [
         {
           label: 'sidebar.rentrequests',
-          route: '/admin/rentrequest/rentrequests',
+          route: '/admin/rentrequests',
         },
       ],
       icon: {

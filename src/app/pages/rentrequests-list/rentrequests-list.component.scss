@@ -44,7 +44,7 @@
 
   &-titles {
     display: grid;
-    grid-template-columns: 74px 1fr 138px minmax(150px, 1fr) 140px 118px 120px 134px 93px;
+    grid-template-columns: 74px 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 72px;
     background-color: #f9fafb;
 
     div {
@@ -74,7 +74,7 @@
 
   &-row {
     display: grid;
-    grid-template-columns: 74px 1fr 138px minmax(150px, 1fr) 140px 118px 120px 134px 93px;
+    grid-template-columns: 74px 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 72px;
     border-bottom: 1px solid #f1f1f4;
     div {
       word-break: break-all;

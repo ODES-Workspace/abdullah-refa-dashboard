@@ -5,13 +5,16 @@ import { TranslateModule } from '@ngx-translate/core';
 
 interface TableItem {
   id: number;
-  name: string;
-  mobile: string;
-  email: string;
+  propertyName: string;
+  tenantName: string;
+  ownerName: string;
+  city: string;
   status: string;
-  angency: string;
-  DateAdded: string;
-  DateModified: string;
+  propertyCategory: string;
+  propertyType: string;
+  dateAdded: string;
+  dateModified: string;
+  rejectedReason: string;
 }
 
 @Component({
@@ -24,33 +27,16 @@ export class RentrequestsListComponent {
   allItems: TableItem[] = [
     {
       id: 1,
-      name: 'Ahmed bin Said',
-      mobile: '+966558441496',
-      email: 'Hamill@gmail.com',
-      angency: 'Agency',
-      status: 'Under Review',
-      DateAdded: '09-02-2025',
-      DateModified: '09-01-2025',
-    },
-    {
-      id: 2,
-      name: 'Ahmed bin Said',
-      mobile: '+966558441496',
-      email: 'Hamill@gmail.com',
-      angency: 'Agency',
-      status: 'Rejected',
-      DateAdded: '09-01-2025',
-      DateModified: '09-01-2025',
-    },
-    {
-      id: 3,
-      name: 'Ahmed bin Said',
-      mobile: '+966558441496',
-      email: 'Hamill@gmail.com',
-      angency: 'Agency',
+      propertyName: 'Property 1',
+      tenantName: 'John Doe',
+      ownerName: 'John Doe',
+      city: 'Riyadh',
       status: 'Approved',
-      DateAdded: '09-01-2025',
-      DateModified: '09-01-2025',
+      propertyCategory: 'Apartment',
+      propertyType: 'Apartment',
+      dateAdded: '2023-07-31',
+      dateModified: '2023-07-31',
+      rejectedReason: 'Reason for rejection',
     },
   ];
 
@@ -95,8 +81,8 @@ export class RentrequestsListComponent {
     const searchTermLower = this.searchTerm.toLowerCase();
     this.filteredItems = this.allItems.filter(
       (item) =>
-        item.name.toLowerCase().includes(searchTermLower) ||
-        item.mobile.toLowerCase().includes(searchTermLower)
+        item.propertyName.toLowerCase().includes(searchTermLower) ||
+        item.tenantName.toLowerCase().includes(searchTermLower)
     );
     this.currentPage = 1;
     this.updatePagination();
@@ -152,84 +138,12 @@ export class RentrequestsListComponent {
     this.updatePagination();
   }
 
-  openViewModal(tenant: TableItem): void {
-    this.selectedTenant = { ...tenant };
-    this.showViewModal = true;
-  }
-
-  closeViewModal(): void {
-    this.showViewModal = false;
-    this.selectedTenant = null;
-  }
-
-  openEditModal(tenant: TableItem): void {
-    this.selectedTenant = { ...tenant };
-    this.showEditModal = true;
-  }
-
-  closeEditModal(): void {
-    this.showEditModal = false;
-    this.selectedTenant = null;
-  }
-
-  saveTenantChanges(): void {
-    if (this.selectedTenant) {
-      const index = this.allItems.findIndex(
-        (item) => item.id === this.selectedTenant?.id
-      );
-
-      if (index !== -1) {
-        this.allItems[index] = { ...this.selectedTenant };
-
-        this.filteredItems = this.allItems.filter((item) =>
-          item.name.toLowerCase().includes(this.searchTerm.toLowerCase())
-        );
-
-        this.updatePagination();
-      }
-    }
-    this.closeEditModal();
-  }
-
   toggleDropdown(itemId: number): void {
     this.activeDropdown = this.activeDropdown === itemId ? null : itemId;
   }
 
   closeDropdown(): void {
     this.activeDropdown = null;
-  }
-
-  handleAction(item: TableItem, action: string): void {
-    switch (action) {
-      case 'approve':
-        item.status = 'Approved';
-        break;
-      case 'reject':
-        item.status = 'Rejected';
-        break;
-      case 'delete':
-        const index = this.allItems.findIndex((i) => i.id === item.id);
-        if (index !== -1) {
-          this.allItems.splice(index, 1);
-          this.filteredItems = this.allItems;
-          this.updatePagination();
-        }
-        break;
-    }
-    this.closeDropdown();
-  }
-
-  getStatusClass(status: string): string {
-    switch (status.toLowerCase()) {
-      case 'approved':
-        return 'status-approved';
-      case 'rejected':
-        return 'status-rejected';
-      case 'under review':
-        return 'status-pending';
-      default:
-        return '';
-    }
   }
 
   @HostListener('document:click', ['$event'])

@@ -10,6 +10,7 @@ import { TenantsComponent } from './pages/tenants/tenants.component';
 import { ListofrejectionsComponent } from './pages/listofrejections/listofrejections.component';
 import { ListofAgencyOwnerComponent } from './pages/listof-agency-owner/listof-agency-owner.component';
 import { RentrequestsListComponent } from './pages/rentrequests-list/rentrequests-list.component';
+import { RentalApplicationDetailsComponent } from './pages/rental-application-details/rental-application-details.component';
 
 export const routes: Routes = [
   {
@@ -20,20 +21,24 @@ export const routes: Routes = [
       { path: 'properties', component: PropertiesComponent },
       { path: 'property/:id', component: PropertyDetailsComponent },
       { path: 'property/edit/:id', component: PropertyEditComponent },
+      {
+        path: 'rental-application-details/:id',
+        component: RentalApplicationDetailsComponent,
+      },
       { path: 'tenants', component: TenantsComponent },
       // agencies owner Routes
-      { path: 'agencies-owner/approvals', component: AdminaprovalsComponent },
+      { path: 'agencies-owner-approvals', component: AdminaprovalsComponent },
       {
-        path: 'agencies-owner/list-of-angency-owner',
+        path: 'list-of-angency-owner',
         component: ListofAgencyOwnerComponent,
       },
       {
-        path: 'agencies-owner/rejections',
+        path: 'agencies-owner-rejections',
         component: ListofrejectionsComponent,
       },
       // rent requests routes
       {
-        path: 'rentrequest/rentrequests',
+        path: 'rentrequests',
         component: RentrequestsListComponent,
       },
 

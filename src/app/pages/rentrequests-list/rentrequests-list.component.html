@@ -21,58 +21,71 @@
       </span>
     </div>
     <div>
-      <span>{{ "Name" | translate }}</span>
-      <span>
-        <img src="/assets/icons/sort-img.svg" alt="" (click)="sortBy('name')" />
-      </span>
-    </div>
-    <div>
-      <span>{{ "Mobile Number" | translate }}</span>
+      <span>{{ "property Name" | translate }}</span>
       <span>
         <img
           src="/assets/icons/sort-img.svg"
           alt=""
-          (click)="sortBy('mobile')"
+          (click)="sortBy('propertyName')"
         />
       </span>
     </div>
+
     <div>
-      <span>{{ "Email" | translate }}</span>
+      <span>{{ "tenant name" | translate }}</span>
       <span>
         <img
           src="/assets/icons/sort-img.svg"
           alt=""
-          (click)="sortBy('email')"
+          (click)="sortBy('tenantName')"
         />
       </span>
     </div>
+
     <div>
-      <span>{{ "agencies-owner" | translate }}</span>
+      <span>{{ "owner name " | translate }}</span>
       <span>
         <img
           src="/assets/icons/sort-img.svg"
           alt=""
-          (click)="sortBy('angency')"
+          (click)="sortBy('ownerName')"
         />
       </span>
     </div>
     <div>
-      <span>{{ "Status" | translate }}</span>
+      <span>{{ "City" | translate }}</span>
+      <span>
+        <img src="/assets/icons/sort-img.svg" alt="" (click)="sortBy('city')" />
+      </span>
+    </div>
+    <div>
+      <span>{{ "property category" | translate }}</span>
       <span>
         <img
           src="/assets/icons/sort-img.svg"
           alt=""
-          (click)="sortBy('status')"
+          (click)="sortBy('propertyCategory')"
         />
       </span>
     </div>
+    <div>
+      <span>{{ "property type" | translate }}</span>
+      <span>
+        <img
+          src="/assets/icons/sort-img.svg"
+          alt=""
+          (click)="sortBy('propertyType')"
+        />
+      </span>
+    </div>
+
     <div>
       <span>{{ "Date added" | translate }}</span>
       <span>
         <img
           src="/assets/icons/sort-img.svg"
           alt=""
-          (click)="sortBy('DateAdded')"
+          (click)="sortBy('dateAdded')"
         />
       </span>
     </div>
@@ -82,7 +95,7 @@
         <img
           src="/assets/icons/sort-img.svg"
           alt=""
-          (click)="sortBy('DateModified')"
+          (click)="sortBy('dateModified')"
         />
       </span>
     </div>
@@ -98,21 +111,14 @@
   <!-- Table rows -->
   <div class="table-row" *ngFor="let item of paginatedItems">
     <div>{{ item.id }}</div>
-    <div>{{ item.name }}</div>
-    <div>{{ item.mobile }}</div>
-    <div>{{ item.email }}</div>
-    <div>
-      <span class="angency">
-        {{ item.angency }}
-      </span>
-    </div>
-    <div [class]="getStatusClass(item.status)">
-      <span>
-        {{ item.status }}
-      </span>
-    </div>
-    <div>{{ item.DateAdded }}</div>
-    <div>{{ item.DateModified }}</div>
+    <div>{{ item.propertyName }}</div>
+    <div>{{ item.tenantName }}</div>
+    <div>{{ item.ownerName }}</div>
+    <div>{{ item.city }}</div>
+    <div>{{ item.propertyCategory }}</div>
+    <div>{{ item.propertyType }}</div>
+    <div>{{ item.dateAdded }}</div>
+    <div>{{ item.dateModified }}</div>
 
     <div class="table-actions">
       <span (click)="toggleDropdown(item.id)">
@@ -120,14 +126,22 @@
       </span>
 
       <ul *ngIf="activeDropdown === item.id">
-        <li (click)="handleAction(item, 'approve')">
+        <li>
+          <!-- Make the status approved  -->
           {{ "Approve" | translate }}
         </li>
-        <li (click)="handleAction(item, 'reject')">
+        <li>
+          <!-- make the status rejected but should modal to handle the reason with submit and cancel btns -->
           {{ "Reject" | translate }}
         </li>
-        <li (click)="handleAction(item, 'delete')">
-          {{ "Delete" | translate }}
+        <li>
+          <!-- make the status pending -->
+          {{ "Revise" | translate }}
+        </li>
+        <li>
+          <!-- navigate to another page that its routing         path: 'rental-application-details/:id',
+and its component: RentalApplicationDetailsComponent and make the id dynamic and make the related data show there  -->
+          {{ "View" | translate }}
         </li>
       </ul>
     </div>

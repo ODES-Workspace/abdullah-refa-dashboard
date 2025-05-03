@@ -26,6 +26,12 @@
   &-nav {
     padding: 0 25px;
     overflow-y: auto;
+
+    ul {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
   }
 
   &-logout {
@@ -65,7 +71,6 @@
 .menu-item {
   cursor: pointer;
   padding: 10px 8px;
-  margin-bottom: 16px;
   border-radius: 6px;
   transition: background 0.3s;
   color: #404040b2;
