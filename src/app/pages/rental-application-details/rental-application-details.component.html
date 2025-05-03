@@ -1,1 +1,107 @@
-<p>rental-application-details works!</p>
+<div class="application-details" *ngIf="application">
+  <div class="header">
+    <h1>{{ "Rental Application Details" | translate }}</h1>
+  </div>
+
+  <div class="details-grid">
+    <!-- Property Information -->
+    <div class="section">
+      <h2>{{ "Property Information" | translate }}</h2>
+      <div class="info-grid">
+        <div class="info-item">
+          <label>{{ "Property Name" | translate }}</label>
+          <span>{{ application.propertyName }}</span>
+        </div>
+        <div class="info-item">
+          <label>{{ "Property Category" | translate }}</label>
+          <span>{{ application.propertyCategory }}</span>
+        </div>
+        <div class="info-item">
+          <label>{{ "Property Type" | translate }}</label>
+          <span>{{ application.propertyType }}</span>
+        </div>
+        <div class="info-item">
+          <label>{{ "Address" | translate }}</label>
+          <span>{{ application.propertyAddress }}</span>
+        </div>
+        <div class="info-item">
+          <label>{{ "City" | translate }}</label>
+          <span>{{ application.city }}</span>
+        </div>
+        <div class="info-item">
+          <label>{{ "Monthly Rent" | translate }}</label>
+          <span>{{ application.monthlyRent | currency : "SAR " }}</span>
+        </div>
+        <div class="info-item">
+          <label>{{ "Lease Duration" | translate }}</label>
+          <span>{{ application.leaseDuration }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tenant Information -->
+    <div class="section">
+      <h2>{{ "Tenant Information" | translate }}</h2>
+      <div class="info-grid">
+        <div class="info-item">
+          <label>{{ "Tenant Name" | translate }}</label>
+          <span>{{ application.tenantName }}</span>
+        </div>
+        <div class="info-item">
+          <label>{{ "Phone Number" | translate }}</label>
+          <span>{{ application.tenantPhone }}</span>
+        </div>
+        <div class="info-item">
+          <label>{{ "Email" | translate }}</label>
+          <span>{{ application.tenantEmail }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Owner Information -->
+    <div class="section">
+      <h2>{{ "Owner Information" | translate }}</h2>
+      <div class="info-grid">
+        <div class="info-item">
+          <label>{{ "Owner Name" | translate }}</label>
+          <span>{{ application.ownerName }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Application Timeline -->
+    <div class="section">
+      <h2>{{ "Application Timeline" | translate }}</h2>
+      <div class="info-grid">
+        <div class="info-item">
+          <label>{{ "Date Added" | translate }}</label>
+          <span>{{ application.dateAdded }}</span>
+        </div>
+        <div class="info-item">
+          <label>{{ "Last Modified" | translate }}</label>
+          <span>{{ application.dateModified }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Additional Information -->
+    <div class="section" *ngIf="application.additionalNotes">
+      <h2>{{ "Additional Notes" | translate }}</h2>
+      <div class="info-grid">
+        <div class="info-item">
+          <p>{{ application.additionalNotes }}</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Rejection Reason -->
+    <div class="section" *ngIf="application.rejectedReason">
+      <h2>{{ "Rejection Reason" | translate }}</h2>
+      <div class="info-grid">
+        <div class="info-item">
+          <p>{{ application.rejectedReason }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

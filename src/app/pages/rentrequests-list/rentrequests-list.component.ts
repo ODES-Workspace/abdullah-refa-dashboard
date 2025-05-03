@@ -196,7 +196,7 @@ export class RentrequestsListComponent {
   }
 
   viewDetails(item: TableItem): void {
-    this.router.navigate(['/rental-application-details', item.id]);
+    this.router.navigate(['/admin/rental-application-details', item.id]);
     this.closeDropdown();
   }
 }
