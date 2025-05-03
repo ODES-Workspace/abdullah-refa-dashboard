@@ -98,6 +98,8 @@ input {
   }
 
   &-row {
+    position: relative;
+
     display: grid;
     border-bottom: 1px solid #f1f1f4;
     min-height: 56px;
@@ -182,6 +184,38 @@ input {
     display: flex;
     align-items: center;
     gap: 10px;
+
+    ul {
+      position: absolute;
+      top: 0;
+      right: 0;
+      transform: translateY(-30%);
+      background: white;
+      border: 1px solid #f1f1f4;
+      border-radius: 12px;
+      box-shadow: 0px 7px 18px 0px #00000017;
+      padding: 10px;
+      min-width: 120px;
+      z-index: 1111;
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      color: #000000;
+      font-size: 13px;
+
+      li {
+        padding: 8px 16px;
+        cursor: pointer;
+        font-size: 14px;
+        color: #404040;
+        border-radius: 6px;
+
+        &:hover {
+          background-color: #b7b7b733;
+        }
+      }
+    }
 
     span {
       cursor: pointer;

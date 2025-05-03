@@ -1,4 +1,6 @@
 .table {
+  overflow-x: auto;
+
   &-titles {
     grid-template-columns:
       72px minmax(136px, 1fr)
@@ -23,20 +25,24 @@
       minmax(115px, 1fr)
       minmax(122px, 1fr)
       72px;
+    position: relative;
   }
 
   &-actions {
+    position: relative;
+
     ul {
       position: absolute;
-      top: 100%;
+      top: 0;
       right: 0;
+      transform: translateY(-30%);
       background: white;
       border: 1px solid #f1f1f4;
       border-radius: 12px;
       box-shadow: 0px 7px 18px 0px #00000017;
       padding: 10px;
       min-width: 120px;
-      z-index: 1;
+      z-index: 1111;
       list-style: none;
       display: flex;
       flex-direction: column;
@@ -62,7 +68,6 @@
     display: flex;
   }
 }
-
 .modal {
   position: fixed;
   top: 0;
