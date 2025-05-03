@@ -117,5 +117,10 @@
   "Reject": "رفض",
   "Delete": "حذف",
   "ListofAgency/Owner": "قائمة وكالة/مالك",
-  "Listofrejections": "قائمة الرفض"
+  "Listofrejections": "قائمة الرفض",
+  "propertyName": "اسم العقار",
+  "tenantName": "اسم المستاجر",
+  "ownerName": "اسم المالك",
+  "propertyCategory": "فئة العقار",
+  "propertyType": "نوع العقار"
 }

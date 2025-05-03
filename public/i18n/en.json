@@ -113,5 +113,10 @@
   "Reject": "Reject",
   "Delete": "Delete",
   "ListofAgency/Owner": "List of Agency/Owner",
-  "Listofrejections": "List of Rejections"
+  "Listofrejections": "List of Rejections",
+  "propertyName": "Property Name",
+  "tenantName": "Tenant Name",
+  "ownerName": "Owner Name",
+  "propertyCategory": "Property Category",
+  "propertyType": "Property Type"
 }

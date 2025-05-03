@@ -21,7 +21,7 @@
       </span>
     </div>
     <div>
-      <span>{{ "property Name" | translate }}</span>
+      <span>{{ "propertyName" | translate }}</span>
       <span>
         <img
           src="/assets/icons/sort-img.svg"
@@ -32,7 +32,7 @@
     </div>
 
     <div>
-      <span>{{ "tenant name" | translate }}</span>
+      <span>{{ "tenantName" | translate }}</span>
       <span>
         <img
           src="/assets/icons/sort-img.svg"
@@ -43,7 +43,7 @@
     </div>
 
     <div>
-      <span>{{ "owner name " | translate }}</span>
+      <span>{{ "ownerName" | translate }}</span>
       <span>
         <img
           src="/assets/icons/sort-img.svg"
@@ -59,24 +59,10 @@
       </span>
     </div>
     <div>
-      <span>{{ "property category" | translate }}</span>
-      <span>
-        <img
-          src="/assets/icons/sort-img.svg"
-          alt=""
-          (click)="sortBy('propertyCategory')"
-        />
-      </span>
+      <span>{{ "propertyCategory" | translate }}</span>
     </div>
     <div>
-      <span>{{ "property type" | translate }}</span>
-      <span>
-        <img
-          src="/assets/icons/sort-img.svg"
-          alt=""
-          (click)="sortBy('propertyType')"
-        />
-      </span>
+      <span>{{ "propertyType" | translate }}</span>
     </div>
 
     <div>
@@ -110,7 +96,7 @@
   </div>
   <!-- Table rows -->
   <div class="table-row" *ngFor="let item of paginatedItems">
-    <div>{{ item.id }}</div>
+    <div class="table-id">{{ item.id }}</div>
     <div>{{ item.propertyName }}</div>
     <div>{{ item.tenantName }}</div>
     <div>{{ item.ownerName }}</div>

@@ -3,7 +3,7 @@
   box-shadow: 0px 3px 4px 0px #00000008;
   border: 1px solid #f1f1f4;
   border-radius: 12px;
-
+  min-width: 1100px;
   &-title {
     font-size: 16px;
     line-height: 14px;
@@ -44,13 +44,23 @@
 
   &-titles {
     display: grid;
-    grid-template-columns: 74px 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 72px;
+    display: grid;
+    grid-template-columns:
+      72px minmax(136px, 1fr)
+      minmax(129px, 1fr)
+      minmax(116px, 1fr)
+      minmax(100px, 1fr)
+      minmax(131px, 1fr)
+      minmax(107px, 1fr)
+      minmax(115px, 1fr)
+      minmax(122px, 1fr)
+      72px;
     background-color: #f9fafb;
 
     div {
       display: flex;
       word-break: break-all;
-      padding-left: 20px;
+      padding-left: 10px;
       padding-top: 10px;
       padding-bottom: 10px;
       align-items: center;
@@ -74,14 +84,23 @@
 
   &-row {
     display: grid;
-    grid-template-columns: 74px 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 72px;
+    grid-template-columns:
+      72px minmax(136px, 1fr)
+      minmax(129px, 1fr)
+      minmax(116px, 1fr)
+      minmax(100px, 1fr)
+      minmax(131px, 1fr)
+      minmax(107px, 1fr)
+      minmax(115px, 1fr)
+      minmax(122px, 1fr)
+      72px;
     border-bottom: 1px solid #f1f1f4;
     div {
       word-break: break-all;
       font-size: 14px;
       padding-top: 20px;
       padding-bottom: 20px;
-      padding-left: 20px;
+      padding-left: 15px;
 
       font-weight: 500;
       line-height: 14px;
@@ -194,50 +213,10 @@
       }
     }
   }
-}
 
-// Status colors
-.status-approved {
-  span {
-    color: #059669;
-    background-color: #ecfdf5;
-    border-radius: 4px;
-    padding: 8px;
-    border: 1px solid #05966827;
-    font-size: 11px;
+  &-id {
+    display: flex;
   }
-}
-
-.status-rejected {
-  span {
-    color: #dc2626;
-    background-color: #fef2f2;
-    padding: 8px;
-    border-radius: 4px;
-    padding: 8px;
-    font-size: 11px;
-    border: 1px solid #dc262621;
-  }
-}
-
-.status-pending {
-  span {
-    color: #dfa000;
-    background-color: #fff8dd;
-    border-radius: 4px;
-    padding: 8px;
-    border: 1px solid #f6b10033;
-    font-size: 11px;
-  }
-}
-
-.angency {
-  color: #056ee9;
-  padding: 8px;
-  border-radius: 4px;
-  font-size: 11px;
-  border: 1px solid #1b84ff33;
-  background-color: #eff6ff;
 }
 
 .modal {
