@@ -12,7 +12,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    border-bottom: 0.5px solid var(--neutral-Gray-Clarity-20, #40404033);
+    border-bottom: 0.5px solid #40404033;
     justify-content: center;
   }
 
@@ -25,11 +25,12 @@
 
   &-nav {
     padding: 0 25px;
+    overflow-y: auto;
   }
 
   &-logout {
     padding: 16px 25px;
-    border-top: 0.5px solid var(--neutral-Gray-Clarity-20, #40404033);
+    border-top: 0.5px solid #40404033;
 
     &--btn {
       display: flex;
@@ -67,7 +68,7 @@
   margin-bottom: 16px;
   border-radius: 6px;
   transition: background 0.3s;
-  color: var(--neutral-Gray-Clarity-60, #404040b2);
+  color: #404040b2;
   font-weight: 600;
   display: flex;
   align-items: center;
