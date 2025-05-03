@@ -126,26 +126,47 @@
       </span>
 
       <ul *ngIf="activeDropdown === item.id">
-        <li>
-          <!-- Make the status approved  -->
+        <li (click)="approveRequest(item)">
           {{ "Approve" | translate }}
         </li>
-        <li>
-          <!-- make the status rejected but should modal to handle the reason with submit and cancel btns -->
+        <li (click)="openRejectModal(item)">
           {{ "Reject" | translate }}
         </li>
-        <li>
-          <!-- make the status pending -->
+        <li (click)="reviseRequest(item)">
           {{ "Revise" | translate }}
         </li>
-        <li>
-          <!-- navigate to another page that its routing         path: 'rental-application-details/:id',
-and its component: RentalApplicationDetailsComponent and make the id dynamic and make the related data show there  -->
+        <li (click)="viewDetails(item)">
           {{ "View" | translate }}
         </li>
       </ul>
     </div>
   </div>
+
+  <!-- Reject Modal -->
+  <div class="modal" *ngIf="showRejectModal">
+    <div class="modal-content">
+      <h2>{{ "Reject Request" | translate }}</h2>
+      <div class="modal-body">
+        <label for="rejectReason">{{
+          "Reason for rejection" | translate
+        }}</label>
+        <textarea
+          id="rejectReason"
+          [(ngModel)]="rejectReason"
+          placeholder="{{ 'Enter rejection reason' | translate }}"
+        ></textarea>
+      </div>
+      <div class="modal-actions">
+        <button class="cancel-btn" (click)="closeRejectModal()">
+          {{ "Cancel" | translate }}
+        </button>
+        <button class="submit-btn" (click)="submitReject()">
+          {{ "Submit" | translate }}
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- Table pagination -->
   <div class="table-pagination" *ngIf="filteredItems.length > 0">
     <div class="table-pagination--show">

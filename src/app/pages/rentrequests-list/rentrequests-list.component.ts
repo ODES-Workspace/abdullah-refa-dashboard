@@ -2,6 +2,7 @@ import { NgFor, NgIf } from '@angular/common';
 import { Component, HostListener } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
+import { Router } from '@angular/router';
 
 interface TableItem {
   id: number;
@@ -54,6 +55,11 @@ export class RentrequestsListComponent {
   currentSortColumn: keyof TableItem | null = null;
   isSortAscending = true;
 
+  // Add new properties for reject modal
+  showRejectModal = false;
+  rejectReason = '';
+  selectedItem: TableItem | null = null;
+
   get totalPages(): number {
     return Math.ceil(this.filteredItems.length / this.itemsPerPage);
   }
@@ -73,7 +79,7 @@ export class RentrequestsListComponent {
     );
   }
 
-  constructor() {
+  constructor(private router: Router) {
     this.updatePagination();
   }
 
@@ -153,5 +159,44 @@ export class RentrequestsListComponent {
     if (!dropdown && this.activeDropdown !== null) {
       this.closeDropdown();
     }
+  }
+
+  // Add new methods for actions
+  approveRequest(item: TableItem): void {
+    item.status = 'Approved';
+    item.dateModified = new Date().toISOString().split('T')[0];
+    this.closeDropdown();
+  }
+
+  openRejectModal(item: TableItem): void {
+    this.selectedItem = item;
+    this.showRejectModal = true;
+    this.closeDropdown();
+  }
+
+  closeRejectModal(): void {
+    this.showRejectModal = false;
+    this.rejectReason = '';
+    this.selectedItem = null;
+  }
+
+  submitReject(): void {
+    if (this.selectedItem) {
+      this.selectedItem.status = 'Rejected';
+      this.selectedItem.rejectedReason = this.rejectReason;
+      this.selectedItem.dateModified = new Date().toISOString().split('T')[0];
+      this.closeRejectModal();
+    }
+  }
+
+  reviseRequest(item: TableItem): void {
+    item.status = 'Pending';
+    item.dateModified = new Date().toISOString().split('T')[0];
+    this.closeDropdown();
+  }
+
+  viewDetails(item: TableItem): void {
+    this.router.navigate(['/rental-application-details', item.id]);
+    this.closeDropdown();
   }
 }
