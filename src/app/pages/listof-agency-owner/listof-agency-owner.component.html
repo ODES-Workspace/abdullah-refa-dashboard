@@ -86,9 +86,6 @@
         />
       </span>
     </div>
-    <div>
-      <span>{{ "Actions" | translate }}</span>
-    </div>
   </div>
 
   <!-- No data -->
@@ -113,24 +110,6 @@
     </div>
     <div>{{ item.DateAdded }}</div>
     <div>{{ item.DateModified }}</div>
-
-    <div class="table-actions">
-      <span (click)="toggleDropdown(item.id)">
-        <img src="/assets/icons/more.svg" alt="more icon" />
-      </span>
-
-      <ul *ngIf="activeDropdown === item.id">
-        <li (click)="handleAction(item, 'approve')">
-          {{ "Approve" | translate }}
-        </li>
-        <li (click)="handleAction(item, 'reject')">
-          {{ "Reject" | translate }}
-        </li>
-        <li (click)="handleAction(item, 'delete')">
-          {{ "Delete" | translate }}
-        </li>
-      </ul>
-    </div>
   </div>
   <!-- Table pagination -->
   <div class="table-pagination" *ngIf="filteredItems.length > 0">

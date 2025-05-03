@@ -1,5 +1,5 @@
 import { NgFor, NgIf } from '@angular/common';
-import { Component, HostListener } from '@angular/core';
+import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 
@@ -61,7 +61,6 @@ export class ListofAgencyOwnerComponent {
   showViewModal = false;
   showEditModal = false;
   selectedTenant: TableItem | null = null;
-  activeDropdown: number | null = null;
 
   // Track sorting state
   currentSortColumn: keyof TableItem | null = null;
@@ -151,73 +150,6 @@ export class ListofAgencyOwnerComponent {
     this.updatePagination();
   }
 
-  openViewModal(tenant: TableItem): void {
-    this.selectedTenant = { ...tenant };
-    this.showViewModal = true;
-  }
-
-  closeViewModal(): void {
-    this.showViewModal = false;
-    this.selectedTenant = null;
-  }
-
-  openEditModal(tenant: TableItem): void {
-    this.selectedTenant = { ...tenant };
-    this.showEditModal = true;
-  }
-
-  closeEditModal(): void {
-    this.showEditModal = false;
-    this.selectedTenant = null;
-  }
-
-  saveTenantChanges(): void {
-    if (this.selectedTenant) {
-      const index = this.allItems.findIndex(
-        (item) => item.id === this.selectedTenant?.id
-      );
-
-      if (index !== -1) {
-        this.allItems[index] = { ...this.selectedTenant };
-
-        this.filteredItems = this.allItems.filter((item) =>
-          item.name.toLowerCase().includes(this.searchTerm.toLowerCase())
-        );
-
-        this.updatePagination();
-      }
-    }
-    this.closeEditModal();
-  }
-
-  toggleDropdown(itemId: number): void {
-    this.activeDropdown = this.activeDropdown === itemId ? null : itemId;
-  }
-
-  closeDropdown(): void {
-    this.activeDropdown = null;
-  }
-
-  handleAction(item: TableItem, action: string): void {
-    switch (action) {
-      case 'approve':
-        item.status = 'Approved';
-        break;
-      case 'reject':
-        item.status = 'Rejected';
-        break;
-      case 'delete':
-        const index = this.allItems.findIndex((i) => i.id === item.id);
-        if (index !== -1) {
-          this.allItems.splice(index, 1);
-          this.filteredItems = this.allItems;
-          this.updatePagination();
-        }
-        break;
-    }
-    this.closeDropdown();
-  }
-
   getStatusClass(status: string): string {
     switch (status.toLowerCase()) {
       case 'approved':
@@ -228,15 +160,6 @@ export class ListofAgencyOwnerComponent {
         return 'status-pending';
       default:
         return '';
-    }
-  }
-
-  @HostListener('document:click', ['$event'])
-  onDocumentClick(event: MouseEvent): void {
-    const target = event.target as HTMLElement;
-    const dropdown = target.closest('.table-actions');
-    if (!dropdown && this.activeDropdown !== null) {
-      this.closeDropdown();
     }
   }
 }
