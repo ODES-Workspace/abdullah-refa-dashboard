@@ -26,6 +26,7 @@ input {
   box-shadow: 0px 3px 4px 0px #00000008;
   border: 1px solid #f1f1f4;
   border-radius: 12px;
+  overflow-x: auto;
 
   &-title {
     font-size: 16px;
