@@ -1,1 +1,170 @@
-<p>rentrequests-list works!</p>
+<div class="table">
+  <!-- Table header -->
+  <div class="table-header">
+    <div class="table-title">{{ "tenants" | translate }}</div>
+    <div class="table-search">
+      <img src="/assets/icons/search-icon.svg" alt="" />
+      <input
+        type="text"
+        [placeholder]="'Search by name or phone number' | translate"
+        [(ngModel)]="searchTerm"
+        (input)="onSearch()"
+      />
+    </div>
+  </div>
+  <!-- Table titles -->
+  <div class="table-titles">
+    <div>
+      <span>{{ "S.ON" | translate }}</span>
+      <span>
+        <img src="/assets/icons/sort-img.svg" alt="" (click)="sortBy('id')" />
+      </span>
+    </div>
+    <div>
+      <span>{{ "Name" | translate }}</span>
+      <span>
+        <img src="/assets/icons/sort-img.svg" alt="" (click)="sortBy('name')" />
+      </span>
+    </div>
+    <div>
+      <span>{{ "Mobile Number" | translate }}</span>
+      <span>
+        <img
+          src="/assets/icons/sort-img.svg"
+          alt=""
+          (click)="sortBy('mobile')"
+        />
+      </span>
+    </div>
+    <div>
+      <span>{{ "Email" | translate }}</span>
+      <span>
+        <img
+          src="/assets/icons/sort-img.svg"
+          alt=""
+          (click)="sortBy('email')"
+        />
+      </span>
+    </div>
+    <div>
+      <span>{{ "agencies-owner" | translate }}</span>
+      <span>
+        <img
+          src="/assets/icons/sort-img.svg"
+          alt=""
+          (click)="sortBy('angency')"
+        />
+      </span>
+    </div>
+    <div>
+      <span>{{ "Status" | translate }}</span>
+      <span>
+        <img
+          src="/assets/icons/sort-img.svg"
+          alt=""
+          (click)="sortBy('status')"
+        />
+      </span>
+    </div>
+    <div>
+      <span>{{ "Date added" | translate }}</span>
+      <span>
+        <img
+          src="/assets/icons/sort-img.svg"
+          alt=""
+          (click)="sortBy('DateAdded')"
+        />
+      </span>
+    </div>
+    <div>
+      <span>{{ "Date Modified" | translate }}</span>
+      <span>
+        <img
+          src="/assets/icons/sort-img.svg"
+          alt=""
+          (click)="sortBy('DateModified')"
+        />
+      </span>
+    </div>
+    <div>
+      <span>{{ "Actions" | translate }}</span>
+    </div>
+  </div>
+
+  <!-- No data -->
+  <div *ngIf="filteredItems.length === 0" class="table-no-data">
+    {{ "No data found" | translate }}
+  </div>
+  <!-- Table rows -->
+  <div class="table-row" *ngFor="let item of paginatedItems">
+    <div>{{ item.id }}</div>
+    <div>{{ item.name }}</div>
+    <div>{{ item.mobile }}</div>
+    <div>{{ item.email }}</div>
+    <div>
+      <span class="angency">
+        {{ item.angency }}
+      </span>
+    </div>
+    <div [class]="getStatusClass(item.status)">
+      <span>
+        {{ item.status }}
+      </span>
+    </div>
+    <div>{{ item.DateAdded }}</div>
+    <div>{{ item.DateModified }}</div>
+
+    <div class="table-actions">
+      <span (click)="toggleDropdown(item.id)">
+        <img src="/assets/icons/more.svg" alt="more icon" />
+      </span>
+
+      <ul *ngIf="activeDropdown === item.id">
+        <li (click)="handleAction(item, 'approve')">
+          {{ "Approve" | translate }}
+        </li>
+        <li (click)="handleAction(item, 'reject')">
+          {{ "Reject" | translate }}
+        </li>
+        <li (click)="handleAction(item, 'delete')">
+          {{ "Delete" | translate }}
+        </li>
+      </ul>
+    </div>
+  </div>
+  <!-- Table pagination -->
+  <div class="table-pagination" *ngIf="filteredItems.length > 0">
+    <div class="table-pagination--show">
+      <span> {{ "Show" | translate }} </span>
+      <select [(ngModel)]="itemsPerPage" (change)="updatePagination()">
+        <option *ngFor="let num of [10, 20, 30]" [value]="num">
+          {{ num }}
+        </option>
+      </select>
+      <span> {{ "per page" | translate }} </span>
+    </div>
+
+    <div class="table-pagination--pages">
+      <div class="table-pagination--pages--count">
+        {{ paginationStart + 1 }}-{{ paginationEnd }}
+        {{ "of" | translate }}
+        {{ filteredItems.length }}
+      </div>
+
+      <div class="table-pagination--pages--buttons" dir="ltr">
+        <button (click)="prevPage()" [disabled]="currentPage === 1">
+          <img src="/assets/icons/arrow-left.svg" alt="prev icon" />
+        </button>
+        <span
+          *ngFor="let page of totalPagesArray"
+          (click)="goToPage(page)"
+          [class.active]="page === currentPage"
+          >{{ page }}</span
+        >
+        <button (click)="nextPage()" [disabled]="currentPage === totalPages">
+          <img src="/assets/icons/arrow-right.svg" alt=" next icon " />
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
