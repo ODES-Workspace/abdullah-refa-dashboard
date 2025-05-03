@@ -1,0 +1,13 @@
+[
+  {
+    "id": 1,
+    "propertyName": "Property 1",
+    "tenantName": "John Doe",
+    "ownerName": "John Doe",
+    "city": "Riyadh",
+    "propertyCategory": "Apartment",
+    "propertyType": "Apartment",
+    "dateAdded": "2023-07-31",
+    "dateModified": "2023-07-31"
+  }
+]

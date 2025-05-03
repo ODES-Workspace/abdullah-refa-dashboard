@@ -67,6 +67,21 @@ export class SidebarComponent implements OnInit {
         inactive: '/assets/icons/agenciesowner-inactive.svg',
       },
     },
+    {
+      name: 'rent-request',
+      label: 'sidebar.rentrequest',
+      route: '',
+      submenu: [
+        {
+          label: 'sidebar.rentrequests',
+          route: '/admin/rentrequest/rentrequests',
+        },
+      ],
+      icon: {
+        active: '/assets/icons/rent-active.svg',
+        inactive: '/assets/icons/rent-inactive.svg',
+      },
+    },
   ];
 
   ngOnInit() {

@@ -14,7 +14,9 @@
     "tenants": "Tenants",
     "listOfApprovals": "List of Approvals",
     "ListofAgency/Owner": "List of Agency/Owner",
-    "ListofRejections": "List of Rejections"
+    "ListofRejections": "List of Rejections",
+    "rentrequest": "Rent Requests",
+    "rentrequests": "Rent Requests"
   },
   "Notifications": "Notifications",
   "Mark all as read": "Mark all as read",

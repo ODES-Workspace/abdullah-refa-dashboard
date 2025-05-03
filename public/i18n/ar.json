@@ -14,7 +14,9 @@
     "agenciesOwner": "ملاك الوكالات",
     "listOfApprovals": "قائمة الموافقات",
     "ListofAgency/Owner": "قائمة الوكالات/المالكين",
-    "ListofRejections": "قائمة الرفض"
+    "ListofRejections": "قائمة الرفض",
+    "rentrequest": "طلبات الايجار",
+    "rentrequests": "طلبات الايجار"
   },
   "Notifications": "الإشعارات",
   "Mark all as read": "عرض كل الإشعارات",
