@@ -65,13 +65,7 @@
           </span>
         </div>
 
-        <ul
-          *ngIf="
-            item.submenu &&
-            (activeMenu === item.name || isChildRouteActive(item))
-          "
-          class="submenu"
-        >
+        <ul *ngIf="item.submenu && activeMenu === item.name" class="submenu">
           <li *ngFor="let subItem of item.submenu">
             <a
               [routerLink]="subItem.route"
