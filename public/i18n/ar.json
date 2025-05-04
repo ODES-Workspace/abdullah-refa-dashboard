@@ -122,5 +122,20 @@
   "tenantName": "اسم المستاجر",
   "ownerName": "اسم المالك",
   "propertyCategory": "فئة العقار",
-  "propertyType": "نوع العقار"
+  "propertyType": "نوع العقار",
+  "Revise": "تعديل",
+  "View": "عرض",
+  "reasonforrejection": "سبب الرفض",
+  "rentrequests": "طلبات الايجار",
+  "Search by property name or tenant Name": "البحث بالاسم أو اسم المستاجر",
+  "Type the reason for rejection": "اكتب سبب الرفض",
+  "Confirm": "تأكيد",
+  "Edit Request": "تعديل الطلب",
+  "Property Name": "اسم العقار",
+  "Tenant Name": "اسم المستاجر",
+  "Property Category": "فئة العقار",
+  "Property Type": "نوع العقار",
+  "Reason For Rejection": "سبب الرفض",
+  "Tenant Details": "تفاصيل المستاجر",
+  "Submit": "إرسال"
 }

@@ -1,12 +1,12 @@
 <div class="table">
   <!-- Table header -->
   <div class="table-header">
-    <div class="table-title">{{ "tenants" | translate }}</div>
+    <div class="table-title">{{ "rentrequests" | translate }}</div>
     <div class="table-search">
       <img src="/assets/icons/search-icon.svg" alt="" />
       <input
         type="text"
-        [placeholder]="'Search by name or phone number' | translate"
+        [placeholder]="'Search by property name or tenant Name' | translate"
         [(ngModel)]="searchTerm"
         (input)="onSearch()"
       />
@@ -129,24 +129,99 @@
   </div>
 
   <!-- Reject Modal -->
-  <div class="modal" *ngIf="showRejectModal">
+  <div class="modal modal-reject" *ngIf="showRejectModal">
     <div class="modal-content">
-      <h2>{{ "Reject Request" | translate }}</h2>
+      <h2>{{ "reasonforrejection" | translate }}</h2>
       <div class="modal-body">
-        <label for="rejectReason">{{
-          "Reason for rejection" | translate
-        }}</label>
         <textarea
           id="rejectReason"
           [(ngModel)]="rejectReason"
-          placeholder="{{ 'Enter rejection reason' | translate }}"
+          placeholder="{{ 'Type the reason for rejection' | translate }}"
         ></textarea>
       </div>
       <div class="modal-actions">
         <button class="cancel-btn" (click)="closeRejectModal()">
+          <img src="/assets/icons/close-icon.svg" alt="" />
+
           {{ "Cancel" | translate }}
         </button>
         <button class="submit-btn" (click)="submitReject()">
+          <img src="/assets/icons/confirm-icon.svg" alt="" />
+          {{ "Confirm" | translate }}
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Revise/Edit Modal -->
+  <div class="modal modal-revise" *ngIf="showReviseModal">
+    <div class="modal-revise-content">
+      <div class="modal-revise-header">
+        <h2>{{ "Edit Request" | translate }}</h2>
+        <span class="close" (click)="closeReviseModal()">&times;</span>
+      </div>
+
+      <div class="modal-revise-body">
+        <div class="modal-revise-row">
+          <span class="label" for="propertyName">{{
+            "Property Name" | translate
+          }}</span>
+          <input
+            type="text"
+            id="propertyName"
+            [(ngModel)]="editedItem!.propertyName"
+          />
+        </div>
+        <div class="modal-revise-row">
+          <span class="label" for="tenantName">{{
+            "Tenant Name" | translate
+          }}</span>
+          <input
+            type="text"
+            id="tenantName"
+            [(ngModel)]="editedItem!.tenantName"
+          />
+        </div>
+        <div class="modal-revise-row">
+          <span class="label" for="ownerName">{{
+            "Owner Name" | translate
+          }}</span>
+          <input
+            type="text"
+            id="ownerName"
+            [(ngModel)]="editedItem!.ownerName"
+          />
+        </div>
+        <div class="modal-revise-row">
+          <span class="label" for="city">{{ "City" | translate }}</span>
+          <input type="text" id="city" [(ngModel)]="editedItem!.city" />
+        </div>
+        <div class="modal-revise-row">
+          <span class="label" for="propertyCategory">{{
+            "Property Category" | translate
+          }}</span>
+          <input
+            type="text"
+            id="propertyCategory"
+            [(ngModel)]="editedItem!.propertyCategory"
+          />
+        </div>
+        <div class="modal-revise-row">
+          <span class="label" for="propertyType">{{
+            "Property Type" | translate
+          }}</span>
+          <input
+            type="text"
+            id="propertyType"
+            [(ngModel)]="editedItem!.propertyType"
+          />
+        </div>
+      </div>
+      <div class="modal-revise-footer">
+        <button class="cancel-btn" (click)="closeReviseModal()">
+          {{ "Cancel" | translate }}
+        </button>
+        <button class="submit-btn revise-btn" (click)="submitRevise()">
           {{ "Submit" | translate }}
         </button>
       </div>

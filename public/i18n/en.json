@@ -118,5 +118,19 @@
   "tenantName": "Tenant Name",
   "ownerName": "Owner Name",
   "propertyCategory": "Property Category",
-  "propertyType": "Property Type"
+  "propertyType": "Property Type",
+  "Revise": "Revise",
+  "View": "View",
+  "reasonforrejection": "Reason for rejection",
+  "rentrequests": "Rent Requests",
+  "Type the reason for rejection": "Type the reason for rejection",
+  "Edit Request": "Edit Request",
+  "Property Name": "Property Name",
+  "Tenant Name": "Tenant Name",
+  "Property Category": "Property Category",
+  "Property Type": "Property Type",
+  "Reason for rejection": "Reason for rejection",
+  "Confirm": "Confirm",
+  "Search by property name or tenant Name": "Search by property name or tenant Name",
+  "Submit": "Submit"
 }

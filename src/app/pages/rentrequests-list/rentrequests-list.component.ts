@@ -39,6 +39,19 @@ export class RentrequestsListComponent {
       dateModified: '2023-07-31',
       rejectedReason: 'Reason for rejection',
     },
+    {
+      id: 2,
+      propertyName: 'Property 2',
+      tenantName: 'John Doe',
+      ownerName: 'John Doe',
+      city: 'Riyadh',
+      status: 'Approved',
+      propertyCategory: 'Apartment',
+      propertyType: 'Apartment',
+      dateAdded: '2023-07-31',
+      dateModified: '2023-07-31',
+      rejectedReason: 'Reason for rejection',
+    },
   ];
 
   searchTerm = '';
@@ -59,6 +72,10 @@ export class RentrequestsListComponent {
   showRejectModal = false;
   rejectReason = '';
   selectedItem: TableItem | null = null;
+
+  // Add new properties for revise/edit modal
+  showReviseModal = false;
+  editedItem: TableItem | null = null;
 
   get totalPages(): number {
     return Math.ceil(this.filteredItems.length / this.itemsPerPage);
@@ -189,10 +206,36 @@ export class RentrequestsListComponent {
     }
   }
 
+  // Modified revise method to open the edit modal
   reviseRequest(item: TableItem): void {
-    item.status = 'Pending';
-    item.dateModified = new Date().toISOString().split('T')[0];
+    this.editedItem = { ...item }; // Create a copy to edit
+    this.showReviseModal = true;
     this.closeDropdown();
+  }
+
+  // New methods for edit modal
+  closeReviseModal(): void {
+    this.showReviseModal = false;
+    this.editedItem = null;
+  }
+
+  submitRevise(): void {
+    if (this.editedItem) {
+      // Find the original item and update it
+      const originalItem = this.allItems.find(
+        (item) => item.id === this.editedItem!.id
+      );
+      if (originalItem) {
+        Object.assign(originalItem, this.editedItem);
+        originalItem.status = 'Pending';
+        originalItem.dateModified = new Date().toISOString().split('T')[0];
+      }
+
+      // Update filtered items as well
+      this.onSearch(); // This will refresh the filtered items
+      this.updatePagination();
+      this.closeReviseModal();
+    }
   }
 
   viewDetails(item: TableItem): void {

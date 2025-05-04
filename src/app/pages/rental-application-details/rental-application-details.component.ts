@@ -15,6 +15,7 @@ interface RentalApplication {
   dateModified: string;
   rejectedReason?: string;
   tenantPhone?: string;
+  status: 'Approved' | 'Pending' | 'Rejected';
   tenantEmail?: string;
   propertyAddress?: string;
   monthlyRent?: number;
@@ -30,6 +31,34 @@ interface RentalApplication {
   styleUrl: './rental-application-details.component.scss',
 })
 export class RentalApplicationDetailsComponent implements OnInit {
+  allItems: RentalApplication[] = [
+    {
+      id: 1,
+      propertyName: 'Property 1',
+      tenantName: 'John Doe',
+      ownerName: 'John Doe',
+      city: 'Riyadh',
+      status: 'Approved',
+      propertyCategory: 'Apartment',
+      propertyType: 'Apartment',
+      dateAdded: '2023-07-31',
+      dateModified: '2023-07-31',
+      rejectedReason: 'Reason for rejection',
+    },
+    {
+      id: 2,
+      propertyName: 'Property 2',
+      tenantName: 'John Doe',
+      ownerName: 'John Doe',
+      city: 'Riyadh',
+      status: 'Approved',
+      propertyCategory: 'Apartment',
+      propertyType: 'Apartment',
+      dateAdded: '2023-07-31',
+      dateModified: '2023-07-31',
+      rejectedReason: 'Reason for rejection',
+    },
+  ];
   application: RentalApplication | null = null;
   applicationId: number | null = null;
 
@@ -43,16 +72,9 @@ export class RentalApplicationDetailsComponent implements OnInit {
   }
 
   loadApplicationDetails(): void {
-    this.application = {
-      id: this.applicationId!,
-      propertyName: 'Property 1',
-      tenantName: 'John Doe',
-      ownerName: 'John Doe',
-      city: 'Riyadh',
-      propertyCategory: 'Apartment',
-      propertyType: 'Apartment',
-      dateAdded: '2023-07-31',
-      dateModified: '2023-07-31',
-    };
+    if (this.applicationId) {
+      this.application =
+        this.allItems.find((item) => item.id === this.applicationId) ?? null;
+    }
   }
 }

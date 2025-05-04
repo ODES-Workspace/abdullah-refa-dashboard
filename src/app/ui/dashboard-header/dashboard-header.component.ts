@@ -84,11 +84,13 @@ export class DashboardHeaderComponent {
     } else if (url.includes('/admin/tenants')) {
       this.headerText = 'list of tenants';
     } else if (
-      url.includes('/admin/agencies-owner/approvals') ||
-      url.includes('/admin/agencies-owner/list-of-angency-owner') ||
-      url.includes('/admin/agencies-owner/rejections')
+      url.includes('/admin/agencies-owner-approvals') ||
+      url.includes('/admin/list-of-angency-owner') ||
+      url.includes('/admin/agencies-owner-rejections')
     ) {
       this.headerText = 'Agency/Owner';
+    } else if (url.includes('/admin/rentrequests')) {
+      this.headerText = 'rentrequests';
     } else {
       this.headerText = 'Dashbaord';
     }
