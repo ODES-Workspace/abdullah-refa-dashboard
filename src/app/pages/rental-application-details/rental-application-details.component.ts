@@ -61,6 +61,7 @@ export class RentalApplicationDetailsComponent implements OnInit {
   ];
   application: RentalApplication | null = null;
   applicationId: number | null = null;
+  activeTab: 'overview' | 'assessment' | 'schedule' = 'overview';
 
   constructor(private route: ActivatedRoute) {}
 

@@ -1,107 +1,272 @@
-<div class="application-details" *ngIf="application">
-  <div class="header">
-    <h1>{{ "Rental Application Details" | translate }}</h1>
-  </div>
-
-  <div class="details-grid">
-    <!-- Property Information -->
-    <div class="section">
-      <h2>{{ "Property Information" | translate }}</h2>
-      <div class="info-grid">
-        <div class="info-item">
-          <label>{{ "Property Name" | translate }}</label>
-          <span>{{ application.propertyName }}</span>
-        </div>
-        <div class="info-item">
-          <label>{{ "Property Category" | translate }}</label>
-          <span>{{ application.propertyCategory }}</span>
-        </div>
-        <div class="info-item">
-          <label>{{ "Property Type" | translate }}</label>
-          <span>{{ application.propertyType }}</span>
-        </div>
-        <div class="info-item">
-          <label>{{ "Address" | translate }}</label>
-          <span>{{ application.propertyAddress }}</span>
-        </div>
-        <div class="info-item">
-          <label>{{ "City" | translate }}</label>
-          <span>{{ application.city }}</span>
-        </div>
-        <div class="info-item">
-          <label>{{ "Monthly Rent" | translate }}</label>
-          <span>{{ application.monthlyRent | currency : "SAR " }}</span>
-        </div>
-        <div class="info-item">
-          <label>{{ "Lease Duration" | translate }}</label>
-          <span>{{ application.leaseDuration }}</span>
-        </div>
-      </div>
+<div class="application" *ngIf="application">
+  <div class="application-tabs">
+    <div
+      [class.active]="activeTab === 'overview'"
+      (click)="activeTab = 'overview'"
+      class="tab-item"
+    >
+      <span *ngIf="activeTab === 'overview'">
+        <img src="/assets/icons/overview-active.svg" alt="overview icon" />
+      </span>
+      <span *ngIf="activeTab !== 'overview'">
+        <img src="/assets/icons/overview-inactive.svg" alt="overview icon" />
+      </span>
+      Overview
     </div>
-
-    <!-- Tenant Information -->
-    <div class="section">
-      <h2>{{ "Tenant Information" | translate }}</h2>
-      <div class="info-grid">
-        <div class="info-item">
-          <label>{{ "Tenant Name" | translate }}</label>
-          <span>{{ application.tenantName }}</span>
-        </div>
-        <div class="info-item">
-          <label>{{ "Phone Number" | translate }}</label>
-          <span>{{ application.tenantPhone }}</span>
-        </div>
-        <div class="info-item">
-          <label>{{ "Email" | translate }}</label>
-          <span>{{ application.tenantEmail }}</span>
-        </div>
-      </div>
+    <div
+      [class.active]="activeTab === 'assessment'"
+      (click)="activeTab = 'assessment'"
+      class="tab-item"
+    >
+      <span *ngIf="activeTab === 'assessment'">
+        <img src="/assets/icons/assessment-active.svg" alt="assessment icon" />
+      </span>
+      <span *ngIf="activeTab !== 'assessment'">
+        <img
+          src="/assets/icons/assessment-inactive.svg"
+          alt="assessment icon"
+        />
+      </span>
+      Assessment
     </div>
-
-    <!-- Owner Information -->
-    <div class="section">
-      <h2>{{ "Owner Information" | translate }}</h2>
-      <div class="info-grid">
-        <div class="info-item">
-          <label>{{ "Owner Name" | translate }}</label>
-          <span>{{ application.ownerName }}</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- Application Timeline -->
-    <div class="section">
-      <h2>{{ "Application Timeline" | translate }}</h2>
-      <div class="info-grid">
-        <div class="info-item">
-          <label>{{ "Date Added" | translate }}</label>
-          <span>{{ application.dateAdded }}</span>
-        </div>
-        <div class="info-item">
-          <label>{{ "Last Modified" | translate }}</label>
-          <span>{{ application.dateModified }}</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- Additional Information -->
-    <div class="section" *ngIf="application.additionalNotes">
-      <h2>{{ "Additional Notes" | translate }}</h2>
-      <div class="info-grid">
-        <div class="info-item">
-          <p>{{ application.additionalNotes }}</p>
-        </div>
-      </div>
-    </div>
-
-    <!-- Rejection Reason -->
-    <div class="section" *ngIf="application.rejectedReason">
-      <h2>{{ "Rejection Reason" | translate }}</h2>
-      <div class="info-grid">
-        <div class="info-item">
-          <p>{{ application.rejectedReason }}</p>
-        </div>
-      </div>
+    <div
+      [class.active]="activeTab === 'schedule'"
+      (click)="activeTab = 'schedule'"
+      class="tab-item"
+    >
+      <span *ngIf="activeTab === 'schedule'">
+        <img src="/assets/icons/schedule-active.svg" alt="schedule icon" />
+      </span>
+      <span *ngIf="activeTab !== 'schedule'">
+        <img src="/assets/icons/schedule-inactive.svg" alt="schedule icon" />
+      </span>
+      Schedule
     </div>
   </div>
+
+  <div class="application-overview" *ngIf="activeTab === 'overview'">
+    <div class="application-overview-card">
+      <div class="application-overview-card--title">
+        <img src="/assets/icons/tenant-icon.svg" alt="" />
+        <span> Tenant Information </span>
+      </div>
+      <div class="application-overview-card--content type1">
+        <div class="application-overview-card--content--img">
+          <img src="/assets/images/user-dummy.png" alt="" />
+          <span>My Demo</span>
+        </div>
+        <div class="application-overview-card--content--group">
+          <div class="application-overview-card--content--item">
+            <span> Email </span>
+            <span> riyaskhan7973&#64;gmail.com</span>
+          </div>
+          <div class="application-overview-card--content--item">
+            <span> Contact </span>
+            <span> +966000000000</span>
+          </div>
+        </div>
+
+        <div class="application-overview-card--content--item">
+          <span> Location </span>
+          <span> Riyadh</span>
+        </div>
+      </div>
+    </div>
+    <div class="application-overview-card">
+      <div class="application-overview-card--title">
+        <img src="/assets/icons/property-owner-icon.svg" alt="" />
+        <span> Property Owner </span>
+      </div>
+      <div class="application-overview-card--content type1">
+        <div class="application-overview-card--content--img">
+          <img src="/assets/images/user-dummy.png" alt="" />
+          <span>My Demo</span>
+        </div>
+        <div class="application-overview-card--content--group">
+          <div class="application-overview-card--content--item">
+            <span> Email </span>
+            <span> riyaskhan7973&#64;gmail.com</span>
+          </div>
+          <div class="application-overview-card--content--item">
+            <span> Contact </span>
+            <span> +966000000000</span>
+          </div>
+        </div>
+
+        <div class="application-overview-card--content--item">
+          <span> Location </span>
+          <span> Riyadh</span>
+        </div>
+      </div>
+    </div>
+    <div class="application-overview-card">
+      <div class="application-overview-card--title">
+        <img src="/assets/icons/property-details-icon.svg" alt="" />
+        <span> Property Details </span>
+      </div>
+      <div class="application-overview-card--content type2">
+        <div class="application-overview-card--content--imgpreview">
+          <img src="/assets/images/property-details-img.png" alt="" class="" />
+        </div>
+
+        <div class="application-overview-card--content--itemsgroup">
+          <div class="application-overview-card--content--item">
+            <span> Property Type </span>
+            <span> Commercial - gym, sakaka</span>
+          </div>
+          <div class="application-overview-card--content--item">
+            <span> Address </span>
+            <span> King Fahad Road, Riyadh, Sakaka, Al-Jawf-12214</span>
+          </div>
+          <div class="application-overview-card--content--buttons">
+            <div class="application-overview-card--content--button">
+              <span> Annual Rent </span>
+              <span>{{ 50000 | number }} SAR</span>
+            </div>
+            <div class="application-overview-card--content--button">
+              <span> Annual Rent </span>
+              <span>{{ 50000 | number }} SAR</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="application-assessment" *ngIf="activeTab === 'assessment'">
+    <div class="application-assessment-title">
+      <img src="/assets/icons/financial-title-icon.svg" alt="" />
+      <span> Financial Assessment </span>
+    </div>
+    <div class="application-assessment-cards">
+      <!-- card 1 -->
+      <div class="application-assessment-card">
+        <div class="application-assessment-card--title">
+          <img src="/assets/icons/tenant-icon.svg" alt="" />
+          <span> Personal Details </span>
+        </div>
+        <div class="application-assessment-card--content">
+          <div class="application-assessment-card--content--item">
+            <span> Full Name </span>
+            My Demo
+          </div>
+          <div class="application-assessment-card--content--item">
+            <span> Full Name </span>
+            My Demo
+          </div>
+          <div class="application-assessment-card--content--item">
+            <span> Full Name </span>
+            My Demo
+          </div>
+          <div class="application-assessment-card--content--item">
+            <span> Full Name </span>
+            My Demo
+          </div>
+          <div class="application-assessment-card--content--item">
+            <span> Full Name </span>
+            My Demo
+          </div>
+          <div class="application-assessment-card--content--item">
+            <span> Full Name </span>
+            My Demo
+          </div>
+          <div class="application-assessment-card--content--item">
+            <span> Full Name </span>
+            My Demo
+          </div>
+          <div class="application-assessment-card--content--item">
+            <span> Full Name </span>
+            My Demo
+          </div>
+        </div>
+      </div>
+      <!-- card 2 -->
+      <div class="application-assessment-card">
+        <div class="application-assessment-card--title">
+          <img src="/assets/icons/employment-icon.svg" alt="" />
+          <span> Employment Details </span>
+        </div>
+        <div class="application-assessment-card--content">
+          <div class="application-assessment-card--content--checkgroup">
+            <div class="application-assessment-card--content--checkitem">
+              <span class="active"></span>
+              <span>Employed</span>
+            </div>
+            <div class="application-assessment-card--content--checkitem">
+              <span></span>
+              <span>Self-Employed</span>
+            </div>
+          </div>
+          <div class="application-assessment-card--content--item">
+            <span> Full Name </span>
+            My Demo
+          </div>
+          <div class="application-assessment-card--content--item">
+            <span> Full Name </span>
+            My Demo
+          </div>
+          <div class="application-assessment-card--content--item">
+            <span> Full Name </span>
+            My Demo
+          </div>
+          <div class="application-assessment-card--content--item">
+            <span> Full Name </span>
+            My Demo
+          </div>
+          <div class="application-assessment-certificate">
+            NO Income Certificate
+          </div>
+          <div class="application-assessment-card--content--item">
+            <span> Full Name </span>
+            My Demo
+          </div>
+          <div class="application-assessment-card--content--check">
+            <p>Do you have any existing debts ?</p>
+            <div class="application-assessment-card--content--checkgroup">
+              <div class="application-assessment-card--content--checkitem">
+                <span class="active"></span>
+                <span>Yes</span>
+              </div>
+              <div class="application-assessment-card--content--checkitem">
+                <span></span>
+                <span>No</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- card 3 -->
+      <div class="application-assessment-card">
+        <div class="application-assessment-card--title">
+          <img src="/assets/icons/employment-icon.svg" alt="" />
+          <span> Employment Details </span>
+        </div>
+        <div class="application-assessment-card--content">
+          <!-- Credit Score Document -->
+          <div class="application-assessment-csd">Credit Score Document</div>
+          <div class="application-assessment-card--content--item">
+            <span> Full Name </span>
+            My Demo
+          </div>
+          <div class="application-assessment-card--content--item">
+            <span> Full Name </span>
+            My Demo
+          </div>
+          <div class="application-assessment-card--content--item">
+            <span> Full Name </span>
+            My Demo
+          </div>
+          <div class="application-assessment-card--content--item">
+            <span> Full Name </span>
+            My Demo
+          </div>
+          <div class="application-assessment-card--content--item">
+            <span> Full Name </span>
+            My Demo
+          </div>
+          <div class="application-assessment-emi">Monthly EMI 4166 SAR</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="application-schedule" *ngIf="activeTab === 'schedule'"></div>
 </div>
