@@ -43,7 +43,7 @@
       Schedule
     </div>
   </div>
-
+  <!-- overview -->
   <div class="application-overview" *ngIf="activeTab === 'overview'">
     <div class="application-overview-card">
       <div class="application-overview-card--title">
@@ -132,6 +132,7 @@
       </div>
     </div>
   </div>
+  <!-- assessment -->
   <div class="application-assessment" *ngIf="activeTab === 'assessment'">
     <div class="application-assessment-title">
       <img src="/assets/icons/financial-title-icon.svg" alt="" />
@@ -268,5 +269,73 @@
       </div>
     </div>
   </div>
-  <div class="application-schedule" *ngIf="activeTab === 'schedule'"></div>
+  <!-- schedule -->
+  <div class="application-schedule" *ngIf="activeTab === 'schedule'">
+    <div class="application-schedule-title">
+      <img src="/assets/icons/payment-icon.svg" alt="" />
+      <span> Payment Schedule </span>
+    </div>
+
+    <div class="application-schedule-table table">
+      <div class="table-titles">
+        <div>
+          <span>{{ "Due Date" | translate }}</span>
+          <span>
+            <img src="/assets/icons/sort-img.svg" alt="" />
+          </span>
+        </div>
+        <div>
+          <span>{{ "Amount" | translate }}</span>
+          <span>
+            <img src="/assets/icons/sort-img.svg" alt="" />
+          </span>
+        </div>
+        <div>
+          <span>{{ "Balance" | translate }}</span>
+          <span>
+            <img src="/assets/icons/sort-img.svg" alt="" />
+          </span>
+        </div>
+        <div>
+          <span>{{ "Status" | translate }}</span>
+          <span>
+            <img src="/assets/icons/sort-img.svg" alt="" />
+          </span>
+        </div>
+      </div>
+      <div class="table-row">
+        <div>March 25</div>
+        <div>9091.66 SAR</div>
+        <div>50000.00 SAR</div>
+        <div class="status-pending">
+          <span> Upcoming </span>
+        </div>
+      </div>
+      <div class="table-row">
+        <div>March 25</div>
+        <div>9091.66 SAR</div>
+        <div>50000.00 SAR</div>
+        <div class="status-approved">
+          <span> Aproved </span>
+        </div>
+      </div>
+      <div class="table-row">
+        <div>March 25</div>
+        <div>9091.66 SAR</div>
+        <div>50000.00 SAR</div>
+        <div class="status-rejected">
+          <span> rejected </span>
+        </div>
+      </div>
+
+      <div class="table-settings">
+        <!-- this edit the shedule table -->
+        <div>revise</div>
+        <!-- reject  the sechedule -->
+        <div>reject</div>
+        <!-- approve the schedule -->
+        <div>aproved</div>
+      </div>
+    </div>
+  </div>
 </div>
