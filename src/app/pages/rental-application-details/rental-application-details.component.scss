@@ -382,7 +382,9 @@
     width: 700px;
     max-width: 90%;
     max-height: 90vh;
-    overflow-y: auto;
+
+    display: grid;
+    grid-template-rows: auto 1fr auto;
   }
 
   &-header {
@@ -410,6 +412,8 @@
 
   &-body {
     padding: 20px;
+    height: 390px;
+    overflow-y: auto;
   }
 
   &-row {

@@ -2,7 +2,7 @@ import { Component, ElementRef, HostListener } from '@angular/core';
 import { Router } from '@angular/router';
 import { LanguageService } from '../../../services/language.service';
 import { TranslateModule } from '@ngx-translate/core';
-import { NgFor, NgIf } from '@angular/common';
+import { Location, NgFor, NgIf } from '@angular/common';
 import { RelativeTimePipe } from '../../../services/relative-time.pipe';
 
 @Component({
@@ -15,11 +15,13 @@ export class DashboardHeaderComponent {
   headerText: string = '';
   showNotifications = false;
   isPropertyDetailsPage = false;
+  isRentalApplicationDetailsPage = false;
 
   constructor(
     public languageService: LanguageService,
     private router: Router,
-    private elementRef: ElementRef
+    private elementRef: ElementRef,
+    private location: Location
   ) {
     this.router.events.subscribe(() => {
       this.setHeaderText();
@@ -119,9 +121,11 @@ export class DashboardHeaderComponent {
   checkPropertyDetailsPage() {
     const url = this.router.url;
     this.isPropertyDetailsPage = /\/admin\/property\/\d+$/.test(url);
+    this.isRentalApplicationDetailsPage =
+      /\/admin\/rental-application-details\/\d+$/.test(url);
   }
 
   goBack() {
-    this.router.navigate(['/admin/properties']);
+    this.location.back();
   }
 }
