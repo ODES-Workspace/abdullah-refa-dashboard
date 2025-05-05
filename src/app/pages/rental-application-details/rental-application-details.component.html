@@ -280,61 +280,112 @@
       <div class="table-titles">
         <div>
           <span>{{ "Due Date" | translate }}</span>
-          <span>
+          <span (click)="sortSchedule('dueDate')">
             <img src="/assets/icons/sort-img.svg" alt="" />
           </span>
         </div>
         <div>
           <span>{{ "Amount" | translate }}</span>
-          <span>
+          <span (click)="sortSchedule('amount')">
             <img src="/assets/icons/sort-img.svg" alt="" />
           </span>
         </div>
         <div>
           <span>{{ "Balance" | translate }}</span>
-          <span>
+          <span (click)="sortSchedule('balance')">
             <img src="/assets/icons/sort-img.svg" alt="" />
           </span>
         </div>
         <div>
           <span>{{ "Status" | translate }}</span>
-          <span>
+          <span (click)="sortSchedule('status')">
             <img src="/assets/icons/sort-img.svg" alt="" />
           </span>
         </div>
       </div>
-      <div class="table-row">
-        <div>March 25</div>
-        <div>9091.66 SAR</div>
-        <div>50000.00 SAR</div>
-        <div class="status-pending">
-          <span> Upcoming </span>
-        </div>
-      </div>
-      <div class="table-row">
-        <div>March 25</div>
-        <div>9091.66 SAR</div>
-        <div>50000.00 SAR</div>
-        <div class="status-approved">
-          <span> Aproved </span>
-        </div>
-      </div>
-      <div class="table-row">
-        <div>March 25</div>
-        <div>9091.66 SAR</div>
-        <div>50000.00 SAR</div>
-        <div class="status-rejected">
-          <span> rejected </span>
+      <div
+        class="table-row"
+        *ngFor="let item of application?.schedule; let i = index"
+      >
+        <div>{{ item.dueDate }}</div>
+        <div>{{ item.amount | number : "1.2-2" }} SAR</div>
+        <div>{{ item.balance | number : "1.2-2" }} SAR</div>
+        <div [class]="'status-' + item.status">
+          <span>{{ item.status | titlecase }}</span>
         </div>
       </div>
 
       <div class="table-settings">
-        <!-- this edit the shedule table -->
-        <div>revise</div>
-        <!-- reject  the sechedule -->
-        <div>reject</div>
-        <!-- approve the schedule -->
-        <div>aproved</div>
+        <div (click)="openReviseModal()">revise</div>
+        <div (click)="rejectSchedule()">reject</div>
+        <div (click)="approveSchedule()">approve</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Revise Modal -->
+  <div class="modal" *ngIf="showReviseModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>{{ "Revise Schedule" | translate }}</h2>
+        <span class="close" (click)="closeReviseModal()">&times;</span>
+      </div>
+      <div class="modal-body">
+        <div
+          class="modal-row"
+          *ngFor="let item of editedSchedule; let i = index"
+        >
+          <div class="schedule-item">
+            <div class="schedule-item-header">
+              <h3>{{ "Payment" | translate }} {{ i + 1 }}</h3>
+            </div>
+            <div class="schedule-item-content">
+              <div class="form-group">
+                <label>{{ "Due Date" | translate }}</label>
+                <input
+                  type="text"
+                  [(ngModel)]="item.dueDate"
+                  (ngModelChange)="updateScheduleItem(i, 'dueDate', $event)"
+                />
+              </div>
+              <div class="form-group">
+                <label>{{ "Amount" | translate }}</label>
+                <input
+                  type="number"
+                  [(ngModel)]="item.amount"
+                  (ngModelChange)="updateScheduleItem(i, 'amount', $event)"
+                />
+              </div>
+              <div class="form-group">
+                <label>{{ "Balance" | translate }}</label>
+                <input
+                  type="number"
+                  [(ngModel)]="item.balance"
+                  (ngModelChange)="updateScheduleItem(i, 'balance', $event)"
+                />
+              </div>
+              <div class="form-group">
+                <label>{{ "Status" | translate }}</label>
+                <select
+                  [(ngModel)]="item.status"
+                  (ngModelChange)="updateScheduleItem(i, 'status', $event)"
+                >
+                  <option *ngFor="let status of statusOptions" [value]="status">
+                    {{ status | titlecase }}
+                  </option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="cancel-btn" (click)="closeReviseModal()">
+          {{ "Cancel" | translate }}
+        </button>
+        <button class="submit-btn" (click)="submitRevise()">
+          {{ "Submit" | translate }}
+        </button>
       </div>
     </div>
   </div>
