@@ -324,6 +324,43 @@
     .table-titles {
       grid-template-columns: repeat(4, 1fr);
     }
+
+    .table-settings {
+      padding: 16px;
+      display: flex;
+      gap: 24px;
+
+      display: flex;
+      align-items: center;
+      justify-content: end;
+
+      div {
+        padding: 10px;
+        font-size: 12px;
+        font-weight: 700;
+        line-height: 12px;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        border-radius: 6px;
+        cursor: pointer;
+      }
+
+      &-approve {
+        background-color: #1951fd;
+        color: #ffffff;
+      }
+
+      &-reject {
+        border: 1px solid #1951fd;
+        color: #1951fd;
+      }
+
+      &-revise {
+        color: #404040b2;
+        border: 1px solid #404040b2;
+      }
+    }
   }
 }
 

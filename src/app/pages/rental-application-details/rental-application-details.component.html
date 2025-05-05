@@ -316,9 +316,20 @@
       </div>
 
       <div class="table-settings">
-        <div (click)="openReviseModal()">revise</div>
-        <div (click)="rejectSchedule()">reject</div>
-        <div (click)="approveSchedule()">approve</div>
+        <div (click)="openReviseModal()" class="table-settings-revise">
+          <img src="/assets/icons/revise.svg" alt="" />
+          Revise
+        </div>
+        <div (click)="rejectSchedule()" class="table-settings-reject">
+          <img src="/assets/icons/reject-icon.svg" alt="" />
+
+          Reject
+        </div>
+        <div (click)="approveSchedule()" class="table-settings-approve">
+          <img src="/assets/icons/confirm-icon.svg" alt="" />
+
+          Approve
+        </div>
       </div>
     </div>
   </div>
