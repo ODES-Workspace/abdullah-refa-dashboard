@@ -3,6 +3,8 @@ import { Component, HostListener } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { Router } from '@angular/router';
+import { ToastService } from '../../../services/toast.service';
+import { ToastComponent } from '../../ui/toast/toast.component';
 
 interface TableItem {
   id: number;
@@ -20,7 +22,7 @@ interface TableItem {
 
 @Component({
   selector: 'app-rentrequests-list',
-  imports: [FormsModule, NgFor, NgIf, TranslateModule],
+  imports: [FormsModule, NgFor, NgIf, TranslateModule, ToastComponent],
   templateUrl: './rentrequests-list.component.html',
   styleUrl: './rentrequests-list.component.scss',
 })
@@ -96,7 +98,7 @@ export class RentrequestsListComponent {
     );
   }
 
-  constructor(private router: Router) {
+  constructor(private router: Router, private toastService: ToastService) {
     this.updatePagination();
   }
 
@@ -182,6 +184,7 @@ export class RentrequestsListComponent {
   approveRequest(item: TableItem): void {
     item.status = 'Approved';
     item.dateModified = new Date().toISOString().split('T')[0];
+    this.toastService.show('requestApproved');
     this.closeDropdown();
   }
 

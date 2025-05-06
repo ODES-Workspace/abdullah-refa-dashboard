@@ -161,5 +161,6 @@
   "Payment Schedule": "Payment Schedule",
   "Revise Schedule": "Revise Schedule",
   "Payment": "Payment",
-  "View Rejection Reason": "View Rejection Reason"
+  "View Rejection Reason": "View Rejection Reason",
+  "requestApproved": "Request approved successfully"
 }

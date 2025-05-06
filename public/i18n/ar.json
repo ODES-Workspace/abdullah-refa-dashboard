@@ -177,5 +177,6 @@
   "Payment Schedule": "جدول الدفع",
   "Revise Schedule": "تعديل الجدول",
   "Payment": "دفع",
-  "View Rejection Reason": "عرض سبب الرفض"
+  "View Rejection Reason": "عرض سبب الرفض",
+  "requestApproved": "تمت الموافقة على الطلب بنجاح"
 }
