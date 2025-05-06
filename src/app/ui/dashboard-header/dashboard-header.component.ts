@@ -91,7 +91,11 @@ export class DashboardHeaderComponent {
       url.includes('/admin/agencies-owner-rejections')
     ) {
       this.headerText = 'Agency/Owner';
-    } else if (url.includes('/admin/rentrequests')) {
+    } else if (
+      url.includes('/admin/rentrequests') ||
+      url.includes('/admin/approved-rentrequests') ||
+      url.includes('/admin/rejected-rentrequests')
+    ) {
       this.headerText = 'rentrequests';
     } else if (/\/admin\/rental-application-details\/\d+$/.test(url)) {
       this.headerText = 'Rent Requests/Rental Application Details';
