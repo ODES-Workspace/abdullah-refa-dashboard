@@ -11,6 +11,8 @@ import { ListofrejectionsComponent } from './pages/listofrejections/listofreject
 import { ListofAgencyOwnerComponent } from './pages/listof-agency-owner/listof-agency-owner.component';
 import { RentrequestsListComponent } from './pages/rentrequests-list/rentrequests-list.component';
 import { RentalApplicationDetailsComponent } from './pages/rental-application-details/rental-application-details.component';
+import { ApprovedRentrequestsComponent } from './pages/approved-rentrequests/approved-rentrequests.component';
+import { RejectedRentrequestsComponent } from './pages/rejected-rentrequests/rejected-rentrequests.component';
 
 export const routes: Routes = [
   {
@@ -40,6 +42,15 @@ export const routes: Routes = [
       {
         path: 'rentrequests',
         component: RentrequestsListComponent,
+      },
+      {
+        path: 'approved-rentrequests',
+        component: ApprovedRentrequestsComponent,
+      },
+
+      {
+        path: 'rejected-rentrequests',
+        component: RejectedRentrequestsComponent,
       },
 
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },

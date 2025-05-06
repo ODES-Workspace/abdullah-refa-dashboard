@@ -11,7 +11,7 @@
       <span *ngIf="activeTab !== 'overview'">
         <img src="/assets/icons/overview-inactive.svg" alt="overview icon" />
       </span>
-      Overview
+      {{ "Overview" | translate }}
     </div>
     <div
       [class.active]="activeTab === 'assessment'"
@@ -27,7 +27,7 @@
           alt="assessment icon"
         />
       </span>
-      Assessment
+      {{ "Assessment" | translate }}
     </div>
     <div
       [class.active]="activeTab === 'schedule'"
@@ -40,7 +40,7 @@
       <span *ngIf="activeTab !== 'schedule'">
         <img src="/assets/icons/schedule-inactive.svg" alt="schedule icon" />
       </span>
-      Schedule
+      {{ "Schedule" | translate }}
     </div>
   </div>
   <!-- overview -->
@@ -48,26 +48,26 @@
     <div class="application-overview-card">
       <div class="application-overview-card--title">
         <img src="/assets/icons/tenant-icon.svg" alt="" />
-        <span> Tenant Information </span>
+        <span> {{ "Tenant Information" | translate }} </span>
       </div>
       <div class="application-overview-card--content type1">
         <div class="application-overview-card--content--img">
           <img src="/assets/images/user-dummy.png" alt="" />
-          <span>My Demo</span>
+          <span>{{ application.tenantName }}</span>
         </div>
         <div class="application-overview-card--content--group">
           <div class="application-overview-card--content--item">
-            <span> Email </span>
+            <span> {{ "Email" | translate }} </span>
             <span> riyaskhan7973&#64;gmail.com</span>
           </div>
           <div class="application-overview-card--content--item">
-            <span> Contact </span>
+            <span> {{ "Contact" | translate }} </span>
             <span> +966000000000</span>
           </div>
         </div>
 
         <div class="application-overview-card--content--item">
-          <span> Location </span>
+          <span> {{ "Location" | translate }} </span>
           <span> Riyadh</span>
         </div>
       </div>
@@ -75,26 +75,26 @@
     <div class="application-overview-card">
       <div class="application-overview-card--title">
         <img src="/assets/icons/property-owner-icon.svg" alt="" />
-        <span> Property Owner </span>
+        <span> {{ "Property Owner" | translate }} </span>
       </div>
       <div class="application-overview-card--content type1">
         <div class="application-overview-card--content--img">
           <img src="/assets/images/user-dummy.png" alt="" />
-          <span>My Demo</span>
+          <span>{{ application.propertyName }}</span>
         </div>
         <div class="application-overview-card--content--group">
           <div class="application-overview-card--content--item">
-            <span> Email </span>
+            <span> {{ "Email" | translate }} </span>
             <span> riyaskhan7973&#64;gmail.com</span>
           </div>
           <div class="application-overview-card--content--item">
-            <span> Contact </span>
+            <span> {{ "Contact" | translate }} </span>
             <span> +966000000000</span>
           </div>
         </div>
 
         <div class="application-overview-card--content--item">
-          <span> Location </span>
+          <span> {{ "Location" | translate }} </span>
           <span> Riyadh</span>
         </div>
       </div>
@@ -102,7 +102,7 @@
     <div class="application-overview-card">
       <div class="application-overview-card--title">
         <img src="/assets/icons/property-details-icon.svg" alt="" />
-        <span> Property Details </span>
+        <span> {{ "Property Details" | translate }} </span>
       </div>
       <div class="application-overview-card--content type2">
         <div class="application-overview-card--content--imgpreview">
@@ -111,21 +111,21 @@
 
         <div class="application-overview-card--content--itemsgroup">
           <div class="application-overview-card--content--item">
-            <span> Property Type </span>
+            <span> {{ "Property Type" | translate }} </span>
             <span> Commercial - gym, sakaka</span>
           </div>
           <div class="application-overview-card--content--item">
-            <span> Address </span>
+            <span> {{ "Address" | translate }} </span>
             <span> King Fahad Road, Riyadh, Sakaka, Al-Jawf-12214</span>
           </div>
           <div class="application-overview-card--content--buttons">
             <div class="application-overview-card--content--button">
-              <span> Annual Rent </span>
-              <span>{{ 50000 | number }} SAR</span>
+              <span> {{ "Annual Rent" | translate }} </span>
+              <span>{{ 50000 | number }} {{ "SAR" | translate }}</span>
             </div>
             <div class="application-overview-card--content--button">
-              <span> Annual Rent </span>
-              <span>{{ 50000 | number }} SAR</span>
+              <span> {{ "Security Deposit" | translate }} </span>
+              <span>{{ 50000 | number }} {{ "SAR" | translate }}</span>
             </div>
           </div>
         </div>
@@ -136,46 +136,46 @@
   <div class="application-assessment" *ngIf="activeTab === 'assessment'">
     <div class="application-assessment-title">
       <img src="/assets/icons/financial-title-icon.svg" alt="" />
-      <span> Financial Assessment </span>
+      <span> {{ "Financial Assessment" | translate }} </span>
     </div>
     <div class="application-assessment-cards">
       <!-- card 1 -->
       <div class="application-assessment-card">
         <div class="application-assessment-card--title">
           <img src="/assets/icons/tenant-icon.svg" alt="" />
-          <span> Personal Details </span>
+          <span> {{ "Personal Details" | translate }} </span>
         </div>
         <div class="application-assessment-card--content">
           <div class="application-assessment-card--content--item">
-            <span> Full Name </span>
+            <span> {{ "Full Name" | translate }} </span>
             My Demo
           </div>
           <div class="application-assessment-card--content--item">
-            <span> Full Name </span>
+            <span> {{ "Mobile Number" | translate }} </span>
             My Demo
           </div>
           <div class="application-assessment-card--content--item">
-            <span> Full Name </span>
+            <span> {{ "Email" | translate }} </span>
             My Demo
           </div>
           <div class="application-assessment-card--content--item">
-            <span> Full Name </span>
+            <span> {{ "Location" | translate }} </span>
             My Demo
           </div>
           <div class="application-assessment-card--content--item">
-            <span> Full Name </span>
+            <span> {{ "Date of birth" | translate }} </span>
             My Demo
           </div>
           <div class="application-assessment-card--content--item">
-            <span> Full Name </span>
+            <span> {{ "Nationality" | translate }} </span>
             My Demo
           </div>
           <div class="application-assessment-card--content--item">
-            <span> Full Name </span>
+            <span> {{ "No. of members" | translate }} </span>
             My Demo
           </div>
           <div class="application-assessment-card--content--item">
-            <span> Full Name </span>
+            <span> {{ "National ID Number" | translate }} </span>
             My Demo
           </div>
         </div>
@@ -184,52 +184,49 @@
       <div class="application-assessment-card">
         <div class="application-assessment-card--title">
           <img src="/assets/icons/employment-icon.svg" alt="" />
-          <span> Employment Details </span>
+          <span> {{ "Employment Details" | translate }} </span>
         </div>
         <div class="application-assessment-card--content">
           <div class="application-assessment-card--content--checkgroup">
             <div class="application-assessment-card--content--checkitem">
               <span class="active"></span>
-              <span>Employed</span>
+              <span>{{ "Employed" | translate }}</span>
             </div>
             <div class="application-assessment-card--content--checkitem">
               <span></span>
-              <span>Self-Employed</span>
+              <span>{{ "Self-Employed" | translate }}</span>
             </div>
           </div>
           <div class="application-assessment-card--content--item">
-            <span> Full Name </span>
+            <span> {{ "Work Start Date" | translate }} </span>
             My Demo
           </div>
           <div class="application-assessment-card--content--item">
-            <span> Full Name </span>
+            <span> {{ "Name of Working place" | translate }} </span>
             My Demo
           </div>
           <div class="application-assessment-card--content--item">
-            <span> Full Name </span>
+            <span> {{ "Job Sector" | translate }} </span>
             My Demo
           </div>
-          <div class="application-assessment-card--content--item">
-            <span> Full Name </span>
-            My Demo
-          </div>
+
           <div class="application-assessment-certificate">
-            NO Income Certificate
+            {{ "NO Income Certificate" | translate }}
           </div>
           <div class="application-assessment-card--content--item">
-            <span> Full Name </span>
+            <span> {{ "Sub Sector" | translate }} </span>
             My Demo
           </div>
           <div class="application-assessment-card--content--check">
-            <p>Do you have any existing debts ?</p>
+            <p>{{ "Do you have any existing debts ?" | translate }}</p>
             <div class="application-assessment-card--content--checkgroup">
               <div class="application-assessment-card--content--checkitem">
                 <span class="active"></span>
-                <span>Yes</span>
+                <span>{{ "Yes" | translate }}</span>
               </div>
               <div class="application-assessment-card--content--checkitem">
                 <span></span>
-                <span>No</span>
+                <span>{{ "No" | translate }}</span>
               </div>
             </div>
           </div>
@@ -239,32 +236,36 @@
       <div class="application-assessment-card">
         <div class="application-assessment-card--title">
           <img src="/assets/icons/employment-icon.svg" alt="" />
-          <span> Employment Details </span>
+          <span> {{ "Employment Details" | translate }} </span>
         </div>
         <div class="application-assessment-card--content">
           <!-- Credit Score Document -->
-          <div class="application-assessment-csd">Credit Score Document</div>
+          <div class="application-assessment-csd">
+            {{ "Credit Score Document" | translate }}
+          </div>
           <div class="application-assessment-card--content--item">
-            <span> Full Name </span>
+            <span> {{ "Annual Rent" | translate }} </span>
             My Demo
           </div>
           <div class="application-assessment-card--content--item">
-            <span> Full Name </span>
+            <span> {{ "Monthl Income" | translate }} </span>
             My Demo
           </div>
           <div class="application-assessment-card--content--item">
-            <span> Full Name </span>
+            <span> {{ "Name of Working place" | translate }} </span>
             My Demo
           </div>
           <div class="application-assessment-card--content--item">
-            <span> Full Name </span>
+            <span> {{ "Expected Monthly Expenses" | translate }} </span>
             My Demo
           </div>
           <div class="application-assessment-card--content--item">
-            <span> Full Name </span>
+            <span>{{ "No of Installments" | translate }} </span>
             My Demo
           </div>
-          <div class="application-assessment-emi">Monthly EMI 4166 SAR</div>
+          <div class="application-assessment-emi">
+            {{ "Monthly EMI 4166 SAR" | translate }}
+          </div>
         </div>
       </div>
     </div>
@@ -273,7 +274,7 @@
   <div class="application-schedule" *ngIf="activeTab === 'schedule'">
     <div class="application-schedule-title">
       <img src="/assets/icons/payment-icon.svg" alt="" />
-      <span> Payment Schedule </span>
+      <span> {{ "Payment Schedule" | translate }} </span>
     </div>
 
     <div class="application-schedule-table table">
@@ -308,8 +309,8 @@
         *ngFor="let item of application?.schedule; let i = index"
       >
         <div>{{ item.dueDate }}</div>
-        <div>{{ item.amount | number : "1.2-2" }} SAR</div>
-        <div>{{ item.balance | number : "1.2-2" }} SAR</div>
+        <div>{{ item.amount | number : "1.2-2" }} {{ "SAR" | translate }}</div>
+        <div>{{ item.balance | number : "1.2-2" }} {{ "SAR" | translate }}</div>
         <div [class]="'status-' + item.status">
           <span>{{ item.status | titlecase }}</span>
         </div>
@@ -318,17 +319,17 @@
       <div class="table-settings">
         <div (click)="openReviseModal()" class="table-settings-revise">
           <img src="/assets/icons/revise.svg" alt="" />
-          Revise
+          {{ "Revise" | translate }}
         </div>
         <div (click)="rejectSchedule()" class="table-settings-reject">
           <img src="/assets/icons/reject-icon.svg" alt="" />
 
-          Reject
+          {{ "Reject" | translate }}
         </div>
         <div (click)="approveSchedule()" class="table-settings-approve">
           <img src="/assets/icons/confirm-icon.svg" alt="" />
 
-          Approve
+          {{ "Approve" | translate }}
         </div>
       </div>
     </div>

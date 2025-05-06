@@ -1,0 +1,142 @@
+<div class="table">
+  <!-- Table header -->
+  <div class="table-header">
+    <div class="table-title">{{ "rentrequests" | translate }}</div>
+    <div class="table-search">
+      <img src="/assets/icons/search-icon.svg" alt="" />
+      <input
+        type="text"
+        [placeholder]="'Search by property name or tenant Name' | translate"
+        [(ngModel)]="searchTerm"
+        (input)="onSearch()"
+      />
+    </div>
+  </div>
+  <!-- Table titles -->
+  <div class="table-titles">
+    <div>
+      <span>{{ "S.ON" | translate }}</span>
+      <span>
+        <img src="/assets/icons/sort-img.svg" alt="" (click)="sortBy('id')" />
+      </span>
+    </div>
+    <div>
+      <span>{{ "propertyName" | translate }}</span>
+      <span>
+        <img
+          src="/assets/icons/sort-img.svg"
+          alt=""
+          (click)="sortBy('propertyName')"
+        />
+      </span>
+    </div>
+
+    <div>
+      <span>{{ "tenantName" | translate }}</span>
+      <span>
+        <img
+          src="/assets/icons/sort-img.svg"
+          alt=""
+          (click)="sortBy('tenantName')"
+        />
+      </span>
+    </div>
+
+    <div>
+      <span>{{ "ownerName" | translate }}</span>
+      <span>
+        <img
+          src="/assets/icons/sort-img.svg"
+          alt=""
+          (click)="sortBy('ownerName')"
+        />
+      </span>
+    </div>
+    <div>
+      <span>{{ "City" | translate }}</span>
+      <span>
+        <img src="/assets/icons/sort-img.svg" alt="" (click)="sortBy('city')" />
+      </span>
+    </div>
+    <div>
+      <span>{{ "propertyCategory" | translate }}</span>
+    </div>
+    <div>
+      <span>{{ "propertyType" | translate }}</span>
+    </div>
+
+    <div>
+      <span>{{ "Date added" | translate }}</span>
+      <span>
+        <img
+          src="/assets/icons/sort-img.svg"
+          alt=""
+          (click)="sortBy('dateAdded')"
+        />
+      </span>
+    </div>
+    <div>
+      <span>{{ "Date Modified" | translate }}</span>
+      <span>
+        <img
+          src="/assets/icons/sort-img.svg"
+          alt=""
+          (click)="sortBy('dateModified')"
+        />
+      </span>
+    </div>
+  </div>
+
+  <!-- No data -->
+  <div *ngIf="filteredItems.length === 0" class="table-no-data">
+    {{ "No data found" | translate }}
+  </div>
+  <!-- Table rows -->
+  <div class="table-row" *ngFor="let item of paginatedItems">
+    <div class="table-id">{{ item.id }}</div>
+    <div>{{ item.propertyName }}</div>
+    <div>{{ item.tenantName }}</div>
+    <div>{{ item.ownerName }}</div>
+    <div>{{ item.city }}</div>
+    <div>{{ item.propertyCategory }}</div>
+    <div>{{ item.propertyType }}</div>
+    <div>{{ item.dateAdded }}</div>
+    <div>{{ item.dateModified }}</div>
+  </div>
+
+  <!-- Table pagination -->
+  <div class="table-pagination" *ngIf="filteredItems.length > 0">
+    <div class="table-pagination--show">
+      <span> {{ "Show" | translate }} </span>
+      <select [(ngModel)]="itemsPerPage" (change)="updatePagination()">
+        <option *ngFor="let num of [10, 20, 30]" [value]="num">
+          {{ num }}
+        </option>
+      </select>
+      <span> {{ "per page" | translate }} </span>
+    </div>
+
+    <div class="table-pagination--pages">
+      <div class="table-pagination--pages--count">
+        {{ paginationStart + 1 }}-{{ paginationEnd }}
+        {{ "of" | translate }}
+        {{ filteredItems.length }}
+      </div>
+
+      <div class="table-pagination--pages--buttons" dir="ltr">
+        <button (click)="prevPage()" [disabled]="currentPage === 1">
+          <img src="/assets/icons/arrow-left.svg" alt="prev icon" />
+        </button>
+        <span
+          *ngFor="let page of totalPagesArray"
+          (click)="goToPage(page)"
+          [class.active]="page === currentPage"
+          >{{ page }}</span
+        >
+        <button (click)="nextPage()" [disabled]="currentPage === totalPages">
+          <img src="/assets/icons/arrow-right.svg" alt=" next icon " />
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

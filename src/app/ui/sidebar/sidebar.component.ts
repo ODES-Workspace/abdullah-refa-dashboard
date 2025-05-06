@@ -76,6 +76,14 @@ export class SidebarComponent implements OnInit {
           label: 'sidebar.rentrequests',
           route: '/admin/rentrequests',
         },
+        {
+          label: 'sidebar.approved',
+          route: '/admin/approved-rentrequests',
+        },
+        {
+          label: 'sidebar.rejected',
+          route: '/admin/rejected-rentrequests',
+        },
       ],
       icon: {
         active: '/assets/icons/rent-active.svg',

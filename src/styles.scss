@@ -184,7 +184,7 @@ input {
     display: flex;
     align-items: center;
     gap: 10px;
-
+    text-wrap: nowrap;
     ul {
       position: absolute;
       top: 0;
@@ -195,7 +195,8 @@ input {
       border-radius: 12px;
       box-shadow: 0px 7px 18px 0px #00000017;
       padding: 10px;
-      min-width: 120px;
+
+      width: fit-content;
       z-index: 1111;
       list-style: none;
       display: flex;
@@ -325,6 +326,14 @@ html[dir="rtl"] {
         right: unset !important;
         left: 0 !important;
       }
+    }
+  }
+
+  .application-assessment-card--content--item {
+    span {
+      left: unset;
+      right: 7px;
+      top: 0;
     }
   }
 }
