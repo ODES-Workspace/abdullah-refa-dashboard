@@ -125,15 +125,17 @@
   <!-- View Reject Reason Modal -->
   <div class="modal modal-reject" *ngIf="showViewRejectReasonModal">
     <div class="modal-content">
-      <h2>{{ "reasonforrejection" | translate }}</h2>
+      <h2>
+        {{ "View Rejection Reason" | translate }}
+
+        <img
+          class="close"
+          (click)="closeViewRejectReasonModal()"
+          src="/assets/icons/close-modal-icon.svg"
+        />
+      </h2>
       <div class="modal-body">
         <div class="reject-reason-text">{{ selectedRejectReason }}</div>
-      </div>
-      <div class="modal-actions">
-        <button class="cancel-btn" (click)="closeViewRejectReasonModal()">
-          <img src="/assets/icons/close-icon.svg" alt="" />
-          {{ "Close" | translate }}
-        </button>
       </div>
     </div>
   </div>
