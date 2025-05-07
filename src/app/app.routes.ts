@@ -14,6 +14,9 @@ import { RentalApplicationDetailsComponent } from './pages/rental-application-de
 import { ApprovedRentrequestsComponent } from './pages/approved-rentrequests/approved-rentrequests.component';
 import { RejectedRentrequestsComponent } from './pages/rejected-rentrequests/rejected-rentrequests.component';
 import { PaymentsComponent } from './pages/payments/payments.component';
+import { RenewalComponent } from './pages/renewal/renewal.component';
+import { TerminatedComponent } from './pages/terminated/terminated.component';
+import { ExistingContractComponent } from './pages/existing-contract/existing-contract.component';
 
 export const routes: Routes = [
   {
@@ -57,6 +60,18 @@ export const routes: Routes = [
       {
         path: 'payment',
         component: PaymentsComponent,
+      },
+      {
+        path: 'renewal',
+        component: RenewalComponent,
+      },
+      {
+        path: 'terminated',
+        component: TerminatedComponent,
+      },
+      {
+        path: 'existing-contract',
+        component: ExistingContractComponent,
       },
 
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },

@@ -20,7 +20,10 @@
     "rejected": "Rejected",
     "approved": "Approved",
     "contracts": "Contracts",
-    "payment": "Payment"
+    "payment": "Payment",
+    "renewal": "Renewal",
+    "terminated": "Terminated",
+    "existing-contracts": "Existing Contract"
   },
   "Notifications": "Notifications",
   "Mark all as read": "Mark all as read",
@@ -164,5 +167,16 @@
   "Revise Schedule": "Revise Schedule",
   "Payment": "Payment",
   "View Rejection Reason": "View Rejection Reason",
-  "requestApproved": "Request approved successfully"
+  "requestApproved": "Request approved successfully",
+  "payment": "Payment",
+  "Search by applicant's mobile number": "Search by applicant's mobile number",
+  "Tenant": "Tenant",
+  "TenantContactNo": "Tenant Contact No",
+  "Owner": "Owner",
+  "ContactNo": "Contact No",
+  "propertytype": "Property Type",
+  "startDate": "Start Date",
+  "Endofcontract": "End of contract",
+  "Edit Payment": "Edit Payment",
+  "renewal": "Renewal"
 }

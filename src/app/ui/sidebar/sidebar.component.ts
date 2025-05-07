@@ -99,6 +99,18 @@ export class SidebarComponent implements OnInit {
           label: 'sidebar.payment',
           route: '/admin/payment',
         },
+        {
+          label: 'sidebar.renewal',
+          route: '/admin/renewal',
+        },
+        {
+          label: 'sidebar.terminated',
+          route: '/admin/terminated',
+        },
+        {
+          label: 'sidebar.existing-contracts',
+          route: '/admin/existing-contract',
+        },
       ],
       icon: {
         active: '/assets/icons/contracts-active.svg',

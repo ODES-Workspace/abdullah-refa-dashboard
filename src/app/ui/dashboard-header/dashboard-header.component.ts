@@ -98,6 +98,14 @@ export class DashboardHeaderComponent {
     ) {
       this.headerText = 'rentrequests';
     } else if (/\/admin\/rental-application-details\/\d+$/.test(url)) {
+    } else if (
+      url.includes('/admin/payment') ||
+      url.includes('/admin/renewal') ||
+      url.includes('/admin/terminated') ||
+      url.includes('/admin/existing-contract')
+    ) {
+      this.headerText = 'Contract';
+    } else if (/\/admin\/rental-application-details\/\d+$/.test(url)) {
       this.headerText = 'Rent Requests/Rental Application Details';
     } else {
       this.headerText = 'Dashbaord';

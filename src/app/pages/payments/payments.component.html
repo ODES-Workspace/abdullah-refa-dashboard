@@ -1,12 +1,12 @@
 <div class="table">
   <!-- Table header -->
   <div class="table-header">
-    <div class="table-title">{{ "rentrequests" | translate }}</div>
+    <div class="table-title">{{ "payment" | translate }}</div>
     <div class="table-search">
       <img src="/assets/icons/search-icon.svg" alt="" />
       <input
         type="text"
-        [placeholder]="'Search by property name or tenant Name' | translate"
+        [placeholder]="'Search by applicant\'s mobile number' | translate"
         [(ngModel)]="searchTerm"
         (input)="onSearch()"
       />
@@ -169,14 +169,14 @@
   <div class="modal modal-revise" *ngIf="showReviseModal">
     <div class="modal-revise-content">
       <div class="modal-revise-header">
-        <h2>{{ "Edit Request" | translate }}</h2>
+        <h2>{{ "Edit Payment" | translate }}</h2>
         <span class="close" (click)="closeReviseModal()">&times;</span>
       </div>
 
       <div class="modal-revise-body">
         <div class="modal-revise-row">
           <span class="label" for="propertyName">{{
-            "Property Name" | translate
+            "tenantName" | translate
           }}</span>
           <input
             type="text"
@@ -186,7 +186,7 @@
         </div>
         <div class="modal-revise-row">
           <span class="label" for="tenantName">{{
-            "Tenant Name" | translate
+            "TenantContactNo" | translate
           }}</span>
           <input
             type="text"
@@ -205,7 +205,7 @@
           />
         </div>
         <div class="modal-revise-row">
-          <span class="label" for="city">{{ "City" | translate }}</span>
+          <span class="label" for="city">{{ "ContactNo" | translate }}</span>
           <input type="text" id="city" [(ngModel)]="editedItem!.ownerMobile" />
         </div>
         <div class="modal-revise-row">
@@ -220,7 +220,7 @@
         </div>
         <div class="modal-revise-row">
           <span class="label" for="propertyType">{{
-            "Property Type" | translate
+            "Location" | translate
           }}</span>
           <input
             type="text"
@@ -253,7 +253,7 @@
           <span class="value">{{ selectedItem?.tenantName }}</span>
         </div>
         <div class="modal-view-row">
-          <span class="label">{{ "Tenant Contact" | translate }}:</span>
+          <span class="label">{{ "TenantContactNo" | translate }}:</span>
           <span class="value">{{ selectedItem?.tenantMobile }}</span>
         </div>
         <div class="modal-view-row">
@@ -261,7 +261,7 @@
           <span class="value">{{ selectedItem?.ownerName }}</span>
         </div>
         <div class="modal-view-row">
-          <span class="label">{{ "Owner Contact" | translate }}:</span>
+          <span class="label">{{ "ContactNo" | translate }}:</span>
           <span class="value">{{ selectedItem?.ownerMobile }}</span>
         </div>
         <div class="modal-view-row">

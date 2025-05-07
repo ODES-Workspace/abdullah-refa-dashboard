@@ -20,7 +20,10 @@
     "rejected": "مرفوضة",
     "approved": "موافقة",
     "contracts": "العقود",
-    "payment": "الدفع"
+    "payment": "الدفع",
+    "renewal": "تجديد",
+    "terminated": "مُنهى",
+    "existing-contracts": "العقود الحالية"
   },
   "Notifications": "الإشعارات",
   "Mark all as read": "عرض كل الإشعارات",
@@ -180,5 +183,15 @@
   "Revise Schedule": "تعديل الجدول",
   "Payment": "دفع",
   "View Rejection Reason": "عرض سبب الرفض",
-  "requestApproved": "تمت الموافقة على الطلب بنجاح"
+  "requestApproved": "تمت الموافقة على الطلب بنجاح",
+  "payment": "الدفع",
+  "Search by applicant's mobile number": "البحث برقم موبايل المتقدم",
+  "Tenant": "المستاجر",
+  "TenantContactNo": "رقم هاتف المستاجر",
+  "Owner": "المالك",
+  "ContactNo": "رقم الهاتف",
+  "propertytype": "نوع العقار",
+  "startDate": "تاريخ البداية",
+  "Endofcontract": "نهاية العقد",
+  "Edit Payment": "تعديل الدفع"
 }
