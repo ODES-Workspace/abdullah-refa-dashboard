@@ -18,7 +18,9 @@
     "rentrequest": "طلب ايجار",
     "rentrequests": "طلبات الايجار",
     "rejected": "مرفوضة",
-    "approved": "موافقة"
+    "approved": "موافقة",
+    "contracts": "العقود",
+    "payment": "الدفع"
   },
   "Notifications": "الإشعارات",
   "Mark all as read": "عرض كل الإشعارات",

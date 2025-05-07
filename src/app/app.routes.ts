@@ -13,6 +13,7 @@ import { RentrequestsListComponent } from './pages/rentrequests-list/rentrequest
 import { RentalApplicationDetailsComponent } from './pages/rental-application-details/rental-application-details.component';
 import { ApprovedRentrequestsComponent } from './pages/approved-rentrequests/approved-rentrequests.component';
 import { RejectedRentrequestsComponent } from './pages/rejected-rentrequests/rejected-rentrequests.component';
+import { PaymentsComponent } from './pages/payments/payments.component';
 
 export const routes: Routes = [
   {
@@ -51,6 +52,11 @@ export const routes: Routes = [
       {
         path: 'rejected-rentrequests',
         component: RejectedRentrequestsComponent,
+      },
+      // contracts
+      {
+        path: 'payment',
+        component: PaymentsComponent,
       },
 
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },

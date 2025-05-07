@@ -90,6 +90,21 @@ export class SidebarComponent implements OnInit {
         inactive: '/assets/icons/rent-inactive.svg',
       },
     },
+    {
+      name: 'contracts',
+      label: 'sidebar.contracts',
+      route: '',
+      submenu: [
+        {
+          label: 'sidebar.payment',
+          route: '/admin/payment',
+        },
+      ],
+      icon: {
+        active: '/assets/icons/contracts-active.svg',
+        inactive: '/assets/icons/contracts-inactive.svg',
+      },
+    },
   ];
 
   ngOnInit() {

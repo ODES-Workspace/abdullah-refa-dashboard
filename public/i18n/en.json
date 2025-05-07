@@ -18,7 +18,9 @@
     "rentrequest": "Rent Request",
     "rentrequests": "Rent Requests",
     "rejected": "Rejected",
-    "approved": "Approved"
+    "approved": "Approved",
+    "contracts": "Contracts",
+    "payment": "Payment"
   },
   "Notifications": "Notifications",
   "Mark all as read": "Mark all as read",
