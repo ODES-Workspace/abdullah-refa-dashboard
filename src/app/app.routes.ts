@@ -1,79 +1,124 @@
 import { Routes } from '@angular/router';
 import { LoginComponent } from './pages/login/login.component';
-import { AdmindashboardComponent } from './pages/admindashboard/admindashboard.component';
 import { AdminlayoutComponent } from './ui/adminlayout/adminlayout.component';
-import { AdminaprovalsComponent } from './pages/adminaprovals/adminaprovals.component';
-import { PropertiesComponent } from './pages/properties/properties.component';
-import { PropertyDetailsComponent } from './pages/property-details/property-details.component';
-import { PropertyEditComponent } from './pages/property-edit/property-edit.component';
-import { TenantsComponent } from './pages/tenants/tenants.component';
-import { ListofrejectionsComponent } from './pages/listofrejections/listofrejections.component';
-import { ListofAgencyOwnerComponent } from './pages/listof-agency-owner/listof-agency-owner.component';
-import { RentrequestsListComponent } from './pages/rentrequests-list/rentrequests-list.component';
-import { RentalApplicationDetailsComponent } from './pages/rental-application-details/rental-application-details.component';
-import { ApprovedRentrequestsComponent } from './pages/approved-rentrequests/approved-rentrequests.component';
-import { RejectedRentrequestsComponent } from './pages/rejected-rentrequests/rejected-rentrequests.component';
-import { PaymentsComponent } from './pages/payments/payments.component';
-import { RenewalComponent } from './pages/renewal/renewal.component';
-import { TerminatedComponent } from './pages/terminated/terminated.component';
-import { ExistingContractComponent } from './pages/existing-contract/existing-contract.component';
 
 export const routes: Routes = [
   {
     path: 'admin',
     component: AdminlayoutComponent,
     children: [
-      { path: 'dashboard', component: AdmindashboardComponent },
-      { path: 'properties', component: PropertiesComponent },
-      { path: 'property/:id', component: PropertyDetailsComponent },
-      { path: 'property/edit/:id', component: PropertyEditComponent },
+      {
+        path: 'dashboard',
+        loadComponent: () =>
+          import('./pages/admindashboard/admindashboard.component').then(
+            (m) => m.AdmindashboardComponent
+          ),
+      },
+      {
+        path: 'properties',
+        loadComponent: () =>
+          import('./pages/properties/properties.component').then(
+            (m) => m.PropertiesComponent
+          ),
+      },
+      {
+        path: 'property/:id',
+        loadComponent: () =>
+          import('./pages/property-details/property-details.component').then(
+            (m) => m.PropertyDetailsComponent
+          ),
+      },
+      {
+        path: 'property/edit/:id',
+        loadComponent: () =>
+          import('./pages/property-edit/property-edit.component').then(
+            (m) => m.PropertyEditComponent
+          ),
+      },
       {
         path: 'rental-application-details/:id',
-        component: RentalApplicationDetailsComponent,
+        loadComponent: () =>
+          import(
+            './pages/rental-application-details/rental-application-details.component'
+          ).then((m) => m.RentalApplicationDetailsComponent),
       },
-      { path: 'tenants', component: TenantsComponent },
-      // agencies owner Routes
-      { path: 'agencies-owner-approvals', component: AdminaprovalsComponent },
+      {
+        path: 'tenants',
+        loadComponent: () =>
+          import('./pages/tenants/tenants.component').then(
+            (m) => m.TenantsComponent
+          ),
+      },
+      {
+        path: 'agencies-owner-approvals',
+        loadComponent: () =>
+          import('./pages/adminaprovals/adminaprovals.component').then(
+            (m) => m.AdminaprovalsComponent
+          ),
+      },
       {
         path: 'list-of-angency-owner',
-        component: ListofAgencyOwnerComponent,
+        loadComponent: () =>
+          import(
+            './pages/listof-agency-owner/listof-agency-owner.component'
+          ).then((m) => m.ListofAgencyOwnerComponent),
       },
       {
         path: 'agencies-owner-rejections',
-        component: ListofrejectionsComponent,
+        loadComponent: () =>
+          import('./pages/listofrejections/listofrejections.component').then(
+            (m) => m.ListofrejectionsComponent
+          ),
       },
-      // rent requests routes
       {
         path: 'rentrequests',
-        component: RentrequestsListComponent,
+        loadComponent: () =>
+          import('./pages/rentrequests-list/rentrequests-list.component').then(
+            (m) => m.RentrequestsListComponent
+          ),
       },
       {
         path: 'approved-rentrequests',
-        component: ApprovedRentrequestsComponent,
+        loadComponent: () =>
+          import(
+            './pages/approved-rentrequests/approved-rentrequests.component'
+          ).then((m) => m.ApprovedRentrequestsComponent),
       },
-
       {
         path: 'rejected-rentrequests',
-        component: RejectedRentrequestsComponent,
+        loadComponent: () =>
+          import(
+            './pages/rejected-rentrequests/rejected-rentrequests.component'
+          ).then((m) => m.RejectedRentrequestsComponent),
       },
-      // contracts
       {
         path: 'payment',
-        component: PaymentsComponent,
+        loadComponent: () =>
+          import('./pages/payments/payments.component').then(
+            (m) => m.PaymentsComponent
+          ),
       },
       {
         path: 'renewal',
-        component: RenewalComponent,
+        loadComponent: () =>
+          import('./pages/renewal/renewal.component').then(
+            (m) => m.RenewalComponent
+          ),
       },
       {
         path: 'terminated',
-        component: TerminatedComponent,
+        loadComponent: () =>
+          import('./pages/terminated/terminated.component').then(
+            (m) => m.TerminatedComponent
+          ),
       },
       {
         path: 'existing-contract',
-        component: ExistingContractComponent,
+        loadComponent: () =>
+          import('./pages/existing-contract/existing-contract.component').then(
+            (m) => m.ExistingContractComponent
+          ),
       },
-
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
     ],
   },

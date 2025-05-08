@@ -27,7 +27,7 @@
     padding: 0 25px;
     overflow-y: auto;
 
-    ul {
+    &--list {
       display: flex;
       flex-direction: column;
       gap: 10px;
