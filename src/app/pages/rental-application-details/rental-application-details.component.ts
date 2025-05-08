@@ -146,7 +146,7 @@ export class RentalApplicationDetailsComponent implements OnInit {
   ];
   application: RentalApplication | null = null;
   applicationId: number | null = null;
-  activeTab: 'overview' | 'assessment' | 'schedule' = 'overview';
+  activeTab: 'overview' | 'assessment' | 'schedule' = this.getStoredActiveTab();
   showReviseModal = false;
   editedSchedule: ScheduleItem[] = [];
   statusOptions: ('upcoming' | 'approved' | 'rejected')[] = [
@@ -248,5 +248,15 @@ export class RentalApplicationDetailsComponent implements OnInit {
       }
       return 0;
     });
+  }
+
+  private getStoredActiveTab(): 'overview' | 'assessment' | 'schedule' {
+    const storedTab = localStorage.getItem('rentalApplicationActiveTab');
+    return (storedTab as 'overview' | 'assessment' | 'schedule') || 'overview';
+  }
+
+  setActiveTab(tab: 'overview' | 'assessment' | 'schedule'): void {
+    this.activeTab = tab;
+    localStorage.setItem('rentalApplicationActiveTab', tab);
   }
 }

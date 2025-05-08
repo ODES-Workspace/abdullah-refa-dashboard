@@ -2,7 +2,7 @@
   <div class="application-tabs">
     <div
       [class.active]="activeTab === 'overview'"
-      (click)="activeTab = 'overview'"
+      (click)="setActiveTab('overview')"
       class="tab-item"
     >
       <span *ngIf="activeTab === 'overview'">
@@ -15,7 +15,7 @@
     </div>
     <div
       [class.active]="activeTab === 'assessment'"
-      (click)="activeTab = 'assessment'"
+      (click)="setActiveTab('assessment')"
       class="tab-item"
     >
       <span *ngIf="activeTab === 'assessment'">
@@ -31,7 +31,7 @@
     </div>
     <div
       [class.active]="activeTab === 'schedule'"
-      (click)="activeTab = 'schedule'"
+      (click)="setActiveTab('schedule')"
       class="tab-item"
     >
       <span *ngIf="activeTab === 'schedule'">
