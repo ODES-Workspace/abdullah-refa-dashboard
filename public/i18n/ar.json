@@ -193,5 +193,8 @@
   "propertytype": "نوع العقار",
   "startDate": "تاريخ البداية",
   "Endofcontract": "نهاية العقد",
-  "Edit Payment": "تعديل الدفع"
+  "Edit Payment": "تعديل الدفع",
+  "renewal": "تجديد",
+  "terminated": "مُنهى",
+  "existing-contract": "العقود الحالية"
 }

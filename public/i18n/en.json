@@ -178,5 +178,7 @@
   "startDate": "Start Date",
   "Endofcontract": "End of contract",
   "Edit Payment": "Edit Payment",
-  "renewal": "Renewal"
+  "renewal": "Renewal",
+  "terminated": "Terminated",
+  "existing-contract": "Existing Contract"
 }
