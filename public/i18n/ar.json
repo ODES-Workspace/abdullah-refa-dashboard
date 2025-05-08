@@ -23,7 +23,8 @@
     "payment": "الدفع",
     "renewal": "تجديد",
     "terminated": "مُنهى",
-    "existing-contracts": "العقود الحالية"
+    "existing-contracts": "العقود الحالية",
+    "settings": "الاعدادات"
   },
   "Notifications": "الإشعارات",
   "Mark all as read": "عرض كل الإشعارات",
@@ -196,5 +197,6 @@
   "Edit Payment": "تعديل الدفع",
   "renewal": "تجديد",
   "terminated": "مُنهى",
-  "existing-contract": "العقود الحالية"
+  "existing-contract": "العقود الحالية",
+  "settings": "الاعدادات"
 }

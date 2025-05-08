@@ -23,7 +23,8 @@
     "payment": "Payment",
     "renewal": "Renewal",
     "terminated": "Terminated",
-    "existing-contracts": "Existing Contract"
+    "existing-contracts": "Existing Contract",
+    "settings": "Settings"
   },
   "Notifications": "Notifications",
   "Mark all as read": "Mark all as read",
@@ -180,5 +181,6 @@
   "Edit Payment": "Edit Payment",
   "renewal": "Renewal",
   "terminated": "Terminated",
-  "existing-contract": "Existing Contract"
+  "existing-contract": "Existing Contract",
+  "settings": "Settings"
 }

@@ -107,6 +107,8 @@ export class DashboardHeaderComponent {
       this.headerText = 'Contract';
     } else if (/\/admin\/rental-application-details\/\d+$/.test(url)) {
       this.headerText = 'Rent Requests/Rental Application Details';
+    } else if (url.includes('/admin/settings')) {
+      this.headerText = 'settings';
     } else {
       this.headerText = 'Dashbaord';
     }

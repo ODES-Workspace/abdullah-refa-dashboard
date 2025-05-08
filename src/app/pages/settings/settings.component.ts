@@ -1,0 +1,27 @@
+import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+
+@Component({
+  selector: 'app-settings',
+  standalone: true,
+  imports: [CommonModule],
+  templateUrl: './settings.component.html',
+  styleUrl: './settings.component.scss',
+})
+export class SettingsComponent implements OnInit {
+  activeTab: string = 'profile';
+
+  ngOnInit() {
+    // Get the active tab from localStorage on component initialization
+    const savedTab = localStorage.getItem('settingsActiveTab');
+    if (savedTab) {
+      this.activeTab = savedTab;
+    }
+  }
+
+  setActiveTab(tab: string) {
+    this.activeTab = tab;
+    // Save the active tab to localStorage
+    localStorage.setItem('settingsActiveTab', tab);
+  }
+}

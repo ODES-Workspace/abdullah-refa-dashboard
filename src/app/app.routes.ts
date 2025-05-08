@@ -119,6 +119,13 @@ export const routes: Routes = [
             (m) => m.ExistingContractComponent
           ),
       },
+      {
+        path: 'settings',
+        loadComponent: () =>
+          import('./pages/settings/settings.component').then(
+            (m) => m.SettingsComponent
+          ),
+      },
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
     ],
   },

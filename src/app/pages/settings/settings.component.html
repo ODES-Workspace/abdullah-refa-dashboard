@@ -1,0 +1,34 @@
+<div class="settings">
+  <div class="settings-tabs">
+    <div
+      [class.active]="activeTab === 'profile'"
+      (click)="setActiveTab('profile')"
+    >
+      Profile
+    </div>
+    <div
+      [class.active]="activeTab === 'management'"
+      (click)="setActiveTab('management')"
+    >
+      Management
+    </div>
+    <div
+      [class.active]="activeTab === 'sub-admin'"
+      (click)="setActiveTab('sub-admin')"
+    >
+      Sub Admins Management
+    </div>
+  </div>
+
+  <div class="settings-content">
+    <div class="settings-profile-content" *ngIf="activeTab === 'profile'">
+      Profile
+    </div>
+    <div class="settings-management-content" *ngIf="activeTab === 'management'">
+      settings-management-content
+    </div>
+    <div class="settings-sub-admin-content" *ngIf="activeTab === 'sub-admin'">
+      settings-sub-admin-content
+    </div>
+  </div>
+</div>

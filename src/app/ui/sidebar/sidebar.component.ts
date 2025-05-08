@@ -117,6 +117,15 @@ export class SidebarComponent implements OnInit {
         inactive: '/assets/icons/contracts-inactive.svg',
       },
     },
+    {
+      name: 'settings',
+      label: 'sidebar.settings',
+      route: '/admin/settings',
+      icon: {
+        active: '/assets/icons/settings-active.svg',
+        inactive: '/assets/icons/settings-inactive.svg',
+      },
+    },
   ];
 
   ngOnInit() {
