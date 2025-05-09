@@ -4,7 +4,7 @@
       [class.active]="activeTab === 'profile'"
       (click)="setActiveTab('profile')"
     >
-      Profile
+      {{ "Profile" | translate }}
     </div>
     <div
       [class.active]="activeTab === 'management'"
@@ -22,7 +22,7 @@
 
   <div class="settings-content">
     <div class="settings-profile-content" *ngIf="activeTab === 'profile'">
-      Profile
+      <app-profile-settings></app-profile-settings>
     </div>
     <div class="settings-management-content" *ngIf="activeTab === 'management'">
       settings-management-content

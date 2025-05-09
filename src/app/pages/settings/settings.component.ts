@@ -1,10 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { ProfileSettingsComponent } from '../../ui/profile-settings/profile-settings.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-settings',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, ProfileSettingsComponent, TranslateModule],
   templateUrl: './settings.component.html',
   styleUrl: './settings.component.scss',
 })

@@ -1,0 +1,149 @@
+.profile {
+  box-shadow: 0px 3px 4px 0px #00000008;
+  border: 1px solid #f1f1f4;
+  border-radius: 12px;
+
+  &-header,
+  &-address-info-header {
+    padding: 20px 30px;
+    border-bottom: 0.5px solid #40404033;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    max-height: 56px;
+
+    h3 {
+      font-weight: 600;
+      font-size: 16px;
+      line-height: 16px;
+    }
+  }
+
+  &-info-card {
+    display: flex;
+    justify-content: space-between;
+    padding-block: 20px;
+    padding-inline: 30px;
+    border-bottom: 0.5px solid #40404033;
+    flex-wrap: wrap;
+    column-gap: 10px;
+    row-gap: 60px;
+  }
+
+  &-info-item {
+    max-width: 314px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    position: relative;
+
+    label {
+      position: absolute;
+      font-size: 9px;
+      line-height: 10px;
+      color: #404040b2;
+      left: 7px;
+      top: -4.5px;
+      background-color: #ffff;
+      padding-inline: 3px;
+    }
+
+    input {
+      border-radius: 6px;
+      border: 1px solid #40404033;
+      padding: 5px 10px;
+      font-size: 12px;
+      line-height: 12px;
+    }
+
+    span {
+      color: #404040;
+      font-size: 12px;
+      line-height: 20px;
+    }
+
+    div {
+      font-size: 14px;
+      line-height: 16px;
+      width: fit-content;
+    }
+  }
+
+  &-address-info-card {
+    padding: 20px 30px;
+
+    &--container {
+      display: flex;
+      max-width: 750px;
+      flex-wrap: wrap;
+      column-gap: 60px;
+      row-gap: 60px;
+    }
+
+    border-bottom: 0.5px solid #40404033;
+  }
+
+  &-password {
+    &-form {
+      border-top: 0.5px solid #40404033;
+      display: flex;
+      justify-content: space-between;
+      padding: 20px 30px;
+      align-items: center;
+
+      &-inputs {
+        display: flex;
+        flex: 1;
+        gap: 32px;
+      }
+
+      &-buttons {
+        display: flex;
+        gap: 10px;
+      }
+    }
+  }
+}
+
+button {
+  font-size: 13px;
+  line-height: 14px;
+  font-weight: 500;
+  outline: none;
+  border: none;
+  padding: 13px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+
+  &.edit {
+    background-color: #1951fd;
+    color: #fff;
+  }
+
+  &.save-change {
+    background-color: #26e8be;
+    color: #404040;
+  }
+
+  &.change-password {
+    background-color: transparent;
+    color: #0311d0;
+    font-weight: 600;
+    font-size: 16px;
+    text-decoration: underline;
+    padding: 0;
+    padding: 20px 30px;
+  }
+
+  &.cancel-password {
+    border: 1px solid #40404033;
+    color: #404040;
+    background-color: transparent;
+  }
+
+  &.save-password {
+    background-color: #0311d0;
+    color: #ffffff;
+  }
+}

@@ -336,4 +336,11 @@ html[dir="rtl"] {
       top: 0;
     }
   }
+
+  .profile-info-item label {
+    top: -4.5px;
+    left: unset;
+    width: fit-content;
+    right: 7px;
+  }
 }

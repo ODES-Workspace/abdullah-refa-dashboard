@@ -182,5 +182,19 @@
   "renewal": "Renewal",
   "terminated": "Terminated",
   "existing-contract": "Existing Contract",
-  "settings": "Settings"
+  "settings": "Settings",
+  "Profile Information": "Profile Information",
+  "Edit Profile": "Edit Profile",
+  "line1": "Line 1",
+  "line2": "Line 2",
+  "building": "Building",
+  "country": "Country",
+  "province": "Province",
+  "postalcode": "Postal Code",
+  "Change Password": "Change Password",
+  "Address Information": "Address Information",
+  "New Password": "New Password",
+  "Confirm New Password": "Confirm New Password",
+  "Save Password": "Save Password",
+  "Profile": "Profile"
 }

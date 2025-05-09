@@ -1,0 +1,164 @@
+<div class="profile">
+  <div class="profile-header">
+    <h3>{{ "Profile Information" | translate }}</h3>
+    <div>
+      <button *ngIf="!isEditing" (click)="toggleEdit()" class="edit">
+        {{ "Edit Profile" | translate }}
+      </button>
+      <button *ngIf="isEditing" (click)="saveProfile()" class="save-change">
+        {{ "Save Changes" | translate }}
+      </button>
+    </div>
+  </div>
+
+  <!-- Profile Info -->
+  <div class="profile-info" *ngIf="!isEditing">
+    <div class="profile-info-card">
+      <div class="profile-info-item">
+        <span>{{ "Name" | translate }}</span>
+        <div>{{ profileData.name }}</div>
+      </div>
+      <div class="profile-info-item">
+        <span>{{ "Email" | translate }}</span>
+        <div>{{ profileData.email }}</div>
+      </div>
+      <div class="profile-info-item">
+        <span>{{ "Contact" | translate }}</span>
+        <div dir="ltr">{{ profileData.contact }}</div>
+      </div>
+    </div>
+
+    <div class="profile-address-info-header">
+      <h3>{{ "Address Information" | translate }}</h3>
+    </div>
+    <div class="profile-address-info-card">
+      <div class="profile-address-info-card--container">
+        <div class="profile-info-item">
+          <span>{{ "line1" | translate }}</span>
+          <div>{{ profileData.line1 }}</div>
+        </div>
+        <div class="profile-info-item">
+          <span>{{ "line2" | translate }}</span>
+          <div>{{ profileData.line2 }}</div>
+        </div>
+        <div class="profile-info-item">
+          <span>{{ "building" | translate }}</span>
+          <div>{{ profileData.building }}</div>
+        </div>
+        <div class="profile-info-item">
+          <span>{{ "country" | translate }}</span>
+          <div>{{ profileData.country }}</div>
+        </div>
+        <div class="profile-info-item">
+          <span>{{ "province" | translate }}</span>
+          <div>{{ profileData.province }}</div>
+        </div>
+        <div class="profile-info-item">
+          <span>{{ "City" | translate }}</span>
+          <div>{{ profileData.city }}</div>
+        </div>
+        <div class="profile-info-item">
+          <span>{{ "postalcode" | translate }}</span>
+          <div>{{ profileData.postalCode }}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Profile Info Edit -->
+  <div class="profile-info-editForm" *ngIf="isEditing">
+    <div class="profile-info-card">
+      <div class="profile-info-item">
+        <label for="name">{{ "Name" | translate }}</label>
+        <input type="text" id="name" [(ngModel)]="profileData.name" />
+      </div>
+      <div class="profile-info-item">
+        <label for="email">{{ "Email" | translate }}</label>
+        <input type="email" id="email" [(ngModel)]="profileData.email" />
+      </div>
+      <div class="profile-info-item">
+        <label for="contact">{{ "Contact" | translate }}</label>
+        <input type="tel" id="contact" [(ngModel)]="profileData.contact" />
+      </div>
+    </div>
+
+    <div class="profile-address-info-header">
+      <h3>{{ "Address Information" | translate }}</h3>
+    </div>
+
+    <div class="profile-address-info-card">
+      <div class="profile-address-info-card--container">
+        <div class="profile-info-item">
+          <label for="line1">{{ "line1" | translate }}</label>
+          <input type="text" id="line1" [(ngModel)]="profileData.line1" />
+        </div>
+        <div class="profile-info-item">
+          <label for="line2">{{ "line2" | translate }}</label>
+          <input type="text" id="line2" [(ngModel)]="profileData.line2" />
+        </div>
+        <div class="profile-info-item">
+          <label for="building">{{ "building" | translate }}</label>
+          <input type="text" id="building" [(ngModel)]="profileData.building" />
+        </div>
+        <div class="profile-info-item">
+          <label for="country">{{ "country" | translate }}</label>
+          <input type="text" id="country" [(ngModel)]="profileData.country" />
+        </div>
+        <div class="profile-info-item">
+          <label for="province">{{ "province" | translate }}</label>
+          <input type="text" id="province" [(ngModel)]="profileData.province" />
+        </div>
+        <div class="profile-info-item">
+          <label for="city">{{ "city" | translate }}</label>
+          <input type="text" id="city" [(ngModel)]="profileData.city" />
+        </div>
+        <div class="profile-info-item">
+          <label for="postalCode">{{ "Postal Code" | translate }}</label>
+          <input
+            type="text"
+            id="postalCode"
+            [(ngModel)]="profileData.postalCode"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!--  Change Password -->
+  <div class="profile-password">
+    <button (click)="togglePasswordForm()" class="change-password">
+      {{ "Change Password" | translate }}
+    </button>
+    <div *ngIf="showPasswordForm" class="profile-password-form">
+      <div class="profile-password-form-inputs">
+        <div class="profile-info-item">
+          <label for="new-password">{{ "New Password" | translate }}</label>
+          <input
+            type="password"
+            id="new-password"
+            [(ngModel)]="passwordData.newPassword"
+          />
+        </div>
+        <div class="profile-info-item">
+          <label for="confirm-new-password">{{
+            "Confirm New Password" | translate
+          }}</label>
+          <input
+            type="password"
+            id="confirm-new-password"
+            [(ngModel)]="passwordData.confirmPassword"
+          />
+        </div>
+      </div>
+
+      <div class="profile-password-form-buttons">
+        <button (click)="togglePasswordForm()" class="cancel-password">
+          {{ "Cancel" | translate }}
+        </button>
+        <button (click)="changePassword()" class="save-password">
+          {{ "Save Password" | translate }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

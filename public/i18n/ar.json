@@ -198,5 +198,19 @@
   "renewal": "تجديد",
   "terminated": "مُنهى",
   "existing-contract": "العقود الحالية",
-  "settings": "الاعدادات"
+  "settings": "الاعدادات",
+  "Profile Information": "معلومات الملف الشخصي",
+  "Edit Profile": "تعديل الملف الشخصي",
+  "line1": "الخط 1",
+  "line2": "الخط 2",
+  "building": "المبنى",
+  "country": "الدولة",
+  "province": "المقاطعة",
+  "postalcode": "الرمز البريدي",
+  "Change Password": "تغيير كلمة المرور",
+  "Address Information": "معلومات العنوان",
+  "New Password": "كلمة مرور جديدة",
+  "Confirm New Password": "تأكيد كلمة المرور الجديدة",
+  "Save Password": "حفظ كلمة المرور",
+  "Profile": "الملف الشخصي"
 }
