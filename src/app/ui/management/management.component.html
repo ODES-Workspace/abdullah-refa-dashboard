@@ -1,0 +1,97 @@
+<div class="management">
+  <div class="management-header">
+    <h3>{{ "Payment Information" | translate }}</h3>
+  </div>
+  <div class="management-paymentcards">
+    <!-- EJAR Fee Card -->
+    <div class="management-paymentcard">
+      <div class="management-paymentcard-title">
+        <img src="/assets/icons/payment-card.svg" alt="" />
+        <span>{{ "EJAR Fee" | translate }}</span>
+      </div>
+
+      <div class="management-paymentcard-value">
+        <div *ngIf="editingField !== 'ejarFee'">{{ paymentData.ejarFee }}</div>
+        <input
+          *ngIf="editingField === 'ejarFee'"
+          type="text"
+          [(ngModel)]="tempValues.ejarFee"
+        />
+        <img
+          *ngIf="editingField === 'ejarFee'"
+          src="/assets/icons/payment-save.svg"
+          alt="Save"
+          (click)="saveChanges('ejarFee')"
+        />
+        <img
+          *ngIf="editingField !== 'ejarFee'"
+          src="/assets/icons/payment-edit.svg"
+          alt="Edit"
+          (click)="startEditing('ejarFee')"
+        />
+      </div>
+    </div>
+
+    <!-- Agent Fee Card -->
+    <div class="management-paymentcard">
+      <div class="management-paymentcard-title">
+        <img src="/assets/icons/payment-card.svg" alt="" />
+        <span>{{ "Agent Fee (Total rent)" | translate }}</span>
+      </div>
+
+      <div class="management-paymentcard-value">
+        <div *ngIf="editingField !== 'agentFee'">
+          {{ paymentData.agentFee }}
+        </div>
+        <input
+          *ngIf="editingField === 'agentFee'"
+          type="text"
+          [(ngModel)]="tempValues.agentFee"
+        />
+        <img
+          *ngIf="editingField === 'agentFee'"
+          src="/assets/icons/payment-save.svg"
+          alt="Save"
+          (click)="saveChanges('agentFee')"
+        />
+        <img
+          *ngIf="editingField !== 'agentFee'"
+          src="/assets/icons/payment-edit.svg"
+          alt="Edit"
+          (click)="startEditing('agentFee')"
+        />
+      </div>
+    </div>
+
+    <!-- REFA Processing Fee Card -->
+    <div class="management-paymentcard">
+      <div class="management-paymentcard-title">
+        <img src="/assets/icons/payment-card.svg" alt="" />
+        <span>{{ "REFA Processing Fee" | translate }}</span>
+      </div>
+
+      <div class="management-paymentcard-value">
+        <div *ngIf="editingField !== 'refaProcessingFee'">
+          {{ paymentData.refaProcessingFee }}
+        </div>
+        <input
+          *ngIf="editingField === 'refaProcessingFee'"
+          type="text"
+          [(ngModel)]="tempValues.refaProcessingFee"
+        />
+        <img
+          *ngIf="editingField === 'refaProcessingFee'"
+          src="/assets/icons/payment-save.svg"
+          alt="Save"
+          (click)="saveChanges('refaProcessingFee')"
+        />
+        <img
+          *ngIf="editingField !== 'refaProcessingFee'"
+          src="/assets/icons/payment-edit.svg"
+          alt="Edit"
+          (click)="startEditing('refaProcessingFee')"
+        />
+      </div>
+    </div>
+  </div>
+</div>

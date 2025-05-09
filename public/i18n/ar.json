@@ -212,5 +212,10 @@
   "New Password": "كلمة مرور جديدة",
   "Confirm New Password": "تأكيد كلمة المرور الجديدة",
   "Save Password": "حفظ كلمة المرور",
-  "Profile": "الملف الشخصي"
+  "Profile": "الملف الشخصي",
+  "Management": "الادارة",
+  "Payment Information": "معلومات الدفع",
+  "Agent Fee (Total rent)": "رسوم الوكالة (إجمالي الإيجار)",
+  "EJAR Fee": "رسوم إيجار",
+  "REFA Processing Fee": "رسوم معالجة REFA"
 }
