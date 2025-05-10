@@ -8,6 +8,37 @@
   gap: 16px;
   padding: 0 0px;
 
+  // Mobile styles
+  @media (max-width: 1000px) {
+    position: fixed;
+    z-index: 11111;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease-in-out;
+    opacity: 0;
+
+    &.open {
+      transform: translateX(0);
+      opacity: 1;
+    }
+  }
+
+  .toggle-sidebar {
+    cursor: pointer;
+    padding: 8px;
+    display: none; // Hidden by default
+    align-items: center;
+    justify-content: center;
+
+    @media (max-width: 1000px) {
+      display: flex; // Show only on mobile
+    }
+
+    img {
+      width: 24px;
+      height: 24px;
+    }
+  }
+
   &-head {
     display: flex;
     flex-direction: column;
@@ -134,17 +165,18 @@ ul {
   list-style: none;
 }
 
+// Modal styles moved outside sidebar scope
 .modal {
   position: fixed;
   top: 0;
   left: 0;
-  width: 100%;
-  height: 100%;
+  width: 100vw; // Use viewport width
+  height: 100vh; // Use viewport height
   background-color: rgba(0, 0, 0, 0.5);
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 1000;
+  z-index: 99999; // Higher than sidebar z-index
 
   &-logout {
     .modal-container {
@@ -155,6 +187,7 @@ ul {
       border-radius: 20px;
       display: grid;
       gap: 30px;
+      margin: 20px; // Add margin for mobile screens
 
       .delete-content {
         display: flex;

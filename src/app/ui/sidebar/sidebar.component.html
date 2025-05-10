@@ -1,5 +1,11 @@
-<nav class="sidebar">
+<!-- Sidebar Navigation -->
+<nav class="sidebar" [class.open]="isOpen$ | async">
   <div class="sidebar-head">
+    <!-- this is the toggle sidebar button show be shown only on mobile  and close sidebar when clicked -->
+    <div class="toggle-sidebar" (click)="toggleSidebar()">
+      <img src="/assets/icons/menu-icon.svg" alt="toggle sidebar" />
+    </div>
+
     <img src="/assets/icons/sidebar-logo.svg" alt="logo" />
     <div class="sidebar-welcome">{{ "Welcome Back" | translate }}, Admin</div>
   </div>
@@ -90,24 +96,24 @@
       <img src="/assets/icons/logout-btn.svg" alt="logout icon" />
     </div>
   </div>
+</nav>
 
-  <!-- Logout Modal -->
-  <div class="modal-logout modal" *ngIf="showLogoutModal">
-    <div class="modal-container">
-      <div class="delete-content">
-        <img src="/assets/images/refa-logout.png" alt="logout icon" />
-        <div>
-          {{ "Are you sure you want to logout?" | translate }}
-        </div>
-      </div>
-      <div class="button-group">
-        <button class="cancel-btn" (click)="showLogoutModal = false">
-          {{ "Cancel" | translate }}
-        </button>
-        <button class="logout-btn" (click)="logout()">
-          {{ "Logout" | translate }}
-        </button>
+<!-- Logout Modal - Moved outside sidebar -->
+<div class="modal-logout modal" *ngIf="showLogoutModal">
+  <div class="modal-container">
+    <div class="delete-content">
+      <img src="/assets/images/refa-logout.png" alt="logout icon" />
+      <div>
+        {{ "Are you sure you want to logout?" | translate }}
       </div>
     </div>
+    <div class="button-group">
+      <button class="cancel-btn" (click)="showLogoutModal = false">
+        {{ "Cancel" | translate }}
+      </button>
+      <button class="logout-btn" (click)="logout()">
+        {{ "Logout" | translate }}
+      </button>
+    </div>
   </div>
-</nav>
+</div>

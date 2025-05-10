@@ -4,10 +4,13 @@ import { LanguageService } from '../../../services/language.service';
 import { TranslateModule } from '@ngx-translate/core';
 import { Location, NgFor, NgIf } from '@angular/common';
 import { RelativeTimePipe } from '../../../services/relative-time.pipe';
+import { SidebarService } from '../../services/sidebar.service';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-dashboard-header',
-  imports: [TranslateModule, NgFor, RelativeTimePipe, NgIf],
+  standalone: true,
+  imports: [TranslateModule, NgFor, RelativeTimePipe, NgIf, CommonModule],
   templateUrl: './dashboard-header.component.html',
   styleUrl: './dashboard-header.component.scss',
 })
@@ -21,7 +24,8 @@ export class DashboardHeaderComponent {
     public languageService: LanguageService,
     private router: Router,
     private elementRef: ElementRef,
-    private location: Location
+    private location: Location,
+    private sidebarService: SidebarService
   ) {
     this.router.events.subscribe(() => {
       this.setHeaderText();
@@ -143,5 +147,9 @@ export class DashboardHeaderComponent {
 
   goBack() {
     this.location.back();
+  }
+
+  toggleSidebar() {
+    this.sidebarService.toggle();
   }
 }

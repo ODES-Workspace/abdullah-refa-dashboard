@@ -262,6 +262,15 @@ input {
 // styles for rtl
 
 html[dir="rtl"] {
+  .sidebar {
+    @media (max-width: 768px) {
+      transform: translateX(100%);
+      -webkit-transform: translateX(100%);
+      -moz-transform: translateX(100%);
+      -ms-transform: translateX(100%);
+      -o-transform: translateX(100%);
+    }
+  }
   .back-button {
     transform: rotate(180deg) !important;
   }

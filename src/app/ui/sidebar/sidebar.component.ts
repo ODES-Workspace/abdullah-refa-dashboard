@@ -3,19 +3,23 @@ import { Component, NgModule, OnInit } from '@angular/core';
 import { Router, RouterLink, NavigationEnd, Event } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { filter } from 'rxjs/operators';
+import { SidebarService } from '../../services/sidebar.service';
+import { CommonModule } from '@angular/common';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-sidebar',
   standalone: true,
-  imports: [RouterLink, NgFor, NgIf, TranslateModule],
+  imports: [RouterLink, NgFor, NgIf, TranslateModule, CommonModule],
   templateUrl: './sidebar.component.html',
   styleUrl: './sidebar.component.scss',
 })
 export class SidebarComponent implements OnInit {
   activeMenu: string | null = null;
   showLogoutModal: boolean = false;
+  isOpen$!: Observable<boolean>;
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, private sidebarService: SidebarService) {}
 
   menuItems = [
     {
@@ -130,6 +134,7 @@ export class SidebarComponent implements OnInit {
   ];
 
   ngOnInit() {
+    this.isOpen$ = this.sidebarService.isOpen$;
     this.checkActiveMenuFromRoute(this.router.url);
 
     this.router.events
@@ -190,5 +195,9 @@ export class SidebarComponent implements OnInit {
     // Clear any stored auth data/tokens here if needed
     this.router.navigate(['/']);
     this.showLogoutModal = false;
+  }
+
+  toggleSidebar() {
+    this.sidebarService.toggle();
   }
 }

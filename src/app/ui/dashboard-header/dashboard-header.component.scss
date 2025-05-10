@@ -9,6 +9,23 @@
   justify-content: space-between;
   position: relative;
 
+  .toggle-sidebar {
+    display: none; // Hidden by default
+
+    @media (max-width: 1000px) {
+      display: flex; // Show only on mobile
+      cursor: pointer;
+      padding: 8px;
+      align-items: center;
+      justify-content: center;
+
+      img {
+        width: 24px;
+        height: 24px;
+      }
+    }
+  }
+
   &-text {
     font-weight: 600;
     font-size: 20px;
