@@ -16,7 +16,7 @@
       [class.active]="activeTab === 'sub-admin'"
       (click)="setActiveTab('sub-admin')"
     >
-      Sub Admins Management
+      {{ "Sub Admins Management" | translate }}
     </div>
   </div>
 
@@ -28,7 +28,7 @@
       <app-management></app-management>
     </div>
     <div class="settings-sub-admin-content" *ngIf="activeTab === 'sub-admin'">
-      settings-sub-admin-content
+      <app-sub-admins-management></app-sub-admins-management>
     </div>
   </div>
 </div>

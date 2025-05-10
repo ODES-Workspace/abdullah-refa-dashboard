@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ProfileSettingsComponent } from '../../ui/profile-settings/profile-settings.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { ManagementComponent } from '../../ui/management/management.component';
+import { SubAdminsManagementComponent } from '../../ui/sub-admins-management/sub-admins-management.component';
 
 @Component({
   selector: 'app-settings',
@@ -12,6 +13,7 @@ import { ManagementComponent } from '../../ui/management/management.component';
     ProfileSettingsComponent,
     TranslateModule,
     ManagementComponent,
+    SubAdminsManagementComponent,
   ],
   templateUrl: './settings.component.html',
   styleUrl: './settings.component.scss',
