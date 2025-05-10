@@ -248,5 +248,7 @@
   "Edit": "تعديل",
   "Add Permissions": "إضافة الأذونات",
   "Are you sure this administrator has been deleted?": "هل أنت متأكد من أنه تم حذف هذا المشرف؟",
-  "Yes delete!": "نعم احذف!"
+  "Yes delete!": "نعم احذف!",
+  "Are you sure you want to logout?": "هل أنت متأكد أنك تريد تسجيل الخروج؟",
+  "Logout": "تسجيل الخروج"
 }

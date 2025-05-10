@@ -81,13 +81,33 @@
   </div>
 
   <div class="sidebar-logout">
-    <div class="sidebar-logout--btn">
+    <div class="sidebar-logout--btn" (click)="showLogoutModal = true">
       <img src="/assets/icons/user-icon.svg" alt="settings icon" />
       <div>
         <span>admin user</span>
         <span>admin&#64;refa.com</span>
       </div>
       <img src="/assets/icons/logout-btn.svg" alt="logout icon" />
+    </div>
+  </div>
+
+  <!-- Logout Modal -->
+  <div class="modal-logout modal" *ngIf="showLogoutModal">
+    <div class="modal-container">
+      <div class="delete-content">
+        <img src="/assets/images/refa-logout.png" alt="logout icon" />
+        <div>
+          {{ "Are you sure you want to logout?" | translate }}
+        </div>
+      </div>
+      <div class="button-group">
+        <button class="cancel-btn" (click)="showLogoutModal = false">
+          {{ "Cancel" | translate }}
+        </button>
+        <button class="logout-btn" (click)="logout()">
+          {{ "Logout" | translate }}
+        </button>
+      </div>
     </div>
   </div>
 </nav>

@@ -13,6 +13,7 @@ import { filter } from 'rxjs/operators';
 })
 export class SidebarComponent implements OnInit {
   activeMenu: string | null = null;
+  showLogoutModal: boolean = false;
 
   constructor(private router: Router) {}
 
@@ -183,5 +184,11 @@ export class SidebarComponent implements OnInit {
     return item.submenu.some((subItem: any) =>
       this.isActiveRoute(subItem.route)
     );
+  }
+
+  logout() {
+    // Clear any stored auth data/tokens here if needed
+    this.router.navigate(['/']);
+    this.showLogoutModal = false;
   }
 }
