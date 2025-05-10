@@ -1,37 +1,41 @@
 <div class="table">
   <div class="table-header">
-    <div class="table-title">Sub Admins</div>
+    <div class="table-title">{{ "Sub Admins" | translate }}</div>
     <div class="table-header-group">
       <div class="table-search">
         <img src="/assets/icons/search-icon.svg" alt="" />
-        <input type="text" placeholder="Search" [(ngModel)]="searchQuery" />
+        <input
+          type="text"
+          [placeholder]="'Search' | translate"
+          [(ngModel)]="searchQuery"
+        />
       </div>
       <div class="table-add-subadmin" (click)="toggleModal('add')">
-        Add Subadmin
+        {{ "Add Subadmin" | translate }}
       </div>
     </div>
   </div>
   <div class="table-titles">
     <div (click)="sort('firstName')">
-      <span>Name</span>
+      <span>{{ "Name" | translate }}</span>
       <span>
         <img src="/assets/icons/sort-img.svg" />
       </span>
     </div>
     <div (click)="sort('email')">
-      <span>Email</span>
+      <span>{{ "Email" | translate }}</span>
       <span>
         <img src="/assets/icons/sort-img.svg" />
       </span>
     </div>
     <div (click)="sort('status')">
-      <span>Status</span>
+      <span>{{ "Status" | translate }}</span>
       <span>
         <img src="/assets/icons/sort-img.svg" />
       </span>
     </div>
     <div>
-      <span>Actions</span>
+      <span>{{ "Actions" | translate }}</span>
     </div>
   </div>
 
@@ -40,7 +44,7 @@
     <div>{{ subAdmin.email }}</div>
     <div>
       <div [class]="'status-' + subAdmin.status">
-        <span>{{ subAdmin.status | titlecase }}</span>
+        <span>{{ subAdmin.status | titlecase | translate }}</span>
       </div>
     </div>
     <div class="table-actions">
@@ -56,575 +60,637 @@
 
 <!-- Add Subadmin Modal -->
 <div class="modal-add-subadmin modal" *ngIf="showAddModal">
-  <div class="modal-header">
-    <div class="modal-title">Add Subadmin</div>
-    <div class="modal-status">
-      <label class="switch">
-        <input
-          type="checkbox"
-          [checked]="selectedSubAdmin.status === 'active'"
-          (change)="toggleStatus($event)"
-        />
-        <span class="slider round"></span>
+  <div class="modal-container">
+    <div class="modal-header">
+      <div class="modal-title">{{ "Add Sub Admin" | translate }}</div>
+      <div class="modal-status">
+        <label class="switch">
+          <input
+            type="checkbox"
+            [checked]="selectedSubAdmin.status === 'active'"
+            (change)="toggleStatus($event)"
+          />
+          <span class="slider round"></span>
+        </label>
         <span class="status-label">{{
-          selectedSubAdmin.status | titlecase
+          selectedSubAdmin.status | titlecase | translate
         }}</span>
-      </label>
+      </div>
     </div>
-  </div>
-  <div class="modal-body">
-    <div class="modal-input">
-      <label for="firstName">Firstname</label>
-      <input
-        type="text"
-        id="firstName"
-        placeholder="Enter firstname"
-        [(ngModel)]="selectedSubAdmin.firstName"
-        required
-      />
+    <div class="modal-body">
+      <div class="modal-input">
+        <label for="firstName">{{ "Firstname" | translate }}</label>
+        <input
+          type="text"
+          id="firstName"
+          [placeholder]="'Enter firstname' | translate"
+          [(ngModel)]="selectedSubAdmin.firstName"
+          required
+        />
+      </div>
+      <div class="modal-input">
+        <label for="lastName">{{ "Lastname" | translate }}</label>
+        <input
+          type="text"
+          id="lastName"
+          [placeholder]="'Enter lastname' | translate"
+          [(ngModel)]="selectedSubAdmin.lastName"
+          required
+        />
+      </div>
+      <div class="modal-input">
+        <label for="email">{{ "Email" | translate }}</label>
+        <input
+          type="email"
+          id="email"
+          [placeholder]="'Enter email' | translate"
+          [(ngModel)]="selectedSubAdmin.email"
+          required
+        />
+      </div>
+      <div class="modal-input">
+        <label for="password">{{ "Password" | translate }}</label>
+        <input
+          type="password"
+          id="password"
+          [placeholder]="'Enter password' | translate"
+          [(ngModel)]="selectedSubAdmin.password"
+          required
+        />
+      </div>
+
+      <div class="permissions-link" (click)="toggleModal('addPermissions')">
+        {{ "Adding permissions" | translate }}
+      </div>
     </div>
-    <div class="modal-input">
-      <label for="lastName">Lastname</label>
-      <input
-        type="text"
-        id="lastName"
-        placeholder="Enter lastname"
-        [(ngModel)]="selectedSubAdmin.lastName"
-        required
-      />
-    </div>
-    <div class="modal-input">
-      <label for="email">Email</label>
-      <input
-        type="email"
-        id="email"
-        placeholder="Enter email"
-        [(ngModel)]="selectedSubAdmin.email"
-        required
-      />
-    </div>
-    <div class="modal-input">
-      <label for="password">Password</label>
-      <input
-        type="password"
-        id="password"
-        placeholder="Enter password"
-        [(ngModel)]="selectedSubAdmin.password"
-        required
-      />
-    </div>
-  </div>
-  <div class="modal-footer">
-    <div class="permissions-link" (click)="toggleModal('addPermissions')">
-      Adding permissions
-    </div>
-    <div class="button-group">
-      <button
-        class="btn-subadmin-save"
-        (click)="saveSubAdmin()"
-        [disabled]="!isFormValid()"
-      >
-        Save
-      </button>
-      <button class="btn-subadmin-cancel" (click)="toggleModal('add')">
-        Cancel
-      </button>
+    <div class="modal-footer">
+      <div class="button-group">
+        <button
+          class="btn-subadmin-save"
+          (click)="saveSubAdmin()"
+          [disabled]="!isFormValid()"
+        >
+          <img src="/assets/icons/save-admin.svg" alt="" />
+          {{ "Save" | translate }}
+        </button>
+        <button class="btn-subadmin-cancel" (click)="toggleModal('add')">
+          <img src="/assets/icons/cancel-admin.svg" alt="" />
+
+          {{ "Cancel" | translate }}
+        </button>
+      </div>
     </div>
   </div>
 </div>
 
 <!-- Edit Subadmin Modal -->
-<div class="modal-edit-subadmin" *ngIf="showEditModal">
-  <div class="modal-header">
-    <div class="modal-title">Edit Subadmin</div>
-    <div class="modal-status">
-      <label class="switch">
-        <input
-          type="checkbox"
-          [checked]="selectedSubAdmin.status === 'active'"
-          (change)="toggleStatus($event)"
-        />
-        <span class="slider round"></span>
+<div class="modal-edit-subadmin modal" *ngIf="showEditModal">
+  <div class="modal-container">
+    <div class="modal-header">
+      <div class="modal-title">{{ "Edit Subadmin" | translate }}</div>
+      <div class="modal-status">
+        <label class="switch">
+          <input
+            type="checkbox"
+            [checked]="selectedSubAdmin.status === 'active'"
+            (change)="toggleStatus($event)"
+          />
+          <span class="slider round"></span>
+        </label>
         <span class="status-label">{{
-          selectedSubAdmin.status | titlecase
+          selectedSubAdmin.status | titlecase | translate
         }}</span>
-      </label>
-    </div>
-  </div>
-  <div class="modal-body">
-    <div class="modal-input">
-      <label for="editFirstName">Firstname</label>
-      <input
-        type="text"
-        id="editFirstName"
-        placeholder="Enter firstname"
-        [(ngModel)]="selectedSubAdmin.firstName"
-      />
-    </div>
-    <div class="modal-input">
-      <label for="editLastName">Lastname</label>
-      <input
-        type="text"
-        id="editLastName"
-        placeholder="Enter lastname"
-        [(ngModel)]="selectedSubAdmin.lastName"
-      />
-    </div>
-    <div class="modal-input">
-      <label for="editEmail">Email</label>
-      <input
-        type="text"
-        id="editEmail"
-        placeholder="Enter email"
-        [(ngModel)]="selectedSubAdmin.email"
-      />
-    </div>
-    <div class="modal-input">
-      <label for="editPassword">Password</label>
-      <input type="password" id="editPassword" placeholder="Enter password" />
-    </div>
-  </div>
-  <div class="modal-footer">
-    <div class="permissions-section">
-      <div>Permissions allowed</div>
-      <div *ngIf="hasAnyPermission(selectedSubAdmin.permissions.properties)">
-        Properties
-      </div>
-      <div *ngIf="hasAnyPermission(selectedSubAdmin.permissions.tenants)">
-        Tenants
-      </div>
-      <div *ngIf="hasAnyPermission(selectedSubAdmin.permissions.agenciesOwner)">
-        Agencies Owner
-      </div>
-      <div *ngIf="hasAnyPermission(selectedSubAdmin.permissions.rentRequest)">
-        Rent Request
-      </div>
-      <div *ngIf="hasAnyPermission(selectedSubAdmin.permissions.contracts)">
-        Contracts
-      </div>
-      <div class="permissions-link" (click)="toggleModal('editPermissions')">
-        Edit permissions
       </div>
     </div>
-    <div class="button-group">
-      <button class="btn-subadmin-save" (click)="saveSubAdmin()">Save</button>
-      <button class="btn-subadmin-cancel" (click)="toggleModal('edit')">
-        Cancel
-      </button>
+    <div class="modal-body">
+      <div class="modal-input">
+        <label for="editFirstName">{{ "Firstname" | translate }}</label>
+        <input
+          type="text"
+          id="editFirstName"
+          [placeholder]="'Enter firstname' | translate"
+          [(ngModel)]="selectedSubAdmin.firstName"
+        />
+      </div>
+      <div class="modal-input">
+        <label for="editLastName">{{ "Lastname" | translate }}</label>
+        <input
+          type="text"
+          id="editLastName"
+          [placeholder]="'Enter lastname' | translate"
+          [(ngModel)]="selectedSubAdmin.lastName"
+        />
+      </div>
+      <div class="modal-input">
+        <label for="editEmail">{{ "Email" | translate }}</label>
+        <input
+          type="text"
+          id="editEmail"
+          [placeholder]="'Enter email' | translate"
+          [(ngModel)]="selectedSubAdmin.email"
+        />
+      </div>
+      <div class="modal-input">
+        <label for="editPassword">{{ "Password" | translate }}</label>
+        <input
+          type="password"
+          id="editPassword"
+          [placeholder]="'Enter password' | translate"
+        />
+      </div>
+      <div class="permissions-section">
+        <h3>{{ "Permissions allowed" | translate }}</h3>
+        <div class="permissions-allowed">
+          <div
+            *ngIf="hasAnyPermission(selectedSubAdmin.permissions.properties)"
+          >
+            {{ "Properties" | translate }}
+          </div>
+          <div *ngIf="hasAnyPermission(selectedSubAdmin.permissions.tenants)">
+            {{ "Tenants" | translate }}
+          </div>
+          <div
+            *ngIf="hasAnyPermission(selectedSubAdmin.permissions.agenciesOwner)"
+          >
+            {{ "Agencies Owner" | translate }}
+          </div>
+          <div
+            *ngIf="hasAnyPermission(selectedSubAdmin.permissions.rentRequest)"
+          >
+            {{ "Rent Request" | translate }}
+          </div>
+          <div *ngIf="hasAnyPermission(selectedSubAdmin.permissions.contracts)">
+            {{ "Contracts" | translate }}
+          </div>
+        </div>
+        <div class="permissions-link" (click)="toggleModal('editPermissions')">
+          {{ "Edit permissions" | translate }}
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <div class="button-group">
+        <button class="btn-subadmin-save" (click)="saveSubAdmin()">
+          <img src="/assets/icons/save-admin.svg" alt="" />
+
+          {{ "Save" | translate }}
+        </button>
+        <button class="btn-subadmin-cancel" (click)="toggleModal('edit')">
+          <img src="/assets/icons/cancel-admin.svg" alt="" />
+
+          {{ "Cancel" | translate }}
+        </button>
+      </div>
     </div>
   </div>
 </div>
 
 <!-- Delete Modal -->
-<div class="modal-delete-subadmin" *ngIf="showDeleteModal">
-  <div class="delete-content">
-    <div>Are you sure you want to delete this subadmin?</div>
-    <div>This action cannot be undone.</div>
-  </div>
-  <div class="button-group">
-    <button class="delete-btn" (click)="deleteSubAdmin()">Delete</button>
-    <button class="cancel-btn" (click)="toggleModal('delete')">Cancel</button>
+<div class="modal-delete-subadmin modal" *ngIf="showDeleteModal">
+  <div class="modal-container">
+    <div class="delete-content">
+      <img src="/assets/icons/delete-modal.svg" alt="" />
+      <div>
+        {{ "Are you sure this administrator has been deleted?" | translate }}
+      </div>
+    </div>
+    <div class="button-group">
+      <button class="delete-btn" (click)="deleteSubAdmin()">
+        <img src="/assets/icons/delete-btn-modal.svg" alt="" />
+        {{ "Yes delete!" | translate }}
+      </button>
+      <button class="cancel-btn" (click)="toggleModal('delete')">
+        <img src="/assets/icons/cancel-btn-modal.svg" alt="" />
+
+        {{ "Cancel" | translate }}
+      </button>
+    </div>
   </div>
 </div>
 
 <!-- Add Permissions Modal -->
-<div class="modal-add-permissions" *ngIf="showAddPermissionsModal">
-  <div class="modal-title">Add Permissions</div>
-  <div class="permissions-section">
-    <div class="permission-group">
-      <span>Administrator Access</span>
-      <span>
-        <input
-          type="checkbox"
-          id="selectAll"
-          (change)="toggleSelectAll($event)"
-        />
-        <label for="selectAll">Select all</label>
-      </span>
+<div class="modal-add-permissions modal" *ngIf="showAddPermissionsModal">
+  <div class="modal-container">
+    <div class="modal-header">
+      <div class="modal-title">{{ "Add Permissions" | translate }}</div>
     </div>
-    <div class="permission-group">
-      <span>Properties</span>
-      <span>
-        <input
-          type="checkbox"
-          id="propertiesShow"
-          [(ngModel)]="selectedSubAdmin.permissions.properties.show"
-        />
-        <label for="propertiesShow">Show the section</label>
-      </span>
-      <span>
-        <input
-          type="checkbox"
-          id="propertiesView"
-          [(ngModel)]="selectedSubAdmin.permissions.properties.view"
-        />
-        <label for="propertiesView">View</label>
-      </span>
-      <span>
-        <input
-          type="checkbox"
-          id="propertiesDelete"
-          [(ngModel)]="selectedSubAdmin.permissions.properties.delete"
-        />
-        <label for="propertiesDelete">Delete</label>
-      </span>
-      <span>
-        <input
-          type="checkbox"
-          id="propertiesEdit"
-          [(ngModel)]="selectedSubAdmin.permissions.properties.edit"
-        />
-        <label for="propertiesEdit">Edit</label>
-      </span>
+    <div class="permissions-section">
+      <div class="permission-group">
+        <div>{{ "Administrator Access" | translate }}</div>
+        <span>
+          <input
+            type="checkbox"
+            id="selectAll"
+            (change)="toggleSelectAll($event)"
+          />
+          <label for="selectAll">{{ "Select all" | translate }}</label>
+        </span>
+      </div>
+      <div class="permission-group">
+        <div>{{ "Properties" | translate }}</div>
+        <span>
+          <input
+            type="checkbox"
+            id="propertiesShow"
+            [(ngModel)]="selectedSubAdmin.permissions.properties.show"
+          />
+          <label for="propertiesShow">{{
+            "Show the section" | translate
+          }}</label>
+        </span>
+        <span>
+          <input
+            type="checkbox"
+            id="propertiesView"
+            [(ngModel)]="selectedSubAdmin.permissions.properties.view"
+          />
+          <label for="propertiesView">{{ "View" | translate }}</label>
+        </span>
+        <span>
+          <input
+            type="checkbox"
+            id="propertiesDelete"
+            [(ngModel)]="selectedSubAdmin.permissions.properties.delete"
+          />
+          <label for="propertiesDelete">{{ "Delete" | translate }}</label>
+        </span>
+        <span>
+          <input
+            type="checkbox"
+            id="propertiesEdit"
+            [(ngModel)]="selectedSubAdmin.permissions.properties.edit"
+          />
+          <label for="propertiesEdit">{{ "Edit" | translate }}</label>
+        </span>
+      </div>
+      <div class="permission-group">
+        <div>{{ "Tenants" | translate }}</div>
+        <span>
+          <input
+            type="checkbox"
+            id="tenantsShow"
+            [(ngModel)]="selectedSubAdmin.permissions.tenants.show"
+          />
+          <label for="tenantsShow">{{ "Show the section" | translate }}</label>
+        </span>
+        <span>
+          <input
+            type="checkbox"
+            id="tenantsView"
+            [(ngModel)]="selectedSubAdmin.permissions.tenants.view"
+          />
+          <label for="tenantsView">{{ "View" | translate }}</label>
+        </span>
+        <span>
+          <input
+            type="checkbox"
+            id="tenantsDelete"
+            [(ngModel)]="selectedSubAdmin.permissions.tenants.delete"
+          />
+          <label for="tenantsDelete">{{ "Delete" | translate }}</label>
+        </span>
+        <span>
+          <input
+            type="checkbox"
+            id="tenantsEdit"
+            [(ngModel)]="selectedSubAdmin.permissions.tenants.edit"
+          />
+          <label for="tenantsEdit">{{ "Edit" | translate }}</label>
+        </span>
+      </div>
+      <div class="permission-group">
+        <div>{{ "Agencies Owner" | translate }}</div>
+        <span>
+          <input
+            type="checkbox"
+            id="agenciesShow"
+            [(ngModel)]="selectedSubAdmin.permissions.agenciesOwner.show"
+          />
+          <label for="agenciesShow">{{ "Show the section" | translate }}</label>
+        </span>
+        <span>
+          <input
+            type="checkbox"
+            id="agenciesView"
+            [(ngModel)]="selectedSubAdmin.permissions.agenciesOwner.view"
+          />
+          <label for="agenciesView">{{ "View" | translate }}</label>
+        </span>
+        <span>
+          <input
+            type="checkbox"
+            id="agenciesDelete"
+            [(ngModel)]="selectedSubAdmin.permissions.agenciesOwner.delete"
+          />
+          <label for="agenciesDelete">{{ "Delete" | translate }}</label>
+        </span>
+        <span>
+          <input
+            type="checkbox"
+            id="agenciesEdit"
+            [(ngModel)]="selectedSubAdmin.permissions.agenciesOwner.edit"
+          />
+          <label for="agenciesEdit">{{ "Edit" | translate }}</label>
+        </span>
+      </div>
+      <div class="permission-group">
+        <div>{{ "Rent Request" | translate }}</div>
+        <span>
+          <input
+            type="checkbox"
+            id="rentRequestShow"
+            [(ngModel)]="selectedSubAdmin.permissions.rentRequest.show"
+          />
+          <label for="rentRequestShow">{{
+            "Show the section" | translate
+          }}</label>
+        </span>
+        <span>
+          <input
+            type="checkbox"
+            id="rentRequestView"
+            [(ngModel)]="selectedSubAdmin.permissions.rentRequest.view"
+          />
+          <label for="rentRequestView">{{ "View" | translate }}</label>
+        </span>
+        <span>
+          <input
+            type="checkbox"
+            id="rentRequestDelete"
+            [(ngModel)]="selectedSubAdmin.permissions.rentRequest.delete"
+          />
+          <label for="rentRequestDelete">{{ "Delete" | translate }}</label>
+        </span>
+        <span>
+          <input
+            type="checkbox"
+            id="rentRequestEdit"
+            [(ngModel)]="selectedSubAdmin.permissions.rentRequest.edit"
+          />
+          <label for="rentRequestEdit">{{ "Edit" | translate }}</label>
+        </span>
+      </div>
+      <div class="permission-group">
+        <div>{{ "Contracts" | translate }}</div>
+        <span>
+          <input
+            type="checkbox"
+            id="contractsShow"
+            [(ngModel)]="selectedSubAdmin.permissions.contracts.show"
+          />
+          <label for="contractsShow">{{
+            "Show the section" | translate
+          }}</label>
+        </span>
+        <span>
+          <input
+            type="checkbox"
+            id="contractsView"
+            [(ngModel)]="selectedSubAdmin.permissions.contracts.view"
+          />
+          <label for="contractsView">{{ "View" | translate }}</label>
+        </span>
+        <span>
+          <input
+            type="checkbox"
+            id="contractsDelete"
+            [(ngModel)]="selectedSubAdmin.permissions.contracts.delete"
+          />
+          <label for="contractsDelete">{{ "Delete" | translate }}</label>
+        </span>
+        <span>
+          <input
+            type="checkbox"
+            id="contractsEdit"
+            [(ngModel)]="selectedSubAdmin.permissions.contracts.edit"
+          />
+          <label for="contractsEdit">{{ "Edit" | translate }}</label>
+        </span>
+      </div>
     </div>
-    <div class="permission-group">
-      <span>Tenants</span>
-      <span>
-        <input
-          type="checkbox"
-          id="tenantsShow"
-          [(ngModel)]="selectedSubAdmin.permissions.tenants.show"
-        />
-        <label for="tenantsShow">Show the section</label>
-      </span>
-      <span>
-        <input
-          type="checkbox"
-          id="tenantsView"
-          [(ngModel)]="selectedSubAdmin.permissions.tenants.view"
-        />
-        <label for="tenantsView">View</label>
-      </span>
-      <span>
-        <input
-          type="checkbox"
-          id="tenantsDelete"
-          [(ngModel)]="selectedSubAdmin.permissions.tenants.delete"
-        />
-        <label for="tenantsDelete">Delete</label>
-      </span>
-      <span>
-        <input
-          type="checkbox"
-          id="tenantsEdit"
-          [(ngModel)]="selectedSubAdmin.permissions.tenants.edit"
-        />
-        <label for="tenantsEdit">Edit</label>
-      </span>
+    <div class="button-group">
+      <button class="discard-btn" (click)="toggleModal('addPermissions')">
+        {{ "Discard" | translate }}
+      </button>
+      <button class="submit-btn" (click)="toggleModal('addPermissions')">
+        {{ "Submit" | translate }}
+      </button>
     </div>
-    <div class="permission-group">
-      <span>Agencies Owner</span>
-      <span>
-        <input
-          type="checkbox"
-          id="agenciesShow"
-          [(ngModel)]="selectedSubAdmin.permissions.agenciesOwner.show"
-        />
-        <label for="agenciesShow">Show the section</label>
-      </span>
-      <span>
-        <input
-          type="checkbox"
-          id="agenciesView"
-          [(ngModel)]="selectedSubAdmin.permissions.agenciesOwner.view"
-        />
-        <label for="agenciesView">View</label>
-      </span>
-      <span>
-        <input
-          type="checkbox"
-          id="agenciesDelete"
-          [(ngModel)]="selectedSubAdmin.permissions.agenciesOwner.delete"
-        />
-        <label for="agenciesDelete">Delete</label>
-      </span>
-      <span>
-        <input
-          type="checkbox"
-          id="agenciesEdit"
-          [(ngModel)]="selectedSubAdmin.permissions.agenciesOwner.edit"
-        />
-        <label for="agenciesEdit">Edit</label>
-      </span>
-    </div>
-    <div class="permission-group">
-      <span>Rent Request</span>
-      <span>
-        <input
-          type="checkbox"
-          id="rentRequestShow"
-          [(ngModel)]="selectedSubAdmin.permissions.rentRequest.show"
-        />
-        <label for="rentRequestShow">Show the section</label>
-      </span>
-      <span>
-        <input
-          type="checkbox"
-          id="rentRequestView"
-          [(ngModel)]="selectedSubAdmin.permissions.rentRequest.view"
-        />
-        <label for="rentRequestView">View</label>
-      </span>
-      <span>
-        <input
-          type="checkbox"
-          id="rentRequestDelete"
-          [(ngModel)]="selectedSubAdmin.permissions.rentRequest.delete"
-        />
-        <label for="rentRequestDelete">Delete</label>
-      </span>
-      <span>
-        <input
-          type="checkbox"
-          id="rentRequestEdit"
-          [(ngModel)]="selectedSubAdmin.permissions.rentRequest.edit"
-        />
-        <label for="rentRequestEdit">Edit</label>
-      </span>
-    </div>
-    <div class="permission-group">
-      <span>Contracts</span>
-      <span>
-        <input
-          type="checkbox"
-          id="contractsShow"
-          [(ngModel)]="selectedSubAdmin.permissions.contracts.show"
-        />
-        <label for="contractsShow">Show the section</label>
-      </span>
-      <span>
-        <input
-          type="checkbox"
-          id="contractsView"
-          [(ngModel)]="selectedSubAdmin.permissions.contracts.view"
-        />
-        <label for="contractsView">View</label>
-      </span>
-      <span>
-        <input
-          type="checkbox"
-          id="contractsDelete"
-          [(ngModel)]="selectedSubAdmin.permissions.contracts.delete"
-        />
-        <label for="contractsDelete">Delete</label>
-      </span>
-      <span>
-        <input
-          type="checkbox"
-          id="contractsEdit"
-          [(ngModel)]="selectedSubAdmin.permissions.contracts.edit"
-        />
-        <label for="contractsEdit">Edit</label>
-      </span>
-    </div>
-  </div>
-  <div class="button-group">
-    <button class="discard-btn" (click)="toggleModal('addPermissions')">
-      Discard
-    </button>
-    <button class="submit-btn" (click)="toggleModal('addPermissions')">
-      Submit
-    </button>
   </div>
 </div>
 
 <!-- Edit Permissions Modal -->
-<div class="modal-add-permissions" *ngIf="showEditPermissionsModal">
-  <div class="modal-title">Edit Permissions</div>
-  <div class="permissions-section">
-    <div class="permission-group">
-      <span>Administrator Access</span>
-      <span>
-        <input
-          type="checkbox"
-          id="editSelectAll"
-          (change)="toggleSelectAll($event)"
-        />
-        <label for="editSelectAll">Select all</label>
-      </span>
+<div class="modal-add-permissions modal" *ngIf="showEditPermissionsModal">
+  <div class="modal-container">
+    <div class="modal-header">
+      <div class="modal-title">{{ "Edit Permissions" | translate }}</div>
     </div>
-    <div class="permission-group">
-      <span>Properties</span>
-      <span>
-        <input
-          type="checkbox"
-          id="editPropertiesShow"
-          [(ngModel)]="selectedSubAdmin.permissions.properties.show"
-        />
-        <label for="editPropertiesShow">Show the section</label>
-      </span>
-      <span>
-        <input
-          type="checkbox"
-          id="editPropertiesView"
-          [(ngModel)]="selectedSubAdmin.permissions.properties.view"
-        />
-        <label for="editPropertiesView">View</label>
-      </span>
-      <span>
-        <input
-          type="checkbox"
-          id="editPropertiesDelete"
-          [(ngModel)]="selectedSubAdmin.permissions.properties.delete"
-        />
-        <label for="editPropertiesDelete">Delete</label>
-      </span>
-      <span>
-        <input
-          type="checkbox"
-          id="editPropertiesEdit"
-          [(ngModel)]="selectedSubAdmin.permissions.properties.edit"
-        />
-        <label for="editPropertiesEdit">Edit</label>
-      </span>
+
+    <div class="permissions-section">
+      <div class="permission-group">
+        <div>{{ "Administrator Access" | translate }}</div>
+        <span>
+          <input
+            type="checkbox"
+            id="editSelectAll"
+            (change)="toggleSelectAll($event)"
+          />
+          <label for="editSelectAll">{{ "Select all" | translate }}</label>
+        </span>
+      </div>
+      <div class="permission-group">
+        <div>{{ "Properties" | translate }}</div>
+        <span>
+          <input
+            type="checkbox"
+            id="editPropertiesShow"
+            [(ngModel)]="selectedSubAdmin.permissions.properties.show"
+          />
+          <label for="editPropertiesShow">{{
+            "Show the section" | translate
+          }}</label>
+        </span>
+        <span>
+          <input
+            type="checkbox"
+            id="editPropertiesView"
+            [(ngModel)]="selectedSubAdmin.permissions.properties.view"
+          />
+          <label for="editPropertiesView">{{ "View" | translate }}</label>
+        </span>
+        <span>
+          <input
+            type="checkbox"
+            id="editPropertiesDelete"
+            [(ngModel)]="selectedSubAdmin.permissions.properties.delete"
+          />
+          <label for="editPropertiesDelete">{{ "Delete" | translate }}</label>
+        </span>
+        <span>
+          <input
+            type="checkbox"
+            id="editPropertiesEdit"
+            [(ngModel)]="selectedSubAdmin.permissions.properties.edit"
+          />
+          <label for="editPropertiesEdit">{{ "Edit" | translate }}</label>
+        </span>
+      </div>
+      <div class="permission-group">
+        <span>{{ "Tenants" | translate }}</span>
+        <span>
+          <input
+            type="checkbox"
+            id="editTenantsShow"
+            [(ngModel)]="selectedSubAdmin.permissions.tenants.show"
+          />
+          <label for="editTenantsShow">{{
+            "Show the section" | translate
+          }}</label>
+        </span>
+        <span>
+          <input
+            type="checkbox"
+            id="editTenantsView"
+            [(ngModel)]="selectedSubAdmin.permissions.tenants.view"
+          />
+          <label for="editTenantsView">{{ "View" | translate }}</label>
+        </span>
+        <span>
+          <input
+            type="checkbox"
+            id="editTenantsDelete"
+            [(ngModel)]="selectedSubAdmin.permissions.tenants.delete"
+          />
+          <label for="editTenantsDelete">{{ "Delete" | translate }}</label>
+        </span>
+        <span>
+          <input
+            type="checkbox"
+            id="editTenantsEdit"
+            [(ngModel)]="selectedSubAdmin.permissions.tenants.edit"
+          />
+          <label for="editTenantsEdit">{{ "Edit" | translate }}</label>
+        </span>
+      </div>
+      <div class="permission-group">
+        <div>{{ "Agencies Owner" | translate }}</div>
+        <span>
+          <input
+            type="checkbox"
+            id="editAgenciesShow"
+            [(ngModel)]="selectedSubAdmin.permissions.agenciesOwner.show"
+          />
+          <label for="editAgenciesShow">{{
+            "Show the section" | translate
+          }}</label>
+        </span>
+        <span>
+          <input
+            type="checkbox"
+            id="editAgenciesView"
+            [(ngModel)]="selectedSubAdmin.permissions.agenciesOwner.view"
+          />
+          <label for="editAgenciesView">{{ "View" | translate }}</label>
+        </span>
+        <span>
+          <input
+            type="checkbox"
+            id="editAgenciesDelete"
+            [(ngModel)]="selectedSubAdmin.permissions.agenciesOwner.delete"
+          />
+          <label for="editAgenciesDelete">{{ "Delete" | translate }}</label>
+        </span>
+        <span>
+          <input
+            type="checkbox"
+            id="editAgenciesEdit"
+            [(ngModel)]="selectedSubAdmin.permissions.agenciesOwner.edit"
+          />
+          <label for="editAgenciesEdit">{{ "Edit" | translate }}</label>
+        </span>
+      </div>
+      <div class="permission-group">
+        <div>{{ "Rent Request" | translate }}</div>
+        <span>
+          <input
+            type="checkbox"
+            id="editRentRequestShow"
+            [(ngModel)]="selectedSubAdmin.permissions.rentRequest.show"
+          />
+          <label for="editRentRequestShow">{{
+            "Show the section" | translate
+          }}</label>
+        </span>
+        <span>
+          <input
+            type="checkbox"
+            id="editRentRequestView"
+            [(ngModel)]="selectedSubAdmin.permissions.rentRequest.view"
+          />
+          <label for="editRentRequestView">{{ "View" | translate }}</label>
+        </span>
+        <span>
+          <input
+            type="checkbox"
+            id="editRentRequestDelete"
+            [(ngModel)]="selectedSubAdmin.permissions.rentRequest.delete"
+          />
+          <label for="editRentRequestDelete">{{ "Delete" | translate }}</label>
+        </span>
+        <span>
+          <input
+            type="checkbox"
+            id="editRentRequestEdit"
+            [(ngModel)]="selectedSubAdmin.permissions.rentRequest.edit"
+          />
+          <label for="editRentRequestEdit">{{ "Edit" | translate }}</label>
+        </span>
+      </div>
+      <div class="permission-group">
+        <div>{{ "Contracts" | translate }}</div>
+        <span>
+          <input
+            type="checkbox"
+            id="editContractsShow"
+            [(ngModel)]="selectedSubAdmin.permissions.contracts.show"
+          />
+          <label for="editContractsShow">{{
+            "Show the section" | translate
+          }}</label>
+        </span>
+        <span>
+          <input
+            type="checkbox"
+            id="editContractsView"
+            [(ngModel)]="selectedSubAdmin.permissions.contracts.view"
+          />
+          <label for="editContractsView">{{ "View" | translate }}</label>
+        </span>
+        <span>
+          <input
+            type="checkbox"
+            id="editContractsDelete"
+            [(ngModel)]="selectedSubAdmin.permissions.contracts.delete"
+          />
+          <label for="editContractsDelete">{{ "Delete" | translate }}</label>
+        </span>
+        <span>
+          <input
+            type="checkbox"
+            id="editContractsEdit"
+            [(ngModel)]="selectedSubAdmin.permissions.contracts.edit"
+          />
+          <label for="editContractsEdit">{{ "Edit" | translate }}</label>
+        </span>
+      </div>
     </div>
-    <div class="permission-group">
-      <span>Tenants</span>
-      <span>
-        <input
-          type="checkbox"
-          id="editTenantsShow"
-          [(ngModel)]="selectedSubAdmin.permissions.tenants.show"
-        />
-        <label for="editTenantsShow">Show the section</label>
-      </span>
-      <span>
-        <input
-          type="checkbox"
-          id="editTenantsView"
-          [(ngModel)]="selectedSubAdmin.permissions.tenants.view"
-        />
-        <label for="editTenantsView">View</label>
-      </span>
-      <span>
-        <input
-          type="checkbox"
-          id="editTenantsDelete"
-          [(ngModel)]="selectedSubAdmin.permissions.tenants.delete"
-        />
-        <label for="editTenantsDelete">Delete</label>
-      </span>
-      <span>
-        <input
-          type="checkbox"
-          id="editTenantsEdit"
-          [(ngModel)]="selectedSubAdmin.permissions.tenants.edit"
-        />
-        <label for="editTenantsEdit">Edit</label>
-      </span>
+    <div class="button-group">
+      <button class="discard-btn" (click)="toggleModal('editPermissions')">
+        {{ "Discard" | translate }}
+      </button>
+      <button class="submit-btn" (click)="toggleModal('editPermissions')">
+        {{ "Submit" | translate }}
+      </button>
     </div>
-    <div class="permission-group">
-      <span>Agencies Owner</span>
-      <span>
-        <input
-          type="checkbox"
-          id="editAgenciesShow"
-          [(ngModel)]="selectedSubAdmin.permissions.agenciesOwner.show"
-        />
-        <label for="editAgenciesShow">Show the section</label>
-      </span>
-      <span>
-        <input
-          type="checkbox"
-          id="editAgenciesView"
-          [(ngModel)]="selectedSubAdmin.permissions.agenciesOwner.view"
-        />
-        <label for="editAgenciesView">View</label>
-      </span>
-      <span>
-        <input
-          type="checkbox"
-          id="editAgenciesDelete"
-          [(ngModel)]="selectedSubAdmin.permissions.agenciesOwner.delete"
-        />
-        <label for="editAgenciesDelete">Delete</label>
-      </span>
-      <span>
-        <input
-          type="checkbox"
-          id="editAgenciesEdit"
-          [(ngModel)]="selectedSubAdmin.permissions.agenciesOwner.edit"
-        />
-        <label for="editAgenciesEdit">Edit</label>
-      </span>
-    </div>
-    <div class="permission-group">
-      <span>Rent Request</span>
-      <span>
-        <input
-          type="checkbox"
-          id="editRentRequestShow"
-          [(ngModel)]="selectedSubAdmin.permissions.rentRequest.show"
-        />
-        <label for="editRentRequestShow">Show the section</label>
-      </span>
-      <span>
-        <input
-          type="checkbox"
-          id="editRentRequestView"
-          [(ngModel)]="selectedSubAdmin.permissions.rentRequest.view"
-        />
-        <label for="editRentRequestView">View</label>
-      </span>
-      <span>
-        <input
-          type="checkbox"
-          id="editRentRequestDelete"
-          [(ngModel)]="selectedSubAdmin.permissions.rentRequest.delete"
-        />
-        <label for="editRentRequestDelete">Delete</label>
-      </span>
-      <span>
-        <input
-          type="checkbox"
-          id="editRentRequestEdit"
-          [(ngModel)]="selectedSubAdmin.permissions.rentRequest.edit"
-        />
-        <label for="editRentRequestEdit">Edit</label>
-      </span>
-    </div>
-    <div class="permission-group">
-      <span>Contracts</span>
-      <span>
-        <input
-          type="checkbox"
-          id="editContractsShow"
-          [(ngModel)]="selectedSubAdmin.permissions.contracts.show"
-        />
-        <label for="editContractsShow">Show the section</label>
-      </span>
-      <span>
-        <input
-          type="checkbox"
-          id="editContractsView"
-          [(ngModel)]="selectedSubAdmin.permissions.contracts.view"
-        />
-        <label for="editContractsView">View</label>
-      </span>
-      <span>
-        <input
-          type="checkbox"
-          id="editContractsDelete"
-          [(ngModel)]="selectedSubAdmin.permissions.contracts.delete"
-        />
-        <label for="editContractsDelete">Delete</label>
-      </span>
-      <span>
-        <input
-          type="checkbox"
-          id="editContractsEdit"
-          [(ngModel)]="selectedSubAdmin.permissions.contracts.edit"
-        />
-        <label for="editContractsEdit">Edit</label>
-      </span>
-    </div>
-  </div>
-  <div class="button-group">
-    <button class="discard-btn" (click)="toggleModal('editPermissions')">
-      Discard
-    </button>
-    <button class="submit-btn" (click)="toggleModal('editPermissions')">
-      Submit
-    </button>
   </div>
 </div>

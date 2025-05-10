@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { TranslateModule } from '@ngx-translate/core';
 
 interface SubAdmin {
   id: number;
@@ -55,7 +56,7 @@ interface PermissionCategory {
   templateUrl: './sub-admins-management.component.html',
   styleUrls: ['./sub-admins-management.component.scss'],
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, TranslateModule],
 })
 export class SubAdminsManagementComponent {
   subAdmins: SubAdmin[] = [
