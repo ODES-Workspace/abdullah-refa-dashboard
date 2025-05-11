@@ -8,6 +8,7 @@
     font-size: 16px;
     line-height: 14px;
     font-weight: 600;
+    text-wrap: nowrap;
   }
 
   &-header {
@@ -16,9 +17,10 @@
     padding: 17px 20px;
     align-items: center;
     border-bottom: 1px solid #f1f1f4;
+    gap: 20px;
     input {
       padding: 8px 28px 8px 28px;
-      width: 305px;
+      width: 100%;
       border: 1px solid #40404033;
       border-radius: 6px;
       outline: none;
@@ -32,15 +34,21 @@
 
   &-properties {
     display: grid;
-    grid-template-columns: repeat(3, auto);
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     padding: 30px;
     row-gap: 30px;
     column-gap: 66px;
     justify-items: center;
+
+    @media (max-width: 500px) {
+      padding: 10px;
+    }
   }
 
   &-search {
     position: relative;
+    max-width: 300px;
+    width: 100%;
 
     img {
       position: absolute;
@@ -60,6 +68,13 @@
     display: flex;
     justify-content: space-between;
     padding: 14px 20px;
+
+    @media (max-width: 500px) {
+      flex-direction: column;
+      gap: 8px;
+      align-items: center;
+      justify-content: center;
+    }
 
     &--show {
       display: flex;

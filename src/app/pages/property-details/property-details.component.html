@@ -108,6 +108,15 @@
       </div>
     </div>
 
+    <!-- property map -->
+    <div class="property-map">
+      <h3>{{ "Location" | translate }}</h3>
+      <app-map
+        [lat]="property.location.latitude"
+        [lng]="property.location.longitude"
+      ></app-map>
+    </div>
+
     <!-- owner details -->
     <div class="property-owner-details">
       <h3>{{ "Owner Details" | translate }}</h3>
@@ -139,15 +148,6 @@
           {{ property.owner_details.address.region }}
         </span>
       </div>
-    </div>
-
-    <!-- property map -->
-    <div class="property-map">
-      <h3>{{ "Location" | translate }}</h3>
-      <app-map
-        [lat]="property.location.latitude"
-        [lng]="property.location.longitude"
-      ></app-map>
     </div>
   </div>
 </div>

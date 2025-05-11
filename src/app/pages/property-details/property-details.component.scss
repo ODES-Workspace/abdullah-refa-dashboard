@@ -3,11 +3,20 @@
     display: grid;
     grid-template-columns: 1fr 0.5fr;
     gap: 30px;
+
+    @media (max-width: 1000px) {
+      grid-template-columns: 1fr;
+    }
   }
 
   &-owner-details {
     grid-row: 1/2;
     grid-column: 2/-1;
+
+    @media (max-width: 1000px) {
+      grid-row: unset;
+      grid-column: unset;
+    }
   }
 
   &-details {
@@ -16,12 +25,18 @@
     border-radius: 6px;
     display: grid;
     gap: 16px;
+
+    @media (max-width: 500px) {
+      padding: 15px;
+    }
   }
 
   &-info {
     display: flex;
     justify-content: space-between;
     margin-bottom: 16px;
+    gap: 20px;
+    flex-wrap: wrap;
   }
 
   &-title-location {
@@ -66,7 +81,7 @@
 
   &-includes {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(auto-fit, minmax(143px, 1fr));
     gap: 16px;
 
     &-item {
@@ -88,7 +103,7 @@
 
   &-deposit-license {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     gap: 16px;
     &-item {
       box-shadow: 0px 2px 4px 0px #0000000a;
@@ -123,7 +138,7 @@
 
   &-images {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
     gap: 16px;
 
     img {
