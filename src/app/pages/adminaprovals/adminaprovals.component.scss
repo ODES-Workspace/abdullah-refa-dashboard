@@ -1,10 +1,20 @@
 .table {
   &-titles {
-    grid-template-columns: 74px 1fr 138px minmax(150px, 1fr) 140px 118px 120px 134px 93px;
+    grid-template-columns:
+      74px minmax(130px, 1fr) 138px minmax(150px, 1fr) minmax(140px, 1fr) minmax(
+        118px,
+        1fr
+      )
+      minmax(120px, 1fr) minmax(134px, 1fr) minmax(93px, 1fr);
   }
 
   &-row {
-    grid-template-columns: 74px 1fr 138px minmax(150px, 1fr) 140px 118px 120px 134px 93px;
+    grid-template-columns:
+      74px minmax(130px, 1fr) 138px minmax(150px, 1fr) minmax(140px, 1fr) minmax(
+        118px,
+        1fr
+      )
+      minmax(120px, 1fr) minmax(134px, 1fr) minmax(93px, 1fr);
   }
 }
 

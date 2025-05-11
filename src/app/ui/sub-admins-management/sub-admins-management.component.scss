@@ -1,7 +1,8 @@
 .table {
+  overflow-x: auto;
   &-titles,
   &-row {
-    grid-template-columns: 1fr 1fr 1fr 108px;
+    grid-template-columns: repeat(3, minmax(330px, 1fr)) minmax(108px, 1FR);
   }
 
   &-header-group {
@@ -64,6 +65,7 @@
   justify-content: center;
   align-items: center;
   z-index: 1000;
+  padding: 20px;
 
   &-add-subadmin,
   &-edit-subadmin,
@@ -104,6 +106,13 @@
       .modal-body {
         display: grid;
         grid-template-columns: repeat(2, 1fr);
+        width: 100%;
+        @media (max-width: 500px) {
+          height: 250px;
+          overflow-y: auto;
+
+          grid-template-columns: 1fr;
+        }
         row-gap: 24px;
         column-gap: 16px;
         margin-bottom: 48px;
@@ -160,7 +169,11 @@
         .permissions-allowed {
           display: flex;
           gap: 24px;
+          @media (max-width: 500px) {
+            gap: 12px;
+          }
           margin-bottom: 24px;
+          flex-wrap: wrap;
         }
       }
 
@@ -176,6 +189,10 @@
 
           button {
             padding: 21px 60px;
+
+            @media (max-width: 500px) {
+              padding: 10px 20px;
+            }
             display: flex;
             justify-content: center;
             align-items: center;
@@ -209,12 +226,18 @@
         display: grid;
         margin-bottom: 40px;
 
+        @media (max-width: 1000px) {
+          height: 250px;
+          overflow-y: auto;
+        }
+
         .permission-group {
           border-bottom: 1.5px dashed #454a5e33;
           padding-block: 18px;
           display: flex;
           gap: 16px;
           align-items: center;
+          flex-wrap: wrap;
 
           span {
             display: flex;
@@ -277,6 +300,7 @@
         gap: 16px;
         color: #f8285a;
         font-weight: 700;
+        text-align: center;
         font-size: 18px;
       }
 

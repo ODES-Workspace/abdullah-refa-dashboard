@@ -27,7 +27,10 @@
     <div class="settings-management-content" *ngIf="activeTab === 'management'">
       <app-management></app-management>
     </div>
-    <div class="settings-sub-admin-content" *ngIf="activeTab === 'sub-admin'">
+    <div
+      class="settings-sub-admin-content--table"
+      *ngIf="activeTab === 'sub-admin'"
+    >
       <app-sub-admins-management></app-sub-admins-management>
     </div>
   </div>

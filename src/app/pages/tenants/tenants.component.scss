@@ -1,10 +1,14 @@
 .table {
   &-titles {
-    grid-template-columns: repeat(6, 1fr);
+    grid-template-columns:
+      minmax(188px, 1fr) minmax(188px, 1fr) minmax(256px, 1fr)
+      minmax(183px, 1fr) minmax(176px, 1fr) minmax(100px, 1fr);
   }
 
   &-row {
-    grid-template-columns: repeat(6, 1fr);
+    grid-template-columns:
+      minmax(188px, 1fr) minmax(188px, 1fr) minmax(256px, 1fr)
+      minmax(183px, 1fr) minmax(176px, 1fr) minmax(100px, 1fr);
   }
 }
 

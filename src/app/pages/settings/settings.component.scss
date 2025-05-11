@@ -1,5 +1,6 @@
 .settings {
-  display: grid;
+  display: flex;
+  flex-direction: column;
   gap: 24px;
   &-tabs {
     display: flex;
@@ -11,6 +12,10 @@
     font-size: 14px;
     line-height: 14px;
     color: #404040b2;
+
+    @media (max-width: 1000px) {
+      flex-wrap: wrap;
+    }
     div {
       padding-block: 14px;
       padding-inline: 10px;
@@ -22,5 +27,11 @@
         border-bottom: 1px solid #0311d0;
       }
     }
+  }
+}
+
+.settings-sub-admin-content {
+  &--table {
+    overflow-x: auto;
   }
 }

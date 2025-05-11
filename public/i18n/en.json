@@ -234,5 +234,7 @@
   "Are you sure this administrator has been deleted?": "Are you sure this administrator has been deleted?",
   "Yes delete!": "Yes delete!",
   "Are you sure you want to logout?": "Are you sure you want to logout?",
-  "Logout": "Logout"
+  "Logout": "Logout",
+  "rejected": "Rejected",
+  "approved": "Approved"
 }

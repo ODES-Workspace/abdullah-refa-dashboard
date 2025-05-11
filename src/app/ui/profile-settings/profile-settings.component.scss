@@ -90,10 +90,20 @@
       display: flex;
       justify-content: space-between;
       padding: 20px 30px;
+      gap: 10px;
+      flex-wrap: wrap;
       align-items: center;
+      @media (max-width: 1000px) {
+        flex-direction: column;
+      }
 
       &-inputs {
         display: flex;
+        @media (max-width: 1000px) {
+          width: 100%;
+
+          flex-direction: column;
+        }
         flex: 1;
         gap: 32px;
       }

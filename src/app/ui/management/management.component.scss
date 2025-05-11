@@ -33,6 +33,10 @@
     border: 1px solid #f1f1f4;
     border-radius: 12px;
 
+    @media (max-width: 500px) {
+      flex-direction: column;
+    }
+
     &-title {
       display: flex;
       align-items: center;
