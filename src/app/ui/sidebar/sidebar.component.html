@@ -1,12 +1,11 @@
 <!-- Sidebar Navigation -->
 <nav class="sidebar" [class.open]="isOpen$ | async">
   <div class="sidebar-head">
-    <!-- this is the toggle sidebar button show be shown only on mobile  and close sidebar when clicked -->
     <div class="toggle-sidebar" (click)="toggleSidebar()">
-      <img src="/assets/icons/menu-icon.svg" alt="toggle sidebar" />
+      <img src="/assets/icons/close-icon.svg" alt="toggle sidebar" />
     </div>
-
     <img src="/assets/icons/sidebar-logo.svg" alt="logo" />
+
     <div class="sidebar-welcome">{{ "Welcome Back" | translate }}, Admin</div>
   </div>
 

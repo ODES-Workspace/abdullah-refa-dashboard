@@ -23,11 +23,12 @@
   }
 
   .toggle-sidebar {
+    width: 100%;
     cursor: pointer;
-    padding: 8px;
     display: none; // Hidden by default
     align-items: center;
-    justify-content: center;
+    padding: 0 8px;
+    justify-content: end;
 
     @media (max-width: 1200px) {
       display: flex; // Show only on mobile
