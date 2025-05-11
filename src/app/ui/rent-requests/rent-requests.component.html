@@ -19,46 +19,50 @@
       <div class="status-bars">
         <div class="status-item">
           <div class="bar-container">
-            <div class="label">{{ "Accepted applications" | translate }}</div>
+            <div class="label">
+              {{ "Accepted applications" | translate }}
+              ( {{ currentData.accepted }}% )
+            </div>
 
             <div
               class="bar accepted"
               [style.width.%]="
                 calculateWidth(currentData.accepted, getRequestMax())
               "
-            >
-              {{ currentData.accepted }}%
-            </div>
+            ></div>
           </div>
         </div>
 
         <div class="status-item">
           <div class="bar-container">
-            <div class="label">{{ "Rejected requests" | translate }}</div>
+            <div class="label">
+              {{ "Rejected requests" | translate }} (
+              {{ currentData.rejected }}%)
+            </div>
 
             <div
               class="bar rejected"
               [style.width.%]="
                 calculateWidth(currentData.rejected, getRequestMax())
               "
-            >
-              {{ currentData.rejected }}%
-            </div>
+            ></div>
           </div>
         </div>
 
         <div class="status-item">
           <div class="bar-container">
-            <div class="label">{{ "Requests under review" | translate }}</div>
+            <div class="label">
+              {{ "Requests under review" | translate }} ({{
+                currentData.underReview
+              }}%)
+            </div>
 
             <div
               class="bar under-review"
               [style.width.%]="
                 calculateWidth(currentData.underReview, getRequestMax())
               "
-            >
-              {{ currentData.underReview }}%
-            </div>
+            ></div>
           </div>
         </div>
       </div>
