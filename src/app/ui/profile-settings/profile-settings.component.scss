@@ -3,6 +3,11 @@
   border: 1px solid #f1f1f4;
   border-radius: 12px;
 
+  &-header {
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
   &-header,
   &-address-info-header {
     padding: 20px 30px;
@@ -10,7 +15,6 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    max-height: 56px;
 
     h3 {
       font-weight: 600;
