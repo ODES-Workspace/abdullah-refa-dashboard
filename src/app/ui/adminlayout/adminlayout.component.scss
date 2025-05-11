@@ -6,6 +6,10 @@
   grid-template-areas:
     "sidebar header"
     "sidebar content";
+
+  @media (max-width: 1000px) {
+    grid-template-rows: 75px 1fr;
+  }
 }
 
 .sidebar-container {
