@@ -237,5 +237,13 @@
   "Logout": "Logout",
   "rejected": "Rejected",
   "approved": "Approved",
-  "Contract": "Contract"
+  "Contract": "Contract",
+  "Agent": "Agent",
+  "Individual": "Individual",
+  "Marketer Name": "Marketer Name",
+  "Enter marketer name": "Enter marketer name",
+  "Mobile number": "Mobile number",
+  "Enter mobile number": "Enter mobile number",
+  "sign up": "Sign up",
+  "Already have an account?": "Already have an account?"
 }

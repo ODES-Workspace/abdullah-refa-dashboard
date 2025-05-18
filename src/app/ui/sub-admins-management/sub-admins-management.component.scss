@@ -107,15 +107,15 @@
         display: grid;
         grid-template-columns: repeat(2, 1fr);
         width: 100%;
+        row-gap: 24px;
+        column-gap: 16px;
+        margin-bottom: 48px;
         @media (max-width: 500px) {
           height: 250px;
           overflow-y: auto;
 
           grid-template-columns: 1fr;
         }
-        row-gap: 24px;
-        column-gap: 16px;
-        margin-bottom: 48px;
 
         .modal-input {
           display: flex;
@@ -169,11 +169,11 @@
         .permissions-allowed {
           display: flex;
           gap: 24px;
+          margin-bottom: 24px;
+          flex-wrap: wrap;
           @media (max-width: 500px) {
             gap: 12px;
           }
-          margin-bottom: 24px;
-          flex-wrap: wrap;
         }
       }
 
@@ -190,9 +190,6 @@
           button {
             padding: 21px 60px;
 
-            @media (max-width: 500px) {
-              padding: 10px 20px;
-            }
             display: flex;
             justify-content: center;
             align-items: center;
@@ -202,6 +199,9 @@
             font-size: 18px;
             line-height: 24px;
             font-weight: 600;
+            @media (max-width: 500px) {
+              padding: 10px 20px;
+            }
           }
 
           .btn-subadmin-save {

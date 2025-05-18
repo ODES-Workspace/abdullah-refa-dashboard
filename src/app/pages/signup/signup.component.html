@@ -1,0 +1,160 @@
+<div class="auth">
+  <div class="auth-container">
+    <!-- Auth Img -->
+    <div class="auth-img">
+      <img src="assets/images/auth-img.png" alt="" />
+    </div>
+    <!-- Auth Form -->
+    <div class="auth-form">
+      <!-- Logo -->
+      <div class="auth-form--logo">
+        <img src="assets/images/auth-logo.png" alt="" />
+      </div>
+
+      <!-- Form -->
+      <form class="auth-form--inputs" action="">
+        <!-- Radio button -->
+        <div class="radio-group">
+          <label class="radio-option" [class.active]="userType === 'agent'">
+            <input
+              type="radio"
+              name="userType"
+              value="agent"
+              [(ngModel)]="userType"
+            />
+            <img
+              *ngIf="userType === 'agent'"
+              src="./assets/icons/agent-icon.svg"
+              alt="agent icon"
+            />
+            <img
+              *ngIf="userType !== 'agent'"
+              src="./assets/icons/agent-icon-inactive.svg"
+              alt="agent icon"
+            />
+            <span>{{ "Agent" | translate }}</span>
+          </label>
+          <label
+            class="radio-option"
+            [class.active]="userType === 'individual'"
+          >
+            <input
+              type="radio"
+              name="userType"
+              value="individual"
+              [(ngModel)]="userType"
+            />
+            <img
+              *ngIf="userType === 'individual'"
+              src="./assets/icons/individual-active.svg"
+              alt="agent icon"
+            />
+            <img
+              *ngIf="userType !== 'individual'"
+              src="./assets/icons/individual-inactive.svg"
+              alt="agent icon"
+            />
+            <span>{{ "Individual" | translate }}</span>
+          </label>
+        </div>
+        <!-- Markter input -->
+        <div class="auth-form--group">
+          <label for="email"> {{ "Marketer Name" | translate }} </label>
+          <div class="input-container">
+            <img
+              src="./assets/icons/marketer.svg"
+              alt="marketer icon"
+              class="input-icon"
+            />
+            <input
+              type="text"
+              name="marketerName"
+              id="marketerName"
+              [placeholder]="'Enter marketer name' | translate"
+              required
+            />
+          </div>
+        </div>
+        <!-- Mobile input -->
+        <div class="auth-form--group">
+          <label for="email"> {{ "Mobile number" | translate }} </label>
+          <div class="input-container">
+            <img
+              src="./assets/icons/mobile.svg"
+              alt="mobile icon"
+              class="input-icon"
+            />
+            <input
+              type="number"
+              name="mobile"
+              id="mobile"
+              [placeholder]="'Enter mobile number' | translate"
+              required
+            />
+          </div>
+        </div>
+        <!-- Email input -->
+        <div class="auth-form--group">
+          <label for="email"> {{ "E-Mail Address" | translate }} </label>
+          <div class="input-container">
+            <img
+              src="./assets/icons/email.svg"
+              alt="mail icon"
+              class="input-icon"
+            />
+            <input
+              type="email"
+              name="email"
+              id="email"
+              [placeholder]="'Enter your Email' | translate"
+              required
+            />
+          </div>
+        </div>
+        <!-- Password input -->
+        <div class="auth-form--group">
+          <label for="password"> {{ "Password" | translate }} </label>
+          <div class="input-container">
+            <img
+              src="./assets/icons/password.svg"
+              alt="lock icon"
+              class="input-icon"
+            />
+            <input
+              [type]="passwordType"
+              name="password"
+              id="password"
+              [placeholder]="'Enter your password' | translate"
+              required
+            />
+            <img
+              src="./assets/icons/eye.svg"
+              alt="eye icon"
+              class="toggle-password"
+              (click)="togglePasswordType()"
+            />
+          </div>
+        </div>
+        <!-- Save login info -->
+        <div class="auth-form--group2">
+          <input type="checkbox" name="remember" id="remember" />
+          <label for="remember">
+            {{ "Save login information" | translate }}
+          </label>
+        </div>
+        <!-- Submit -->
+        <button class="auth-form--submit">{{ "sign up" | translate }}</button>
+      </form>
+
+      <!-- Language Switcher -->
+      <button (click)="toggleLanguage()" class="lang-btn">
+        {{ "lang" | translate }}
+      </button>
+
+      <div class="auth-link">
+        {{ "Already have an account?" | translate }}
+        <a href="/login">{{ "Login" | translate }}</a>
+      </div>
+    </div>
+  </div>
+</div>

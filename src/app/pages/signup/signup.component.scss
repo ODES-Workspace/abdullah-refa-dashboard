@@ -4,7 +4,8 @@
   background-size: cover;
   background-repeat: no-repeat;
   padding: 20px;
-  height: 100dvh;
+  min-height: 1024px;
+  overflow: scroll;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -64,6 +65,16 @@
 
         &::placeholder {
           color: rgba(64, 64, 64, 40%);
+        }
+
+        /* Hide number input spinners */
+        &[type="number"] {
+          -moz-appearance: textfield; /* Firefox */
+          &::-webkit-outer-spin-button,
+          &::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+          }
         }
       }
     }
@@ -127,6 +138,48 @@
     top: 50%;
     transform: translateY(-50%) translateX(-30px);
     cursor: pointer;
+  }
+}
+
+.radio-group {
+  display: flex;
+  gap: 1rem;
+
+  .radio-option {
+    flex: 1;
+    padding: 13px 0;
+    text-align: center;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: #fff;
+    color: #404040;
+    font-size: 14px;
+    line-height: 20px;
+
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    justify-content: center;
+
+    input[type="radio"] {
+      display: none;
+    }
+
+    &.active {
+      background: #1951fd;
+      color: #fff;
+    }
+
+    &:hover {
+      border-color: #007bff;
+    }
+
+    img {
+      width: 24px;
+      height: 24px;
+    }
   }
 }
 
