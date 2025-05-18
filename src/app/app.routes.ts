@@ -2,11 +2,13 @@ import { Routes } from '@angular/router';
 import { LoginComponent } from './pages/login/login.component';
 import { DashboardLayout } from './ui/dashboardlayout/dashboard-layout.component';
 import { SignupComponent } from './pages/signup/signup.component';
+import { roleGuard } from '../services/role.guard';
 
 export const routes: Routes = [
   {
     path: 'admin',
     component: DashboardLayout,
+    canActivate: [roleGuard],
     children: [
       {
         path: 'dashboard',
@@ -133,6 +135,7 @@ export const routes: Routes = [
   {
     path: 'agent',
     component: DashboardLayout,
+    canActivate: [roleGuard],
     children: [
       {
         path: 'dashboard',
