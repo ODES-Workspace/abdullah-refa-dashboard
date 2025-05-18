@@ -1,12 +1,12 @@
 import { Routes } from '@angular/router';
 import { LoginComponent } from './pages/login/login.component';
-import { AdminlayoutComponent } from './ui/adminlayout/adminlayout.component';
+import { DashboardLayout } from './ui/dashboardlayout/dashboard-layout.component';
 import { SignupComponent } from './pages/signup/signup.component';
 
 export const routes: Routes = [
   {
     path: 'admin',
-    component: AdminlayoutComponent,
+    component: DashboardLayout,
     children: [
       {
         path: 'dashboard',

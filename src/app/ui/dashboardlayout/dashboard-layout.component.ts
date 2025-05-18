@@ -4,9 +4,9 @@ import { SidebarComponent } from '../sidebar/sidebar.component';
 import { DashboardHeaderComponent } from '../dashboard-header/dashboard-header.component';
 
 @Component({
-  selector: 'app-adminlayout',
+  selector: 'app-dashboard-layout',
   imports: [RouterOutlet, SidebarComponent, DashboardHeaderComponent],
-  templateUrl: './adminlayout.component.html',
-  styleUrl: './adminlayout.component.scss',
+  templateUrl: './dashboard-layout.component.html',
+  styleUrl: './dashboard-layout.component.scss',
 })
-export class AdminlayoutComponent {}
+export class DashboardLayout {}
