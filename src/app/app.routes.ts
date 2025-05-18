@@ -130,6 +130,20 @@ export const routes: Routes = [
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
     ],
   },
+  {
+    path: 'agent',
+    component: DashboardLayout,
+    children: [
+      {
+        path: 'dashboard',
+        loadComponent: () =>
+          import('./pages/admindashboard/admindashboard.component').then(
+            (m) => m.AdmindashboardComponent
+          ),
+      },
+      { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+    ],
+  },
   { path: '', component: LoginComponent },
   { path: 'login', component: LoginComponent },
   { path: 'signup', component: SignupComponent },

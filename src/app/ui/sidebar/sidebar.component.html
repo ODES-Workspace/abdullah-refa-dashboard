@@ -11,7 +11,13 @@
 
   <div class="sidebar-nav">
     <ul class="sidebar-nav--list">
-      <li *ngFor="let item of menuItems">
+      <li
+        *ngFor="
+          let item of (userRole$ | async) === 'admin'
+            ? menuItems
+            : agentMenuItems
+        "
+      >
         <div
           class="menu-item"
           [class.active]="

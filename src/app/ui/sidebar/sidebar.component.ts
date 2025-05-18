@@ -3,9 +3,26 @@ import { Component, NgModule, OnInit } from '@angular/core';
 import { Router, RouterLink, NavigationEnd, Event } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { filter } from 'rxjs/operators';
-import { SidebarService } from '../../services/sidebar.service';
+import { SidebarService } from '../../../services/sidebar.service';
 import { CommonModule } from '@angular/common';
 import { Observable } from 'rxjs';
+import { UserRoleService, UserRole } from '../../../services/user-role.service';
+
+interface SubMenuItem {
+  label: string;
+  route: string;
+}
+
+interface MenuItem {
+  name: string;
+  label: string;
+  route: string;
+  submenu?: SubMenuItem[];
+  icon: {
+    active: string;
+    inactive: string;
+  };
+}
 
 @Component({
   selector: 'app-sidebar',
@@ -18,10 +35,16 @@ export class SidebarComponent implements OnInit {
   activeMenu: string | null = null;
   showLogoutModal: boolean = false;
   isOpen$!: Observable<boolean>;
+  userRole$!: Observable<UserRole>;
 
-  constructor(private router: Router, private sidebarService: SidebarService) {}
+  constructor(
+    private router: Router,
+    private sidebarService: SidebarService,
+    private userRoleService: UserRoleService
+  ) {}
 
-  menuItems = [
+  // Admin menu items
+  menuItems: MenuItem[] = [
     {
       name: 'dashboard',
       label: 'sidebar.dashboard',
@@ -133,8 +156,21 @@ export class SidebarComponent implements OnInit {
     },
   ];
 
+  // Agent menu items
+  agentMenuItems: MenuItem[] = [
+    {
+      name: 'dashboard',
+      label: 'sidebar.dashboard',
+      route: '/agent/dashboard',
+      icon: {
+        active: '/assets/icons/dashboard-active.svg',
+        inactive: '/assets/icons/dashboard-inactive.svg',
+      },
+    },
+  ];
   ngOnInit() {
     this.isOpen$ = this.sidebarService.isOpen$;
+    this.userRole$ = this.userRoleService.userRole$;
     this.checkActiveMenuFromRoute(this.router.url);
 
     this.router.events

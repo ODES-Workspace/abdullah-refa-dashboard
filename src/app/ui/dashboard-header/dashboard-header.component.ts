@@ -4,7 +4,7 @@ import { LanguageService } from '../../../services/language.service';
 import { TranslateModule } from '@ngx-translate/core';
 import { Location, NgFor, NgIf } from '@angular/common';
 import { RelativeTimePipe } from '../../../services/relative-time.pipe';
-import { SidebarService } from '../../services/sidebar.service';
+import { SidebarService } from '../../../services/sidebar.service';
 import { CommonModule } from '@angular/common';
 
 @Component({
