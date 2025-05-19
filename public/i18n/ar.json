@@ -40,7 +40,12 @@
   },
   "CHART": {
     "RESIDENTIAL": "سكني",
-    "COMMERCIAL": "تجاري"
+    "COMMERCIAL": "تجاري",
+    "VILLA": "فيلا",
+    "FLATS": "شقق",
+    "APARTMENTS": "شقق متعددة",
+    "INDEPENDENT HOUSE": "منزل مستقل",
+    "GATED COMMUNITY": "مجمع محظور"
   },
   "Total Properties": "إجمالي العقارات",
   "Total Tenants": "إجمالي المستأجرين",
@@ -262,5 +267,20 @@
   "Enter mobile number": "ادخل رقم الهاتف",
   "sign up": "تسجيل",
   "Already have an account?": "لديك حساب بالفعل؟",
-  "Don't have an account?": "ليس لديك حساب؟"
+  "Don't have an account?": "ليس لديك حساب؟",
+  "MONTHS": {
+    "JANUARY": "يناير",
+    "FEBRUARY": "فبراير",
+    "MARCH": "مارس",
+    "APRIL": "أبريل",
+    "MAY": "مايو",
+    "JUNE": "يونيو",
+    "JULY": "يوليو",
+    "AUGUST": "أغسطس",
+    "SEPTEMBER": "سبتمبر",
+    "OCTOBER": "أكتوبر",
+    "NOVEMBER": "نوفمبر",
+    "DECEMBER": "ديسمبر"
+  },
+  "Total Property Insights": "إجمالي إحصائيات العقارات"
 }

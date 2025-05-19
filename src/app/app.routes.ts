@@ -140,8 +140,8 @@ export const routes: Routes = [
       {
         path: 'dashboard',
         loadComponent: () =>
-          import('./pages/admindashboard/admindashboard.component').then(
-            (m) => m.AdmindashboardComponent
+          import('./pages/agentdashboard/agentdashboard.component').then(
+            (m) => m.AgentdashboardComponent
           ),
       },
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },

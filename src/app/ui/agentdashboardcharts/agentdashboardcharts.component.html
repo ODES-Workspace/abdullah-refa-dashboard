@@ -1,0 +1,51 @@
+<div class="rent-requests-container">
+  <div class="charts-container">
+    <div class="line-chart-wrapper">
+      <div class="line-chart-heading">
+        <h3 class="line-chart-title">
+          {{ "Total Property Insights" | translate }}
+        </h3>
+
+        <div class="filter-section">
+          <select
+            id="monthSelect"
+            [(ngModel)]="selectedMonths"
+            (change)="onMonthChange(selectedMonths)"
+          >
+            <option *ngFor="let option of monthOptions" [value]="option.value">
+              {{ option.label | translate }}
+            </option>
+          </select>
+        </div>
+      </div>
+      <div class="chart-container">
+        <canvas
+          baseChart
+          [type]="lineChartType"
+          [data]="lineChartData"
+          [options]="lineChartOptions"
+          [legend]="lineChartLegend"
+          height="200"
+        >
+        </canvas>
+      </div>
+    </div>
+
+    <div class="donut-chart-wrapper">
+      <h3 class="donut-chart-title">
+        {{ "Total Property Insights" | translate }}
+      </h3>
+      <div class="chart-container">
+        <canvas
+          baseChart
+          [type]="donutChartType"
+          [data]="donutChartData"
+          [options]="donutChartOptions"
+          [legend]="donutChartLegend"
+          height="200"
+        >
+        </canvas>
+      </div>
+    </div>
+  </div>
+</div>

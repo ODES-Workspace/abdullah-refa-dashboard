@@ -40,7 +40,12 @@
   },
   "CHART": {
     "RESIDENTIAL": "Residential",
-    "COMMERCIAL": "Commercial"
+    "COMMERCIAL": "Commercial",
+    "VILLA": "Villa",
+    "FLATS": "Flats",
+    "APARTMENTS": "Apartments",
+    "INDEPENDENT HOUSE": "Independent House",
+    "GATED COMMUNITY": "Gated Community"
   },
 
   "Total Properties": "Total Properties",
@@ -245,5 +250,20 @@
   "Mobile number": "Mobile number",
   "Enter mobile number": "Enter mobile number",
   "sign up": "Sign up",
-  "Already have an account?": "Already have an account?"
+  "Already have an account?": "Already have an account?",
+  "MONTHS": {
+    "JANUARY": "January",
+    "FEBRUARY": "February",
+    "MARCH": "March",
+    "APRIL": "April",
+    "MAY": "May",
+    "JUNE": "June",
+    "JULY": "July",
+    "AUGUST": "August",
+    "SEPTEMBER": "September",
+    "OCTOBER": "October",
+    "NOVEMBER": "November",
+    "DECEMBER": "December"
+  },
+  "Total Property Insights": "Total Property Insights"
 }
