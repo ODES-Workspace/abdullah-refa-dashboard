@@ -265,5 +265,8 @@
     "NOVEMBER": "November",
     "DECEMBER": "December"
   },
-  "Total Property Insights": "Total Property Insights"
+  "Total Property Insights": "Total Property Insights",
+  "Accepted Requests": "Accepted Requests",
+  "Rejected Requests": "Rejected Requests",
+  "Total Rent Value": "Total Rent Value"
 }

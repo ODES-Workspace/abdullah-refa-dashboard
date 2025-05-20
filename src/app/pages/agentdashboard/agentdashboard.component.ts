@@ -28,26 +28,26 @@ export class AgentdashboardComponent {
       percentageChange: 8,
     },
     {
-      title: 'Total Tenants',
-      value: 1,
-      icon: '/assets/icons/tenants-icon.svg',
-    },
-    { title: 'Total Users', value: 0, icon: '/assets/icons/users-icon.svg' },
-    {
-      title: 'Total Agencies-Owner',
-      value: 8,
-      icon: '/assets/icons/agenciesowner-icon.svg',
-      percentageChange: -12,
-    },
-    {
       title: 'Total Rent Request',
       value: 2,
       icon: '/assets/icons/rent-icon.svg',
     },
     {
-      title: 'Total Contracts',
+      title: 'Accepted Requests',
+      value: 1,
+      icon: '/assets/icons/accepted-req.svg',
+    },
+
+    {
+      title: 'Rejected Requests',
+      value: 1,
+      icon: '/assets/icons/rejected-req.svg',
+    },
+
+    {
+      title: 'Total Rent Value',
       value: 0,
-      icon: '/assets/icons/contracts-icon.svg',
+      icon: '/assets/icons/rent-val.svg',
     },
   ];
 
