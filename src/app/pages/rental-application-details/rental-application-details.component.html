@@ -17,6 +17,7 @@
       [class.active]="activeTab === 'assessment'"
       (click)="setActiveTab('assessment')"
       class="tab-item"
+      *ngIf="userRoleService.getCurrentRole() === 'admin'"
     >
       <span *ngIf="activeTab === 'assessment'">
         <img src="/assets/icons/assessment-active.svg" alt="assessment icon" />
@@ -33,6 +34,7 @@
       [class.active]="activeTab === 'schedule'"
       (click)="setActiveTab('schedule')"
       class="tab-item"
+      *ngIf="userRoleService.getCurrentRole() === 'admin'"
     >
       <span *ngIf="activeTab === 'schedule'">
         <img src="/assets/icons/schedule-active.svg" alt="schedule icon" />
@@ -133,7 +135,12 @@
     </div>
   </div>
   <!-- assessment -->
-  <div class="application-assessment" *ngIf="activeTab === 'assessment'">
+  <div
+    class="application-assessment"
+    *ngIf="
+      activeTab === 'assessment' && userRoleService.getCurrentRole() === 'admin'
+    "
+  >
     <div class="application-assessment-title">
       <img src="/assets/icons/financial-title-icon.svg" alt="" />
       <span> {{ "Financial Assessment" | translate }} </span>
@@ -271,7 +278,12 @@
     </div>
   </div>
   <!-- schedule -->
-  <div class="application-schedule" *ngIf="activeTab === 'schedule'">
+  <div
+    class="application-schedule"
+    *ngIf="
+      activeTab === 'schedule' && userRoleService.getCurrentRole() === 'admin'
+    "
+  >
     <div class="application-schedule-title">
       <img src="/assets/icons/payment-icon.svg" alt="" />
       <span> {{ "Payment Schedule" | translate }} </span>

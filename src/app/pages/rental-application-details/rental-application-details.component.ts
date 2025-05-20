@@ -3,6 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
 import { FormsModule } from '@angular/forms';
+import { UserRoleService } from '../../../services/user-role.service';
 
 interface ScheduleItem {
   dueDate: string;
@@ -157,7 +158,10 @@ export class RentalApplicationDetailsComponent implements OnInit {
   currentSortField: SortField | null = null;
   currentSortDirection: SortDirection = 'asc';
 
-  constructor(private route: ActivatedRoute) {}
+  constructor(
+    private route: ActivatedRoute,
+    public userRoleService: UserRoleService
+  ) {}
 
   ngOnInit(): void {
     this.route.params.subscribe((params) => {

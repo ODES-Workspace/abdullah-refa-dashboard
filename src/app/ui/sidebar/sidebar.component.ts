@@ -167,6 +167,39 @@ export class SidebarComponent implements OnInit {
         inactive: '/assets/icons/dashboard-inactive.svg',
       },
     },
+    {
+      name: 'rent-request',
+      label: 'sidebar.rentrequest',
+      route: '',
+      submenu: [
+        {
+          label: 'sidebar.rentrequests',
+          route: '/agent/rentrequests',
+        },
+        {
+          label: 'sidebar.approved',
+          route: '/agent/approved-rentrequests',
+        },
+        {
+          label: 'sidebar.rejected',
+          route: '/agent/rejected-rentrequests',
+        },
+      ],
+      icon: {
+        active: '/assets/icons/rent-active.svg',
+        inactive: '/assets/icons/rent-inactive.svg',
+      },
+    },
+    {
+      name: 'contracts',
+      label: 'sidebar.contracts',
+      route: '/agent/existing-contract',
+
+      icon: {
+        active: '/assets/icons/contracts-active.svg',
+        inactive: '/assets/icons/contracts-inactive.svg',
+      },
+    },
   ];
   ngOnInit() {
     this.isOpen$ = this.sidebarService.isOpen$;

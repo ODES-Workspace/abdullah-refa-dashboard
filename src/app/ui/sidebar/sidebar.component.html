@@ -4,9 +4,21 @@
     <div class="toggle-sidebar" (click)="toggleSidebar()">
       <img src="/assets/icons/close-icon.svg" alt="toggle sidebar" />
     </div>
-    <img src="/assets/icons/sidebar-logo.svg" alt="logo" />
 
-    <div class="sidebar-welcome">{{ "Welcome Back" | translate }}, Admin</div>
+    <img
+      src="/assets/icons/sidebar-logo.svg"
+      alt="logo"
+      *ngIf="(userRole$ | async) === 'admin'"
+    />
+    <img
+      src="/assets/icons/agent-sidebar-logo.svg"
+      alt="logo"
+      *ngIf="(userRole$ | async) === 'agent'"
+    />
+    <div class="sidebar-welcome">
+      {{ "Welcome Back" | translate }},
+      {{ (userRole$ | async) === "admin" ? "Admin" : "Agent" }}
+    </div>
   </div>
 
   <div class="sidebar-nav">
@@ -95,8 +107,14 @@
     <div class="sidebar-logout--btn" (click)="showLogoutModal = true">
       <img src="/assets/icons/user-icon.svg" alt="settings icon" />
       <div>
-        <span>admin user</span>
-        <span>admin&#64;refa.com</span>
+        <span>{{
+          (userRole$ | async) === "admin" ? "admin user" : "agent user"
+        }}</span>
+        <span>{{
+          (userRole$ | async) === "admin"
+            ? "admin&#64;refa.com"
+            : "agent&#64;refa.com"
+        }}</span>
       </div>
       <img src="/assets/icons/logout-btn.svg" alt="logout icon" />
     </div>

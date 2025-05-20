@@ -3,6 +3,7 @@ import { Component, HostListener } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { Router } from '@angular/router';
+import { UserRoleService } from '../../../services/user-role.service';
 
 interface TableItem {
   id: number;
@@ -101,7 +102,7 @@ export class RejectedRentrequestsComponent {
     );
   }
 
-  constructor(private router: Router) {
+  constructor(private router: Router, public userRoleService: UserRoleService) {
     this.updatePagination();
   }
 

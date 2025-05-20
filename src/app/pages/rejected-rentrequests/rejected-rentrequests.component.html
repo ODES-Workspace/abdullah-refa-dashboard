@@ -107,11 +107,19 @@
     <div>{{ item.dateModified }}</div>
 
     <div class="table-actions">
-      <span (click)="toggleDropdown(item.id)">
+      <span
+        (click)="toggleDropdown(item.id)"
+        *ngIf="userRoleService.getCurrentRole() === 'admin'"
+      >
         <img src="/assets/icons/more.svg" alt="more icon" />
       </span>
 
-      <ul *ngIf="activeDropdown === item.id">
+      <ul
+        *ngIf="
+          activeDropdown === item.id &&
+          userRoleService.getCurrentRole() === 'admin'
+        "
+      >
         <li (click)="viewRejectReason(item)">
           {{ "View Rejection Reason" | translate }}
         </li>
@@ -119,6 +127,13 @@
           {{ "Revise" | translate }}
         </li>
       </ul>
+
+      <span
+        (click)="viewRejectReason(item)"
+        *ngIf="userRoleService.getCurrentRole() === 'agent'"
+      >
+        <img src="/assets/icons/show-icon.svg" alt="view icon" />
+      </span>
     </div>
   </div>
 

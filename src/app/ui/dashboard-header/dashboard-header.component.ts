@@ -79,7 +79,7 @@ export class DashboardHeaderComponent {
   setHeaderText() {
     const url = this.router.url;
 
-    if (url.includes('/admin/dashboard')) {
+    if (url.includes('/admin/dashboard') || url.includes('/agent/dashboard')) {
       this.headerText = 'Overview';
     } else if (url.includes('/admin/properties')) {
       this.headerText = 'Properties';
@@ -98,15 +98,23 @@ export class DashboardHeaderComponent {
     } else if (
       url.includes('/admin/rentrequests') ||
       url.includes('/admin/approved-rentrequests') ||
-      url.includes('/admin/rejected-rentrequests')
+      url.includes('/admin/rejected-rentrequests') ||
+      url.includes('/agent/rentrequests') ||
+      url.includes('/agent/approved-rentrequests') ||
+      url.includes('/agent/rejected-rentrequests')
     ) {
       this.headerText = 'rentrequests';
-    } else if (/\/admin\/rental-application-details\/\d+$/.test(url)) {
+    } else if (
+      /\/admin\/rental-application-details\/\d+$/.test(url) ||
+      /\/agent\/rental-application-details\/\d+$/.test(url)
+    ) {
+      this.headerText = 'Rent Requests/Rental Application Details';
     } else if (
       url.includes('/admin/payment') ||
       url.includes('/admin/renewal') ||
       url.includes('/admin/terminated') ||
-      url.includes('/admin/existing-contract')
+      url.includes('/admin/existing-contract') ||
+      url.includes('/agent/existing-contract')
     ) {
       this.headerText = 'Contract';
     } else if (/\/admin\/rental-application-details\/\d+$/.test(url)) {

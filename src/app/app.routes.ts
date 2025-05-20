@@ -144,6 +144,41 @@ export const routes: Routes = [
             (m) => m.AgentdashboardComponent
           ),
       },
+      {
+        path: 'rental-application-details/:id',
+        loadComponent: () =>
+          import(
+            './pages/rental-application-details/rental-application-details.component'
+          ).then((m) => m.RentalApplicationDetailsComponent),
+      },
+      {
+        path: 'rentrequests',
+        loadComponent: () =>
+          import('./pages/rentrequests-list/rentrequests-list.component').then(
+            (m) => m.RentrequestsListComponent
+          ),
+      },
+      {
+        path: 'approved-rentrequests',
+        loadComponent: () =>
+          import(
+            './pages/approved-rentrequests/approved-rentrequests.component'
+          ).then((m) => m.ApprovedRentrequestsComponent),
+      },
+      {
+        path: 'rejected-rentrequests',
+        loadComponent: () =>
+          import(
+            './pages/rejected-rentrequests/rejected-rentrequests.component'
+          ).then((m) => m.RejectedRentrequestsComponent),
+      },
+      {
+        path: 'existing-contract',
+        loadComponent: () =>
+          import('./pages/existing-contract/existing-contract.component').then(
+            (m) => m.ExistingContractComponent
+          ),
+      },
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
     ],
   },

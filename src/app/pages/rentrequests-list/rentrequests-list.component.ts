@@ -5,6 +5,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { Router } from '@angular/router';
 import { ToastService } from '../../../services/toast.service';
 import { ToastComponent } from '../../ui/toast/toast.component';
+import { UserRoleService } from '../../../services/user-role.service';
 
 interface TableItem {
   id: number;
@@ -98,7 +99,11 @@ export class RentrequestsListComponent {
     );
   }
 
-  constructor(private router: Router, private toastService: ToastService) {
+  constructor(
+    private router: Router,
+    private toastService: ToastService,
+    public userRoleService: UserRoleService
+  ) {
     this.updatePagination();
   }
 
@@ -242,7 +247,9 @@ export class RentrequestsListComponent {
   }
 
   viewDetails(item: TableItem): void {
-    this.router.navigate(['/admin/rental-application-details', item.id]);
+    const role = this.userRoleService.getCurrentRole();
+    const baseRoute = role === 'admin' ? '/admin' : '/agent';
+    this.router.navigate([`${baseRoute}/rental-application-details`, item.id]);
     this.closeDropdown();
   }
 }

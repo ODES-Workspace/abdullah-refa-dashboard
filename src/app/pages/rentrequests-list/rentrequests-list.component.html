@@ -107,7 +107,11 @@
     <div>{{ item.dateModified }}</div>
 
     <div class="table-actions">
-      <span (click)="toggleDropdown(item.id)">
+      <!-- if admin show this  -->
+      <span
+        *ngIf="userRoleService.getCurrentRole() === 'admin'"
+        (click)="toggleDropdown(item.id)"
+      >
         <img src="/assets/icons/more.svg" alt="more icon" />
       </span>
 
@@ -125,6 +129,13 @@
           {{ "View" | translate }}
         </li>
       </ul>
+
+      <span
+        *ngIf="userRoleService.getCurrentRole() === 'agent'"
+        (click)="viewDetails(item)"
+      >
+        <img src="/assets/icons/show-icon.svg" alt="view icon" />
+      </span>
     </div>
   </div>
 
