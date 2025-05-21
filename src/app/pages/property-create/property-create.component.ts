@@ -24,6 +24,7 @@ export class PropertyCreateComponent implements OnInit, AfterViewInit {
   private marker!: L.Marker;
   defaultLat = 24.7136; // Default latitude for Saudi Arabia
   defaultLng = 46.6753; // Default longitude for Saudi Arabia
+  uploadedFiles: File[] = [];
 
   constructor(
     private fb: FormBuilder,
@@ -134,5 +135,38 @@ export class PropertyCreateComponent implements OnInit, AfterViewInit {
 
   onSaveDraft(): void {
     console.log('Saving as draft:', this.propertyForm.value);
+  }
+
+  onFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files) {
+      const newFiles = Array.from(input.files);
+      this.uploadedFiles = [...this.uploadedFiles, ...newFiles];
+
+      // Update form control value
+      const formControl = this.propertyForm.get('images');
+      if (formControl) {
+        formControl.setValue(this.uploadedFiles);
+      }
+    }
+  }
+
+  removeFile(file: File): void {
+    this.uploadedFiles = this.uploadedFiles.filter((f) => f !== file);
+
+    // Update form control value
+    const formControl = this.propertyForm.get('images');
+    if (formControl) {
+      formControl.setValue(this.uploadedFiles);
+    }
+  }
+
+  // Add file size pipe
+  formatFileSize(bytes: number): string {
+    if (bytes === 0) return '0 Bytes';
+    const k = 1024;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
   }
 }
