@@ -1,0 +1,42 @@
+.logo-container {
+  display: inline-block;
+  position: relative;
+
+  .animated-logo {
+    transform-origin: center;
+    animation: logoAppear 1.5s ease-out forwards;
+  }
+
+  .logo-path {
+    stroke-dasharray: 1000;
+    stroke-dashoffset: 1000;
+    animation: drawPath 2s ease-in-out forwards;
+    animation-delay: 0.3s;
+  }
+}
+
+@keyframes drawPath {
+  0% {
+    stroke-dashoffset: 1000;
+    fill-opacity: 0;
+  }
+  60% {
+    stroke-dashoffset: 0;
+    fill-opacity: 0;
+  }
+  100% {
+    stroke-dashoffset: 0;
+    fill-opacity: 1;
+  }
+}
+
+@keyframes logoAppear {
+  0% {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
