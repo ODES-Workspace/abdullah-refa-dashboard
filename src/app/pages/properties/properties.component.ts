@@ -103,4 +103,7 @@ export class PropertiesComponent {
       this.currentPage--;
     }
   }
+  createProperty(): void {
+    this.router.navigate(['/admin/create-property']);
+  }
 }

@@ -32,6 +32,13 @@ export const routes: Routes = [
           ),
       },
       {
+        path: 'create-property',
+        loadComponent: () =>
+          import('./pages/property-create/property-create.component').then(
+            (m) => m.PropertyCreateComponent
+          ),
+      },
+      {
         path: 'property/edit/:id',
         loadComponent: () =>
           import('./pages/property-edit/property-edit.component').then(
