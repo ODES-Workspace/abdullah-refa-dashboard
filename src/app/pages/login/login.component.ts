@@ -1,12 +1,11 @@
 import { Component } from '@angular/core';
 import { TranslateModule } from '@ngx-translate/core';
 import { LanguageService } from '../../../services/language.service';
-import { LogoComponent } from '../../ui/logo/logo.component';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [TranslateModule, LogoComponent],
+  imports: [TranslateModule],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss'],
 })
