@@ -126,6 +126,8 @@ export class DashboardHeaderComponent {
       this.headerText = 'Rent Requests/Rental Application Details';
     } else if (url.includes('/admin/settings')) {
       this.headerText = 'settings';
+    } else if (url.includes('/agent/profile')) {
+      this.headerText = 'profile';
     } else {
       this.headerText = 'Dashbaord';
     }

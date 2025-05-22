@@ -145,6 +145,13 @@ export const routes: Routes = [
           ),
       },
       {
+        path: 'profile',
+        loadComponent: () =>
+          import('./pages/profile/profile.component').then(
+            (m) => m.ProfileComponent
+          ),
+      },
+      {
         path: 'properties',
         loadComponent: () =>
           import('./pages/properties/properties.component').then(

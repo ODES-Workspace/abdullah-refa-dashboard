@@ -24,7 +24,8 @@
     "renewal": "تجديد",
     "terminated": "مُنهى",
     "existing-contracts": "العقود الحالية",
-    "settings": "الاعدادات"
+    "settings": "الاعدادات",
+    "profile": "الملف الشخصي"
   },
   "Notifications": "الإشعارات",
   "Mark all as read": "عرض كل الإشعارات",
@@ -378,5 +379,16 @@
   "Enter postal code": "أدخل الرمز البريدي",
   "Enter FAL license ID": "أدخل رقم رخصة FAL",
   "Enter advertising license number": "أدخل رقم رخصة الإعلان",
-  "my peroperties/Add New Property": "ملفي/إضافة عقار جديد"
+  "my peroperties/Add New Property": "ملفي/إضافة عقار جديد",
+  "Company Registration ID": "رقم تسجيل الشركة",
+  "FAL License Document": "وثيقة رخصة FAL",
+  "No document uploaded": "لا توجد وثيقة مرفوعة",
+  "Bank Information": "معلومات البنك",
+  "Bank Name": "اسم البنك",
+  "Account Number": "رقم الحساب",
+  "IBAN": "رقم الآيبان",
+  "View Current Document": "عرض الوثيقة الحالية",
+  "Agency Address:": "عنوان الوكالة:",
+  "Agent Bank Details:": "تفاصيل بنك الوكيل:",
+  "profile": "الملف الشخصي"
 }

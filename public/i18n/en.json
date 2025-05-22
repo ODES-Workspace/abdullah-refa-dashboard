@@ -24,7 +24,8 @@
     "renewal": "Renewal",
     "terminated": "Terminated",
     "existing-contracts": "Existing Contract",
-    "settings": "Settings"
+    "settings": "Settings",
+    "profile": "Profile"
   },
   "Notifications": "Notifications",
   "Mark all as read": "Mark all as read",
@@ -361,5 +362,16 @@
   "Enter postal code": "Enter postal code",
   "Enter FAL license ID": "Enter FAL license ID",
   "Enter advertising license number": "Enter advertising license number",
-  "my peroperties/Add New Property": "My Peroperties/Add New Property"
+  "my peroperties/Add New Property": "My Peroperties/Add New Property",
+  "Company Registration ID": "Company Registration ID",
+  "FAL License Document": "FAL License Document",
+  "No document uploaded": "No document uploaded",
+  "Bank Information": "Bank Information",
+  "Bank Name": "Bank Name",
+  "Account Number": "Account Number",
+  "IBAN": "IBAN",
+  "View Current Document": "View Current Document",
+  "Agency Address:": "Agency Address:",
+  "Agent Bank Details:": "Agent Bank Details:",
+  "profile": "Profile"
 }

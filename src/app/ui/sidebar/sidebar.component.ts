@@ -209,6 +209,15 @@ export class SidebarComponent implements OnInit {
         inactive: '/assets/icons/contracts-inactive.svg',
       },
     },
+    {
+      name: 'Profile',
+      label: 'sidebar.profile',
+      route: '/agent/profile',
+      icon: {
+        active: '/assets/icons/profile-active.svg',
+        inactive: '/assets/icons/profile-inactive.svg',
+      },
+    },
   ];
   ngOnInit() {
     this.isOpen$ = this.sidebarService.isOpen$;

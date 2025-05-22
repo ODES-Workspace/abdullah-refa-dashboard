@@ -1,0 +1,37 @@
+.settings {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  &-tabs {
+    display: flex;
+    border-bottom: 1px solid #f1f1f4;
+    box-shadow: 0px 0px 2px 0px #0000000d;
+    border-radius: 6px;
+    padding-inline: 24px;
+    gap: 10px;
+    font-size: 14px;
+    line-height: 14px;
+    color: #404040b2;
+
+    @media (max-width: 1000px) {
+      flex-wrap: wrap;
+    }
+    div {
+      padding-block: 14px;
+      padding-inline: 10px;
+      cursor: pointer;
+
+      &.active {
+        color: #0311d0;
+        font-weight: 700;
+        border-bottom: 1px solid #0311d0;
+      }
+    }
+  }
+}
+
+.settings-sub-admin-content {
+  &--table {
+    overflow-x: auto;
+  }
+}

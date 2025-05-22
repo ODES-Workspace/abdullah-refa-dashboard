@@ -1,0 +1,217 @@
+<div class="profile">
+  <div class="profile-header">
+    <h3>{{ "Profile Information" | translate }}</h3>
+    <div>
+      <button *ngIf="!isEditing" (click)="toggleEdit()" class="edit">
+        {{ "Edit Profile" | translate }}
+      </button>
+      <button *ngIf="isEditing" (click)="saveProfile()" class="save-change">
+        {{ "Save Changes" | translate }}
+      </button>
+    </div>
+  </div>
+
+  <!-- Profile Info -->
+  <div class="profile-info" *ngIf="!isEditing">
+    <div class="profile-info-card">
+      <div class="profile-info-item">
+        <span>{{ "Name" | translate }}</span>
+        <div>{{ profileData.agencyName }}</div>
+      </div>
+      <div class="profile-info-item">
+        <span>{{ "Email" | translate }}</span>
+        <div>{{ profileData.EmailAddress }}</div>
+      </div>
+      <div class="profile-info-item">
+        <span>{{ "Contact" | translate }}</span>
+        <div dir="ltr">{{ profileData.Mobile }}</div>
+      </div>
+      <div class="profile-info-item">
+        <span>{{ "Company Registration ID" | translate }}</span>
+        <div>{{ profileData.CompanyRegistrationID }}</div>
+      </div>
+      <div class="profile-info-item">
+        <span>{{ "FAL License ID" | translate }}</span>
+        <div>{{ profileData.FALLicenseID }}</div>
+      </div>
+      <div class="profile-info-item profile-document-preview">
+        <span>{{ "FAL License Document" | translate }}</span>
+        <div *ngIf="falLicenseDocument">
+          <a [href]="falLicenseDocument" target="_blank">
+            <img src="assets/icons/arrow-down-icon.svg" alt="arrow-icon" />
+            {{ "FAL License Document" | translate }}
+          </a>
+        </div>
+        <div *ngIf="!falLicenseDocument">
+          {{ "No document uploaded" | translate }}
+        </div>
+      </div>
+    </div>
+
+    <div class="profile-address-info-header">
+      <h3>{{ "Agency Address:" | translate }}</h3>
+    </div>
+    <div class="profile-address-info-card">
+      <div class="profile-address-info-card--container">
+        <div class="profile-info-item">
+          <span>{{ "line1" | translate }}</span>
+          <div>{{ profileData.Line1 }}</div>
+        </div>
+        <div class="profile-info-item">
+          <span>{{ "line2" | translate }}</span>
+          <div>{{ profileData.Line2 }}</div>
+        </div>
+
+        <div class="profile-info-item">
+          <span>{{ "country" | translate }}</span>
+          <div>{{ profileData.Country }}</div>
+        </div>
+        <div class="profile-info-item">
+          <span>{{ "City" | translate }}</span>
+          <div>{{ profileData.City }}</div>
+        </div>
+        <div class="profile-info-item">
+          <span>{{ "postalcode" | translate }}</span>
+          <div>{{ profileData.postalCode }}</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="profile-address-info-header">
+      <h3>{{ "Agent Bank Details:" | translate }}</h3>
+    </div>
+    <div class="profile-address-info-card">
+      <div class="profile-address-info-card--container">
+        <div class="profile-info-item">
+          <span>{{ "Bank Name" | translate }}</span>
+          <div>{{ profileData.bankName }}</div>
+        </div>
+        <div class="profile-info-item">
+          <span>{{ "Account Number" | translate }}</span>
+          <div>{{ profileData.accountNumber }}</div>
+        </div>
+        <div class="profile-info-item">
+          <span>{{ "IBAN" | translate }}</span>
+          <div>{{ profileData.IBAN }}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Profile Info Edit -->
+  <div class="profile-info-editForm" *ngIf="isEditing">
+    <div class="profile-info-card">
+      <div class="profile-info-item">
+        <label for="name">{{ "Name" | translate }}</label>
+        <input type="text" id="name" [(ngModel)]="profileData.agencyName" />
+      </div>
+      <div class="profile-info-item">
+        <label for="email">{{ "Email" | translate }}</label>
+        <input type="email" id="email" [(ngModel)]="profileData.EmailAddress" />
+      </div>
+      <div class="profile-info-item">
+        <label for="contact">{{ "Contact" | translate }}</label>
+        <input type="tel" id="contact" [(ngModel)]="profileData.Mobile" />
+      </div>
+      <div class="profile-info-item">
+        <label for="companyRegId">{{
+          "Company Registration ID" | translate
+        }}</label>
+        <input
+          type="text"
+          id="companyRegId"
+          [(ngModel)]="profileData.CompanyRegistrationID"
+        />
+      </div>
+      <div class="profile-info-item">
+        <label for="falLicenseId">{{ "FAL License ID" | translate }}</label>
+        <input
+          type="text"
+          id="falLicenseId"
+          [(ngModel)]="profileData.FALLicenseID"
+        />
+      </div>
+      <div class="profile-info-item">
+        <label for="falLicenseDoc">{{
+          "FAL License Document" | translate
+        }}</label>
+        <input
+          type="file"
+          id="falLicenseDoc"
+          (change)="onFalLicenseDocumentChange($event)"
+          accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
+        />
+        <div *ngIf="falLicenseDocument" class="document-preview">
+          <a [href]="falLicenseDocument" target="_blank">{{
+            "View Current Document" | translate
+          }}</a>
+          <button
+            type="button"
+            (click)="removeFalLicenseDocument()"
+            class="remove-doc"
+          >
+            {{ "Remove" | translate }}
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="profile-address-info-header">
+      <h3>{{ "Agency Address:" | translate }}</h3>
+    </div>
+
+    <div class="profile-address-info-card">
+      <div class="profile-address-info-card--container">
+        <div class="profile-info-item">
+          <label for="line1">{{ "line1" | translate }}</label>
+          <input type="text" id="line1" [(ngModel)]="profileData.Line1" />
+        </div>
+        <div class="profile-info-item">
+          <label for="line2">{{ "line2" | translate }}</label>
+          <input type="text" id="line2" [(ngModel)]="profileData.Line2" />
+        </div>
+        <div class="profile-info-item">
+          <label for="country">{{ "country" | translate }}</label>
+          <input type="text" id="country" [(ngModel)]="profileData.Country" />
+        </div>
+        <div class="profile-info-item">
+          <label for="city">{{ "City" | translate }}</label>
+          <input type="text" id="city" [(ngModel)]="profileData.City" />
+        </div>
+        <div class="profile-info-item">
+          <label for="postalCode">{{ "Postal Code" | translate }}</label>
+          <input
+            type="text"
+            id="postalCode"
+            [(ngModel)]="profileData.postalCode"
+          />
+        </div>
+      </div>
+    </div>
+
+    <div class="profile-address-info-header">
+      <h3>{{ "Agent Bank Details:" | translate }}</h3>
+    </div>
+
+    <div class="profile-address-info-card">
+      <div class="profile-address-info-card--container">
+        <div class="profile-info-item">
+          <label for="bankName">{{ "Bank Name" | translate }}</label>
+          <input type="text" id="bankName" [(ngModel)]="profileData.bankName" />
+        </div>
+        <div class="profile-info-item">
+          <label for="accountNumber">{{ "Account Number" | translate }}</label>
+          <input
+            type="text"
+            id="accountNumber"
+            [(ngModel)]="profileData.accountNumber"
+          />
+        </div>
+        <div class="profile-info-item">
+          <label for="iban">{{ "IBAN" | translate }}</label>
+          <input type="text" id="iban" [(ngModel)]="profileData.IBAN" />
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
