@@ -7,7 +7,7 @@ export type UserRole = 'admin' | 'agent';
   providedIn: 'root',
 })
 export class UserRoleService {
-  private userRoleSubject = new BehaviorSubject<UserRole>('admin');
+  private userRoleSubject = new BehaviorSubject<UserRole>('agent');
   public userRole$: Observable<UserRole> = this.userRoleSubject.asObservable();
 
   constructor() {}

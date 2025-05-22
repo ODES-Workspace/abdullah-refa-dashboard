@@ -6,7 +6,11 @@
   <!-- Header Text -->
   <div class="header-text">
     <img
-      *ngIf="isPropertyDetailsPage || isRentalApplicationDetailsPage"
+      *ngIf="
+        isPropertyDetailsPage ||
+        isRentalApplicationDetailsPage ||
+        isCreatePropertyPage
+      "
       src="/assets/icons/back.svg"
       alt="back"
       class="back-button"

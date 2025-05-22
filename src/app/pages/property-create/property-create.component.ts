@@ -130,7 +130,7 @@ export class PropertyCreateComponent implements OnInit, AfterViewInit {
   }
 
   onCancel(): void {
-    this.router.navigate(['/admin/properties']);
+    this.router.navigate(['/agent/properties']);
   }
 
   onSaveDraft(): void {

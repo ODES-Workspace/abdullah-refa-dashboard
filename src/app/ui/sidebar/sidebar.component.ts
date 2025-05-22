@@ -168,6 +168,15 @@ export class SidebarComponent implements OnInit {
       },
     },
     {
+      name: 'properties',
+      label: 'sidebar.properties',
+      route: '/agent/properties',
+      icon: {
+        active: '/assets/icons/properties-active.svg',
+        inactive: '/assets/icons/properties-inactive.svg',
+      },
+    },
+    {
       name: 'rent-request',
       label: 'sidebar.rentrequest',
       route: '',

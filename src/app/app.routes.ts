@@ -32,13 +32,6 @@ export const routes: Routes = [
           ),
       },
       {
-        path: 'create-property',
-        loadComponent: () =>
-          import('./pages/property-create/property-create.component').then(
-            (m) => m.PropertyCreateComponent
-          ),
-      },
-      {
         path: 'property/edit/:id',
         loadComponent: () =>
           import('./pages/property-edit/property-edit.component').then(
@@ -149,6 +142,20 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./pages/agentdashboard/agentdashboard.component').then(
             (m) => m.AgentdashboardComponent
+          ),
+      },
+      {
+        path: 'properties',
+        loadComponent: () =>
+          import('./pages/properties/properties.component').then(
+            (m) => m.PropertiesComponent
+          ),
+      },
+      {
+        path: 'create-property',
+        loadComponent: () =>
+          import('./pages/property-create/property-create.component').then(
+            (m) => m.PropertyCreateComponent
           ),
       },
       {

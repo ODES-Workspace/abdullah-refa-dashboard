@@ -19,7 +19,7 @@ export class DashboardHeaderComponent {
   showNotifications = false;
   isPropertyDetailsPage = false;
   isRentalApplicationDetailsPage = false;
-
+  isCreatePropertyPage = false;
   constructor(
     public languageService: LanguageService,
     private router: Router,
@@ -81,12 +81,17 @@ export class DashboardHeaderComponent {
 
     if (url.includes('/admin/dashboard') || url.includes('/agent/dashboard')) {
       this.headerText = 'Overview';
-    } else if (url.includes('/admin/properties')) {
+    } else if (
+      url.includes('/admin/properties') ||
+      url.includes('/agent/properties')
+    ) {
       this.headerText = 'Properties';
     } else if (/\/admin\/property\/edit\/\d+$/.test(url)) {
       this.headerText = 'Edit Property Details';
     } else if (/\/admin\/property\/\d+$/.test(url)) {
       this.headerText = 'Properties Details';
+    } else if (/\/agent\/create-property$/.test(url)) {
+      this.headerText = 'my peroperties/Add New Property';
     } else if (url.includes('/admin/tenants')) {
       this.headerText = 'list of tenants';
     } else if (
@@ -151,6 +156,7 @@ export class DashboardHeaderComponent {
     this.isPropertyDetailsPage = /\/admin\/property\/\d+$/.test(url);
     this.isRentalApplicationDetailsPage =
       /\/admin\/rental-application-details\/\d+$/.test(url);
+    this.isCreatePropertyPage = /\/agent\/create-property$/.test(url);
   }
 
   goBack() {

@@ -11,7 +11,11 @@
     <div class="section-content grid-3">
       <div class="input-group">
         <label>{{ "Property Name" | translate }}</label>
-        <input formControlName="propertyName" type="text" />
+        <input
+          formControlName="propertyName"
+          type="text"
+          placeholder="{{ 'Enter property name' | translate }}"
+        />
         <div
           *ngIf="propertyForm.get('propertyName')?.errors?.['required'] && propertyForm.get('propertyName')?.touched"
         >
@@ -48,7 +52,11 @@
       </div>
       <div class="input-group">
         <label>{{ "Property Size (m²)" | translate }}</label>
-        <input formControlName="propertySize" type="number" />
+        <input
+          formControlName="propertySize"
+          type="number"
+          placeholder="{{ 'Enter property size' | translate }}"
+        />
         <div
           *ngIf="propertyForm.get('propertySize')?.errors?.['required'] && propertyForm.get('propertySize')?.touched"
         >
@@ -57,7 +65,11 @@
       </div>
       <div class="input-group">
         <label>{{ "Available From" | translate }}</label>
-        <input formControlName="availableFrom" type="date" />
+        <input
+          formControlName="availableFrom"
+          type="date"
+          placeholder="{{ 'Select available date' | translate }}"
+        />
         <div
           *ngIf="propertyForm.get('availableFrom')?.errors?.['required'] && propertyForm.get('availableFrom')?.touched"
         >
@@ -90,7 +102,11 @@
     <div class="section-content grid-3">
       <div class="input-group">
         <label>{{ "Number of Bedrooms" | translate }}</label>
-        <input formControlName="bedrooms" type="number" />
+        <input
+          formControlName="bedrooms"
+          type="number"
+          placeholder="{{ 'Enter number of bedrooms' | translate }}"
+        />
         <div
           *ngIf="propertyForm.get('bedrooms')?.errors?.['required'] && propertyForm.get('bedrooms')?.touched"
         >
@@ -99,7 +115,11 @@
       </div>
       <div class="input-group">
         <label>{{ "Number of Bathrooms" | translate }}</label>
-        <input formControlName="bathrooms" type="number" />
+        <input
+          formControlName="bathrooms"
+          type="number"
+          placeholder="{{ 'Enter number of bathrooms' | translate }}"
+        />
         <div
           *ngIf="propertyForm.get('bathrooms')?.errors?.['required'] && propertyForm.get('bathrooms')?.touched"
         >
@@ -108,7 +128,11 @@
       </div>
       <div class="input-group">
         <label>{{ "Floor Number" | translate }}</label>
-        <input formControlName="floorNumber" type="number" />
+        <input
+          formControlName="floorNumber"
+          type="number"
+          placeholder="{{ 'Enter floor number' | translate }}"
+        />
         <div
           *ngIf="propertyForm.get('floorNumber')?.errors?.['required'] && propertyForm.get('floorNumber')?.touched"
         >
@@ -117,7 +141,11 @@
       </div>
       <div class="input-group">
         <label>{{ "Total Floors" | translate }}</label>
-        <input formControlName="totalFloors" type="number" />
+        <input
+          formControlName="totalFloors"
+          type="number"
+          placeholder="{{ 'Enter total number of floors' | translate }}"
+        />
         <div
           *ngIf="propertyForm.get('totalFloors')?.errors?.['required'] && propertyForm.get('totalFloors')?.touched"
         >
@@ -126,7 +154,11 @@
       </div>
       <div class="input-group">
         <label>{{ "Annual Rent (SAR)" | translate }}</label>
-        <input formControlName="annualRent" type="number" />
+        <input
+          formControlName="annualRent"
+          type="number"
+          placeholder="{{ 'Enter annual rent amount' | translate }}"
+        />
         <div
           *ngIf="propertyForm.get('annualRent')?.errors?.['required'] && propertyForm.get('annualRent')?.touched"
         >
@@ -135,7 +167,11 @@
       </div>
       <div class="input-group">
         <label>{{ "Deposit Amount" | translate }}</label>
-        <input formControlName="depositAmount" type="number" />
+        <input
+          formControlName="depositAmount"
+          type="number"
+          placeholder="{{ 'Enter deposit amount' | translate }}"
+        />
         <div
           *ngIf="propertyForm.get('depositAmount')?.errors?.['required'] && propertyForm.get('depositAmount')?.touched"
         >
@@ -144,7 +180,10 @@
       </div>
       <div class="input-group text-area">
         <label>{{ "Property Description" | translate }}</label>
-        <textarea formControlName="description"></textarea>
+        <textarea
+          formControlName="description"
+          placeholder="{{ 'Enter property description' | translate }}"
+        ></textarea>
         <div
           *ngIf="propertyForm.get('description')?.errors?.['required'] && propertyForm.get('description')?.touched"
         >
@@ -160,7 +199,11 @@
     <div class="section-content grid-2">
       <div class="input-group">
         <label>{{ "Address Line 1" | translate }}</label>
-        <input formControlName="addressLine1" type="text" />
+        <input
+          formControlName="addressLine1"
+          type="text"
+          placeholder="{{ 'Enter address line 1' | translate }}"
+        />
         <div
           *ngIf="propertyForm.get('addressLine1')?.errors?.['required'] && propertyForm.get('addressLine1')?.touched"
         >
@@ -169,7 +212,11 @@
       </div>
       <div class="input-group">
         <label>{{ "Building Name" | translate }}</label>
-        <input formControlName="buildingName" type="text" />
+        <input
+          formControlName="buildingName"
+          type="text"
+          placeholder="{{ 'Enter building name' | translate }}"
+        />
         <div
           *ngIf="propertyForm.get('buildingName')?.errors?.['required'] && propertyForm.get('buildingName')?.touched"
         >
@@ -193,7 +240,11 @@
       </div>
       <div class="input-group">
         <label>{{ "Postal Code" | translate }}</label>
-        <input formControlName="postalCode" type="text" />
+        <input
+          formControlName="postalCode"
+          type="text"
+          placeholder="{{ 'Enter postal code' | translate }}"
+        />
         <div
           *ngIf="propertyForm.get('postalCode')?.errors?.['required'] && propertyForm.get('postalCode')?.touched"
         >
@@ -215,9 +266,17 @@
     <div class="section-content">
       <div class="file-input-container">
         <div class="upload-area">
-          <img src="assets/icons/file-upload.svg" alt="file-upload" />
-          <p>Drag and drop your images here, or click to select files</p>
-          <span>PNG, JPG up to 10MB each</span>
+          <img
+            src="assets/icons/file-upload.svg"
+            alt="{{ 'file-upload' | translate }}"
+          />
+          <p>
+            {{
+              "Drag and drop your images here, or click to select files"
+                | translate
+            }}
+          </p>
+          <span>{{ "PNG, JPG up to 10MB each" | translate }}</span>
           <button
             type="button"
             class="upload-button"
@@ -241,11 +300,15 @@
           <div class="file-list">
             <div class="file-item" *ngFor="let file of uploadedFiles">
               <span class="file-name">{{ file.name }}</span>
-              <span class="file-size">({{ formatFileSize(file.size) }})</span>
+              <span class="file-size"
+                >({{ formatFileSize(file.size) }}
+                {{ "File Size" | translate }})</span
+              >
               <button
                 type="button"
                 class="remove-file"
                 (click)="removeFile(file)"
+                [attr.aria-label]="'Remove' | translate"
               >
                 ×
               </button>
@@ -270,6 +333,7 @@
           class="hidden-checkbox"
         />
         <span class="button-content">
+          <img src="assets/icons/parking-icon.svg" alt="Parking area" />
           {{ "Parking area" | translate }}
         </span>
       </label>
@@ -283,6 +347,7 @@
           class="hidden-checkbox"
         />
         <span class="button-content">
+          <img src="assets/icons/medical.svg" alt="Medical service" />
           {{ "24/7 medical service" | translate }}
         </span>
       </label>
@@ -296,6 +361,7 @@
           class="hidden-checkbox"
         />
         <span class="button-content">
+          <img src="assets/icons/pet.svg" alt="Pet friendly" />
           {{ "Pet Friendly" | translate }}
         </span>
       </label>
@@ -309,6 +375,7 @@
           class="hidden-checkbox"
         />
         <span class="button-content">
+          <img src="assets/icons/lift.svg" alt="Lift facility" />
           {{ "Lift facility" | translate }}
         </span>
       </label>
@@ -318,6 +385,7 @@
       >
         <input type="checkbox" formControlName="cctv" class="hidden-checkbox" />
         <span class="button-content">
+          <img src="assets/icons/cctv.svg" alt="CCTV" />
           {{ "CCTV" | translate }}
         </span>
       </label>
@@ -381,7 +449,11 @@
     <div class="section-content grid-2">
       <div class="input-group">
         <label>{{ "FAL License ID" | translate }}</label>
-        <input formControlName="falLicenseId" type="text" />
+        <input
+          formControlName="falLicenseId"
+          type="text"
+          placeholder="{{ 'Enter FAL license ID' | translate }}"
+        />
         <div
           *ngIf="propertyForm.get('falLicenseId')?.errors?.['required'] && propertyForm.get('falLicenseId')?.touched"
         >
@@ -390,7 +462,11 @@
       </div>
       <div class="input-group">
         <label>{{ "Advertising License No" | translate }}</label>
-        <input formControlName="advertisingLicenseNo" type="text" />
+        <input
+          formControlName="advertisingLicenseNo"
+          type="text"
+          placeholder="{{ 'Enter advertising license number' | translate }}"
+        />
         <div
           *ngIf="propertyForm.get('advertisingLicenseNo')?.errors?.['required'] && propertyForm.get('advertisingLicenseNo')?.touched"
         >

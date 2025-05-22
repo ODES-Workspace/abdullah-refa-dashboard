@@ -13,7 +13,11 @@
     </div>
 
     <!-- Add property button -->
-    <button (click)="createProperty()" class="add-property-button">
+    <button
+      (click)="createProperty()"
+      class="add-property-button"
+      *ngIf="userRoleService.isAgent()"
+    >
       <span>{{ "Add Property" | translate }}</span>
     </button>
   </div>

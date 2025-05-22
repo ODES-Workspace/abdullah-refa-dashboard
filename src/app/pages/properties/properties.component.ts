@@ -4,6 +4,7 @@ import { CommonModule, NgFor, NgIf } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router'; // Add this import
 import { TranslateModule } from '@ngx-translate/core';
+import { UserRoleService } from '../../../services/user-role.service';
 
 @Component({
   selector: 'app-properties',
@@ -22,7 +23,8 @@ export class PropertiesComponent {
 
   constructor(
     private propertiesService: PropertiesService,
-    private router: Router
+    private router: Router,
+    public userRoleService: UserRoleService
   ) {}
 
   ngOnInit(): void {
@@ -104,6 +106,6 @@ export class PropertiesComponent {
     }
   }
   createProperty(): void {
-    this.router.navigate(['/admin/create-property']);
+    this.router.navigate(['/agent/create-property']);
   }
 }
