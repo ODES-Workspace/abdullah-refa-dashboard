@@ -46,7 +46,12 @@
     </div>
   </div>
   <!-- overview -->
-  <div class="application-overview" *ngIf="activeTab === 'overview'">
+  <div
+    class="application-overview"
+    *ngIf="
+      activeTab === 'overview' || userRoleService.getCurrentRole() === 'agent'
+    "
+  >
     <div class="application-overview-card">
       <div class="application-overview-card--title">
         <img src="/assets/icons/tenant-icon.svg" alt="" />
