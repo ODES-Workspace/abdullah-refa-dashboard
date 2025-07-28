@@ -17,7 +17,12 @@
     />
     <div class="sidebar-welcome">
       {{ "Welcome Back" | translate }},
-      {{ (userRole$ | async) === "admin" ? "Admin" : "Agent" }}
+      <span class="sidebar-welcome--name">
+        {{
+          getUserName() ||
+            ((userRole$ | async) === "admin" ? "admin user" : "agent user")
+        }}</span
+      >
     </div>
   </div>
 
@@ -108,12 +113,14 @@
       <img src="/assets/icons/user-icon.svg" alt="settings icon" />
       <div>
         <span>{{
-          (userRole$ | async) === "admin" ? "admin user" : "agent user"
+          getUserName() ||
+            ((userRole$ | async) === "admin" ? "admin user" : "agent user")
         }}</span>
         <span>{{
-          (userRole$ | async) === "admin"
-            ? "admin&#64;refa.com"
-            : "agent&#64;refa.com"
+          getUserEmail() ||
+            ((userRole$ | async) === "admin"
+              ? "admin@refa.com"
+              : "agent@refa.com")
         }}</span>
       </div>
       <img src="/assets/icons/logout-btn.svg" alt="logout icon" />
@@ -131,11 +138,16 @@
       </div>
     </div>
     <div class="button-group">
-      <button class="cancel-btn" (click)="showLogoutModal = false">
+      <button
+        class="cancel-btn"
+        (click)="showLogoutModal = false"
+        [disabled]="isLoading"
+      >
         {{ "Cancel" | translate }}
       </button>
-      <button class="logout-btn" (click)="logout()">
-        {{ "Logout" | translate }}
+      <button class="logout-btn" (click)="logout()" [disabled]="isLoading">
+        <span *ngIf="!isLoading">{{ "Logout" | translate }}</span>
+        <span *ngIf="isLoading">Logging out...</span>
       </button>
     </div>
   </div>

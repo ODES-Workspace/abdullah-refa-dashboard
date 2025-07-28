@@ -2,7 +2,7 @@ import { Routes } from '@angular/router';
 import { LoginComponent } from './pages/login/login.component';
 import { DashboardLayout } from './ui/dashboardlayout/dashboard-layout.component';
 import { SignupComponent } from './pages/signup/signup.component';
-import { roleGuard } from '../services/role.guard';
+import { roleGuard, authGuard } from '../services/role.guard';
 
 export const routes: Routes = [
   {
@@ -203,8 +203,8 @@ export const routes: Routes = [
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
     ],
   },
-  { path: '', component: LoginComponent },
-  { path: 'login', component: LoginComponent },
-  { path: 'signup', component: SignupComponent },
+  { path: '', component: LoginComponent, canActivate: [authGuard] },
+  { path: 'login', component: LoginComponent, canActivate: [authGuard] },
+  { path: 'signup', component: SignupComponent, canActivate: [authGuard] },
   { path: '**', redirectTo: '/login' },
 ];

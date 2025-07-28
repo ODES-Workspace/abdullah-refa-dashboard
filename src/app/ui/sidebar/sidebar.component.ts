@@ -7,6 +7,7 @@ import { SidebarService } from '../../../services/sidebar.service';
 import { CommonModule } from '@angular/common';
 import { Observable } from 'rxjs';
 import { UserRoleService, UserRole } from '../../../services/user-role.service';
+import { AgentService } from '../../../services/agent.service';
 
 interface SubMenuItem {
   label: string;
@@ -36,11 +37,13 @@ export class SidebarComponent implements OnInit {
   showLogoutModal: boolean = false;
   isOpen$!: Observable<boolean>;
   userRole$!: Observable<UserRole>;
+  isLoading = false;
 
   constructor(
     private router: Router,
     private sidebarService: SidebarService,
-    private userRoleService: UserRoleService
+    private userRoleService: UserRoleService,
+    private agentService: AgentService
   ) {}
 
   // Admin menu items
@@ -279,12 +282,35 @@ export class SidebarComponent implements OnInit {
   }
 
   logout() {
-    // Clear any stored auth data/tokens here if needed
-    this.router.navigate(['/']);
-    this.showLogoutModal = false;
+    this.isLoading = true;
+
+    this.agentService.logoutAgent().subscribe({
+      next: (response) => {
+        console.log('Logout successful:', response.message);
+        this.isLoading = false;
+        this.showLogoutModal = false;
+        this.router.navigate(['/login']);
+      },
+      error: (error) => {
+        console.error('Logout failed:', error.message);
+        this.isLoading = false;
+        this.showLogoutModal = false;
+        // Still redirect to login even if API fails
+        this.router.navigate(['/login']);
+      },
+    });
   }
 
   toggleSidebar() {
     this.sidebarService.toggle();
+  }
+
+  // Get user information for display
+  getUserName(): string {
+    return this.userRoleService.getUserName();
+  }
+
+  getUserEmail(): string {
+    return this.userRoleService.getUserEmail();
   }
 }

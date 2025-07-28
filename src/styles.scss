@@ -352,4 +352,8 @@ html[dir="rtl"] {
     width: fit-content;
     right: 7px;
   }
+
+  input[type="tel"] {
+    text-align: right;
+  }
 }

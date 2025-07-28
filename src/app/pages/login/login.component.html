@@ -11,12 +11,26 @@
         <img src="assets/images/auth-logo.png" alt="" />
       </div>
 
+      <!-- Success/Error Messages -->
+      <div *ngIf="successMessage" class="success-message">
+        {{ successMessage }}
+      </div>
+      <div
+        *ngIf="errorMessage"
+        class="error-message"
+        [innerHTML]="errorMessage | translate"
+      ></div>
+
       <!-- Form -->
-      <form class="auth-form--inputs" action="">
+      <form
+        class="auth-form--inputs"
+        [formGroup]="loginForm"
+        (ngSubmit)="onSubmit()"
+      >
         <!-- Email input -->
         <div class="auth-form--group">
           <label for="email"> {{ "E-Mail Address" | translate }} </label>
-          <div class="input-container">
+          <div class="input-container" [class.error]="isFieldInvalid('email')">
             <img
               src="./assets/icons/email.svg"
               alt="mail icon"
@@ -26,15 +40,22 @@
               type="email"
               name="email"
               id="email"
+              formControlName="email"
               [placeholder]="'Enter your Email' | translate"
               required
             />
+          </div>
+          <div *ngIf="getFieldError('email')" class="field-error">
+            {{ getFieldError("email") | translate }}
           </div>
         </div>
         <!-- Password input -->
         <div class="auth-form--group">
           <label for="password"> {{ "Password" | translate }} </label>
-          <div class="input-container">
+          <div
+            class="input-container"
+            [class.error]="isFieldInvalid('password')"
+          >
             <img
               src="./assets/icons/password.svg"
               alt="lock icon"
@@ -44,6 +65,7 @@
               [type]="passwordType"
               name="password"
               id="password"
+              formControlName="password"
               [placeholder]="'Enter your password' | translate"
               required
             />
@@ -54,16 +76,32 @@
               (click)="togglePasswordType()"
             />
           </div>
+          <div *ngIf="getFieldError('password')" class="field-error">
+            {{ getFieldError("password") | translate }}
+          </div>
         </div>
         <!-- Save login info -->
         <div class="auth-form--group2">
-          <input type="checkbox" name="remember" id="remember" />
+          <input
+            type="checkbox"
+            name="remember"
+            id="remember"
+            formControlName="remember"
+            (change)="saveCredentials()"
+          />
           <label for="remember">
             {{ "Save login information" | translate }}
           </label>
         </div>
         <!-- Submit -->
-        <button class="auth-form--submit">{{ "Login" | translate }}</button>
+        <button
+          type="submit"
+          class="auth-form--submit"
+          [disabled]="isLoading || loginForm.invalid"
+        >
+          <span *ngIf="!isLoading">{{ "Login" | translate }}</span>
+          <span *ngIf="isLoading">Logging in...</span>
+        </button>
       </form>
 
       <!-- Language Switcher -->

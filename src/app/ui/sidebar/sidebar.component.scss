@@ -53,6 +53,18 @@
     font-size: 16px;
     color: #0c1892;
     text-transform: capitalize;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+
+    &--name {
+      line-clamp: 1;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      max-width: 100px;
+      display: inline-block;
+    }
   }
 
   &-nav {
@@ -78,6 +90,7 @@
       border-radius: 6px;
       cursor: pointer;
       justify-content: space-between;
+      gap: 10px;
 
       div {
         display: flex;
@@ -88,12 +101,22 @@
           line-height: 20px;
           font-weight: 700;
           text-transform: capitalize;
+          line-clamp: 1;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          max-width: 100px;
         }
 
         span:nth-child(2) {
           display: block;
           font-size: 12px;
-          line-height: 10px;
+          line-clamp: 1;
+          line-height: 15px;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          max-width: 100px;
         }
       }
     }

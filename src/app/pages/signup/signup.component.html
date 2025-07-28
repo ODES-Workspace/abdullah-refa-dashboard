@@ -11,16 +11,31 @@
         <img src="assets/images/auth-logo.png" alt="" />
       </div>
 
+      <!-- Success/Error Messages -->
+      <div *ngIf="successMessage" class="success-message">
+        {{ successMessage }}
+      </div>
+      <div
+        *ngIf="errorMessage"
+        class="error-message"
+        [innerHTML]="errorMessage | translate"
+      ></div>
+
       <!-- Form -->
-      <form class="auth-form--inputs" action="">
+      <form
+        class="auth-form--inputs"
+        [formGroup]="registrationForm"
+        (ngSubmit)="onSubmit()"
+      >
         <!-- Radio button -->
-        <div class="radio-group">
+        <!-- <div class="radio-group">
           <label class="radio-option" [class.active]="userType === 'agent'">
             <input
               type="radio"
               name="userType"
               value="agent"
               [(ngModel)]="userType"
+              [ngModelOptions]="{ standalone: true }"
             />
             <img
               *ngIf="userType === 'agent'"
@@ -43,6 +58,7 @@
               name="userType"
               value="individual"
               [(ngModel)]="userType"
+              [ngModelOptions]="{ standalone: true }"
             />
             <img
               *ngIf="userType === 'individual'"
@@ -56,47 +72,61 @@
             />
             <span>{{ "Individual" | translate }}</span>
           </label>
-        </div>
-        <!-- Markter input -->
+        </div> -->
+
+        <!-- Name input -->
         <div class="auth-form--group">
-          <label for="email"> {{ "Marketer Name" | translate }} </label>
-          <div class="input-container">
+          <label for="name"> {{ "Full Name" | translate }} </label>
+          <div class="input-container" [class.error]="isFieldInvalid('name')">
             <img
               src="./assets/icons/marketer.svg"
-              alt="marketer icon"
+              alt="name icon"
               class="input-icon"
             />
             <input
               type="text"
-              name="marketerName"
-              id="marketerName"
-              [placeholder]="'Enter marketer name' | translate"
+              name="name"
+              id="name"
+              formControlName="name"
+              [placeholder]="'Enter your full name' | translate"
               required
             />
           </div>
+          <div *ngIf="getFieldError('name')" class="field-error">
+            {{ getFieldError("name") | translate }}
+          </div>
         </div>
+
         <!-- Mobile input -->
         <div class="auth-form--group">
-          <label for="email"> {{ "Mobile number" | translate }} </label>
-          <div class="input-container">
+          <label for="phone_number"> {{ "Mobile number" | translate }} </label>
+          <div
+            class="input-container"
+            [class.error]="isFieldInvalid('phone_number')"
+          >
             <img
               src="./assets/icons/mobile.svg"
               alt="mobile icon"
               class="input-icon"
             />
             <input
-              type="number"
-              name="mobile"
-              id="mobile"
+              type="tel"
+              name="phone_number"
+              id="phone_number"
+              formControlName="phone_number"
               [placeholder]="'Enter mobile number' | translate"
               required
             />
           </div>
+          <div *ngIf="getFieldError('phone_number')" class="field-error">
+            {{ getFieldError("phone_number") | translate }}
+          </div>
         </div>
+
         <!-- Email input -->
         <div class="auth-form--group">
           <label for="email"> {{ "E-Mail Address" | translate }} </label>
-          <div class="input-container">
+          <div class="input-container" [class.error]="isFieldInvalid('email')">
             <img
               src="./assets/icons/email.svg"
               alt="mail icon"
@@ -106,15 +136,23 @@
               type="email"
               name="email"
               id="email"
+              formControlName="email"
               [placeholder]="'Enter your Email' | translate"
               required
             />
           </div>
+          <div *ngIf="getFieldError('email')" class="field-error">
+            {{ getFieldError("email") | translate }}
+          </div>
         </div>
+
         <!-- Password input -->
         <div class="auth-form--group">
           <label for="password"> {{ "Password" | translate }} </label>
-          <div class="input-container">
+          <div
+            class="input-container"
+            [class.error]="isFieldInvalid('password')"
+          >
             <img
               src="./assets/icons/password.svg"
               alt="lock icon"
@@ -124,6 +162,7 @@
               [type]="passwordType"
               name="password"
               id="password"
+              formControlName="password"
               [placeholder]="'Enter your password' | translate"
               required
             />
@@ -134,16 +173,57 @@
               (click)="togglePasswordType()"
             />
           </div>
+          <div *ngIf="getFieldError('password')" class="field-error">
+            {{ getFieldError("password") | translate }}
+          </div>
         </div>
-        <!-- Save login info -->
-        <div class="auth-form--group2">
-          <input type="checkbox" name="remember" id="remember" />
-          <label for="remember">
-            {{ "Save login information" | translate }}
+
+        <!-- Confirm Password input -->
+        <div class="auth-form--group">
+          <label for="password_confirmation">
+            {{ "Confirm Password" | translate }}
           </label>
+          <div
+            class="input-container"
+            [class.error]="isFieldInvalid('password_confirmation')"
+          >
+            <img
+              src="./assets/icons/password.svg"
+              alt="lock icon"
+              class="input-icon"
+            />
+            <input
+              [type]="confirmPasswordType"
+              name="password_confirmation"
+              id="password_confirmation"
+              formControlName="password_confirmation"
+              [placeholder]="'Confirm your password' | translate"
+              required
+            />
+            <img
+              src="./assets/icons/eye.svg"
+              alt="eye icon"
+              class="toggle-password"
+              (click)="toggleConfirmPasswordType()"
+            />
+          </div>
+          <div
+            *ngIf="getFieldError('password_confirmation')"
+            class="field-error"
+          >
+            {{ getFieldError("password_confirmation") | translate }}
+          </div>
         </div>
+
         <!-- Submit -->
-        <button class="auth-form--submit">{{ "sign up" | translate }}</button>
+        <button
+          type="submit"
+          class="auth-form--submit"
+          [disabled]="isLoading || registrationForm.invalid"
+        >
+          <span *ngIf="!isLoading">{{ "sign up" | translate }}</span>
+          <span *ngIf="isLoading">Registering...</span>
+        </button>
       </form>
 
       <!-- Language Switcher -->
