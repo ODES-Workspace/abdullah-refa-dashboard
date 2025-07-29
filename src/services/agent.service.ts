@@ -1,5 +1,9 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import {
+  HttpClient,
+  HttpErrorResponse,
+  HttpHeaders,
+} from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { UserRoleService } from './user-role.service';
@@ -145,9 +149,13 @@ export class AgentService {
    * @returns Observable of the logout response
    */
   logoutAgent(): Observable<LogoutResponse> {
-    const url = `${this.baseUrl}/agent/logout`;
+    const url = `${this.baseUrl}/auth/logout`;
+    const token = this.getAccessToken();
+    const headers = token
+      ? new HttpHeaders({ Authorization: `Bearer ${token}` })
+      : undefined;
 
-    return this.http.post<LogoutResponse>(url, {}).pipe(
+    return this.http.post<LogoutResponse>(url, {}, { headers }).pipe(
       map((response) => {
         // Clear local data after successful API logout
         this.logout();

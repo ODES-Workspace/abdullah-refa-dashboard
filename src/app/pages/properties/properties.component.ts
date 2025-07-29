@@ -46,11 +46,13 @@ export class PropertiesComponent {
   }
 
   viewProperty(id: number): void {
-    this.router.navigate(['admin/property', id]);
+    const basePath = this.userRoleService.isAdmin() ? 'admin' : 'agent';
+    this.router.navigate([`/${basePath}/property`, id]);
   }
 
   editProperty(id: number): void {
-    this.router.navigate(['admin/property/edit', id]);
+    const basePath = this.userRoleService.isAdmin() ? 'admin' : 'agent';
+    this.router.navigate([`/${basePath}/property/edit`, id]);
   }
 
   deleteProperty(id: number): void {

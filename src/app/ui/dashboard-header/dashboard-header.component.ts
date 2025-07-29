@@ -86,9 +86,15 @@ export class DashboardHeaderComponent {
       url.includes('/agent/properties')
     ) {
       this.headerText = 'Properties';
-    } else if (/\/admin\/property\/edit\/\d+$/.test(url)) {
+    } else if (
+      /\/admin\/property\/edit\/\d+$/.test(url) ||
+      /\/agent\/property\/edit\/\d+$/.test(url)
+    ) {
       this.headerText = 'Edit Property Details';
-    } else if (/\/admin\/property\/\d+$/.test(url)) {
+    } else if (
+      /\/admin\/property\/\d+$/.test(url) ||
+      /\/agent\/property\/\d+$/.test(url)
+    ) {
       this.headerText = 'Properties Details';
     } else if (/\/agent\/create-property$/.test(url)) {
       this.headerText = 'my peroperties/Add New Property';
@@ -155,9 +161,12 @@ export class DashboardHeaderComponent {
 
   checkPropertyDetailsPage() {
     const url = this.router.url;
-    this.isPropertyDetailsPage = /\/admin\/property\/\d+$/.test(url);
+    this.isPropertyDetailsPage =
+      /\/admin\/property\/\d+$/.test(url) ||
+      /\/agent\/property\/\d+$/.test(url);
     this.isRentalApplicationDetailsPage =
-      /\/admin\/rental-application-details\/\d+$/.test(url);
+      /\/admin\/rental-application-details\/\d+$/.test(url) ||
+      /\/agent\/rental-application-details\/\d+$/.test(url);
     this.isCreatePropertyPage = /\/agent\/create-property$/.test(url);
   }
 

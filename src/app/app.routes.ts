@@ -159,6 +159,20 @@ export const routes: Routes = [
           ),
       },
       {
+        path: 'property/:id',
+        loadComponent: () =>
+          import('./pages/property-details/property-details.component').then(
+            (m) => m.PropertyDetailsComponent
+          ),
+      },
+      {
+        path: 'property/edit/:id',
+        loadComponent: () =>
+          import('./pages/property-edit/property-edit.component').then(
+            (m) => m.PropertyEditComponent
+          ),
+      },
+      {
         path: 'create-property',
         loadComponent: () =>
           import('./pages/property-create/property-create.component').then(
