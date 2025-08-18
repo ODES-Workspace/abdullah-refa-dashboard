@@ -47,7 +47,7 @@ export interface AdminUnauthenticatedResponse {
   providedIn: 'root',
 })
 export class AdminService {
-  private baseUrl = 'http://dev.refa.sa:8000/api';
+  private baseUrl = 'https://dev.refa.sa/api';
 
   constructor(
     private http: HttpClient,

@@ -71,7 +71,7 @@ export interface UnauthenticatedResponse {
   providedIn: 'root',
 })
 export class AgentService {
-  private readonly baseUrl = 'http://dev.refa.sa:8000/api';
+  private readonly baseUrl = 'https://dev.refa.sa/api';
 
   constructor(
     private http: HttpClient,
