@@ -1,12 +1,9 @@
 import { Injectable } from '@angular/core';
-import {
-  HttpClient,
-  HttpErrorResponse,
-  HttpHeaders,
-} from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { UserRoleService } from './user-role.service';
+import { environment } from '../environments/environment';
 
 // Interfaces for type safety
 export interface AgentRegistrationRequest {
@@ -71,7 +68,7 @@ export interface UnauthenticatedResponse {
   providedIn: 'root',
 })
 export class AgentService {
-  private readonly baseUrl = 'https://dev.refa.sa/api';
+  private readonly baseUrl = environment.baseUrl;
 
   constructor(
     private http: HttpClient,
@@ -96,10 +93,9 @@ export class AgentService {
           if (response.access_token) {
             localStorage.setItem('access_token', response.access_token);
             localStorage.setItem('token_type', response.token_type);
-            localStorage.setItem(
-              'token_expires_in',
-              response.expires_in.toString()
-            );
+            // Store the actual expiration timestamp (current time + expires_in seconds)
+            const expirationTime = Date.now() + response.expires_in * 1000;
+            localStorage.setItem('token_expires_in', expirationTime.toString());
           }
           return response;
         }),
@@ -121,10 +117,9 @@ export class AgentService {
         if (response.access_token) {
           localStorage.setItem('access_token', response.access_token);
           localStorage.setItem('token_type', response.token_type);
-          localStorage.setItem(
-            'token_expires_in',
-            response.expires_in.toString()
-          );
+          // Store the actual expiration timestamp (current time + expires_in seconds)
+          const expirationTime = Date.now() + response.expires_in * 1000;
+          localStorage.setItem('token_expires_in', expirationTime.toString());
         }
 
         // Store user data in user role service
@@ -150,12 +145,8 @@ export class AgentService {
    */
   logoutAgent(): Observable<LogoutResponse> {
     const url = `${this.baseUrl}/auth/logout`;
-    const token = this.getAccessToken();
-    const headers = token
-      ? new HttpHeaders({ Authorization: `Bearer ${token}` })
-      : undefined;
 
-    return this.http.post<LogoutResponse>(url, {}, { headers }).pipe(
+    return this.http.post<LogoutResponse>(url, {}).pipe(
       map((response) => {
         // Clear local data after successful API logout
         this.logout();
@@ -188,7 +179,7 @@ export class AgentService {
     // Check if token is expired
     const expiresIn = localStorage.getItem('token_expires_in');
     if (expiresIn) {
-      const expirationTime = parseInt(expiresIn) * 1000; // Convert to milliseconds
+      const expirationTime = parseInt(expiresIn);
       const currentTime = Date.now();
       if (currentTime > expirationTime) {
         this.logout();

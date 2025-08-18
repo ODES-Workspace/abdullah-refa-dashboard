@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { catchError, map } from 'rxjs/operators';
 import { UserRoleService } from './user-role.service';
+import { environment } from '../environments/environment';
 
 // Interfaces
 export interface AdminLoginRequest {
@@ -47,7 +48,7 @@ export interface AdminUnauthenticatedResponse {
   providedIn: 'root',
 })
 export class AdminService {
-  private baseUrl = 'https://dev.refa.sa/api';
+  private baseUrl = environment.baseUrl;
 
   constructor(
     private http: HttpClient,
@@ -57,7 +58,20 @@ export class AdminService {
   loginAdmin(loginData: AdminLoginRequest): Observable<AdminLoginResponse> {
     return this.http
       .post<AdminLoginResponse>(`${this.baseUrl}/admin/login`, loginData)
-      .pipe(catchError(this.handleError));
+      .pipe(
+        map((response) => {
+          // Store the access token in localStorage for future use
+          if (response.access_token) {
+            localStorage.setItem('access_token', response.access_token);
+            localStorage.setItem('token_type', response.token_type);
+            // Store the actual expiration timestamp (current time + expires_in seconds)
+            const expirationTime = Date.now() + response.expires_in * 1000;
+            localStorage.setItem('token_expires_in', expirationTime.toString());
+          }
+          return response;
+        }),
+        catchError(this.handleError)
+      );
   }
 
   private handleError = (error: HttpErrorResponse): Observable<never> => {
@@ -161,5 +175,44 @@ export class AdminService {
       return 'ERRORS.PASSWORDS_DO_NOT_MATCH';
     }
     return 'ERRORS.GENERIC_ERROR';
+  }
+
+  /**
+   * Get the current access token
+   * @returns The access token or null if not available
+   */
+  getAccessToken(): string | null {
+    return localStorage.getItem('access_token');
+  }
+
+  /**
+   * Check if the user is authenticated
+   * @returns True if user has a valid token
+   */
+  isAuthenticated(): boolean {
+    const token = this.getAccessToken();
+    if (!token) return false;
+
+    // Check if token is expired
+    const expiresIn = localStorage.getItem('token_expires_in');
+    if (expiresIn) {
+      const expirationTime = parseInt(expiresIn);
+      const currentTime = Date.now();
+      if (currentTime > expirationTime) {
+        this.clearAuthData();
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  /**
+   * Clear authentication data
+   */
+  clearAuthData(): void {
+    localStorage.removeItem('access_token');
+    localStorage.removeItem('token_type');
+    localStorage.removeItem('token_expires_in');
   }
 }
