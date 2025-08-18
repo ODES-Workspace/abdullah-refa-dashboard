@@ -8,6 +8,7 @@
   "Save login information": "Save login information",
   "Login": "Login",
   "Welcome Back": "Welcome Back",
+  "WELCOME_BACK": "Welcome back!",
   "lang": "عربي",
   "ERRORS": {
     "EMAIL_ALREADY_REGISTERED": "Email already registered",

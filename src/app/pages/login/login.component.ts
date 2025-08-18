@@ -133,7 +133,7 @@ export class LoginComponent implements OnInit {
     this.adminService.loginAdmin(adminLoginData).subscribe({
       next: (response) => {
         this.isLoading = false;
-        this.successMessage = `Welcome back, Admin!`;
+        this.successMessage = `WELCOME_BACK`;
 
         // Store token in localStorage
         localStorage.setItem('access_token', response.access_token);
@@ -175,7 +175,7 @@ export class LoginComponent implements OnInit {
     this.agentService.loginAgent(agentLoginData).subscribe({
       next: (response) => {
         this.isLoading = false;
-        this.successMessage = `Welcome back, ${response.user.name}!`;
+        this.successMessage = `WELCOME_BACK`;
 
         // Save credentials if remember me is checked
         this.saveCredentials();

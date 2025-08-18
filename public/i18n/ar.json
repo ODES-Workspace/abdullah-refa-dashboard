@@ -9,6 +9,7 @@
   "Save login information": "حفظ معلومات تسجيل الدخول",
   "Login": "تسجيل الدخول",
   "Welcome Back": "مرحبا بك",
+  "WELCOME_BACK": "مرحباً بك!",
   "lang": "EN",
   "ERRORS": {
     "EMAIL_ALREADY_REGISTERED": "البريد الإلكتروني مسجل بالفعل",
