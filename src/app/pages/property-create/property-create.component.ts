@@ -9,7 +9,20 @@ import {
 import { Router } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import * as L from 'leaflet';
-import { PropertiesService } from '../../../services/properties.service';
+import {
+  PropertiesService,
+  CreatePropertyRequest,
+} from '../../../services/properties.service';
+import {
+  PropertyTypesService,
+  PropertyType,
+} from '../../../services/property-types.service';
+import {
+  PropertyCategoriesService,
+  PropertyCategory,
+} from '../../../services/property-categories.service';
+import { AmenitiesService, Amenity } from '../../../services/amenities.service';
+import { LanguageService } from '../../../services/language.service';
 
 @Component({
   selector: 'app-property-create',
@@ -26,10 +39,23 @@ export class PropertyCreateComponent implements OnInit, AfterViewInit {
   defaultLng = 46.6753; // Default longitude for Saudi Arabia
   uploadedFiles: File[] = [];
 
+  // Dynamic data properties
+  propertyCategories: PropertyCategory[] = [];
+  propertyTypes: PropertyType[] = [];
+  filteredPropertyTypes: PropertyType[] = [];
+  propertyAmenities: Amenity[] = [];
+  distanceAmenities: Amenity[] = [];
+  isLoading = false;
+  currentLanguage = 'en';
+
   constructor(
     private fb: FormBuilder,
     private router: Router,
-    private propertiesService: PropertiesService
+    private propertiesService: PropertiesService,
+    private propertyTypesService: PropertyTypesService,
+    private propertyCategoriesService: PropertyCategoriesService,
+    private amenitiesService: AmenitiesService,
+    private languageService: LanguageService
   ) {
     this.propertyForm = this.fb.group({
       propertyName: ['', Validators.required],
@@ -67,14 +93,244 @@ export class PropertyCreateComponent implements OnInit, AfterViewInit {
       advertisingLicenseNo: ['', Validators.required],
       declaration: [false, Validators.requiredTrue],
     });
+
+    // Listen for category changes to filter property types
+    this.propertyForm
+      .get('propertyCategory')
+      ?.valueChanges.subscribe((categoryId) => {
+        this.onCategoryChange(categoryId);
+      });
   }
 
   ngOnInit(): void {
-    // Initialize any additional data needed
+    this.currentLanguage = this.languageService.translate.currentLang || 'en';
+
+    // Listen for language changes
+    this.languageService.translate.onLangChange.subscribe((event) => {
+      this.currentLanguage = event.lang;
+    });
+
+    this.loadPropertyData();
   }
 
   ngAfterViewInit(): void {
     this.initializeMap();
+  }
+
+  /**
+   * Load property categories, types, and amenities from API
+   */
+  private loadPropertyData(): void {
+    this.isLoading = true;
+
+    // Load all property types first, then categories
+    this.propertyTypesService.getPropertyTypes().subscribe({
+      next: (response) => {
+        this.propertyTypes = response.data;
+
+        // Now load categories after property types are loaded
+        this.propertyCategoriesService.getPropertyCategories().subscribe({
+          next: (categoryResponse) => {
+            this.propertyCategories = categoryResponse.data;
+
+            // Load amenities
+            this.loadAmenities();
+
+            this.isLoading = false;
+
+            // Check if there's a pre-selected category and trigger change
+            const selectedCategory =
+              this.propertyForm.get('propertyCategory')?.value;
+            if (selectedCategory) {
+              this.onCategoryChange(selectedCategory);
+            }
+          },
+          error: (error) => {
+            console.error('Error loading property categories:', error);
+            this.isLoading = false;
+          },
+        });
+      },
+      error: (error) => {
+        console.error('Error loading property types:', error);
+        this.isLoading = false;
+      },
+    });
+  }
+
+  /**
+   * Load amenities from API
+   */
+  private loadAmenities(): void {
+    // Load all amenities first
+    this.amenitiesService.getAmenities().subscribe({
+      next: (response) => {
+        console.log('All amenities loaded:', response.data);
+
+        // Filter property amenities (features that don't require distance)
+        this.propertyAmenities = response.data.filter(
+          (amenity) => amenity.requires_distance === 0
+        );
+        console.log(
+          'Property amenities (no distance):',
+          this.propertyAmenities
+        );
+
+        // Filter distance amenities (nearby facilities that require distance)
+        this.distanceAmenities = response.data.filter(
+          (amenity) => amenity.requires_distance === 1
+        );
+        console.log(
+          'Distance amenities (with distance):',
+          this.distanceAmenities
+        );
+
+        // Add form controls for amenities
+        this.addAmenityFormControls();
+        this.addDistanceAmenityFormControls();
+      },
+      error: (error) => {
+        console.error('Error loading amenities:', error);
+      },
+    });
+  }
+
+  /**
+   * Add form controls for property amenities (checkboxes)
+   */
+  private addAmenityFormControls(): void {
+    this.propertyAmenities.forEach((amenity) => {
+      const controlName = `amenity_${amenity.id}`;
+      if (!this.propertyForm.contains(controlName)) {
+        this.propertyForm.addControl(controlName, this.fb.control(false));
+      }
+    });
+  }
+
+  /**
+   * Add form controls for distance amenities (text inputs)
+   */
+  private addDistanceAmenityFormControls(): void {
+    this.distanceAmenities.forEach((amenity) => {
+      const controlName = `distance_${amenity.id}`;
+      if (!this.propertyForm.contains(controlName)) {
+        this.propertyForm.addControl(controlName, this.fb.control(''));
+      }
+    });
+  }
+
+  /**
+   * Get amenity form control name
+   * @param amenity - The amenity object
+   * @returns Form control name for the amenity
+   */
+  getAmenityControlName(amenity: Amenity): string {
+    return `amenity_${amenity.id}`;
+  }
+
+  /**
+   * Get distance amenity form control name
+   * @param amenity - The amenity object
+   * @returns Form control name for the distance amenity
+   */
+  getDistanceAmenityControlName(amenity: Amenity): string {
+    return `distance_${amenity.id}`;
+  }
+
+  /**
+   * Get amenity icon source with fallback
+   * @param iconName - The icon name from the API
+   * @returns Icon source path
+   */
+  getAmenityIcon(iconName: string | null): string {
+    if (!iconName) {
+      // Return a default icon that exists in your assets
+      return 'assets/icons/properties-icon.svg';
+    }
+
+    // Use the icon name directly from the API response
+    return `assets/icons/${iconName}.svg`;
+  }
+
+  /**
+   * Handle image loading errors
+   * @param event - The error event
+   */
+  onImageError(event: any): void {
+    // Fallback to a default icon if the specified icon fails to load
+    event.target.src = 'assets/icons/properties-icon.svg';
+  }
+
+  /**
+   * Handle category selection change
+   * @param categoryId - Selected category ID
+   */
+  private onCategoryChange(categoryId: any): void {
+    // Convert to number if it's a string
+    const numericCategoryId =
+      typeof categoryId === 'string' ? parseInt(categoryId, 10) : categoryId;
+
+    if (numericCategoryId && !isNaN(numericCategoryId)) {
+      // Filter property types by selected category
+      this.filteredPropertyTypes = this.propertyTypes.filter(
+        (type) => type.property_category_id === numericCategoryId
+      );
+
+      // Reset property type selection
+      this.propertyForm.patchValue({ propertyType: '' });
+    } else {
+      this.filteredPropertyTypes = [];
+      this.propertyForm.patchValue({ propertyType: '' });
+    }
+  }
+
+  /**
+   * Get category name by ID
+   * @param categoryId - Category ID
+   * @returns Category name or empty string
+   */
+  getCategoryName(categoryId: number): string {
+    const category = this.propertyCategories.find(
+      (cat) => cat.id === categoryId
+    );
+    return category ? category.name_en : '';
+  }
+
+  /**
+   * Get property type name by ID
+   * @param typeId - Property type ID
+   * @returns Property type name or empty string
+   */
+  getPropertyTypeName(typeId: number): string {
+    const type = this.propertyTypes.find((t) => t.id === typeId);
+    return type ? type.name_en : '';
+  }
+
+  /**
+   * Get localized category name
+   * @param category - The category object
+   * @returns Localized category name
+   */
+  getLocalizedCategoryName(category: PropertyCategory): string {
+    return this.currentLanguage === 'ar' ? category.name_ar : category.name_en;
+  }
+
+  /**
+   * Get localized property type name
+   * @param type - The property type object
+   * @returns Localized property type name
+   */
+  getLocalizedPropertyTypeName(type: PropertyType): string {
+    return this.currentLanguage === 'ar' ? type.name_ar : type.name_en;
+  }
+
+  /**
+   * Get localized amenity name
+   * @param amenity - The amenity object
+   * @returns Localized amenity name
+   */
+  getLocalizedAmenityName(amenity: Amenity): string {
+    return this.currentLanguage === 'ar' ? amenity.name_ar : amenity.name_en;
   }
 
   private initializeMap(): void {
@@ -123,9 +379,114 @@ export class PropertyCreateComponent implements OnInit, AfterViewInit {
     });
   }
 
-  onSubmit(): void {
+  /**
+   * Check if form is ready to submit
+   */
+  isFormReady(): boolean {
+    return (
+      this.propertyForm.valid &&
+      !this.isLoading &&
+      this.propertyCategories.length > 0
+    );
+  }
+
+  /**
+   * Get form submission data with proper IDs
+   */
+  async getFormData(): Promise<any> {
+    const formValue = this.propertyForm.value;
+
+    // Convert uploaded files to base64
+    const base64Images = await this.convertFilesToBase64();
+
+    // Extract amenities data
+    const amenities = this.propertyAmenities
+      .map((amenity) => ({
+        id: amenity.id,
+        value: formValue[`amenity_${amenity.id}`] || false,
+      }))
+      .filter((amenity) => amenity.value === true);
+
+    // Extract distance amenities data
+    const distanceAmenities = this.distanceAmenities
+      .map((amenity) => ({
+        id: amenity.id,
+        distance: formValue[`distance_${amenity.id}`] || '',
+      }))
+      .filter((amenity) => amenity.distance && amenity.distance.trim() !== '');
+
+    // Combine all amenities
+    const allAmenities = [
+      ...amenities.map((amenity) => ({ id: amenity.id })),
+      ...distanceAmenities.map((amenity) => ({
+        id: amenity.id,
+        distance: amenity.distance,
+      })),
+    ];
+
+    // Format data according to API requirements
+    const apiData = {
+      name_en: formValue.propertyName,
+      name_ar: formValue.propertyName, // You might want to add Arabic name input
+      description_en: formValue.description,
+      description_ar: formValue.description, // You might want to add Arabic description input
+      property_category_id: formValue.propertyCategory,
+      property_type_id: formValue.propertyType,
+      area: formValue.propertySize,
+      available_from: formValue.availableFrom,
+      furnishing_status: formValue.furnishment,
+      bedrooms: formValue.bedrooms,
+      bathrooms: formValue.bathrooms,
+      floor_number: formValue.floorNumber,
+      total_floors: formValue.totalFloors,
+      insurance_amount: 0, // You might want to add this field to the form
+      fal_number: formValue.falLicenseId,
+      ad_number: formValue.advertisingLicenseNo,
+      annual_rent: formValue.annualRent,
+      building_number: formValue.buildingName,
+      country: 'Saudi Arabia', // You might want to make this dynamic
+      region: formValue.province,
+      city: formValue.province, // You might want to add separate city field
+      district: formValue.addressLine1,
+      postal_code: formValue.postalCode,
+      latitude: formValue.latitude,
+      longitude: formValue.longitude,
+      is_active: true,
+      amenities: allAmenities,
+      images: base64Images, // Include base64 images
+      primary_image_index: base64Images.length > 0 ? 0 : 0, // Set primary image to first image if available
+    };
+
+    return apiData;
+  }
+
+  async onSubmit(): Promise<void> {
     if (this.propertyForm.valid) {
-      console.log(this.propertyForm.value);
+      try {
+        const formData = await this.getFormData();
+        console.log('Submitting property:', formData);
+
+        // Call the API service to create the property
+        this.propertiesService.createProperty(formData).subscribe({
+          next: (response) => {
+            console.log('Property created successfully:', response);
+            // You can add success notification here
+            // this.toastService.showSuccess('Property created successfully');
+
+            // Navigate to properties list or show success message
+            this.router.navigate(['/agent/properties']);
+          },
+          error: (error) => {
+            console.error('Error creating property:', error);
+            // You can add error notification here
+            // this.toastService.showError('Failed to create property. Please try again.');
+          },
+        });
+      } catch (error) {
+        console.error('Error preparing form data:', error);
+        // You can add error notification here
+        // this.toastService.showError('Failed to prepare property data. Please try again.');
+      }
     }
   }
 
@@ -159,6 +520,46 @@ export class PropertyCreateComponent implements OnInit, AfterViewInit {
     if (formControl) {
       formControl.setValue(this.uploadedFiles);
     }
+  }
+
+  /**
+   * Convert uploaded files to base64 strings
+   * @returns Promise of base64 strings array
+   */
+  private async convertFilesToBase64(): Promise<string[]> {
+    const base64Strings: string[] = [];
+
+    for (const file of this.uploadedFiles) {
+      try {
+        const base64 = await this.fileToBase64(file);
+        base64Strings.push(base64);
+      } catch (error) {
+        console.error('Error converting file to base64:', error);
+      }
+    }
+
+    return base64Strings;
+  }
+
+  /**
+   * Convert a single file to base64
+   * @param file - The file to convert
+   * @returns Promise of base64 string
+   */
+  private fileToBase64(file: File): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => {
+        if (typeof reader.result === 'string') {
+          // Return the full data URL format that the API expects
+          resolve(reader.result);
+        } else {
+          reject(new Error('Failed to convert file to base64'));
+        }
+      };
+      reader.onerror = (error) => reject(error);
+    });
   }
 
   // Add file size pipe

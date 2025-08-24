@@ -24,10 +24,14 @@
       </div>
       <div class="input-group">
         <label>{{ "Property Category" | translate }}</label>
-        <select formControlName="propertyCategory">
+        <select formControlName="propertyCategory" [disabled]="isLoading">
           <option value="">{{ "Select Category" | translate }}</option>
-          <option value="residential">{{ "Residential" | translate }}</option>
-          <option value="commercial">{{ "Commercial" | translate }}</option>
+          <option
+            *ngFor="let category of propertyCategories"
+            [value]="category.id"
+          >
+            {{ getLocalizedCategoryName(category) }}
+          </option>
         </select>
         <div
           *ngIf="propertyForm.get('propertyCategory')?.errors?.['required'] && propertyForm.get('propertyCategory')?.touched"
@@ -37,12 +41,14 @@
       </div>
       <div class="input-group">
         <label>{{ "Property Type" | translate }}</label>
-        <select formControlName="propertyType">
+        <select
+          formControlName="propertyType"
+          [disabled]="!propertyForm.get('propertyCategory')?.value || isLoading"
+        >
           <option value="">{{ "Select Type" | translate }}</option>
-          <option value="apartment">{{ "Apartment" | translate }}</option>
-          <option value="villa">{{ "Villa" | translate }}</option>
-          <option value="house">{{ "House" | translate }}</option>
-          <option value="office">{{ "Office" | translate }}</option>
+          <option *ngFor="let type of filteredPropertyTypes" [value]="type.id">
+            {{ getLocalizedPropertyTypeName(type) }}
+          </option>
         </select>
         <div
           *ngIf="propertyForm.get('propertyType')?.errors?.['required'] && propertyForm.get('propertyType')?.touched"
@@ -325,119 +331,34 @@
     <div class="section-content grid-5 feature-buttons">
       <label
         class="feature-button"
-        [class.active]="propertyForm.get('parkingArea')?.value"
+        [class.active]="propertyForm.get('amenity_' + amenity.id)?.value"
+        *ngFor="let amenity of propertyAmenities"
+        [attr.for]="'amenity_' + amenity.id"
       >
         <input
           type="checkbox"
-          formControlName="parkingArea"
+          [formControlName]="'amenity_' + amenity.id"
           class="hidden-checkbox"
+          [id]="'amenity_' + amenity.id"
         />
         <span class="button-content">
-          <img src="assets/icons/parking-icon.svg" alt="Parking area" />
-          {{ "Parking area" | translate }}
-        </span>
-      </label>
-      <label
-        class="feature-button"
-        [class.active]="propertyForm.get('medicalService')?.value"
-      >
-        <input
-          type="checkbox"
-          formControlName="medicalService"
-          class="hidden-checkbox"
-        />
-        <span class="button-content">
-          <img src="assets/icons/medical.svg" alt="Medical service" />
-          {{ "24/7 medical service" | translate }}
-        </span>
-      </label>
-      <label
-        class="feature-button"
-        [class.active]="propertyForm.get('petFriendly')?.value"
-      >
-        <input
-          type="checkbox"
-          formControlName="petFriendly"
-          class="hidden-checkbox"
-        />
-        <span class="button-content">
-          <img src="assets/icons/pet.svg" alt="Pet friendly" />
-          {{ "Pet Friendly" | translate }}
-        </span>
-      </label>
-      <label
-        class="feature-button"
-        [class.active]="propertyForm.get('liftFacility')?.value"
-      >
-        <input
-          type="checkbox"
-          formControlName="liftFacility"
-          class="hidden-checkbox"
-        />
-        <span class="button-content">
-          <img src="assets/icons/lift.svg" alt="Lift facility" />
-          {{ "Lift facility" | translate }}
-        </span>
-      </label>
-      <label
-        class="feature-button"
-        [class.active]="propertyForm.get('cctv')?.value"
-      >
-        <input type="checkbox" formControlName="cctv" class="hidden-checkbox" />
-        <span class="button-content">
-          <img src="assets/icons/cctv.svg" alt="CCTV" />
-          {{ "CCTV" | translate }}
+          <!-- <img
+            [src]="getAmenityIcon(amenity.icon)"
+            [alt]="amenity.name_en"
+            (error)="onImageError($event)"
+          /> -->
+          {{ getLocalizedAmenityName(amenity) }}
         </span>
       </label>
     </div>
     <h2>{{ "Nearby Features" | translate }}</h2>
     <div class="section-content grid-6">
-      <div class="input-group">
-        <label>{{ "Bus stop" | translate }}</label>
+      <div class="input-group" *ngFor="let amenity of distanceAmenities">
+        <label>{{ getLocalizedAmenityName(amenity) }}</label>
         <input
-          formControlName="busStop"
+          [formControlName]="'distance_' + amenity.id"
           type="text"
-          placeholder="{{ 'Distance (KM)' | translate }}"
-        />
-      </div>
-      <div class="input-group">
-        <label>{{ "Hospital" | translate }}</label>
-        <input
-          formControlName="hospital"
-          type="text"
-          placeholder="{{ 'Distance (KM)' | translate }}"
-        />
-      </div>
-      <div class="input-group">
-        <label>{{ "Shop" | translate }}</label>
-        <input
-          formControlName="shop"
-          type="text"
-          placeholder="{{ 'Distance (KM)' | translate }}"
-        />
-      </div>
-      <div class="input-group">
-        <label>{{ "Park" | translate }}</label>
-        <input
-          formControlName="park"
-          type="text"
-          placeholder="{{ 'Distance (KM)' | translate }}"
-        />
-      </div>
-      <div class="input-group">
-        <label>{{ "School" | translate }}</label>
-        <input
-          formControlName="school"
-          type="text"
-          placeholder="{{ 'Distance (KM)' | translate }}"
-        />
-      </div>
-      <div class="input-group">
-        <label>{{ "Bank" | translate }}</label>
-        <input
-          formControlName="bank"
-          type="text"
-          placeholder="{{ 'Distance (KM)' | translate }}"
+          [placeholder]="'Distance (KM)' | translate"
         />
       </div>
     </div>
@@ -496,8 +417,9 @@
         <button type="button" (click)="onSaveDraft()">
           {{ "Save as Draft" | translate }}
         </button>
-        <button type="submit" [disabled]="!propertyForm.valid">
-          {{ "Submit Property" | translate }}
+        <button type="submit" [disabled]="!isFormReady()">
+          <span *ngIf="isLoading">{{ "Loading..." | translate }}</span>
+          <span *ngIf="!isLoading">{{ "Submit Property" | translate }}</span>
         </button>
       </div>
     </div>
