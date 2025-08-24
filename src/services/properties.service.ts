@@ -130,6 +130,19 @@ export class PropertiesService {
   constructor(private http: HttpClient) {}
 
   /**
+   * Get property details (Agent)
+   * @param id - Property ID
+   * @returns Observable of { data: CreatePropertyResponse }
+   */
+  getAgentPropertyDetails(
+    id: number
+  ): Observable<{ data: CreatePropertyResponse }> {
+    return this.http.get<{ data: CreatePropertyResponse }>(
+      `${this.baseUrl}/agent/properties/${id}`
+    );
+  }
+
+  /**
    * Create a new property
    * @param propertyData - The property data to create
    * @returns Observable of CreatePropertyResponse

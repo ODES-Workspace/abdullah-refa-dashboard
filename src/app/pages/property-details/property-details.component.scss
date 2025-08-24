@@ -1,7 +1,6 @@
 .property {
   &-card {
     display: grid;
-    grid-template-columns: 1fr 0.5fr;
     gap: 30px;
 
     @media (max-width: 1000px) {
@@ -138,11 +137,15 @@
 
   &-images {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
     gap: 16px;
 
     img {
+      max-height: 263px;
+      max-width: 354px;
+      height: 100%;
       width: 100%;
+      border-radius: 16px;
     }
   }
 
