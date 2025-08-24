@@ -124,6 +124,21 @@ export interface CreatePropertyResponse {
   providedIn: 'root',
 })
 export class PropertiesService {
+  /**
+   * Update property details (Agent)
+   * @param id - Property ID
+   * @param propertyData - The property data to update
+   * @returns Observable of { data: CreatePropertyResponse }
+   */
+  updateAgentProperty(
+    id: number,
+    propertyData: any
+  ): Observable<{ data: CreatePropertyResponse }> {
+    return this.http.put<{ data: CreatePropertyResponse }>(
+      `${this.baseUrl}/agent/properties/${id}`,
+      propertyData
+    );
+  }
   private baseUrl = environment.baseUrl;
   private propertiesData: any[] = [];
 
