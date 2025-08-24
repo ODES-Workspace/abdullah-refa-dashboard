@@ -23,15 +23,25 @@ import {
 } from '../../../services/property-categories.service';
 import { AmenitiesService, Amenity } from '../../../services/amenities.service';
 import { LanguageService } from '../../../services/language.service';
+import { ToastService } from '../../../services/toast.service';
+import { ToastComponent } from '../../ui/toast/toast.component';
 
 @Component({
   selector: 'app-property-create',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, TranslateModule],
+  imports: [CommonModule, ReactiveFormsModule, TranslateModule, ToastComponent],
   templateUrl: './property-create.component.html',
   styleUrl: './property-create.component.scss',
 })
 export class PropertyCreateComponent implements OnInit, AfterViewInit {
+  // ...existing code...
+  imageUploadError: string | null = null;
+  formatFieldName(field: string): string {
+    // Replace underscores with spaces and capitalize each word
+    return field.replace(/_/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
+  }
+  backendError: string | null = null;
+  backendFieldErrors: { [key: string]: string[] } = {};
   propertyForm: FormGroup;
   private map!: L.Map;
   private marker!: L.Marker;
@@ -55,7 +65,8 @@ export class PropertyCreateComponent implements OnInit, AfterViewInit {
     private propertyTypesService: PropertyTypesService,
     private propertyCategoriesService: PropertyCategoriesService,
     private amenitiesService: AmenitiesService,
-    private languageService: LanguageService
+    private languageService: LanguageService,
+    private toastService: ToastService
   ) {
     this.propertyForm = this.fb.group({
       propertyName: ['', Validators.required],
@@ -108,6 +119,13 @@ export class PropertyCreateComponent implements OnInit, AfterViewInit {
     // Listen for language changes
     this.languageService.translate.onLangChange.subscribe((event) => {
       this.currentLanguage = event.lang;
+      // Update error message if present
+      if (this.imageUploadError) {
+        this.imageUploadError =
+          this.currentLanguage === 'ar'
+            ? 'يُسمح فقط برفع الصور بصيغة PNG أو JPG.'
+            : 'Only PNG or JPG images are allowed.';
+      }
     });
 
     this.loadPropertyData();
@@ -461,6 +479,8 @@ export class PropertyCreateComponent implements OnInit, AfterViewInit {
   }
 
   async onSubmit(): Promise<void> {
+    this.backendError = null;
+    this.backendFieldErrors = {};
     if (this.propertyForm.valid) {
       try {
         const formData = await this.getFormData();
@@ -470,23 +490,32 @@ export class PropertyCreateComponent implements OnInit, AfterViewInit {
         this.propertiesService.createProperty(formData).subscribe({
           next: (response) => {
             console.log('Property created successfully:', response);
-            // You can add success notification here
-            // this.toastService.showSuccess('Property created successfully');
-
-            // Navigate to properties list or show success message
-            this.router.navigate(['/agent/properties']);
+            const successMsg =
+              this.currentLanguage === 'ar'
+                ? 'تم إنشاء العقار بنجاح'
+                : 'Property created successfully';
+            this.router.navigate(['/agent/properties']).then(() => {
+              this.toastService.show(successMsg);
+            });
           },
           error: (error) => {
             console.error('Error creating property:', error);
-            // You can add error notification here
+            this.backendError =
+              error?.error?.message ||
+              'Failed to create property. Please try again.';
+            this.backendFieldErrors = error?.error?.errors || {};
             // this.toastService.showError('Failed to create property. Please try again.');
           },
         });
       } catch (error) {
         console.error('Error preparing form data:', error);
-        // You can add error notification here
+        this.backendError =
+          'Failed to prepare property data. Please try again.';
         // this.toastService.showError('Failed to prepare property data. Please try again.');
       }
+    } else {
+      // Mark all controls as touched to show validation errors
+      this.propertyForm.markAllAsTouched();
     }
   }
 
@@ -500,14 +529,28 @@ export class PropertyCreateComponent implements OnInit, AfterViewInit {
 
   onFileSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
+    this.imageUploadError = null;
     if (input.files) {
       const newFiles = Array.from(input.files);
-      this.uploadedFiles = [...this.uploadedFiles, ...newFiles];
-
-      // Update form control value
-      const formControl = this.propertyForm.get('images');
-      if (formControl) {
-        formControl.setValue(this.uploadedFiles);
+      const validFiles: File[] = [];
+      for (const file of newFiles) {
+        const ext = file.name.split('.').pop()?.toLowerCase();
+        if (ext === 'png' || ext === 'jpg' || ext === 'jpeg') {
+          validFiles.push(file);
+        } else {
+          this.imageUploadError =
+            this.currentLanguage === 'ar'
+              ? 'يُسمح فقط برفع الصور بصيغة PNG أو JPG.'
+              : 'Only PNG or JPG images are allowed.';
+        }
+      }
+      if (validFiles.length > 0) {
+        this.uploadedFiles = [...this.uploadedFiles, ...validFiles];
+        // Update form control value
+        const formControl = this.propertyForm.get('images');
+        if (formControl) {
+          formControl.setValue(this.uploadedFiles);
+        }
       }
     }
   }

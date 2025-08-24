@@ -1,3 +1,8 @@
+// Make error section span full grid columns
+.error-grid-span {
+  grid-column: 1 / -1;
+  display: block;
+}
 section {
   margin-bottom: 24px;
   border: 1px solid #f1f1f4;

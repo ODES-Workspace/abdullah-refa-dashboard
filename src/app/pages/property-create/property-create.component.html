@@ -5,6 +5,7 @@
 />
 
 <form [formGroup]="propertyForm" (ngSubmit)="onSubmit()">
+  <app-toast></app-toast>
   <!-- Basic Information -->
   <section>
     <h3>{{ "Basic Information" | translate }}</h3>
@@ -272,6 +273,13 @@
     <div class="section-content">
       <div class="file-input-container">
         <div class="upload-area">
+          <div
+            *ngIf="imageUploadError"
+            class="error-message error-grid-span"
+            style="margin-bottom: 10px"
+          >
+            {{ imageUploadError }}
+          </div>
           <img
             src="assets/icons/file-upload.svg"
             alt="{{ 'file-upload' | translate }}"
@@ -409,6 +417,26 @@
           {{ "You must accept the declaration" | translate }}
         </div>
       </div>
+
+      <!-- errors -->
+      <div
+        *ngIf="backendError || backendFieldErrors"
+        class="error-message error-grid-span"
+        style="margin-bottom: 10px"
+      >
+        <!-- Only show field errors, not the main backendError message -->
+        <ul
+          *ngIf="backendFieldErrors && (backendFieldErrors | keyvalue).length"
+          dir="ltr"
+        >
+          <li *ngFor="let err of backendFieldErrors | keyvalue">
+            <strong>{{ formatFieldName(err.key) }}:</strong>
+            <span *ngFor="let msg of err.value; let last = last">
+              {{ msg }}<span *ngIf="!last">, </span>
+            </span>
+          </li>
+        </ul>
+      </div>
       <!-- Action Buttons -->
       <div class="action-buttons">
         <button type="button" (click)="onCancel()">
@@ -417,7 +445,7 @@
         <button type="button" (click)="onSaveDraft()">
           {{ "Save as Draft" | translate }}
         </button>
-        <button type="submit" [disabled]="!isFormReady()">
+        <button type="submit">
           <span *ngIf="isLoading">{{ "Loading..." | translate }}</span>
           <span *ngIf="!isLoading">{{ "Submit Property" | translate }}</span>
         </button>

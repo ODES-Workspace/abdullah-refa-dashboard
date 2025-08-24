@@ -5,11 +5,12 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router'; // Add this import
 import { TranslateModule } from '@ngx-translate/core';
 import { UserRoleService } from '../../../services/user-role.service';
+import { ToastComponent } from '../../ui/toast/toast.component';
 
 @Component({
   selector: 'app-properties',
   standalone: true,
-  imports: [NgFor, NgIf, FormsModule, TranslateModule, CommonModule],
+  imports: [NgFor, NgIf, FormsModule, TranslateModule, CommonModule, ToastComponent],
   templateUrl: './properties.component.html',
   styleUrl: './properties.component.scss',
 })
