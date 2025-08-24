@@ -24,6 +24,19 @@
         </div>
       </div>
       <div class="input-group">
+        <label>{{ "Property Name (Arabic)" | translate }}</label>
+        <input
+          formControlName="propertyNameAr"
+          type="text"
+          placeholder="{{ 'Enter property name in Arabic' | translate }}"
+        />
+        <div
+          *ngIf="propertyForm.get('propertyNameAr')?.errors?.['required'] && propertyForm.get('propertyNameAr')?.touched"
+        >
+          {{ "Property name is required" | translate }}
+        </div>
+      </div>
+      <div class="input-group">
         <label>{{ "Property Category" | translate }}</label>
         <select formControlName="propertyCategory" [disabled]="isLoading">
           <option value="">{{ "Select Category" | translate }}</option>
@@ -193,6 +206,18 @@
         ></textarea>
         <div
           *ngIf="propertyForm.get('description')?.errors?.['required'] && propertyForm.get('description')?.touched"
+        >
+          {{ "Property description is required" | translate }}
+        </div>
+      </div>
+      <div class="input-group text-area">
+        <label>{{ "Property Description (Arabic)" | translate }}</label>
+        <textarea
+          formControlName="descriptionAr"
+          placeholder="{{ 'Enter property description in Arabic' | translate }}"
+        ></textarea>
+        <div
+          *ngIf="propertyForm.get('descriptionAr')?.errors?.['required'] && propertyForm.get('descriptionAr')?.touched"
         >
           {{ "Property description is required" | translate }}
         </div>

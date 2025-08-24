@@ -107,6 +107,7 @@
   "of": "من",
   "Properties": "العقارات",
   "Featured Properties": "العقارات المميزة",
+  "Loading...": "جاري التحميل...",
   "Search properties": "بحث عن العقارات",
   "SAR": "ريال سعودي",
   "Posted on": "نشر في",
@@ -295,7 +296,6 @@
   "Marketer Name": "اسم الوكيل",
   "Enter marketer name": "ادخل اسم الوكيل",
   "Mobile number": "رقم الهاتف",
-  "Enter mobile number": "ادخل رقم الهاتف",
   "sign up": "تسجيل",
   "Already have an account?": "لديك حساب بالفعل؟",
   "Don't have an account?": "ليس لديك حساب؟",
@@ -420,5 +420,9 @@
   "View Current Document": "عرض الوثيقة الحالية",
   "Agency Address:": "عنوان الوكالة:",
   "Agent Bank Details:": "تفاصيل بنك الوكيل:",
-  "profile": "الملف الشخصي"
+  "profile": "الملف الشخصي",
+  "Property Description (Arabic)": "وصف العقار (بالعربية)",
+  "Property Name (Arabic)": "اسم العقار (بالعربية)",
+  "Enter property description in Arabic": "أدخل وصف العقار بالعربية",
+  "Enter property name in Arabic": "أدخل اسم العقار بالعربية"
 }

@@ -70,6 +70,7 @@ export class PropertyCreateComponent implements OnInit, AfterViewInit {
   ) {
     this.propertyForm = this.fb.group({
       propertyName: ['', Validators.required],
+      propertyNameAr: ['', Validators.required],
       propertyCategory: ['', Validators.required],
       propertyType: ['', Validators.required],
       propertySize: ['', [Validators.required, Validators.min(0)]],
@@ -82,6 +83,7 @@ export class PropertyCreateComponent implements OnInit, AfterViewInit {
       annualRent: ['', [Validators.required, Validators.min(0)]],
       depositAmount: ['', [Validators.required, Validators.min(0)]],
       description: ['', Validators.required],
+      descriptionAr: ['', Validators.required],
       addressLine1: ['', Validators.required],
       buildingName: ['', Validators.required],
       province: ['', Validators.required],
@@ -445,9 +447,9 @@ export class PropertyCreateComponent implements OnInit, AfterViewInit {
     // Format data according to API requirements
     const apiData = {
       name_en: formValue.propertyName,
-      name_ar: formValue.propertyName, // You might want to add Arabic name input
+      name_ar: formValue.propertyNameAr,
       description_en: formValue.description,
-      description_ar: formValue.description, // You might want to add Arabic description input
+      description_ar: formValue.descriptionAr,
       property_category_id: formValue.propertyCategory,
       property_type_id: formValue.propertyType,
       area: formValue.propertySize,

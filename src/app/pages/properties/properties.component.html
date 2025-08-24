@@ -24,61 +24,69 @@
   </div>
 
   <!-- No data -->
-  <div class="table-no-data" *ngIf="filteredProperties.length === 0">
+  <div
+    class="table-no-data"
+    *ngIf="!loading && filteredProperties.length === 0"
+  >
     {{ "No data found" | translate }}
   </div>
 
   <!-- properties -->
   <div class="table-properties">
-    <div
-      *ngFor="let item of paginatedProperties"
-      class="property-item"
-      dir="ltr"
-    >
-      <div class="property-actions">
-        <span class="action-icon" (click)="deleteProperty(item.id)">
-          <img src="/assets/icons/delete-icon.svg" alt="delete icon" />
-        </span>
-        <span class="action-icon" (click)="viewProperty(item.id)">
-          <img src="/assets/icons/eye-icon.svg" alt="eye icon" />
-        </span>
-
-        <span class="action-icon" (click)="editProperty(item.id)">
-          <img src="/assets/icons/edit-icon.svg" alt="edit icon" />
-        </span>
-      </div>
-      <div class="property-details">
-        <div class="property-image">
-          <img [src]="item.cardImage" alt="property image" />
-        </div>
-        <div class="property-info">
-          <div class="property-info--title">
-            <div class="property-title">{{ item.title }}</div>
-            <div class="property-address">
-              <img src="/assets/icons/property-location.svg" alt="" />
-              <div>{{ item.address.street }}, {{ item.address.city }}</div>
-            </div>
-          </div>
-
-          <div class="property-info--price">
-            <div class="property-price">
-              <div class="property-annual">Annual Rent</div>
-              <div class="property-rent">
-                {{ item.annual_rent | number }}
-                <span>SAR</span>
-              </div>
-            </div>
-
-            <div class="property-date">
-              <img src="/assets/icons/date-icon.svg" alt="" />
-              <div>
-                {{ item.property_details.posted_date }}
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+    <div *ngIf="loading" class="loading-indicator">
+      {{ "Loading..." | translate }}
     </div>
+    <ng-container *ngIf="!loading">
+      <div *ngFor="let item of paginatedProperties" class="property-item">
+        <div class="property-actions">
+          <span class="action-icon" (click)="deleteProperty(item.id)">
+            <img src="/assets/icons/delete-icon.svg" alt="delete icon" />
+          </span>
+          <span class="action-icon" (click)="viewProperty(item.id)">
+            <img src="/assets/icons/eye-icon.svg" alt="eye icon" />
+          </span>
+
+          <span class="action-icon" (click)="editProperty(item.id)">
+            <img src="/assets/icons/edit-icon.svg" alt="edit icon" />
+          </span>
+        </div>
+        <div class="property-details">
+          <div class="property-image">
+            <img [src]="item.cardImage" alt="property image" />
+          </div>
+          <div class="property-info">
+            <div class="property-info--title">
+              <div class="property-title">
+                {{ getLocalizedPropertyName(item) }}
+              </div>
+              <div class="property-address">
+                <img src="/assets/icons/property-location.svg" alt="" />
+                <div>{{ item.address.street }}, {{ item.address.city }}</div>
+              </div>
+            </div>
+
+            <div class="property-info--price">
+              <div class="property-price">
+                <div class="property-annual">
+                  {{ "Annual Rent" | translate }}
+                </div>
+                <div class="property-rent">
+                  {{ item.annual_rent | number }}
+                  <span>{{ "SAR" | translate }}</span>
+                </div>
+              </div>
+
+              <div class="property-date" dir="ltr">
+                <img src="/assets/icons/date-icon.svg" alt="" />
+                <div>
+                  {{ item.property_details.posted_date | date : "yyyy-MM-dd" }}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-container>
   </div>
 
   <!-- Table pagination -->

@@ -1,4 +1,6 @@
 import { Component } from '@angular/core';
+import { AgentPropertiesService } from '../../../services/agent-properties.service';
+import { ToastService } from '../../../services/toast.service';
 import { PropertiesService } from '../../../services/properties.service';
 import { CommonModule, NgFor, NgIf } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -10,7 +12,14 @@ import { ToastComponent } from '../../ui/toast/toast.component';
 @Component({
   selector: 'app-properties',
   standalone: true,
-  imports: [NgFor, NgIf, FormsModule, TranslateModule, CommonModule, ToastComponent],
+  imports: [
+    NgFor,
+    NgIf,
+    FormsModule,
+    TranslateModule,
+    CommonModule,
+    ToastComponent,
+  ],
   templateUrl: './properties.component.html',
   styleUrl: './properties.component.scss',
 })
@@ -21,27 +30,65 @@ export class PropertiesComponent {
   currentPage: number = 1;
   totalItems: number = 0;
   Math = Math;
+  loading = false;
+  error: string | null = null;
+  get currentLanguage(): string {
+    return localStorage.getItem('lang') || 'en';
+  }
+
+  getLocalizedPropertyName(item: any): string {
+    return this.currentLanguage === 'ar' ? item.title_ar : item.title;
+  }
 
   constructor(
     private propertiesService: PropertiesService,
     private router: Router,
-    public userRoleService: UserRoleService
+    public userRoleService: UserRoleService,
+    private agentPropertiesService: AgentPropertiesService,
+    private toastService: ToastService
   ) {}
 
   ngOnInit(): void {
-    this.loadProperties();
-  }
-
-  loadProperties(): void {
-    this.propertiesService.getProperties().subscribe({
-      next: (data) => {
-        this.properties = data;
-        this.totalItems = data.length;
-        // Log the properties to console
-        console.log(this.properties);
+    this.loading = true;
+    this.error = null;
+    // Replace with your actual token retrieval logic
+    const token = localStorage.getItem('token') || '';
+    this.agentPropertiesService.getAgentProperties(token).subscribe({
+      next: (res: any) => {
+        this.properties = (res?.data || []).map((item: any) => ({
+          id: item.id,
+          title: item.name_en,
+          title_ar: item.name_ar,
+          description: item.description_en,
+          description_ar: item.description_ar,
+          cardImage:
+            item.primary_image_url || '/assets/images/default-property.jpg',
+          address: {
+            street: item.district,
+            city: item.city,
+            region: item.region,
+            country: item.country,
+          },
+          annual_rent: item.annual_rent,
+          posted_date: item.created_at,
+          property_details: {
+            posted_date: item.created_at,
+            bedrooms: item.bedrooms,
+            bathrooms: item.bathrooms,
+            area: item.area,
+            furnishing_status: item.furnishing_status,
+          },
+          category: item.category,
+          type: item.type,
+          images: item.images,
+          amenities: item.amenities,
+        }));
+        this.loading = false;
       },
-      error: (err) => {
-        console.error('Error loading properties:', err);
+      error: (err: any) => {
+        this.error = 'Failed to load properties.';
+        this.toastService.show(this.error);
+        this.loading = false;
       },
     });
   }
@@ -58,19 +105,18 @@ export class PropertiesComponent {
 
   deleteProperty(id: number): void {
     if (confirm('Are you sure you want to delete this property?')) {
-      this.propertiesService.deleteProperty(id).subscribe({
-        next: (success) => {
-          if (success) {
-            // Update local properties array after deletion
-            this.properties = this.properties.filter((p) => p.id !== id);
-            this.totalItems = this.properties.length;
-            // Adjust pagination if needed
-            if (this.paginatedProperties.length === 0 && this.currentPage > 1) {
-              this.currentPage--;
-            }
+      const token = localStorage.getItem('token') || '';
+      this.agentPropertiesService.deleteAgentProperty(id, token).subscribe({
+        next: () => {
+          // Update local properties array after deletion
+          this.properties = this.properties.filter((p) => p.id !== id);
+          this.totalItems = this.properties.length;
+          // Adjust pagination if needed
+          if (this.paginatedProperties.length === 0 && this.currentPage > 1) {
+            this.currentPage--;
           }
         },
-        error: (err) => {
+        error: (err: any) => {
           console.error('Error deleting property:', err);
         },
       });
