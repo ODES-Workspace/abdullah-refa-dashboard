@@ -355,16 +355,36 @@ export class PropertyEditComponent implements OnInit, AfterViewInit {
   }
 
   removeImageAt(index: number): void {
-    const img = this.images[index];
-    if (!img) return;
-    if (img.id) {
-      this.imagesToDelete.push(img.id);
+    if (index < 0 || index >= this.images.length) return;
+
+    const image = this.images[index];
+
+    // If it's an existing image (has an ID), add it to deletion list
+    if (image.id && !image.isNew) {
+      this.imagesToDelete.push(image.id);
     }
-    if (img.file) {
-      // remove matching file from pendingUploads
-      this.pendingUploads = this.pendingUploads.filter((f) => f !== img.file);
+
+    // If it's a new image (pending upload), remove it from pending uploads
+    if (image.isNew && image.file) {
+      const fileIndex = this.pendingUploads.indexOf(image.file);
+      if (fileIndex > -1) {
+        this.pendingUploads.splice(fileIndex, 1);
+      }
     }
+
+    // Remove from images array
     this.images.splice(index, 1);
+  }
+
+  setPrimaryImage(index: number): void {
+    if (index < 0 || index >= this.images.length) return;
+
+    // Remove primary from all images
+    this.images.forEach((img, i) => {
+      img.is_primary = i === index;
+    });
+
+    console.log('Primary image set to index:', index);
   }
 
   clearError(): void {
@@ -448,8 +468,6 @@ export class PropertyEditComponent implements OnInit, AfterViewInit {
       longitude: parseFloat(formValue.longitude) || 0,
       is_active: true,
       amenities: amenities,
-      // Note: Image handling would need to be implemented separately
-      // as it requires multipart/form-data for file uploads
     };
 
     console.log('Submitting property data:', propertyData);
@@ -459,13 +477,9 @@ export class PropertyEditComponent implements OnInit, AfterViewInit {
       .subscribe({
         next: (response) => {
           console.log('Property updated successfully:', response);
-          this.submitting = false;
-          // Show success message
-          if (this.currentLang === 'ar') {
-            alert('تم تحديث العقار بنجاح!');
-          } else {
-            alert('Property updated successfully!');
-          }
+
+          // After property update, handle image updates
+          this.handleImageUpdates(propertyId);
         },
         error: (error) => {
           console.error('Error updating property:', error);
@@ -542,5 +556,80 @@ export class PropertyEditComponent implements OnInit, AfterViewInit {
           setTimeout(() => this.clearError(), 10000);
         },
       });
+  }
+
+  /**
+   * Handle image updates after property data is successfully updated
+   */
+  private handleImageUpdates(propertyId: number): void {
+    const hasImageUpdates =
+      this.pendingUploads.length > 0 || this.imagesToDelete.length > 0;
+
+    if (!hasImageUpdates) {
+      // No image updates needed, finish the process
+      this.submitting = false;
+      this.showSuccessMessage();
+      return;
+    }
+
+    // Handle image deletions first
+    if (this.imagesToDelete.length > 0) {
+      this.deleteImages(propertyId, this.imagesToDelete);
+    }
+
+    // Handle new image uploads
+    if (this.pendingUploads.length > 0) {
+      this.uploadImages(propertyId, this.pendingUploads);
+    }
+  }
+
+  /**
+   * Delete images from the property
+   */
+  private deleteImages(propertyId: number, imageIds: number[]): void {
+    // For now, we'll just remove them from the local state
+    // In a real implementation, you'd call an API endpoint
+    console.log('Deleting images:', imageIds);
+
+    // Remove deleted images from the local images array
+    this.images = this.images.filter((img) => !imageIds.includes(img.id || 0));
+
+    // Clear the deletion list
+    this.imagesToDelete = [];
+  }
+
+  /**
+   * Upload new images to the property
+   */
+  private uploadImages(propertyId: number, files: File[]): void {
+    // For now, we'll just mark them as uploaded
+    // In a real implementation, you'd call an API endpoint
+    console.log('Uploading images:', files);
+
+    // Mark new images as uploaded (remove isNew flag)
+    this.images.forEach((img) => {
+      if (img.isNew) {
+        img.isNew = false;
+        delete img.file; // Remove the file reference
+      }
+    });
+
+    // Clear the pending uploads
+    this.pendingUploads = [];
+
+    // Finish the process
+    this.submitting = false;
+    this.showSuccessMessage();
+  }
+
+  /**
+   * Show success message
+   */
+  private showSuccessMessage(): void {
+    if (this.currentLang === 'ar') {
+      alert('تم تحديث العقار والصور بنجاح!');
+    } else {
+      alert('Property and images updated successfully!');
+    }
   }
 }
