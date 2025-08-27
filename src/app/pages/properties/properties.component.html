@@ -9,7 +9,7 @@
         type="text"
         [placeholder]="'Search properties' | translate"
         [(ngModel)]="searchTerm"
-        (input)="currentPage = 1"
+        (input)="onSearchChange()"
       />
     </div>
 
@@ -24,10 +24,7 @@
   </div>
 
   <!-- No data -->
-  <div
-    class="table-no-data"
-    *ngIf="!loading && filteredProperties.length === 0"
-  >
+  <div class="table-no-data" *ngIf="!loading && properties.length === 0">
     {{ "No data found" | translate }}
   </div>
 
@@ -37,7 +34,7 @@
       {{ "Loading..." | translate }}
     </div>
     <ng-container *ngIf="!loading">
-      <div *ngFor="let item of paginatedProperties" class="property-item">
+      <div *ngFor="let item of properties" class="property-item">
         <div class="property-actions">
           <span class="action-icon" (click)="deleteProperty(item.id)">
             <img src="/assets/icons/delete-icon.svg" alt="delete icon" />
@@ -90,7 +87,7 @@
   </div>
 
   <!-- Table pagination -->
-  <div class="table-pagination" *ngIf="filteredProperties.length > 0">
+  <div class="table-pagination">
     <div class="table-pagination--show">
       <span> {{ "Show" | translate }} </span>
       <select [(ngModel)]="itemsPerPage" (change)="onItemsPerPageChange()">
@@ -104,22 +101,116 @@
     <div class="table-pagination--pages">
       <div class="table-pagination--pages--count">
         {{ (currentPage - 1) * itemsPerPage + 1 }}-{{
-          Math.min(currentPage * itemsPerPage, filteredProperties.length)
+          Math.min(currentPage * itemsPerPage, totalItems || properties.length)
         }}
 
         {{ "of" | translate }}
 
-        {{ filteredProperties.length }}
+        {{ totalItems || properties.length }}
       </div>
 
       <div class="table-pagination--pages--buttons" dir="ltr">
         <button (click)="prevPage()" [disabled]="currentPage === 1">
           <img src="/assets/icons/arrow-left.svg" alt="prev icon" />
         </button>
-        <span>{{ currentPage }}</span>
+
+        <!-- Page numbers -->
+        <ng-container
+          *ngIf="
+            (totalPages ||
+              Math.ceil((totalItems || properties.length) / itemsPerPage)) <= 5
+          "
+        >
+          <span
+            *ngFor="
+              let page of [].constructor(
+                totalPages ||
+                  Math.ceil((totalItems || properties.length) / itemsPerPage)
+              );
+              let i = index
+            "
+            (click)="goToPage(i + 1)"
+            [class.active]="currentPage === i + 1"
+            class="page-number"
+          >
+            {{ i + 1 }}
+          </span>
+        </ng-container>
+
+        <ng-container
+          *ngIf="
+            (totalPages ||
+              Math.ceil((totalItems || properties.length) / itemsPerPage)) > 5
+          "
+        >
+          <!-- First page -->
+          <span
+            (click)="goToPage(1)"
+            [class.active]="currentPage === 1"
+            class="page-number"
+          >
+            1
+          </span>
+
+          <!-- Ellipsis if needed -->
+          <span *ngIf="currentPage > 3" class="page-ellipsis">...</span>
+
+          <!-- Current page and neighbors -->
+          <ng-container *ngFor="let page of getVisiblePages()">
+            <span
+              (click)="goToPage(page)"
+              [class.active]="currentPage === page"
+              class="page-number"
+            >
+              {{ page }}
+            </span>
+          </ng-container>
+
+          <!-- Ellipsis if needed -->
+          <span
+            *ngIf="
+              currentPage <
+              (totalPages ||
+                Math.ceil((totalItems || properties.length) / itemsPerPage)) -
+                2
+            "
+            class="page-ellipsis"
+            >...</span
+          >
+
+          <!-- Last page -->
+          <span
+            *ngIf="
+              (totalPages ||
+                Math.ceil((totalItems || properties.length) / itemsPerPage)) > 1
+            "
+            (click)="
+              goToPage(
+                totalPages ||
+                  Math.ceil((totalItems || properties.length) / itemsPerPage)
+              )
+            "
+            [class.active]="
+              currentPage ===
+              (totalPages ||
+                Math.ceil((totalItems || properties.length) / itemsPerPage))
+            "
+            class="page-number"
+          >
+            {{
+              totalPages ||
+                Math.ceil((totalItems || properties.length) / itemsPerPage)
+            }}
+          </span>
+        </ng-container>
+
         <button
           (click)="nextPage()"
-          [disabled]="currentPage * itemsPerPage >= filteredProperties.length"
+          [disabled]="
+            currentPage >=
+            (totalPages ||
+              Math.ceil((totalItems || properties.length) / itemsPerPage))
+          "
         >
           <img src="/assets/icons/arrow-right.svg" alt="next icon" />
         </button>

@@ -105,11 +105,9 @@ export class PropertyEditComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    // Initialize map after scripts are loaded
+    // Initialize map after scripts are loaded with default coordinates
     setTimeout(() => {
-      const lat = this.form.get('latitude')?.value || 24.7136; // Riyadh default
-      const lng = this.form.get('longitude')?.value || 46.6753;
-      this.initMap(lat, lng);
+      this.initMap(24.7136, 46.6753); // Riyadh default
     }, 0);
   }
 
@@ -190,6 +188,11 @@ export class PropertyEditComponent implements OnInit, AfterViewInit {
           latitude: data.latitude ?? '',
           longitude: data.longitude ?? '',
         });
+
+        // Update map position if coordinates exist
+        if (data.latitude && data.longitude) {
+          this.updateMapPosition(data.latitude, data.longitude);
+        }
 
         // Images
         this.images = (data.images as any[]) || [];
@@ -308,6 +311,13 @@ export class PropertyEditComponent implements OnInit, AfterViewInit {
       this.form.get('latitude')?.setValue(latlng.lat);
       this.form.get('longitude')?.setValue(latlng.lng);
     });
+  }
+
+  private updateMapPosition(lat: number, lng: number): void {
+    if (this.map && this.mapMarker) {
+      this.map.setView([lat, lng], 14);
+      this.mapMarker.setLatLng([lat, lng]);
+    }
   }
 
   onImageError(event: Event): void {
