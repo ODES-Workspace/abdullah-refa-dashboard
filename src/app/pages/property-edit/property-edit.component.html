@@ -1,1 +1,318 @@
-<form></form>
+<form [formGroup]="form">
+  <!-- Basic Information -->
+  <section>
+    <h3>{{ "Basic Information" | translate }}</h3>
+    <div class="section-content grid-3">
+      <div class="input-group">
+        <label>{{ "Property Name" | translate }}</label>
+        <input
+          formControlName="propertyName"
+          type="text"
+          placeholder="{{ 'Enter property name' | translate }}"
+        />
+      </div>
+      <div class="input-group">
+        <label>{{ "Property Name (Arabic)" | translate }}</label>
+        <input
+          formControlName="propertyNameAr"
+          type="text"
+          placeholder="{{ 'Enter property name in Arabic' | translate }}"
+        />
+      </div>
+      <div class="input-group">
+        <label>{{ "Property Category" | translate }}</label>
+        <select formControlName="propertyCategory">
+          <option [ngValue]="null">{{ "Select Category" | translate }}</option>
+          <option *ngFor="let category of categories" [ngValue]="category.id">
+            {{ currentLang === "ar" ? category.name_ar : category.name_en }}
+          </option>
+        </select>
+      </div>
+      <div class="input-group">
+        <label>{{ "Property Type" | translate }}</label>
+        <select
+          formControlName="propertyType"
+          [disabled]="!form.get('propertyCategory')?.value"
+        >
+          <option [ngValue]="null">{{ "Select Type" | translate }}</option>
+          <option *ngFor="let type of propertyTypes" [ngValue]="type.id">
+            {{ currentLang === "ar" ? type.name_ar : type.name_en }}
+          </option>
+        </select>
+      </div>
+      <div class="input-group">
+        <label>{{ "Property Size (m²)" | translate }}</label>
+        <input
+          formControlName="propertySize"
+          type="number"
+          placeholder="{{ 'Enter property size' | translate }}"
+        />
+      </div>
+      <div class="input-group">
+        <label>{{ "Available From" | translate }}</label>
+        <input
+          formControlName="availableFrom"
+          type="date"
+          placeholder="{{ 'Select available date' | translate }}"
+        />
+      </div>
+      <div class="input-group">
+        <label>{{ "Furnishment" | translate }}</label>
+        <select formControlName="furnishment">
+          <option value="">{{ "Select Furnishment" | translate }}</option>
+          <option value="furnished">{{ "Furnished" | translate }}</option>
+          <option value="unfurnished">{{ "Unfurnished" | translate }}</option>
+          <option value="semi-furnished">
+            {{ "Semi-furnished" | translate }}
+          </option>
+        </select>
+      </div>
+    </div>
+  </section>
+
+  <!-- Property Details -->
+  <section>
+    <h3>{{ "Property Details" | translate }}</h3>
+
+    <div class="section-content grid-3">
+      <div class="input-group">
+        <label>{{ "Number of Bedrooms" | translate }}</label>
+        <input
+          formControlName="bedrooms"
+          type="number"
+          placeholder="{{ 'Enter number of bedrooms' | translate }}"
+        />
+      </div>
+      <div class="input-group">
+        <label>{{ "Number of Bathrooms" | translate }}</label>
+        <input
+          formControlName="bathrooms"
+          type="number"
+          placeholder="{{ 'Enter number of bathrooms' | translate }}"
+        />
+      </div>
+      <div class="input-group">
+        <label>{{ "Floor Number" | translate }}</label>
+        <input
+          formControlName="floorNumber"
+          type="number"
+          placeholder="{{ 'Enter floor number' | translate }}"
+        />
+      </div>
+      <div class="input-group">
+        <label>{{ "Total Floors" | translate }}</label>
+        <input
+          formControlName="totalFloors"
+          type="number"
+          placeholder="{{ 'Enter total number of floors' | translate }}"
+        />
+      </div>
+      <div class="input-group">
+        <label>{{ "Annual Rent (SAR)" | translate }}</label>
+        <input
+          formControlName="annualRent"
+          type="number"
+          placeholder="{{ 'Enter annual rent amount' | translate }}"
+        />
+      </div>
+      <div class="input-group">
+        <label>{{ "Deposit Amount" | translate }}</label>
+        <input
+          formControlName="depositAmount"
+          type="number"
+          placeholder="{{ 'Enter deposit amount' | translate }}"
+        />
+      </div>
+      <div class="input-group text-area">
+        <label>{{ "Property Description" | translate }}</label>
+        <textarea
+          formControlName="description"
+          placeholder="{{ 'Enter property description' | translate }}"
+        ></textarea>
+      </div>
+      <div class="input-group text-area">
+        <label>{{ "Property Description (Arabic)" | translate }}</label>
+        <textarea
+          formControlName="descriptionAr"
+          placeholder="{{ 'Enter property description in Arabic' | translate }}"
+        ></textarea>
+      </div>
+    </div>
+  </section>
+
+  <!-- Location Details -->
+  <section>
+    <h3>{{ "Location Details" | translate }}</h3>
+    <div class="section-content grid-2">
+      <div class="input-group">
+        <label>{{ "Address Line 1" | translate }}</label>
+        <input
+          formControlName="addressLine1"
+          type="text"
+          placeholder="{{ 'Enter address line 1' | translate }}"
+        />
+      </div>
+      <div class="input-group">
+        <label>{{ "Building Name" | translate }}</label>
+        <input
+          formControlName="buildingName"
+          type="text"
+          placeholder="{{ 'Enter building name' | translate }}"
+        />
+      </div>
+      <div class="input-group">
+        <label>{{ "Province" | translate }}</label>
+        <select formControlName="province">
+          <option value="">{{ "Select Province" | translate }}</option>
+          <option value="riyadh">{{ "Riyadh" | translate }}</option>
+          <option value="jeddah">{{ "Jeddah" | translate }}</option>
+          <option value="dammam">{{ "Dammam" | translate }}</option>
+        </select>
+      </div>
+      <div class="input-group">
+        <label>{{ "Postal Code" | translate }}</label>
+        <input
+          formControlName="postalCode"
+          type="text"
+          placeholder="{{ 'Enter postal code' | translate }}"
+        />
+      </div>
+      <div
+        id="property-map"
+        class="map-container"
+        style="height: 405px; width: 100%; border-radius: 8px; background: #eee"
+      ></div>
+    </div>
+  </section>
+
+  <!-- Property Images -->
+  <section>
+    <h3>{{ "Property Images" | translate }}</h3>
+    <div class="section-content">
+      <div class="file-input-container">
+        <div class="upload-area">
+          <img src="assets/icons/file-upload.svg" alt="file-upload" />
+          <p>
+            {{
+              "Drag and drop your images here, or click to select files"
+                | translate
+            }}
+          </p>
+          <span>{{ "PNG, JPG up to 10MB each" | translate }}</span>
+          <button
+            type="button"
+            class="upload-button"
+            (click)="fileInput.click()"
+          >
+            {{ "Select Files" | translate }}
+          </button>
+          <input
+            #fileInput
+            type="file"
+            accept="image/*"
+            multiple
+            style="display: none"
+            (change)="onFilesSelected($event)"
+          />
+        </div>
+        <div class="uploaded-files">
+          <h4>{{ "Uploaded Files" | translate }}</h4>
+          <div class="image-grid">
+            <div class="image-item" *ngFor="let img of images; let i = index">
+              <img
+                [src]="img.thumbnail_url || img.url"
+                alt="Property image"
+                (error)="onImageError($event)"
+              />
+              <span *ngIf="img.is_primary" class="primary-badge">{{
+                "Primary" | translate
+              }}</span>
+              <button
+                type="button"
+                class="remove-image"
+                (click)="removeImageAt(i)"
+                aria-label="Remove image"
+              >
+                ×
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Property Features -->
+  <section>
+    <h3>{{ "Property Features" | translate }}</h3>
+    <div class="section-content grid-5 feature-buttons">
+      <label
+        class="feature-button"
+        [class.active]="form.get('amenity_' + amenity.id)?.value"
+        *ngFor="let amenity of propertyAmenities"
+        [attr.for]="'amenity_' + amenity.id"
+      >
+        <input
+          type="checkbox"
+          class="hidden-checkbox"
+          [id]="'amenity_' + amenity.id"
+          [formControlName]="'amenity_' + amenity.id"
+        />
+        <span class="button-content">
+          {{ currentLang === "ar" ? amenity.name_ar : amenity.name_en }}
+        </span>
+      </label>
+    </div>
+    <h2>{{ "Nearby Features" | translate }}</h2>
+    <div class="section-content grid-6">
+      <div class="input-group" *ngFor="let amenity of distanceAmenities">
+        <label>
+          {{ currentLang === "ar" ? amenity.name_ar : amenity.name_en }}
+        </label>
+        <input
+          type="text"
+          [formControlName]="'distance_' + amenity.id"
+          [placeholder]="'Distance (KM)' | translate"
+        />
+      </div>
+    </div>
+  </section>
+
+  <!-- Legal Information -->
+  <section>
+    <h3>{{ "Legal Information" | translate }}</h3>
+    <div class="section-content grid-2">
+      <div class="input-group">
+        <label>{{ "FAL License ID" | translate }}</label>
+        <input
+          formControlName="falLicenseId"
+          type="text"
+          placeholder="{{ 'Enter FAL license ID' | translate }}"
+        />
+      </div>
+      <div class="input-group">
+        <label>{{ "Advertising License No" | translate }}</label>
+        <input
+          formControlName="advertisingLicenseNo"
+          type="text"
+          placeholder="{{ 'Enter advertising license number' | translate }}"
+        />
+      </div>
+      <div class="confirmation-checkbox">
+        <label>
+          <input type="checkbox" />
+          {{
+            "I hereby declare that the information furnished above is true, complete, and correct to the best of my knowledge and belief."
+              | translate
+          }}
+        </label>
+      </div>
+      <!-- Action Buttons -->
+      <div class="action-buttons">
+        <button type="button">{{ "Cancel" | translate }}</button>
+        <button type="button">{{ "Save as Draft" | translate }}</button>
+        <button type="button">{{ "Submit Property" | translate }}</button>
+      </div>
+    </div>
+  </section>
+</form>
