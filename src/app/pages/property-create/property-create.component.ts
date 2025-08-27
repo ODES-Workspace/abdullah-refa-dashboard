@@ -459,7 +459,7 @@ export class PropertyCreateComponent implements OnInit, AfterViewInit {
       bathrooms: formValue.bathrooms,
       floor_number: formValue.floorNumber,
       total_floors: formValue.totalFloors,
-      insurance_amount: 0, // You might want to add this field to the form
+      deposit_amount: formValue.depositAmount,
       fal_number: formValue.falLicenseId,
       ad_number: formValue.advertisingLicenseNo,
       annual_rent: formValue.annualRent,
