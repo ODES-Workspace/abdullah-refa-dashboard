@@ -42,6 +42,8 @@ export class PropertyEditComponent implements OnInit, AfterViewInit {
   imagesToDelete: number[] = [];
   private map: any;
   private mapMarker: any;
+  submitting: boolean = false;
+  errorMessage: string = '';
 
   constructor(
     private fb: FormBuilder,
@@ -363,5 +365,182 @@ export class PropertyEditComponent implements OnInit, AfterViewInit {
       this.pendingUploads = this.pendingUploads.filter((f) => f !== img.file);
     }
     this.images.splice(index, 1);
+  }
+
+  clearError(): void {
+    this.errorMessage = '';
+  }
+
+  onSubmit(): void {
+    // Clear previous error messages
+    this.clearError();
+
+    if (this.form.invalid) {
+      console.log('Form is invalid:', this.form.errors);
+
+      // Mark all fields as touched to show validation errors
+      Object.keys(this.form.controls).forEach((key) => {
+        const control = this.form.get(key);
+        control?.markAsTouched();
+      });
+
+      this.errorMessage =
+        this.currentLang === 'ar'
+          ? 'يرجى التحقق من إدخالك. بعض الحقول قد تكون غير صحيحة'
+          : 'Please check your input. Some fields may be invalid';
+
+      return;
+    }
+
+    if (this.submitting) {
+      return; // Prevent double submission
+    }
+
+    this.submitting = true;
+    const formValue = this.form.value;
+    const propertyId = this.route.snapshot.params['id'];
+
+    // Prepare amenities data
+    const amenities: Array<{ id: number; distance?: string }> = [];
+
+    // Add property features (checkboxes)
+    this.propertyAmenities.forEach((amenity) => {
+      const control = this.form.get(`amenity_${amenity.id}`);
+      if (control?.value) {
+        amenities.push({ id: amenity.id });
+      }
+    });
+
+    // Add nearby features with distances
+    this.distanceAmenities.forEach((amenity) => {
+      const control = this.form.get(`distance_${amenity.id}`);
+      if (control?.value && control.value.trim()) {
+        amenities.push({ id: amenity.id, distance: control.value.trim() });
+      }
+    });
+
+    // Prepare the property data for API
+    const propertyData = {
+      name_en: formValue.propertyName,
+      name_ar: formValue.propertyNameAr,
+      description_en: formValue.description,
+      description_ar: formValue.descriptionAr,
+      property_category_id: formValue.propertyCategory,
+      property_type_id: formValue.propertyType,
+      area: parseFloat(formValue.propertySize) || 0,
+      available_from: formValue.availableFrom,
+      furnishing_status: formValue.furnishment,
+      bedrooms: parseInt(formValue.bedrooms) || 0,
+      bathrooms: parseInt(formValue.bathrooms) || 0,
+      floor_number: parseInt(formValue.floorNumber) || 0,
+      total_floors: parseInt(formValue.totalFloors) || 0,
+      annual_rent: parseFloat(formValue.annualRent) || 0,
+      insurance_amount: parseFloat(formValue.depositAmount) || 0,
+      fal_number: formValue.falLicenseId,
+      ad_number: formValue.advertisingLicenseNo,
+      building_number: formValue.buildingName,
+      country: 'Saudi Arabia', // Default value
+      region: formValue.province,
+      city: formValue.province, // Using province as city for now
+      district: formValue.addressLine1,
+      postal_code: formValue.postalCode,
+      latitude: parseFloat(formValue.latitude) || 0,
+      longitude: parseFloat(formValue.longitude) || 0,
+      is_active: true,
+      amenities: amenities,
+      // Note: Image handling would need to be implemented separately
+      // as it requires multipart/form-data for file uploads
+    };
+
+    console.log('Submitting property data:', propertyData);
+
+    this.propertiesService
+      .updateAgentProperty(propertyId, propertyData)
+      .subscribe({
+        next: (response) => {
+          console.log('Property updated successfully:', response);
+          this.submitting = false;
+          // Show success message
+          if (this.currentLang === 'ar') {
+            alert('تم تحديث العقار بنجاح!');
+          } else {
+            alert('Property updated successfully!');
+          }
+        },
+        error: (error) => {
+          console.error('Error updating property:', error);
+          this.submitting = false;
+
+          // Handle different types of errors with localized messages
+          let errorMessage = '';
+
+          if (error.status === 422) {
+            // Handle validation errors with specific field messages
+            if (error.error && error.error.errors) {
+              const fieldErrors = error.error.errors;
+              const errorKeys = Object.keys(fieldErrors);
+
+              if (errorKeys.length > 0) {
+                // Get the first field error to display
+                const firstField = errorKeys[0];
+                const fieldErrorMessages = fieldErrors[firstField];
+
+                if (fieldErrorMessages && fieldErrorMessages.length > 0) {
+                  // Display the specific field error message
+                  errorMessage = fieldErrorMessages[0];
+                } else {
+                  errorMessage =
+                    this.currentLang === 'ar'
+                      ? 'يرجى التحقق من إدخالك. بعض الحقول قد تكون غير صحيحة'
+                      : 'Please check your input. Some fields may be invalid';
+                }
+              } else {
+                errorMessage =
+                  this.currentLang === 'ar'
+                    ? 'يرجى التحقق من إدخالك. بعض الحقول قد تكون غير صحيحة'
+                    : 'Please check your input. Some fields may be invalid';
+              }
+            } else if (error.error && error.error.message) {
+              // Use the general error message from API
+              errorMessage = error.error.message;
+            } else {
+              errorMessage =
+                this.currentLang === 'ar'
+                  ? 'يرجى التحقق من إدخالك. بعض الحقول قد تكون غير صحيحة'
+                  : 'Please check your input. Some fields may be invalid';
+            }
+          } else if (error.status === 401) {
+            errorMessage =
+              this.currentLang === 'ar'
+                ? 'غير مصرح. يرجى تسجيل الدخول مرة أخرى'
+                : 'Unauthorized. Please log in again';
+          } else if (error.status === 403) {
+            errorMessage =
+              this.currentLang === 'ar'
+                ? 'ليس لديك صلاحية لتحديث هذا العقار'
+                : 'You do not have permission to update this property';
+          } else if (error.status === 404) {
+            errorMessage =
+              this.currentLang === 'ar'
+                ? 'العقار غير موجود'
+                : 'Property not found';
+          } else if (error.status >= 500) {
+            errorMessage =
+              this.currentLang === 'ar'
+                ? 'خطأ في الخادم. يرجى المحاولة مرة أخرى لاحقاً'
+                : 'Server error. Please try again later';
+          } else {
+            errorMessage =
+              this.currentLang === 'ar'
+                ? 'خطأ في تحديث العقار. يرجى المحاولة مرة أخرى'
+                : 'Error updating property. Please try again';
+          }
+
+          this.errorMessage = errorMessage;
+
+          // Clear error message after 10 seconds
+          setTimeout(() => this.clearError(), 10000);
+        },
+      });
   }
 }

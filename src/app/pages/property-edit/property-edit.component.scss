@@ -362,3 +362,65 @@ section {
 textarea {
   font-family: inherit;
 }
+
+.action-buttons {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: flex-end;
+  gap: 16px;
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid #f1f1f4;
+
+  .submit-button {
+    background-color: #0311d0;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    min-width: 120px;
+
+    &:hover:not(:disabled) {
+      background-color: #0210b0;
+      transform: translateY(-1px);
+    }
+
+    &:disabled {
+      background-color: #cccccc;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    &:active:not(:disabled) {
+      transform: translateY(0);
+    }
+  }
+}
+
+// Error Messages
+.error-messages {
+  grid-column: 1 / -1;
+  margin-bottom: 20px;
+
+  .error-message {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 20px;
+    background-color: #fef2f2;
+    border: 1px solid #fecaca;
+    border-radius: 8px;
+    color: #dc2626;
+    font-size: 14px;
+    font-weight: 500;
+
+    .error-icon {
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+  }
+}

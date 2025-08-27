@@ -1,4 +1,4 @@
-<form [formGroup]="form">
+<form [formGroup]="form" (ngSubmit)="onSubmit()">
   <!-- Basic Information -->
   <section>
     <h3>{{ "Basic Information" | translate }}</h3>
@@ -298,20 +298,24 @@
           placeholder="{{ 'Enter advertising license number' | translate }}"
         />
       </div>
-      <div class="confirmation-checkbox">
-        <label>
-          <input type="checkbox" />
-          {{
-            "I hereby declare that the information furnished above is true, complete, and correct to the best of my knowledge and belief."
-              | translate
-          }}
-        </label>
+
+      <!-- Errors -->
+      <div class="error-messages" *ngIf="errorMessage" dir="ltr">
+        <div class="error-message">
+          {{ errorMessage }}
+        </div>
       </div>
+
       <!-- Action Buttons -->
       <div class="action-buttons">
-        <button type="button">{{ "Cancel" | translate }}</button>
-        <button type="button">{{ "Save as Draft" | translate }}</button>
-        <button type="button">{{ "Submit Property" | translate }}</button>
+        <button
+          type="submit"
+          [disabled]="submitting || form.invalid"
+          class="submit-button"
+        >
+          <span *ngIf="!submitting">{{ "Edit Property" | translate }}</span>
+          <span *ngIf="submitting">{{ "Updating..." | translate }}</span>
+        </button>
       </div>
     </div>
   </section>
