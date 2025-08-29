@@ -137,6 +137,18 @@ export class RentRequestsService {
   }
 
   /**
+   * Get a single rent request by ID
+   * @param id - Rent request ID
+   * @returns Observable of the rent request details
+   */
+  getRentRequestById(id: number): Observable<any> {
+    const url = `${this.baseUrl}/agent/rent-requests/${id}`;
+    return this.http
+      .get<any>(url)
+      .pipe(catchError((error: HttpErrorResponse) => this.handleError(error)));
+  }
+
+  /**
    * Handle HTTP errors
    * @param error - The HTTP error response
    * @returns Observable that throws the error

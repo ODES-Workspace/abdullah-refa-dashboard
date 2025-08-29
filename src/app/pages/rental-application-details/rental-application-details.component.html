@@ -1,4 +1,4 @@
-<div class="application" *ngIf="application">
+<div class="application" *ngIf="rentRequest">
   <div class="application-tabs">
     <div
       [class.active]="activeTab === 'overview'"
@@ -60,22 +60,22 @@
       <div class="application-overview-card--content type1">
         <div class="application-overview-card--content--img">
           <img src="/assets/images/user-dummy.png" alt="" />
-          <span>{{ application.tenantName }}</span>
+          <span>{{ rentRequest?.name }}</span>
         </div>
         <div class="application-overview-card--content--group">
           <div class="application-overview-card--content--item">
             <span> {{ "Email" | translate }} </span>
-            <span> riyaskhan7973&#64;gmail.com</span>
+            <span>{{ rentRequest?.email || "-" }}</span>
           </div>
           <div class="application-overview-card--content--item">
             <span> {{ "Contact" | translate }} </span>
-            <span> +966000000000</span>
+            <span dir="ltr">{{ rentRequest?.phone || "-" }}</span>
           </div>
         </div>
 
         <div class="application-overview-card--content--item">
           <span> {{ "Location" | translate }} </span>
-          <span> Riyadh</span>
+          <span>{{ rentRequest?.property?.city || "-" }}</span>
         </div>
       </div>
     </div>
@@ -87,22 +87,22 @@
       <div class="application-overview-card--content type1">
         <div class="application-overview-card--content--img">
           <img src="/assets/images/user-dummy.png" alt="" />
-          <span>{{ application.propertyName }}</span>
+          <span>-</span>
         </div>
         <div class="application-overview-card--content--group">
           <div class="application-overview-card--content--item">
             <span> {{ "Email" | translate }} </span>
-            <span> riyaskhan7973&#64;gmail.com</span>
+            <span>-</span>
           </div>
           <div class="application-overview-card--content--item">
             <span> {{ "Contact" | translate }} </span>
-            <span> +966000000000</span>
+            <span>-</span>
           </div>
         </div>
 
         <div class="application-overview-card--content--item">
           <span> {{ "Location" | translate }} </span>
-          <span> Riyadh</span>
+          <span>-</span>
         </div>
       </div>
     </div>
@@ -119,20 +119,36 @@
         <div class="application-overview-card--content--itemsgroup">
           <div class="application-overview-card--content--item">
             <span> {{ "Property Type" | translate }} </span>
-            <span> Commercial - gym, sakaka</span>
+            <span>{{ propertyTypeLabel }}</span>
           </div>
           <div class="application-overview-card--content--item">
             <span> {{ "Address" | translate }} </span>
-            <span> King Fahad Road, Riyadh, Sakaka, Al-Jawf-12214</span>
+            <span>
+              {{ rentRequest?.property?.building_number || "-" }},
+              {{ rentRequest?.property?.district || "-" }},
+              {{ rentRequest?.property?.city || "-" }},
+              {{ rentRequest?.property?.region || "-" }}
+              {{
+                rentRequest?.property?.postal_code
+                  ? "-" + rentRequest?.property?.postal_code
+                  : ""
+              }}
+            </span>
           </div>
           <div class="application-overview-card--content--buttons">
             <div class="application-overview-card--content--button">
               <span> {{ "Annual Rent" | translate }} </span>
-              <span>{{ 50000 | number }} {{ "SAR" | translate }}</span>
+              <span
+                >{{ rentRequest?.property?.annual_rent | number }}
+                {{ "SAR" | translate }}</span
+              >
             </div>
             <div class="application-overview-card--content--button">
               <span> {{ "Security Deposit" | translate }} </span>
-              <span>{{ 50000 | number }} {{ "SAR" | translate }}</span>
+              <span
+                >{{ rentRequest?.property?.deposit_amount | number }}
+                {{ "SAR" | translate }}</span
+              >
             </div>
           </div>
         </div>

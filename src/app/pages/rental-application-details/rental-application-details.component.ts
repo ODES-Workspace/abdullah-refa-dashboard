@@ -1,9 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { RentRequestsService } from '../../../services/rent-requests.service';
 import { CommonModule } from '@angular/common';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { FormsModule } from '@angular/forms';
 import { UserRoleService } from '../../../services/user-role.service';
+import { PropertyTypesService } from '../../../services/property-types.service';
 
 interface ScheduleItem {
   dueDate: string;
@@ -45,108 +47,16 @@ type SortDirection = 'asc' | 'desc';
   styleUrl: './rental-application-details.component.scss',
 })
 export class RentalApplicationDetailsComponent implements OnInit {
-  allItems: RentalApplication[] = [
-    {
-      id: 1,
-      propertyName: 'Property 1',
-      tenantName: 'John Doe',
-      ownerName: 'John Doe',
-      city: 'Riyadh',
-      status: 'Approved',
-      propertyCategory: 'Apartment',
-      propertyType: 'Apartment',
-      dateAdded: '2023-07-31',
-      dateModified: '2023-07-31',
-      rejectedReason: 'Reason for rejection',
-      scheduleStatus: 'upcoming',
-      schedule: [
-        {
-          dueDate: 'March 25',
-          amount: 9091.66,
-          balance: 50000.0,
-          status: 'rejected',
-        },
-        {
-          dueDate: 'April 25',
-          amount: 9091.66,
-          balance: 40908.34,
-          status: 'approved',
-        },
-        {
-          dueDate: 'May 25',
-          amount: 9091.66,
-          balance: 31816.68,
-          status: 'upcoming',
-        },
-        {
-          dueDate: 'May 25',
-          amount: 9091.66,
-          balance: 31816.68,
-          status: 'upcoming',
-        },
-        {
-          dueDate: 'May 25',
-          amount: 9091.66,
-          balance: 31816.68,
-          status: 'upcoming',
-        },
-        {
-          dueDate: 'May 25',
-          amount: 9091.66,
-          balance: 31816.68,
-          status: 'upcoming',
-        },
-      ],
-    },
-    {
-      id: 2,
-      propertyName: 'Property 2',
-      tenantName: 'John Doe',
-      ownerName: 'John Doe',
-      city: 'Riyadh',
-      status: 'Approved',
-      propertyCategory: 'Apartment',
-      propertyType: 'Apartment',
-      dateAdded: '2023-07-31',
-      dateModified: '2023-07-31',
-      rejectedReason: 'Reason for rejection',
-      scheduleStatus: 'approved',
-      schedule: [
-        {
-          dueDate: 'March 25',
-          amount: 9091.66,
-          balance: 50000.0,
-          status: 'approved',
-        },
-        {
-          dueDate: 'April 25',
-          amount: 9091.66,
-          balance: 40908.34,
-          status: 'upcoming',
-        },
-        {
-          dueDate: 'May 25',
-          amount: 9091.66,
-          balance: 31816.68,
-          status: 'upcoming',
-        },
-        {
-          dueDate: 'May 25',
-          amount: 9091.66,
-          balance: 31816.68,
-          status: 'upcoming',
-        },
-        {
-          dueDate: 'May 25',
-          amount: 9091.66,
-          balance: 31816.68,
-          status: 'upcoming',
-        },
-      ],
-    },
-  ];
+  allItems: RentalApplication[] = [];
   application: RentalApplication | null = null;
   applicationId: number | null = null;
+  rentRequest: any | null = null;
+  propertyTypeLabel: string = '-';
+
+  private typeIdToName: { [id: number]: string } = {};
+  private typesRaw: any[] = [];
+  private currentLang: 'en' | 'ar' =
+    (localStorage.getItem('lang') as 'en' | 'ar') || 'en';
   activeTab: 'overview' | 'assessment' | 'schedule' = this.getStoredActiveTab();
   showReviseModal = false;
   editedSchedule: ScheduleItem[] = [];
@@ -160,21 +70,60 @@ export class RentalApplicationDetailsComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
-    public userRoleService: UserRoleService
+    public userRoleService: UserRoleService,
+    private rentRequestsService: RentRequestsService,
+    private propertyTypesService: PropertyTypesService,
+    private translate: TranslateService
   ) {}
 
   ngOnInit(): void {
+    // Load property types for mapping
+    this.propertyTypesService.getPropertyTypes().subscribe({
+      next: (res: any) => {
+        this.typesRaw = res?.data || [];
+        this.rebuildTypeMap();
+        this.updatePropertyTypeLabel();
+      },
+      error: () => {
+        this.typesRaw = [];
+        this.typeIdToName = {};
+        this.updatePropertyTypeLabel();
+      },
+    });
+
+    // React to language changes
+    this.translate.onLangChange.subscribe((event) => {
+      const newLang = event.lang === 'ar' ? 'ar' : 'en';
+      if (newLang !== this.currentLang) {
+        this.currentLang = newLang;
+        this.rebuildTypeMap();
+        this.updatePropertyTypeLabel();
+      }
+    });
+
+    // Load details
     this.route.params.subscribe((params) => {
       this.applicationId = +params['id'];
       this.loadApplicationDetails();
+      if (this.applicationId) {
+        this.rentRequestsService
+          .getRentRequestById(this.applicationId)
+          .subscribe({
+            next: (res) => {
+              console.log('Rent request details:', res);
+              this.rentRequest = res;
+              this.updatePropertyTypeLabel();
+            },
+            error: (err) => {
+              console.error('Failed to fetch rent request details:', err);
+            },
+          });
+      }
     });
   }
 
   loadApplicationDetails(): void {
-    if (this.applicationId) {
-      this.application =
-        this.allItems.find((item) => item.id === this.applicationId) ?? null;
-    }
+    this.application = null;
   }
 
   approveSchedule(): void {
@@ -211,6 +160,19 @@ export class RentalApplicationDetailsComponent implements OnInit {
       this.application.dateModified = new Date().toISOString().split('T')[0];
       this.closeReviseModal();
     }
+  }
+
+  private rebuildTypeMap(): void {
+    this.typeIdToName = {};
+    this.typesRaw.forEach((t: any) => {
+      this.typeIdToName[t.id] =
+        this.currentLang === 'ar' ? t.name_ar : t.name_en;
+    });
+  }
+
+  private updatePropertyTypeLabel(): void {
+    const typeId = this.rentRequest?.property?.property_type_id;
+    this.propertyTypeLabel = typeId ? this.typeIdToName[typeId] || '-' : '-';
   }
 
   updateScheduleItem(
