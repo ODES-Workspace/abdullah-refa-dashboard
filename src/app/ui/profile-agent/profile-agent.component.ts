@@ -6,6 +6,7 @@ import {
   ProfileAgentService,
   AgentProfileResponse,
 } from '../../../services/profile-agent.service';
+import { UserRoleService } from '../../../services/user-role.service';
 
 interface ProfileData {
   agencyName: string;
@@ -52,7 +53,10 @@ export class ProfileAgentComponent implements OnInit {
     IBAN: '',
   };
 
-  constructor(private profileAgentService: ProfileAgentService) {}
+  constructor(
+    private profileAgentService: ProfileAgentService,
+    private userRoleService: UserRoleService
+  ) {}
 
   ngOnInit(): void {
     this.profileAgentService.getMyProfile().subscribe({
@@ -121,6 +125,26 @@ export class ProfileAgentComponent implements OnInit {
         if (p?.fal_document) {
           this.falLicenseDocument = p.fal_document;
         }
+        // Overwrite localStorage user_data with latest top-level fields from API
+        const updatedUser: any = {
+          id: res.id,
+          type: res.type,
+          name: res.name,
+          email: res.email,
+          phone_number: res.phone_number,
+          national_id: res.national_id,
+          city_id: res.city_id ?? null,
+          // normalize active to numeric 1/0 since consumers check === 1
+          active:
+            (typeof res.active === 'boolean'
+              ? res.active
+                ? 1
+                : 0
+              : res.active) ?? 0,
+          role: res.role,
+          city: res.city,
+        };
+        this.userRoleService.setUserData(updatedUser);
         this.isEditing = false;
       },
       error: (err) => {
