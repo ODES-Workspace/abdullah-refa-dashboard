@@ -404,5 +404,8 @@
   "Agency Address:": "Agency Address:",
   "Agent Bank Details:": "Agent Bank Details:",
   "profile": "Profile",
-  "ding property details...": "Loading property details..."
+  "ding property details...": "Loading property details...",
+  "Pending": "Pending",
+  "Approved": "Approved",
+  "Rejected": "Rejected"
 }

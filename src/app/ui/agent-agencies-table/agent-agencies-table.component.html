@@ -6,7 +6,7 @@
       <img src="/assets/icons/search-icon.svg" alt="" />
       <input
         type="text"
-        [placeholder]="'Search users' | translate"
+        [placeholder]="'Search by applicant\'s mobile number' | translate"
         [(ngModel)]="searchTerm"
         (input)="onSearch()"
       />
@@ -15,56 +15,89 @@
   <!-- Table titles -->
   <div class="table-titles">
     <div>
-      <span>{{ "S.ON" | translate }}</span>
-      <span>
-        <img src="/assets/icons/sort-img.svg" alt="" (click)="sortBy('id')" />
-      </span>
-    </div>
-    <div>
-      <span>{{ "Action performed" | translate }}</span>
+      <span>{{ "Tenant" | translate }}</span>
       <span>
         <img
           src="/assets/icons/sort-img.svg"
           alt=""
-          (click)="sortBy('action')"
+          (click)="sortBy('tenantName')"
         />
       </span>
     </div>
     <div>
-      <span>{{ "User details" | translate }}</span>
+      <span>{{ "TenantContactNo" | translate }}</span>
       <span>
-        <img src="/assets/icons/sort-img.svg" alt="" (click)="sortBy('user')" />
+        <img
+          src="/assets/icons/sort-img.svg"
+          alt=""
+          (click)="sortBy('tenantMobile')"
+        />
+      </span>
+    </div>
+
+    <div>
+      <span>{{ "propertytype" | translate }}</span>
+      <span>
+        <img
+          src="/assets/icons/sort-img.svg"
+          alt=""
+          (click)="sortBy('propertyType')"
+        />
+      </span>
+    </div>
+    <div>
+      <span>{{ "Location" | translate }}</span>
+      <span>
+        <img
+          src="/assets/icons/sort-img.svg"
+          alt=""
+          (click)="sortBy('location')"
+        />
+      </span>
+    </div>
+    <div>
+      <span>{{ "Status" | translate }}</span>
+      <span>
+        <img
+          src="/assets/icons/sort-img.svg"
+          alt=""
+          (click)="sortBy('status')"
+        />
       </span>
     </div>
   </div>
 
+  <!-- Loading state -->
+  <div *ngIf="isLoading" class="loading">
+    {{ "Loading..." | translate }}
+  </div>
   <!-- No data -->
-  <div *ngIf="filteredItems.length === 0" class="table-no-data">
+  <div *ngIf="!isLoading && filteredItems.length === 0" class="table-no-data">
     {{ "No data found" | translate }}
   </div>
   <!-- Table rows -->
   <div class="table-row" *ngFor="let item of paginatedItems">
-    <div class="table-id">{{ item.id }}</div>
-    <div>{{ item.action }}</div>
-    <div>{{ item.user }}</div>
-  </div>
-  <!-- Table pagination -->
-  <div class="table-pagination">
-    <div class="table-pagination--show">
-      <span> {{ "Show" | translate }} </span>
-      <select [(ngModel)]="itemsPerPage" (change)="updatePagination()">
-        <option *ngFor="let num of [10, 20, 30]" [value]="num">
-          {{ num }}
-        </option>
-      </select>
-      <span> {{ "per page" | translate }} </span>
+    <div>{{ item.tenantName }}</div>
+    <div>
+      <span dir="ltr" class="p-0">
+        {{ item.tenantMobile }}
+      </span>
     </div>
+
+    <div>{{ item.propertyType }}</div>
+    <div>{{ item.location }}</div>
+    <div>{{ item.status | titlecase | translate }}</div>
+  </div>
+
+  <!-- Table pagination -->
+  <div class="table-pagination" *ngIf="!isLoading && filteredItems.length > 0">
+    <div></div>
 
     <div class="table-pagination--pages">
       <div class="table-pagination--pages--count">
         {{ paginationStart + 1 }}-{{ paginationEnd }}
         {{ "of" | translate }}
-        {{ filteredItems.length }}
+        {{ apiTotal }}
       </div>
 
       <div class="table-pagination--pages--buttons" dir="ltr">

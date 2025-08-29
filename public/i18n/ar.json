@@ -425,5 +425,8 @@
   "Property Name (Arabic)": "اسم العقار (بالعربية)",
   "Enter property description in Arabic": "أدخل وصف العقار بالعربية",
   "Enter property name in Arabic": "أدخل اسم العقار بالعربية",
-  "ding property details...": "جاري تحميل تفاصيل العقار..."
+  "ding property details...": "جاري تحميل تفاصيل العقار...",
+  "Pending": "معلق",
+  "Approved": "موافق",
+  "Rejected": "مرفوض"
 }
