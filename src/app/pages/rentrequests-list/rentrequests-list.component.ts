@@ -1,21 +1,29 @@
 import { NgFor, NgIf } from '@angular/common';
-import { Component, HostListener } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { Router } from '@angular/router';
 import { ToastService } from '../../../services/toast.service';
 import { ToastComponent } from '../../ui/toast/toast.component';
 import { UserRoleService } from '../../../services/user-role.service';
+import { RentRequestsService } from '../../../services/rent-requests.service';
+import { PropertyCategoriesService } from '../../../services/property-categories.service';
+import { PropertyTypesService } from '../../../services/property-types.service';
+import { forkJoin } from 'rxjs';
 
 interface TableItem {
   id: number;
   propertyName: string;
+  propertyNameEn?: string;
+  propertyNameAr?: string;
   tenantName: string;
   ownerName: string;
   city: string;
   status: string;
   propertyCategory: string;
   propertyType: string;
+  propertyCategoryId?: number;
+  propertyTypeId?: number;
   dateAdded: string;
   dateModified: string;
   rejectedReason: string;
@@ -27,35 +35,8 @@ interface TableItem {
   templateUrl: './rentrequests-list.component.html',
   styleUrl: './rentrequests-list.component.scss',
 })
-export class RentrequestsListComponent {
-  allItems: TableItem[] = [
-    {
-      id: 1,
-      propertyName: 'Property 1',
-      tenantName: 'John Doe',
-      ownerName: 'John Doe',
-      city: 'Riyadh',
-      status: 'Approved',
-      propertyCategory: 'Apartment',
-      propertyType: 'Apartment',
-      dateAdded: '2023-07-31',
-      dateModified: '2023-07-31',
-      rejectedReason: 'Reason for rejection',
-    },
-    {
-      id: 2,
-      propertyName: 'Property 2',
-      tenantName: 'John Doe',
-      ownerName: 'John Doe',
-      city: 'Riyadh',
-      status: 'Approved',
-      propertyCategory: 'Apartment',
-      propertyType: 'Apartment',
-      dateAdded: '2023-07-31',
-      dateModified: '2023-07-31',
-      rejectedReason: 'Reason for rejection',
-    },
-  ];
+export class RentrequestsListComponent implements OnInit {
+  allItems: TableItem[] = [];
 
   searchTerm = '';
   filteredItems: TableItem[] = [...this.allItems];
@@ -79,9 +60,181 @@ export class RentrequestsListComponent {
   // Add new properties for revise/edit modal
   showReviseModal = false;
   editedItem: TableItem | null = null;
+  isLoading = false;
 
+  // client-side getters removed; server-side versions are defined below
+
+  constructor(
+    private router: Router,
+    private toastService: ToastService,
+    public userRoleService: UserRoleService,
+    private rentRequestsService: RentRequestsService,
+    private propertyCategoriesService: PropertyCategoriesService,
+    private propertyTypesService: PropertyTypesService,
+    private translate: TranslateService
+  ) {
+    this.updatePagination();
+  }
+
+  ngOnInit(): void {
+    this.isLoading = true;
+    this.loadReferenceData(() => this.loadPage(this.currentPage));
+
+    // Update labels on language toggle without reload
+    this.translate.onLangChange.subscribe((event) => {
+      const newLang = event.lang === 'ar' ? 'ar' : 'en';
+      if (newLang !== this.currentLang) {
+        this.currentLang = newLang;
+        this.relocalizeLabels();
+      }
+    });
+  }
+
+  // Backend pagination metadata (public for template access)
+  apiTotal: number = 0;
+  apiPerPage: number = 10;
+  apiLastPage: number = 1;
+  apiFrom: number | null = null;
+  apiTo: number | null = null;
+
+  // Reference data maps
+  private categoryIdToName: { [id: number]: string } = {};
+  private typeIdToName: { [id: number]: string } = {};
+  private currentLang: 'en' | 'ar' =
+    (localStorage.getItem('lang') as 'en' | 'ar') || 'en';
+  private categoriesRaw: any[] = [];
+  private typesRaw: any[] = [];
+
+  private mapApiToTableItems(apiData: any[]): TableItem[] {
+    return apiData.map((rr: any) => ({
+      id: rr.id,
+      propertyName:
+        this.currentLang === 'ar'
+          ? rr.property?.name_ar || rr.property?.name_en || '-'
+          : rr.property?.name_en || rr.property?.name_ar || '-',
+      propertyNameEn: rr.property?.name_en,
+      propertyNameAr: rr.property?.name_ar,
+      tenantName: rr.name || '-',
+      ownerName: rr.property?.name || '-',
+      city: rr.property?.city || '-',
+      status: rr.status || '-',
+      propertyCategoryId: rr.property?.property_category_id,
+      propertyTypeId: rr.property?.property_type_id,
+      propertyCategory:
+        (rr.property?.property_category_id &&
+          this.categoryIdToName[rr.property.property_category_id]) ||
+        rr.property?.property_category_id?.toString() ||
+        '-',
+      propertyType:
+        (rr.property?.property_type_id &&
+          this.typeIdToName[rr.property.property_type_id]) ||
+        rr.property?.property_type_id?.toString() ||
+        '-',
+      dateAdded: rr.created_at ? rr.created_at.split('T')[0] : '-',
+      dateModified: rr.updated_at ? rr.updated_at.split('T')[0] : '-',
+      rejectedReason: rr.status_description || '-',
+    }));
+  }
+
+  private loadPage(page: number): void {
+    this.isLoading = true;
+    this.rentRequestsService.getRentRequests(page).subscribe({
+      next: (response) => {
+        // Console for debugging as requested previously
+        console.log('Rent requests response:', response);
+
+        this.apiTotal = response.total;
+        this.apiPerPage = response.per_page;
+        this.apiLastPage = response.last_page;
+        this.apiFrom = response.from ?? null;
+        this.apiTo = response.to ?? null;
+        this.currentPage = response.current_page;
+
+        const items = this.mapApiToTableItems(response.data || []).reverse();
+        this.allItems = items;
+        this.filteredItems = [...items];
+        this.paginatedItems = [...items]; // server already paginated
+        this.isLoading = false;
+      },
+      error: (error) => {
+        console.error('Failed to fetch rent requests:', error);
+        // fallback to empty
+        this.allItems = [];
+        this.filteredItems = [];
+        this.paginatedItems = [];
+        this.apiTotal = 0;
+        this.apiLastPage = 1;
+        this.apiFrom = null;
+        this.apiTo = null;
+        this.isLoading = false;
+      },
+    });
+  }
+
+  private loadReferenceData(onComplete?: () => void): void {
+    const categories$ = this.propertyCategoriesService.getPropertyCategories();
+    const types$ = this.propertyTypesService.getPropertyTypes();
+
+    forkJoin([categories$, types$]).subscribe({
+      next: ([catRes, typeRes]) => {
+        this.categoriesRaw = catRes?.data || [];
+        this.typesRaw = typeRes?.data || [];
+        this.rebuildLabelMaps();
+
+        // If we already have items, apply names now
+        if (this.allItems && this.allItems.length > 0) {
+          this.applyNamesFromMaps();
+        }
+
+        if (onComplete) onComplete();
+      },
+      error: () => {
+        if (onComplete) onComplete();
+      },
+    });
+  }
+
+  private applyNamesFromMaps(): void {
+    this.allItems = this.allItems.map((it) => ({
+      ...it,
+      propertyCategory:
+        (it.propertyCategoryId &&
+          this.categoryIdToName[it.propertyCategoryId]) ||
+        it.propertyCategory,
+      propertyType:
+        (it.propertyTypeId && this.typeIdToName[it.propertyTypeId]) ||
+        it.propertyType,
+      propertyName:
+        this.currentLang === 'ar'
+          ? it.propertyNameAr || it.propertyNameEn || it.propertyName
+          : it.propertyNameEn || it.propertyNameAr || it.propertyName,
+    }));
+    this.filteredItems = [...this.allItems];
+    this.paginatedItems = [...this.allItems];
+  }
+
+  private rebuildLabelMaps(): void {
+    this.categoryIdToName = {};
+    this.categoriesRaw.forEach((c: any) => {
+      this.categoryIdToName[c.id] =
+        this.currentLang === 'ar' ? c.name_ar : c.name_en;
+    });
+
+    this.typeIdToName = {};
+    this.typesRaw.forEach((t: any) => {
+      this.typeIdToName[t.id] =
+        this.currentLang === 'ar' ? t.name_ar : t.name_en;
+    });
+  }
+
+  private relocalizeLabels(): void {
+    this.rebuildLabelMaps();
+    this.applyNamesFromMaps();
+  }
+
+  // Override client-side pagination helpers to reflect server-side values
   get totalPages(): number {
-    return Math.ceil(this.filteredItems.length / this.itemsPerPage);
+    return this.apiLastPage || 1;
   }
 
   get totalPagesArray(): number[] {
@@ -89,22 +242,30 @@ export class RentrequestsListComponent {
   }
 
   get paginationStart(): number {
-    return (this.currentPage - 1) * this.itemsPerPage;
+    // zero-based for display calculation compatibility
+    return this.apiFrom ? this.apiFrom - 1 : 0;
   }
 
   get paginationEnd(): number {
-    return Math.min(
-      this.paginationStart + this.itemsPerPage,
-      this.filteredItems.length
-    );
+    return this.apiTo ?? this.paginatedItems.length;
   }
 
-  constructor(
-    private router: Router,
-    private toastService: ToastService,
-    public userRoleService: UserRoleService
-  ) {
-    this.updatePagination();
+  prevPage(): void {
+    if (this.currentPage > 1) {
+      this.loadPage(this.currentPage - 1);
+    }
+  }
+
+  nextPage(): void {
+    if (this.currentPage < this.totalPages) {
+      this.loadPage(this.currentPage + 1);
+    }
+  }
+
+  goToPage(page: number): void {
+    if (page >= 1 && page <= this.totalPages) {
+      this.loadPage(page);
+    }
   }
 
   onSearch(): void {
@@ -127,8 +288,10 @@ export class RentrequestsListComponent {
     }
 
     this.filteredItems.sort((a, b) => {
-      const valueA = a[key].toString().toLowerCase();
-      const valueB = b[key].toString().toLowerCase();
+      const rawA = (a as any)[key] ?? '';
+      const rawB = (b as any)[key] ?? '';
+      const valueA = rawA.toString().toLowerCase();
+      const valueB = rawB.toString().toLowerCase();
 
       if (valueA < valueB) {
         return this.isSortAscending ? -1 : 1;
@@ -143,30 +306,11 @@ export class RentrequestsListComponent {
   }
 
   updatePagination(): void {
-    this.paginatedItems = this.filteredItems.slice(
-      this.paginationStart,
-      this.paginationEnd
-    );
+    // server already returns a single page; no slicing needed
+    this.paginatedItems = [...this.filteredItems];
   }
 
-  prevPage(): void {
-    if (this.currentPage > 1) {
-      this.currentPage--;
-      this.updatePagination();
-    }
-  }
-
-  nextPage(): void {
-    if (this.currentPage < this.totalPages) {
-      this.currentPage++;
-      this.updatePagination();
-    }
-  }
-
-  goToPage(page: number): void {
-    this.currentPage = page;
-    this.updatePagination();
-  }
+  // client-side pagination navigation removed; server-side versions are defined above
 
   toggleDropdown(itemId: number): void {
     this.activeDropdown = this.activeDropdown === itemId ? null : itemId;
