@@ -224,19 +224,7 @@
                 alt="Property image"
                 (error)="onImageError($event)"
               />
-              <span *ngIf="img.is_primary" class="primary-badge">{{
-                "Primary" | translate
-              }}</span>
               <div class="image-controls">
-                <button
-                  type="button"
-                  class="set-primary-btn"
-                  (click)="setPrimaryImage(i)"
-                  [class.active]="img.is_primary"
-                  [title]="'Set as primary image' | translate"
-                >
-                  ⭐
-                </button>
                 <button
                   type="button"
                   class="remove-image"

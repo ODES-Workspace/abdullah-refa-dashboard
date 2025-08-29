@@ -34,7 +34,6 @@ export class PropertyEditComponent implements OnInit, AfterViewInit {
     id?: number;
     url: string;
     thumbnail_url?: string;
-    is_primary?: boolean;
     file?: File;
     isNew?: boolean;
   }> = [];
@@ -343,7 +342,6 @@ export class PropertyEditComponent implements OnInit, AfterViewInit {
         this.images.push({
           url: dataUrl,
           thumbnail_url: dataUrl,
-          is_primary: false,
           file,
           isNew: true,
         });
@@ -376,16 +374,7 @@ export class PropertyEditComponent implements OnInit, AfterViewInit {
     this.images.splice(index, 1);
   }
 
-  setPrimaryImage(index: number): void {
-    if (index < 0 || index >= this.images.length) return;
-
-    // Remove primary from all images
-    this.images.forEach((img, i) => {
-      img.is_primary = i === index;
-    });
-
-    console.log('Primary image set to index:', index);
-  }
+  // Primary image selection removed per request
 
   clearError(): void {
     this.errorMessage = '';
@@ -440,7 +429,12 @@ export class PropertyEditComponent implements OnInit, AfterViewInit {
     });
 
     // Prepare the property data for API
-    const propertyData = {
+    // Compute images payload (new uploads only)
+    const newImages = this.images
+      .filter((img) => img.isNew && !!img.url && img.url.startsWith('data:'))
+      .map((img) => img.url);
+
+    const propertyData: any = {
       name_en: formValue.propertyName,
       name_ar: formValue.propertyNameAr,
       description_en: formValue.description,
@@ -470,6 +464,14 @@ export class PropertyEditComponent implements OnInit, AfterViewInit {
       amenities: amenities,
     };
 
+    if (newImages.length > 0) {
+      propertyData.images = newImages;
+    }
+
+    if (this.imagesToDelete.length > 0) {
+      propertyData.images_to_remove = this.imagesToDelete;
+    }
+
     console.log('Submitting property data:', propertyData);
 
     this.propertiesService
@@ -477,9 +479,15 @@ export class PropertyEditComponent implements OnInit, AfterViewInit {
       .subscribe({
         next: (response) => {
           console.log('Property updated successfully:', response);
-
-          // After property update, handle image updates
-          this.handleImageUpdates(propertyId);
+          // Clear local image mutation state and refresh images from response if present
+          this.pendingUploads = [];
+          this.imagesToDelete = [];
+          if ((response as any)?.data?.images) {
+            this.images =
+              ((response as any).data.images as any[]) || this.images;
+          }
+          this.submitting = false;
+          this.showSuccessMessage();
         },
         error: (error) => {
           console.error('Error updating property:', error);
@@ -558,69 +566,7 @@ export class PropertyEditComponent implements OnInit, AfterViewInit {
       });
   }
 
-  /**
-   * Handle image updates after property data is successfully updated
-   */
-  private handleImageUpdates(propertyId: number): void {
-    const hasImageUpdates =
-      this.pendingUploads.length > 0 || this.imagesToDelete.length > 0;
-
-    if (!hasImageUpdates) {
-      // No image updates needed, finish the process
-      this.submitting = false;
-      this.showSuccessMessage();
-      return;
-    }
-
-    // Handle image deletions first
-    if (this.imagesToDelete.length > 0) {
-      this.deleteImages(propertyId, this.imagesToDelete);
-    }
-
-    // Handle new image uploads
-    if (this.pendingUploads.length > 0) {
-      this.uploadImages(propertyId, this.pendingUploads);
-    }
-  }
-
-  /**
-   * Delete images from the property
-   */
-  private deleteImages(propertyId: number, imageIds: number[]): void {
-    // For now, we'll just remove them from the local state
-    // In a real implementation, you'd call an API endpoint
-    console.log('Deleting images:', imageIds);
-
-    // Remove deleted images from the local images array
-    this.images = this.images.filter((img) => !imageIds.includes(img.id || 0));
-
-    // Clear the deletion list
-    this.imagesToDelete = [];
-  }
-
-  /**
-   * Upload new images to the property
-   */
-  private uploadImages(propertyId: number, files: File[]): void {
-    // For now, we'll just mark them as uploaded
-    // In a real implementation, you'd call an API endpoint
-    console.log('Uploading images:', files);
-
-    // Mark new images as uploaded (remove isNew flag)
-    this.images.forEach((img) => {
-      if (img.isNew) {
-        img.isNew = false;
-        delete img.file; // Remove the file reference
-      }
-    });
-
-    // Clear the pending uploads
-    this.pendingUploads = [];
-
-    // Finish the process
-    this.submitting = false;
-    this.showSuccessMessage();
-  }
+  // Legacy image update helpers removed; images are now sent within main update payload
 
   /**
    * Show success message
