@@ -72,13 +72,20 @@ export class ContractsService {
 
   /**
    * Get list of contracts for the authenticated customer (agent)
-   * @param page - Page number (backend default page size is 10)
+   * @param page - Page number
+   * @param perPage - Page size (optional; backend default is 10)
    */
-  getContracts(page: number = 1): Observable<ContractsResponse> {
+  getContracts(
+    page: number = 1,
+    perPage?: number
+  ): Observable<ContractsResponse> {
     const url = `${this.baseUrl}/agent/contracts`;
     let params = new HttpParams();
     if (page) {
       params = params.set('page', page.toString());
+    }
+    if (perPage) {
+      params = params.set('per_page', perPage.toString());
     }
     return this.http
       .get<ContractsResponse>(url, { params })

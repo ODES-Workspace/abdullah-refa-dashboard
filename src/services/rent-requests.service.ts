@@ -121,14 +121,21 @@ export class RentRequestsService {
   /**
    * List all rent requests for admin
    * @param page - Page number for pagination (default: 1)
+   * @param perPage - Page size (optional; backend default is 10)
    * @returns Observable of the rent requests response with pagination
    */
-  getRentRequests(page: number = 1): Observable<RentRequestsResponse> {
+  getRentRequests(
+    page: number = 1,
+    perPage?: number
+  ): Observable<RentRequestsResponse> {
     const url = `${this.baseUrl}/agent/rent-requests`;
 
     let params = new HttpParams();
     if (page) {
       params = params.set('page', page.toString());
+    }
+    if (perPage) {
+      params = params.set('per_page', perPage.toString());
     }
 
     return this.http

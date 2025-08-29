@@ -123,7 +123,7 @@ export class TableComponent implements OnInit {
 
   private loadPage(page: number): void {
     this.isLoading = true;
-    this.contractsService.getContracts(page).subscribe({
+    this.contractsService.getContracts(page, 5).subscribe({
       next: (response) => {
         console.log('Contracts response:', response);
         this.apiTotal = response.total;
