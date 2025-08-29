@@ -100,8 +100,8 @@
   </div>
 
   <!-- Loading state -->
-  <div *ngIf="isLoading" class="table-no-data">
-    {{ "Loading" | translate }}
+  <div *ngIf="isLoading" class="loading">
+    {{ "Loading..." | translate }}
   </div>
   <!-- No data -->
   <div *ngIf="!isLoading && filteredItems.length === 0" class="table-no-data">
