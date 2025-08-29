@@ -100,8 +100,8 @@
     {{ "No data found" | translate }}
   </div>
   <!-- Table rows -->
-  <div class="table-row" *ngFor="let item of paginatedItems">
-    <div class="table-id">{{ item.id }}</div>
+  <div class="table-row" *ngFor="let item of paginatedItems; let i = index">
+    <div class="table-id">{{ i + 1 }}</div>
     <div>{{ item.propertyName }}</div>
     <div>{{ item.tenantName }}</div>
     <div>{{ item.ownerName }}</div>
