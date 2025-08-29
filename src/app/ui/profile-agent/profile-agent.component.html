@@ -103,15 +103,30 @@
     <div class="profile-info-card">
       <div class="profile-info-item">
         <label for="name">{{ "Name" | translate }}</label>
-        <input type="text" id="name" [(ngModel)]="profileData.agencyName" />
+        <input
+          type="text"
+          id="name"
+          [(ngModel)]="profileData.agencyName"
+          required
+        />
       </div>
       <div class="profile-info-item">
         <label for="email">{{ "Email" | translate }}</label>
-        <input type="email" id="email" [(ngModel)]="profileData.EmailAddress" />
+        <input
+          type="email"
+          id="email"
+          [(ngModel)]="profileData.EmailAddress"
+          required
+        />
       </div>
       <div class="profile-info-item">
         <label for="contact">{{ "Contact" | translate }}</label>
-        <input type="tel" id="contact" [(ngModel)]="profileData.Mobile" />
+        <input
+          type="tel"
+          id="contact"
+          [(ngModel)]="profileData.Mobile"
+          required
+        />
       </div>
       <div class="profile-info-item">
         <label for="companyRegId">{{
@@ -121,6 +136,7 @@
           type="text"
           id="companyRegId"
           [(ngModel)]="profileData.CompanyRegistrationID"
+          required
         />
       </div>
       <div class="profile-info-item">
@@ -129,6 +145,7 @@
           type="text"
           id="falLicenseId"
           [(ngModel)]="profileData.FALLicenseID"
+          required
         />
       </div>
       <div class="profile-info-item">
@@ -164,19 +181,39 @@
       <div class="profile-address-info-card--container">
         <div class="profile-info-item">
           <label for="line1">{{ "line1" | translate }}</label>
-          <input type="text" id="line1" [(ngModel)]="profileData.Line1" />
+          <input
+            type="text"
+            id="line1"
+            [(ngModel)]="profileData.Line1"
+            required
+          />
         </div>
         <div class="profile-info-item">
           <label for="line2">{{ "line2" | translate }}</label>
-          <input type="text" id="line2" [(ngModel)]="profileData.Line2" />
+          <input
+            type="text"
+            id="line2"
+            [(ngModel)]="profileData.Line2"
+            required
+          />
         </div>
         <div class="profile-info-item">
           <label for="country">{{ "country" | translate }}</label>
-          <input type="text" id="country" [(ngModel)]="profileData.Country" />
+          <input
+            type="text"
+            id="country"
+            [(ngModel)]="profileData.Country"
+            required
+          />
         </div>
         <div class="profile-info-item">
           <label for="city">{{ "City" | translate }}</label>
-          <input type="text" id="city" [(ngModel)]="profileData.City" />
+          <input
+            type="text"
+            id="city"
+            [(ngModel)]="profileData.City"
+            required
+          />
         </div>
         <div class="profile-info-item">
           <label for="postalCode">{{ "Postal Code" | translate }}</label>
@@ -184,6 +221,7 @@
             type="text"
             id="postalCode"
             [(ngModel)]="profileData.postalCode"
+            required
           />
         </div>
       </div>
@@ -197,7 +235,12 @@
       <div class="profile-address-info-card--container">
         <div class="profile-info-item">
           <label for="bankName">{{ "Bank Name" | translate }}</label>
-          <input type="text" id="bankName" [(ngModel)]="profileData.bankName" />
+          <input
+            type="text"
+            id="bankName"
+            [(ngModel)]="profileData.bankName"
+            required
+          />
         </div>
         <div class="profile-info-item">
           <label for="accountNumber">{{ "Account Number" | translate }}</label>
@@ -205,13 +248,27 @@
             type="text"
             id="accountNumber"
             [(ngModel)]="profileData.accountNumber"
+            required
           />
         </div>
         <div class="profile-info-item">
           <label for="iban">{{ "IBAN" | translate }}</label>
-          <input type="text" id="iban" [(ngModel)]="profileData.IBAN" />
+          <input
+            type="text"
+            id="iban"
+            [(ngModel)]="profileData.IBAN"
+            required
+          />
         </div>
       </div>
     </div>
   </div>
+</div>
+
+<!-- Error messages at the end of the form -->
+<div *ngIf="errorMessages.length" class="error-messages" dir="ltr">
+  <div class="error-message" *ngFor="let err of errorMessages">
+    {{ err | translate }}
+  </div>
+  <br />
 </div>
