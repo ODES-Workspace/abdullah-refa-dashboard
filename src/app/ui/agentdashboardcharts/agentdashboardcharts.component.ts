@@ -19,6 +19,8 @@ import {
   CategoryScale,
 } from 'chart.js';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { RentRequestsService } from '../../../services/rent-requests.service';
+import { PropertyTypesService } from '../../../services/property-types.service';
 Chart.register(
   ArcElement,
   Tooltip,
@@ -101,25 +103,7 @@ export class AgentdashboardchartsComponent implements OnInit {
     });
   }
 
-  translateLabels(): void {
-    // Translate property types
-    this.translatedLabels = [];
-    this.chartLabels.forEach((label) => {
-      this.translateService
-        .get(`CHART.${label.toUpperCase()}`)
-        .subscribe((translation) => {
-          this.translatedLabels.push(translation);
-          if (this.translatedLabels.length === this.chartLabels.length) {
-            this.donutChartData = {
-              ...this.donutChartData,
-              labels: [...this.translatedLabels],
-            };
-            this.updateChartData();
-          }
-        });
-    });
-
-    // Translate months
+  private translateMonthsAndUpdate(): void {
     this.translateMonths();
   }
 
@@ -216,65 +200,12 @@ export class AgentdashboardchartsComponent implements OnInit {
     ],
   };
 
-  // DATA
-  propertyInsightsByMonth: { [key: string]: PropertyInsights } = {
-    '1': {
-      months: 'January',
-      totalInsights: 0,
-    },
-    '2': {
-      months: 'February',
-      totalInsights: 1,
-    },
-    '3': {
-      months: 'March',
-      totalInsights: 1.5,
-    },
-    '4': {
-      months: 'April',
-      totalInsights: 0.9,
-    },
-    '5': {
-      months: 'May',
-      totalInsights: 1.9,
-    },
-    '6': {
-      months: 'June',
-      totalInsights: 1,
-    },
-    '7': {
-      months: 'July',
-      totalInsights: 0.7,
-    },
-    '8': {
-      months: 'August',
-      totalInsights: 0.8,
-    },
-    '9': {
-      months: 'September',
-      totalInsights: 0.6,
-    },
-    '10': {
-      months: 'October',
-      totalInsights: 1,
-    },
-    '11': {
-      months: 'November',
-      totalInsights: 1.2,
-    },
-    '12': {
-      months: 'December',
-      totalInsights: 1.5,
-    },
-  };
-
-  propertyTypeData: PropertyTypeData = {
-    villa: 16,
-    flats: 20,
-    apartments: 20,
-    independentHouse: 14,
-    gatedCommunity: 13,
-  };
+  // DATA (populated from API)
+  private monthlyCounts: number[] = Array(12).fill(0);
+  private donutLabels: string[] = [];
+  private donutCounts: number[] = [];
+  private typeIdToName: { [id: number]: string } = {};
+  private donutTypeIds: number[] = [];
 
   // Donut Chart Configuration
   public donutChartOptions = {
@@ -322,10 +253,10 @@ export class AgentdashboardchartsComponent implements OnInit {
   public donutChartLegend = true;
 
   get currentData(): PropertyInsights {
-    return (
-      this.propertyInsightsByMonth[this.selectedMonths] ||
-      this.propertyInsightsByMonth['12']
-    );
+    const total = this.monthlyCounts
+      .slice(-parseInt(this.selectedMonths))
+      .reduce((a, b) => a + b, 0);
+    return { months: '', totalInsights: total };
   }
 
   public donutChartData: ChartConfiguration['data'] = {
@@ -360,7 +291,11 @@ export class AgentdashboardchartsComponent implements OnInit {
   // Reference to the chart
   @ViewChild(BaseChartDirective) chartDirective?: BaseChartDirective;
 
-  constructor(private translateService: TranslateService) {}
+  constructor(
+    private translateService: TranslateService,
+    private rentRequestsService: RentRequestsService,
+    private propertyTypesService: PropertyTypesService
+  ) {}
 
   ngOnInit(): void {
     // Initial setup
@@ -369,11 +304,16 @@ export class AgentdashboardchartsComponent implements OnInit {
 
     // Subscribe to language changes
     this.translateService.onLangChange.subscribe(() => {
-      this.translateLabels();
+      this.translateMonthsAndUpdate();
+      // Rebuild type names for donut when language toggles
+      this.refreshTypeNamesForDonut();
     });
 
     // Initial translation
-    this.translateLabels();
+    this.translateMonthsAndUpdate();
+
+    // Load data from API
+    this.loadFromApi();
   }
 
   getRequestMax(): number {
@@ -396,15 +336,8 @@ export class AgentdashboardchartsComponent implements OnInit {
       const selectedMonthsNum = parseInt(this.selectedMonths);
       const filteredMonths = months.slice(-selectedMonthsNum);
 
-      const data = filteredMonths.map((_, index) => {
-        const monthKey = (
-          months.length -
-          selectedMonthsNum +
-          index +
-          1
-        ).toString();
-        return this.propertyInsightsByMonth[monthKey].totalInsights;
-      });
+      const startIndex = months.length - selectedMonthsNum;
+      const data = this.monthlyCounts.slice(startIndex);
 
       this.lineChartData = {
         ...this.lineChartData,
@@ -427,16 +360,13 @@ export class AgentdashboardchartsComponent implements OnInit {
         datasets: [
           {
             ...this.donutChartData.datasets[0],
-            data: [
-              this.propertyTypeData.villa,
-              this.propertyTypeData.flats,
-              this.propertyTypeData.apartments,
-              this.propertyTypeData.independentHouse,
-              this.propertyTypeData.gatedCommunity,
-            ],
+            data: this.donutCounts.length ? this.donutCounts : [0, 0, 0, 0, 0],
           },
         ],
       };
+      if (this.donutLabels.length) {
+        this.donutChartData.labels = [...this.donutLabels];
+      }
       this.updateChart();
     }
   }
@@ -445,5 +375,105 @@ export class AgentdashboardchartsComponent implements OnInit {
     if (this.chartDirective?.chart) {
       this.chartDirective.chart.update();
     }
+  }
+
+  private getLast12MonthsDateObjs(): {
+    year: number;
+    month: number;
+    label: string;
+  }[] {
+    const months: { year: number; month: number; label: string }[] = [];
+    const currentDate = new Date();
+    for (let i = 11; i >= 0; i--) {
+      const d = new Date(
+        currentDate.getFullYear(),
+        currentDate.getMonth() - i,
+        1
+      );
+      months.push({
+        year: d.getFullYear(),
+        month: d.getMonth(),
+        label: d.toLocaleString('default', { month: 'long' }),
+      });
+    }
+    return months;
+  }
+
+  private loadFromApi(): void {
+    // Load type map first
+    this.propertyTypesService.getPropertyTypes().subscribe({
+      next: (res) => {
+        (res?.data || []).forEach((t: any) => {
+          this.typeIdToName[t.id] =
+            this.translateService.currentLang === 'ar' ? t.name_ar : t.name_en;
+        });
+      },
+      error: () => {},
+    });
+
+    this.rentRequestsService.getRentRequests(1).subscribe({
+      next: (res) => {
+        const items = res?.data || [];
+        // Monthly counts
+        const months = this.getLast12MonthsDateObjs();
+        const indexMap = new Map<string, number>();
+        months.forEach((m, idx) => indexMap.set(`${m.year}-${m.month}`, idx));
+        const counts = Array(12).fill(0);
+        items.forEach((rr: any) => {
+          const d = new Date(rr.created_at);
+          const key = `${d.getFullYear()}-${d.getMonth()}`;
+          const idx = indexMap.get(key);
+          if (idx !== undefined) counts[idx] += 1;
+        });
+        this.monthlyCounts = counts;
+        this.updateLineChartData();
+
+        // Donut: counts by property_type_id (top 5)
+        const typeCount = new Map<number, number>();
+        items.forEach((rr: any) => {
+          const tid = rr?.property?.property_type_id;
+          if (tid != null) typeCount.set(tid, (typeCount.get(tid) || 0) + 1);
+        });
+        const sorted = Array.from(typeCount.entries())
+          .sort((a, b) => b[1] - a[1])
+          .slice(0, 5);
+        this.donutTypeIds = sorted.map(([id]) => id);
+        this.donutLabels = sorted.map(
+          ([id]) => this.typeIdToName[id] || String(id)
+        );
+        this.donutCounts = sorted.map(([, count]) => count);
+        this.updateChartData();
+      },
+      error: () => {
+        // keep zeros
+      },
+    });
+  }
+
+  private refreshTypeNamesForDonut(): void {
+    // Reload type names and update donut labels without changing counts
+    this.propertyTypesService.getPropertyTypes().subscribe({
+      next: (res) => {
+        const map: { [id: number]: string } = {};
+        (res?.data || []).forEach((t: any) => {
+          map[t.id] =
+            this.translateService.currentLang === 'ar' ? t.name_ar : t.name_en;
+        });
+        this.typeIdToName = map;
+        if (this.donutTypeIds.length) {
+          this.donutLabels = this.donutTypeIds.map(
+            (id) => this.typeIdToName[id] || String(id)
+          );
+          if (this.donutChartData) {
+            this.donutChartData = {
+              ...this.donutChartData,
+              labels: [...this.donutLabels],
+            };
+            this.updateChart();
+          }
+        }
+      },
+      error: () => {},
+    });
   }
 }
