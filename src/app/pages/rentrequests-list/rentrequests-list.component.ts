@@ -58,9 +58,6 @@ export class RentrequestsListComponent implements OnInit {
   rejectReason = '';
   selectedItem: TableItem | null = null;
 
-  // Add new properties for revise/edit modal
-  showReviseModal = false;
-  editedItem: TableItem | null = null;
   isLoading = false;
 
   // client-side getters removed; server-side versions are defined below
@@ -438,82 +435,6 @@ export class RentrequestsListComponent implements OnInit {
             this.isLoading = false;
           },
         });
-    }
-  }
-
-  // Modified revise method to open the edit modal
-  reviseRequest(item: TableItem): void {
-    this.editedItem = { ...item }; // Create a copy to edit
-    this.showReviseModal = true;
-    this.closeDropdown();
-  }
-
-  // New methods for edit modal
-  closeReviseModal(): void {
-    this.showReviseModal = false;
-    this.editedItem = null;
-  }
-
-  submitRevise(): void {
-    if (this.editedItem) {
-      // Backend requires a full payload; load original details and merge minimal edits
-      const id = this.editedItem.id;
-      this.isLoading = true;
-      this.rentRequestsService.getRentRequestById(id).subscribe({
-        next: (rr) => {
-          const payload: any = {
-            property_id: rr.property_id,
-            name: this.editedItem!.tenantName || rr.name,
-            email: rr.email,
-            phone: rr.phone,
-            city_id: rr.city_id,
-            date_of_birth: rr.date_of_birth,
-            number_of_family_members: rr.number_of_family_members,
-            national_id: rr.national_id,
-            job_title: rr.job_title,
-            employer_name: rr.employer_name,
-            sector: rr.sector,
-            subsector: rr.subsector,
-            monthly_income: rr.monthly_income,
-            expected_monthly_cost: rr.expected_monthly_cost,
-            number_of_installments: rr.number_of_installments,
-            // If API accepts these as optional, include when present
-            ...(rr.additional_charges
-              ? { additional_charges: rr.additional_charges }
-              : {}),
-            ...(rr.down_payment ? { down_payment: rr.down_payment } : {}),
-            ...(typeof rr.has_debts === 'boolean'
-              ? { has_debts: rr.has_debts }
-              : {}),
-            ...(rr.debts_monthly_amount
-              ? { debts_monthly_amount: rr.debts_monthly_amount }
-              : {}),
-            ...(rr.debts_remaining_months
-              ? { debts_remaining_months: rr.debts_remaining_months }
-              : {}),
-          };
-
-          this.rentRequestsService.reviseRentRequest(id, payload).subscribe({
-            next: () => {
-              // Reload current page from server to ensure persistence reflects
-              this.loadPage(this.currentPage);
-              this.toastService.show('requestRevised');
-              this.isLoading = false;
-              this.closeReviseModal();
-            },
-            error: (err) => {
-              console.error('Revise request failed', err);
-              this.toastService.show('requestRevisionFailed');
-              this.isLoading = false;
-            },
-          });
-        },
-        error: (err) => {
-          console.error('Failed to load request before revise', err);
-          this.toastService.show('requestRevisionFailed');
-          this.isLoading = false;
-        },
-      });
     }
   }
 

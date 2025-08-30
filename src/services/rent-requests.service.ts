@@ -187,18 +187,6 @@ export class RentRequestsService {
   }
 
   /**
-   * Revise a rent request (admin only)
-   * @param id Rent request ID
-   * @param payload Revised fields for the request
-   */
-  reviseRentRequest(id: number, payload: Record<string, any>): Observable<any> {
-    const url = `${this.baseUrl}/admin/rent-requests/${id}/revise`;
-    return this.http
-      .put<any>(url, payload || {})
-      .pipe(catchError((error: HttpErrorResponse) => this.handleError(error)));
-  }
-
-  /**
    * Handle HTTP errors
    * @param error - The HTTP error response
    * @returns Observable that throws the error
