@@ -35,6 +35,7 @@ export class TerminatedComponent implements OnInit {
   showEditModal = false;
   selectedTenant: TableItem | null = null;
   activeDropdown: number | null = null;
+  isLoading = true;
 
   // Track sorting state
   currentSortColumn: keyof TableItem | null = null;
@@ -76,6 +77,7 @@ export class TerminatedComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.isLoading = true;
     this.contractsService.getContracts(1, undefined, 'cancelled').subscribe({
       next: (res) => {
         console.log('Terminated contracts (cancelled):', res);
@@ -102,12 +104,14 @@ export class TerminatedComponent implements OnInit {
         this.filteredItems = [...items];
         this.currentPage = 1;
         this.updatePagination();
+        this.isLoading = false;
       },
       error: (err) => {
         console.error('Failed to fetch cancelled contracts:', err);
         this.allItems = [];
         this.filteredItems = [];
         this.paginatedItems = [];
+        this.isLoading = false;
       },
     });
   }

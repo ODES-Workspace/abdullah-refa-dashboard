@@ -54,7 +54,7 @@ export class PaymentsComponent implements OnInit {
   editedItem: TableItem | null = null;
 
   // Server-side pagination metadata
-  isLoading = false;
+  isLoading = true;
   apiTotal: number = 0;
   apiPerPage: number = 10;
   apiLastPage: number = 1;

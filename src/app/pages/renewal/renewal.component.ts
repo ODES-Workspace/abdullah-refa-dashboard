@@ -50,6 +50,7 @@ export class RenewalComponent implements OnInit {
   // Add new properties for revise/edit modal
   showReviseModal = false;
   editedItem: TableItem | null = null;
+  isLoading = true;
 
   get totalPages(): number {
     return Math.ceil(this.filteredItems.length / this.itemsPerPage);
@@ -79,6 +80,7 @@ export class RenewalComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.isLoading = true;
     this.contractsService.getContracts(1, undefined, 'completed').subscribe({
       next: (res) => {
         console.log('Renewal contracts (completed):', res);
@@ -105,12 +107,14 @@ export class RenewalComponent implements OnInit {
         this.filteredItems = [...items];
         this.currentPage = 1;
         this.updatePagination();
+        this.isLoading = false;
       },
       error: (err) => {
         console.error('Failed to fetch completed contracts:', err);
         this.allItems = [];
         this.filteredItems = [];
         this.paginatedItems = [];
+        this.isLoading = false;
       },
     });
   }
