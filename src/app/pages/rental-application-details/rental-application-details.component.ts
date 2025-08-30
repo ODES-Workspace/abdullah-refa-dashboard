@@ -68,6 +68,12 @@ export class RentalApplicationDetailsComponent implements OnInit {
   currentSortField: SortField | null = null;
   currentSortDirection: SortDirection = 'asc';
 
+  // Derive employment status from available data
+  get isEmployed(): boolean {
+    const employerName: string | undefined = this.rentRequest?.employer_name;
+    return !!(employerName && employerName.trim().length > 0);
+  }
+
   constructor(
     private route: ActivatedRoute,
     public userRoleService: UserRoleService,
@@ -110,8 +116,10 @@ export class RentalApplicationDetailsComponent implements OnInit {
           .getRentRequestById(this.applicationId)
           .subscribe({
             next: (res) => {
+              console.log(res);
               this.rentRequest = res;
               this.updatePropertyTypeLabel();
+              this.hydrateApplicationFromRentRequest();
             },
             error: (err) => {
               console.error('Failed to fetch rent request details:', err);
@@ -172,6 +180,55 @@ export class RentalApplicationDetailsComponent implements OnInit {
   private updatePropertyTypeLabel(): void {
     const typeId = this.rentRequest?.property?.property_type_id;
     this.propertyTypeLabel = typeId ? this.typeIdToName[typeId] || '-' : '-';
+  }
+
+  private hydrateApplicationFromRentRequest(): void {
+    const rr = this.rentRequest;
+    if (!rr) return;
+
+    const numInstallments: number = Number(rr.number_of_installments) || 0;
+    const installmentAmount: number = Number(rr.expected_monthly_cost) || 0;
+
+    const createdAt: Date = rr.created_at
+      ? new Date(rr.created_at)
+      : new Date();
+    const firstDueDate = new Date(createdAt);
+    firstDueDate.setMonth(firstDueDate.getMonth() + 1);
+
+    const totalAmount: number = installmentAmount * numInstallments;
+    let remainingBalance: number = totalAmount;
+
+    const schedule: ScheduleItem[] = Array.from(
+      { length: numInstallments },
+      (_, index) => {
+        const dueDate = new Date(firstDueDate);
+        dueDate.setMonth(firstDueDate.getMonth() + index);
+        // Balance after this payment
+        remainingBalance = Math.max(0, remainingBalance - installmentAmount);
+        return {
+          dueDate: dueDate.toISOString().split('T')[0],
+          amount: installmentAmount,
+          balance: remainingBalance,
+          status: 'upcoming',
+        } as ScheduleItem;
+      }
+    );
+
+    // Build a minimal application model for the schedule tab
+    this.application = {
+      id: rr.id,
+      propertyName: rr.property?.name_en || rr.property?.name_ar || '-',
+      tenantName: rr.name || '-',
+      ownerName: rr.property?.name || '-',
+      city: rr.property?.city || '-',
+      propertyCategory: rr.property?.property_category_id?.toString() || '-',
+      propertyType: this.propertyTypeLabel || '-',
+      dateAdded: rr.created_at ? rr.created_at.split('T')[0] : '-',
+      dateModified: rr.updated_at ? rr.updated_at.split('T')[0] : '-',
+      status: 'Pending',
+      scheduleStatus: 'upcoming',
+      schedule,
+    } as RentalApplication;
   }
 
   updateScheduleItem(

@@ -9,6 +9,7 @@
       minmax(100px, 1fr)
       minmax(131px, 1fr)
       minmax(107px, 1fr)
+      minmax(107px, 1fr)
       minmax(115px, 1fr)
       minmax(122px, 1fr)
       72px;
@@ -22,10 +23,39 @@
       minmax(100px, 1fr)
       minmax(131px, 1fr)
       minmax(107px, 1fr)
+      minmax(107px, 1fr)
       minmax(115px, 1fr)
       minmax(122px, 1fr)
       72px;
     position: relative;
+  }
+
+  .status-badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: capitalize;
+    border: 1px solid transparent;
+  }
+
+  .status-approved {
+    color: #0a7a2a;
+    background-color: #e7f7ee;
+    border-color: #c6ecd7;
+  }
+
+  .status-rejected {
+    color: #a41010;
+    background-color: #fdeeee;
+    border-color: #f8d2d2;
+  }
+
+  .status-pending {
+    color: #8a6d3b;
+    background-color: #fff6e5;
+    border-color: #ffe0a3;
   }
 
   &-actions {
@@ -246,4 +276,11 @@
       }
     }
   }
+}
+.truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 120px;
+  width: 100%;
 }

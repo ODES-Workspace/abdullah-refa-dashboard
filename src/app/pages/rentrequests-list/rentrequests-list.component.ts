@@ -1,4 +1,4 @@
-import { NgFor, NgIf } from '@angular/common';
+import { NgFor, NgIf, NgClass } from '@angular/common';
 import { Component, HostListener, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
@@ -32,7 +32,7 @@ interface TableItem {
 
 @Component({
   selector: 'app-rentrequests-list',
-  imports: [FormsModule, NgFor, NgIf, TranslateModule, ToastComponent],
+  imports: [FormsModule, NgFor, NgIf, NgClass, TranslateModule, ToastComponent],
   templateUrl: './rentrequests-list.component.html',
   styleUrl: './rentrequests-list.component.scss',
 })
@@ -373,10 +373,24 @@ export class RentrequestsListComponent implements OnInit {
 
   // Add new methods for actions
   approveRequest(item: TableItem): void {
-    item.status = 'Approved';
-    item.dateModified = new Date().toISOString().split('T')[0];
-    this.toastService.show('requestApproved');
-    this.closeDropdown();
+    // Call API to approve and optimistically update UI on success
+    this.isLoading = true;
+    this.rentRequestsService.approveRentRequest(item.id).subscribe({
+      next: () => {
+        item.status = 'Approved';
+        item.dateModified = new Date().toISOString().split('T')[0];
+        this.toastService.show('requestApproved');
+        this.isLoading = false;
+      },
+      error: (err) => {
+        console.error('Approve request failed', err);
+        this.toastService.show('requestApprovalFailed');
+        this.isLoading = false;
+      },
+      complete: () => {
+        this.closeDropdown();
+      },
+    });
   }
 
   openRejectModal(item: TableItem): void {
@@ -393,10 +407,37 @@ export class RentrequestsListComponent implements OnInit {
 
   submitReject(): void {
     if (this.selectedItem) {
-      this.selectedItem.status = 'Rejected';
-      this.selectedItem.rejectedReason = this.rejectReason;
-      this.selectedItem.dateModified = new Date().toISOString().split('T')[0];
-      this.closeRejectModal();
+      const id = this.selectedItem.id;
+      const reason = this.rejectReason;
+      this.isLoading = true;
+      this.rentRequestsService
+        .rejectRentRequest(id, { reject_reason: reason })
+        .subscribe({
+          next: () => {
+            this.selectedItem!.status = 'Rejected';
+            this.selectedItem!.rejectedReason = reason;
+            this.selectedItem!.dateModified = new Date()
+              .toISOString()
+              .split('T')[0];
+            this.toastService.show(
+              this.currentLang === 'ar'
+                ? 'تم رفض الطلب بنجاح'
+                : 'Request Rejected'
+            );
+
+            this.isLoading = false;
+            this.closeRejectModal();
+          },
+          error: (err) => {
+            console.error('Reject request failed', err);
+            this.toastService.show(
+              this.currentLang === 'ar'
+                ? 'فشل رفض الطلب'
+                : 'Request Rejection Failed'
+            );
+            this.isLoading = false;
+          },
+        });
     }
   }
 
@@ -415,20 +456,64 @@ export class RentrequestsListComponent implements OnInit {
 
   submitRevise(): void {
     if (this.editedItem) {
-      // Find the original item and update it
-      const originalItem = this.allItems.find(
-        (item) => item.id === this.editedItem!.id
-      );
-      if (originalItem) {
-        Object.assign(originalItem, this.editedItem);
-        originalItem.status = 'Pending';
-        originalItem.dateModified = new Date().toISOString().split('T')[0];
-      }
+      // Backend requires a full payload; load original details and merge minimal edits
+      const id = this.editedItem.id;
+      this.isLoading = true;
+      this.rentRequestsService.getRentRequestById(id).subscribe({
+        next: (rr) => {
+          const payload: any = {
+            property_id: rr.property_id,
+            name: this.editedItem!.tenantName || rr.name,
+            email: rr.email,
+            phone: rr.phone,
+            city_id: rr.city_id,
+            date_of_birth: rr.date_of_birth,
+            number_of_family_members: rr.number_of_family_members,
+            national_id: rr.national_id,
+            job_title: rr.job_title,
+            employer_name: rr.employer_name,
+            sector: rr.sector,
+            subsector: rr.subsector,
+            monthly_income: rr.monthly_income,
+            expected_monthly_cost: rr.expected_monthly_cost,
+            number_of_installments: rr.number_of_installments,
+            // If API accepts these as optional, include when present
+            ...(rr.additional_charges
+              ? { additional_charges: rr.additional_charges }
+              : {}),
+            ...(rr.down_payment ? { down_payment: rr.down_payment } : {}),
+            ...(typeof rr.has_debts === 'boolean'
+              ? { has_debts: rr.has_debts }
+              : {}),
+            ...(rr.debts_monthly_amount
+              ? { debts_monthly_amount: rr.debts_monthly_amount }
+              : {}),
+            ...(rr.debts_remaining_months
+              ? { debts_remaining_months: rr.debts_remaining_months }
+              : {}),
+          };
 
-      // Update filtered items as well
-      this.onSearch(); // This will refresh the filtered items
-      this.updatePagination();
-      this.closeReviseModal();
+          this.rentRequestsService.reviseRentRequest(id, payload).subscribe({
+            next: () => {
+              // Reload current page from server to ensure persistence reflects
+              this.loadPage(this.currentPage);
+              this.toastService.show('requestRevised');
+              this.isLoading = false;
+              this.closeReviseModal();
+            },
+            error: (err) => {
+              console.error('Revise request failed', err);
+              this.toastService.show('requestRevisionFailed');
+              this.isLoading = false;
+            },
+          });
+        },
+        error: (err) => {
+          console.error('Failed to load request before revise', err);
+          this.toastService.show('requestRevisionFailed');
+          this.isLoading = false;
+        },
+      });
     }
   }
 

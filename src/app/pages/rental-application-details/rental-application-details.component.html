@@ -176,35 +176,39 @@
         <div class="application-assessment-card--content">
           <div class="application-assessment-card--content--item">
             <span> {{ "Full Name" | translate }} </span>
-            My Demo
+            {{ rentRequest?.name || "-" }}
           </div>
           <div class="application-assessment-card--content--item">
             <span> {{ "Mobile Number" | translate }} </span>
-            My Demo
+            <span dir="ltr">{{ rentRequest?.phone || "-" }}</span>
           </div>
           <div class="application-assessment-card--content--item">
             <span> {{ "Email" | translate }} </span>
-            My Demo
+            {{ rentRequest?.email || "-" }}
           </div>
           <div class="application-assessment-card--content--item">
             <span> {{ "Location" | translate }} </span>
-            My Demo
+            {{ rentRequest?.property?.city || "-" }}
           </div>
           <div class="application-assessment-card--content--item">
             <span> {{ "Date of birth" | translate }} </span>
-            My Demo
+            {{
+              rentRequest?.date_of_birth
+                ? (rentRequest?.date_of_birth | date : "yyyy-MM-dd")
+                : "-"
+            }}
           </div>
           <div class="application-assessment-card--content--item">
             <span> {{ "Nationality" | translate }} </span>
-            My Demo
+            {{ rentRequest?.nationality || "-" }}
           </div>
           <div class="application-assessment-card--content--item">
             <span> {{ "No. of members" | translate }} </span>
-            My Demo
+            {{ rentRequest?.number_of_family_members || "-" }}
           </div>
           <div class="application-assessment-card--content--item">
             <span> {{ "National ID Number" | translate }} </span>
-            My Demo
+            {{ rentRequest?.national_id || "-" }}
           </div>
         </div>
       </div>
@@ -217,43 +221,59 @@
         <div class="application-assessment-card--content">
           <div class="application-assessment-card--content--checkgroup">
             <div class="application-assessment-card--content--checkitem">
-              <span class="active"></span>
+              <span [class.active]="isEmployed"></span>
               <span>{{ "Employed" | translate }}</span>
             </div>
             <div class="application-assessment-card--content--checkitem">
-              <span></span>
+              <span [class.active]="!isEmployed"></span>
               <span>{{ "Self-Employed" | translate }}</span>
             </div>
           </div>
           <div class="application-assessment-card--content--item">
             <span> {{ "Work Start Date" | translate }} </span>
-            My Demo
+            {{
+              rentRequest?.job_start_date
+                ? (rentRequest?.job_start_date | date : "yyyy-MM-dd")
+                : "-"
+            }}
           </div>
           <div class="application-assessment-card--content--item">
             <span> {{ "Name of Working place" | translate }} </span>
-            My Demo
+            {{ rentRequest?.employer_name || "-" }}
           </div>
           <div class="application-assessment-card--content--item">
             <span> {{ "Job Sector" | translate }} </span>
-            My Demo
+            {{ rentRequest?.sector || "-" }}
           </div>
 
           <div class="application-assessment-certificate">
-            {{ "NO Income Certificate" | translate }}
+            <ng-container
+              *ngIf="rentRequest?.proof_of_income_document; else noIncomeDoc"
+            >
+              <a
+                [href]="'/' + rentRequest?.proof_of_income_document"
+                target="_blank"
+              >
+                {{ "Income Certificate" | translate }}
+              </a>
+            </ng-container>
+            <ng-template #noIncomeDoc>
+              {{ "NO Income Certificate" | translate }}
+            </ng-template>
           </div>
           <div class="application-assessment-card--content--item">
             <span> {{ "Sub Sector" | translate }} </span>
-            My Demo
+            {{ rentRequest?.subsector || "-" }}
           </div>
           <div class="application-assessment-card--content--check">
             <p>{{ "Do you have any existing debts ?" | translate }}</p>
             <div class="application-assessment-card--content--checkgroup">
               <div class="application-assessment-card--content--checkitem">
-                <span class="active"></span>
+                <span [class.active]="rentRequest?.has_debts === true"></span>
                 <span>{{ "Yes" | translate }}</span>
               </div>
               <div class="application-assessment-card--content--checkitem">
-                <span></span>
+                <span [class.active]="rentRequest?.has_debts === false"></span>
                 <span>{{ "No" | translate }}</span>
               </div>
             </div>
@@ -269,30 +289,47 @@
         <div class="application-assessment-card--content">
           <!-- Credit Score Document -->
           <div class="application-assessment-csd">
-            {{ "Credit Score Document" | translate }}
+            <ng-container
+              *ngIf="rentRequest?.credit_score_document; else noCreditDoc"
+            >
+              <a
+                [href]="'/' + rentRequest?.credit_score_document"
+                target="_blank"
+              >
+                {{ "Credit Score Document" | translate }}
+              </a>
+            </ng-container>
+            <ng-template #noCreditDoc>
+              {{ "Credit Score Document" | translate }} -
+              {{ "Not Provided" | translate }}
+            </ng-template>
           </div>
           <div class="application-assessment-card--content--item">
             <span> {{ "Annual Rent" | translate }} </span>
-            My Demo
+            {{ rentRequest?.property?.annual_rent | number }}
+            {{ "SAR" | translate }}
           </div>
           <div class="application-assessment-card--content--item">
             <span> {{ "Monthl Income" | translate }} </span>
-            My Demo
+            {{ rentRequest?.monthly_income | number }} {{ "SAR" | translate }}
           </div>
           <div class="application-assessment-card--content--item">
-            <span> {{ "Name of Working place" | translate }} </span>
-            My Demo
+            <span> {{ "Employer Name" | translate }} </span>
+            {{ rentRequest?.employer_name || "-" }}
           </div>
           <div class="application-assessment-card--content--item">
             <span> {{ "Expected Monthly Expenses" | translate }} </span>
-            My Demo
+            {{ rentRequest?.expected_monthly_cost | number }}
+            {{ "SAR" | translate }}
           </div>
           <div class="application-assessment-card--content--item">
             <span>{{ "No of Installments" | translate }} </span>
-            My Demo
+            {{ rentRequest?.number_of_installments || "-" }}
           </div>
           <div class="application-assessment-emi">
-            {{ "Monthly EMI 4166 SAR" | translate }}
+            {{ "Monthly EMI" | translate }}
+            {{ rentRequest?.expected_monthly_cost || 0 | number }}
+            {{ "SAR" | translate }}
           </div>
         </div>
       </div>

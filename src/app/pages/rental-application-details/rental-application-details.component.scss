@@ -291,7 +291,8 @@
 
     &-certificate {
       background-color: #40404066;
-      color: #ffffff;
+      color: #ffffff !important;
+      text-decoration: none;
       text-align: center;
       font-size: 12px;
       line-height: 12px;
@@ -348,10 +349,9 @@
 
     .table-row,
     .table-titles {
-      grid-template-columns: minmax(180px, 259px) minmax(180px, 270px) minmax(
-          200px,
-          309px
-        ) minmax(150px, 230px);
+      grid-template-columns:
+        minmax(180px, 259px) minmax(180px, 270px) minmax(200px, 309px)
+        minmax(150px, 230px);
     }
 
     .table-settings {
@@ -527,4 +527,8 @@
       }
     }
   }
+}
+
+a {
+  color: white;
 }

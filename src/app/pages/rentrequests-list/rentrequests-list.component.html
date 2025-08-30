@@ -66,6 +66,17 @@
     </div>
 
     <div>
+      <span>{{ "Status" | translate }}</span>
+      <span>
+        <img
+          src="/assets/icons/sort-img.svg"
+          alt=""
+          (click)="sortBy('status')"
+        />
+      </span>
+    </div>
+
+    <div>
       <span>{{ "Date added" | translate }}</span>
       <span>
         <img
@@ -103,12 +114,23 @@
   <ng-container *ngIf="!isLoading">
     <div class="table-row" *ngFor="let item of paginatedItems; let i = index">
       <div class="table-id">{{ paginationStart + i + 1 }}</div>
-      <div>{{ item.propertyName }}</div>
+      <div>
+        <span class="truncate">
+          {{ item.propertyName }}
+        </span>
+      </div>
       <div>{{ item.tenantName }}</div>
       <div>{{ item.ownerName }}</div>
       <div>{{ item.city }}</div>
       <div>{{ item.propertyCategory }}</div>
       <div>{{ item.propertyType }}</div>
+      <div>
+        <span
+          class="status-badge"
+          [ngClass]="'status-' + (item.status || '').toLowerCase()"
+          >{{ item.status || "-" }}</span
+        >
+      </div>
       <div>{{ item.dateAdded }}</div>
       <div>{{ item.dateModified }}</div>
 
