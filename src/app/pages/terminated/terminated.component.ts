@@ -1,8 +1,9 @@
 import { NgFor, NgIf } from '@angular/common';
-import { Component, HostListener } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { Router } from '@angular/router';
+import { ContractsService } from '../../../services/contracts.service';
 
 interface TableItem {
   id: number;
@@ -22,21 +23,8 @@ interface TableItem {
   templateUrl: './terminated.component.html',
   styleUrl: './terminated.component.scss',
 })
-export class TerminatedComponent {
-  allItems: TableItem[] = [
-    {
-      id: 1,
-      tenantName: 'Ahmed bin Said',
-      tenantMobile: '+966558441496',
-      ownerName: 'Hamill',
-      ownerMobile: '+966558441496',
-      propertyType: 'Apartment',
-      location: 'Thaqif',
-      startDate: '2023-01-01',
-      endOfContract: '2023-12-31',
-      status: 'Approved',
-    },
-  ];
+export class TerminatedComponent implements OnInit {
+  allItems: TableItem[] = [];
 
   searchTerm = '';
   filteredItems: TableItem[] = [...this.allItems];
@@ -80,8 +68,48 @@ export class TerminatedComponent {
     );
   }
 
-  constructor(private router: Router) {
+  constructor(
+    private router: Router,
+    private contractsService: ContractsService
+  ) {
     this.updatePagination();
+  }
+
+  ngOnInit(): void {
+    this.contractsService.getContracts(1, undefined, 'cancelled').subscribe({
+      next: (res) => {
+        console.log('Terminated contracts (cancelled):', res);
+        const items = (res.data || []).map((c: any) => {
+          const rr = c.rent_request || {};
+          const prop = rr.property || {};
+          return {
+            id: c.id,
+            tenantName: rr.name || '-',
+            tenantMobile: rr.phone || '-',
+            ownerName: '-',
+            ownerMobile: '-',
+            propertyType:
+              prop.property_type_id != null
+                ? String(prop.property_type_id)
+                : '-',
+            location: prop.city || '-',
+            startDate: c.start_date || '-',
+            endOfContract: c.end_date || '-',
+            status: c.status || '-',
+          } as TableItem;
+        });
+        this.allItems = items;
+        this.filteredItems = [...items];
+        this.currentPage = 1;
+        this.updatePagination();
+      },
+      error: (err) => {
+        console.error('Failed to fetch cancelled contracts:', err);
+        this.allItems = [];
+        this.filteredItems = [];
+        this.paginatedItems = [];
+      },
+    });
   }
 
   onSearch(): void {
