@@ -100,49 +100,51 @@
     {{ "No data found" | translate }}
   </div>
   <!-- Table rows -->
-  <div class="table-row" *ngFor="let item of paginatedItems">
-    <div class="table-id">{{ item.id }}</div>
-    <div>{{ item.propertyName }}</div>
-    <div>{{ item.tenantName }}</div>
-    <div>{{ item.ownerName }}</div>
-    <div>{{ item.city }}</div>
-    <div>{{ item.propertyCategory }}</div>
-    <div>{{ item.propertyType }}</div>
-    <div>{{ item.dateAdded }}</div>
-    <div>{{ item.dateModified }}</div>
+  <ng-container *ngIf="!isLoading">
+    <div class="table-row" *ngFor="let item of paginatedItems; let i = index">
+      <div class="table-id">{{ paginationStart + i + 1 }}</div>
+      <div>{{ item.propertyName }}</div>
+      <div>{{ item.tenantName }}</div>
+      <div>{{ item.ownerName }}</div>
+      <div>{{ item.city }}</div>
+      <div>{{ item.propertyCategory }}</div>
+      <div>{{ item.propertyType }}</div>
+      <div>{{ item.dateAdded }}</div>
+      <div>{{ item.dateModified }}</div>
 
-    <div class="table-actions">
-      <!-- if admin show this  -->
-      <span
-        *ngIf="userRoleService.getCurrentRole() === 'admin'"
-        (click)="toggleDropdown(item.id)"
-      >
-        <img src="/assets/icons/more.svg" alt="more icon" />
-      </span>
+      <div class="table-actions">
+        <!-- if admin show this  -->
+        <span
+          *ngIf="userRoleService.getCurrentRole() === 'admin'"
+          (click)="toggleDropdown(item.id)"
+        >
+          <img src="/assets/icons/more.svg" alt="more icon" />
+        </span>
 
-      <ul *ngIf="activeDropdown === item.id">
-        <li (click)="approveRequest(item)">
-          {{ "Approve" | translate }}
-        </li>
-        <li (click)="openRejectModal(item)">
-          {{ "Reject" | translate }}
-        </li>
-        <li (click)="reviseRequest(item)">
-          {{ "Revise" | translate }}
-        </li>
-        <li (click)="viewDetails(item)">
-          {{ "View" | translate }}
-        </li>
-      </ul>
+        <ul *ngIf="activeDropdown === item.id">
+          <li (click)="approveRequest(item)">
+            {{ "Approve" | translate }}
+          </li>
+          <li (click)="openRejectModal(item)">
+            {{ "Reject" | translate }}
+          </li>
+          <li (click)="reviseRequest(item)">
+            {{ "Revise" | translate }}
+          </li>
+          <li (click)="viewDetails(item)">
+            {{ "View" | translate }}
+          </li>
+        </ul>
 
-      <span
-        *ngIf="userRoleService.getCurrentRole() === 'agent'"
-        (click)="viewDetails(item)"
-      >
-        <img src="/assets/icons/show-icon.svg" alt="view icon" />
-      </span>
+        <span
+          *ngIf="userRoleService.getCurrentRole() === 'agent'"
+          (click)="viewDetails(item)"
+        >
+          <img src="/assets/icons/show-icon.svg" alt="view icon" />
+        </span>
+      </div>
     </div>
-  </div>
+  </ng-container>
 
   <!-- Reject Modal -->
   <div class="modal modal-reject" *ngIf="showRejectModal">
@@ -245,7 +247,7 @@
   </div>
 
   <!-- Table pagination -->
-  <div class="table-pagination" *ngIf="!isLoading && filteredItems.length > 0">
+  <div class="table-pagination" *ngIf="filteredItems.length > 0">
     <div></div>
     <div class="table-pagination--pages">
       <div class="table-pagination--pages--count">

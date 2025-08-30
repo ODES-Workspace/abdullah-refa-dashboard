@@ -152,7 +152,8 @@ export class RentrequestsListComponent implements OnInit {
         this.apiTo = response.to ?? null;
         this.currentPage = response.current_page;
 
-        const items = this.mapApiToTableItems(response.data || []).reverse();
+        // Keep API order as-is; do not reverse so S.ON ascends naturally
+        const items = this.mapApiToTableItems(response.data || []);
         this.allItems = items;
         this.filteredItems = [...items];
         this.paginatedItems = [...items]; // server already paginated
@@ -326,17 +327,20 @@ export class RentrequestsListComponent implements OnInit {
     }
 
     this.filteredItems.sort((a, b) => {
-      const rawA = (a as any)[key] ?? '';
-      const rawB = (b as any)[key] ?? '';
-      const valueA = rawA.toString().toLowerCase();
-      const valueB = rawB.toString().toLowerCase();
+      const valueA = (a as any)[key];
+      const valueB = (b as any)[key];
 
-      if (valueA < valueB) {
-        return this.isSortAscending ? -1 : 1;
+      // Numeric compare for numeric fields like id
+      if (key === 'id') {
+        const numA = Number(valueA) || 0;
+        const numB = Number(valueB) || 0;
+        return this.isSortAscending ? numA - numB : numB - numA;
       }
-      if (valueA > valueB) {
-        return this.isSortAscending ? 1 : -1;
-      }
+
+      const strA = (valueA ?? '').toString().toLowerCase();
+      const strB = (valueB ?? '').toString().toLowerCase();
+      if (strA < strB) return this.isSortAscending ? -1 : 1;
+      if (strA > strB) return this.isSortAscending ? 1 : -1;
       return 0;
     });
 
