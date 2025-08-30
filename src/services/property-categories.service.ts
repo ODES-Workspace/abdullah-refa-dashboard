@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { environment } from '../environments/environment';
+import { UserRoleService } from './user-role.service';
 
 export interface PropertyCategory {
   id: number;
@@ -21,19 +22,25 @@ export interface PropertyCategoriesResponse {
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class PropertyCategoriesService {
   private baseUrl = environment.baseUrl;
 
-  constructor(private http: HttpClient) {}
+  constructor(
+    private http: HttpClient,
+    private userRoleService: UserRoleService
+  ) {}
 
   /**
    * Get all active property categories
    * @returns Observable of PropertyCategoriesResponse containing all active property categories
    */
   getPropertyCategories(): Observable<PropertyCategoriesResponse> {
-    return this.http.get<PropertyCategoriesResponse>(`${this.baseUrl}/agent/categories`);
+    const roleSegment = this.userRoleService.isAdmin() ? 'admin' : 'agent';
+    return this.http.get<PropertyCategoriesResponse>(
+      `${this.baseUrl}/${roleSegment}/categories`
+    );
   }
 
   /**
@@ -41,10 +48,17 @@ export class PropertyCategoriesService {
    * @param id - The ID of the category to retrieve
    * @returns Observable of PropertyCategory
    */
-  getPropertyCategoryById(id: number): Observable<PropertyCategory | undefined> {
-    return this.http.get<PropertyCategoriesResponse>(`${this.baseUrl}/agent/categories`).pipe(
-      map(response => response.data.find(category => category.id === id))
-    );
+  getPropertyCategoryById(
+    id: number
+  ): Observable<PropertyCategory | undefined> {
+    const roleSegment = this.userRoleService.isAdmin() ? 'admin' : 'agent';
+    return this.http
+      .get<PropertyCategoriesResponse>(
+        `${this.baseUrl}/${roleSegment}/categories`
+      )
+      .pipe(
+        map((response) => response.data.find((category) => category.id === id))
+      );
   }
 
   /**
@@ -52,10 +66,21 @@ export class PropertyCategoriesService {
    * @param slug - The slug of the category to retrieve
    * @returns Observable of PropertyCategory
    */
-  getPropertyCategoryBySlug(slug: string): Observable<PropertyCategory | undefined> {
-    return this.http.get<PropertyCategoriesResponse>(`${this.baseUrl}/agent/categories`).pipe(
-      map(response => response.data.find(category => category.slug.toLowerCase() === slug.toLowerCase()))
-    );
+  getPropertyCategoryBySlug(
+    slug: string
+  ): Observable<PropertyCategory | undefined> {
+    const roleSegment = this.userRoleService.isAdmin() ? 'admin' : 'agent';
+    return this.http
+      .get<PropertyCategoriesResponse>(
+        `${this.baseUrl}/${roleSegment}/categories`
+      )
+      .pipe(
+        map((response) =>
+          response.data.find(
+            (category) => category.slug.toLowerCase() === slug.toLowerCase()
+          )
+        )
+      );
   }
 
   /**
@@ -63,12 +88,21 @@ export class PropertyCategoriesService {
    * @param language - 'en' for English, 'ar' for Arabic
    * @returns Observable of PropertyCategory array with localized names
    */
-  getPropertyCategoriesByLanguage(language: 'en' | 'ar'): Observable<PropertyCategory[]> {
-    return this.http.get<PropertyCategoriesResponse>(`${this.baseUrl}/agent/categories`).pipe(
-      map(response => response.data.map(category => ({
-        ...category,
-        name: language === 'en' ? category.name_en : category.name_ar
-      })))
-    );
+  getPropertyCategoriesByLanguage(
+    language: 'en' | 'ar'
+  ): Observable<PropertyCategory[]> {
+    const roleSegment = this.userRoleService.isAdmin() ? 'admin' : 'agent';
+    return this.http
+      .get<PropertyCategoriesResponse>(
+        `${this.baseUrl}/${roleSegment}/categories`
+      )
+      .pipe(
+        map((response) =>
+          response.data.map((category) => ({
+            ...category,
+            name: language === 'en' ? category.name_en : category.name_ar,
+          }))
+        )
+      );
   }
 }

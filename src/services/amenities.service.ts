@@ -3,6 +3,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../environments/environment';
 import { map } from 'rxjs/operators';
+import { UserRoleService } from './user-role.service';
 
 export interface Amenity {
   id: number;
@@ -25,7 +26,10 @@ export interface AmenitiesResponse {
 export class AmenitiesService {
   private baseUrl = environment.baseUrl;
 
-  constructor(private http: HttpClient) {}
+  constructor(
+    private http: HttpClient,
+    private userRoleService: UserRoleService
+  ) {}
 
   /**
    * Get all active property amenities
@@ -39,9 +43,13 @@ export class AmenitiesService {
       params = params.set('search', search);
     }
 
-    return this.http.get<AmenitiesResponse>(`${this.baseUrl}/agent/amenities`, {
-      params,
-    });
+    const roleSegment = this.userRoleService.isAdmin() ? 'admin' : 'agent';
+    return this.http.get<AmenitiesResponse>(
+      `${this.baseUrl}/${roleSegment}/amenities`,
+      {
+        params,
+      }
+    );
   }
 
   /**
@@ -49,8 +57,9 @@ export class AmenitiesService {
    * @returns Observable of Amenity array
    */
   getPropertyAmenities(): Observable<Amenity[]> {
+    const roleSegment = this.userRoleService.isAdmin() ? 'admin' : 'agent';
     return this.http
-      .get<AmenitiesResponse>(`${this.baseUrl}/agent/amenities`)
+      .get<AmenitiesResponse>(`${this.baseUrl}/${roleSegment}/amenities`)
       .pipe(
         map((response) =>
           response.data.filter((amenity) => amenity.requires_distance === 0)
@@ -63,8 +72,9 @@ export class AmenitiesService {
    * @returns Observable of Amenity array
    */
   getDistanceAmenities(): Observable<Amenity[]> {
+    const roleSegment = this.userRoleService.isAdmin() ? 'admin' : 'agent';
     return this.http
-      .get<AmenitiesResponse>(`${this.baseUrl}/agent/amenities`)
+      .get<AmenitiesResponse>(`${this.baseUrl}/${roleSegment}/amenities`)
       .pipe(
         map((response) =>
           response.data.filter((amenity) => amenity.requires_distance === 1)
@@ -78,8 +88,9 @@ export class AmenitiesService {
    * @returns Observable of Amenity array
    */
   searchAmenities(searchTerm: string): Observable<Amenity[]> {
+    const roleSegment = this.userRoleService.isAdmin() ? 'admin' : 'agent';
     return this.http
-      .get<AmenitiesResponse>(`${this.baseUrl}/agent/amenities`, {
+      .get<AmenitiesResponse>(`${this.baseUrl}/${roleSegment}/amenities`, {
         params: { search: searchTerm },
       })
       .pipe(map((response) => response.data));
