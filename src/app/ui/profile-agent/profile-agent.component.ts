@@ -61,7 +61,6 @@ export class ProfileAgentComponent implements OnInit {
   ngOnInit(): void {
     this.profileAgentService.getMyProfile().subscribe({
       next: (res: AgentProfileResponse) => {
-        console.log('Agent profile:', res);
         const p = res.agent_profile;
         // Map API → UI model
         this.profileData = {
@@ -120,7 +119,6 @@ export class ProfileAgentComponent implements OnInit {
 
     this.profileAgentService.upsertMyProfile(payload).subscribe({
       next: (res) => {
-        console.log('Agent profile updated:', res);
         const p = res.agent_profile;
         if (p?.fal_document) {
           this.falLicenseDocument = p.fal_document;

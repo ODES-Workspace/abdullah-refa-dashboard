@@ -125,7 +125,6 @@ export class TableComponent implements OnInit {
     this.isLoading = true;
     this.contractsService.getContracts(page, 5).subscribe({
       next: (response) => {
-        console.log('Contracts response:', response);
         this.apiTotal = response.total;
         this.apiPerPage = response.per_page;
         this.apiLastPage = response.last_page;

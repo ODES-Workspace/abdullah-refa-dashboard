@@ -28,7 +28,6 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
       const expirationTime = parseInt(expiresIn);
       const currentTime = Date.now();
       if (currentTime > expirationTime) {
-        console.log('Token expired, logging out...');
         handle401();
         return true; // Token is expired
       }

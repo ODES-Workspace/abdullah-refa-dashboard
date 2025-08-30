@@ -130,7 +130,6 @@ export class ExistingContractComponent implements OnInit {
     const status = isAdmin ? 'active' : '';
     this.contractsService.getContracts(page, undefined, status).subscribe({
       next: (response) => {
-        console.log('Contracts response:', response);
         this.apiTotal = response.total;
         this.apiPerPage = response.per_page;
         this.apiLastPage = response.last_page;

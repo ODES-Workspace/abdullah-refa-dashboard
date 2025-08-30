@@ -83,7 +83,6 @@ export class RenewalComponent implements OnInit {
     this.isLoading = true;
     this.contractsService.getContracts(1, undefined, 'completed').subscribe({
       next: (res) => {
-        console.log('Renewal contracts (completed):', res);
         const items = (res.data || []).map((c: any) => {
           const rr = c.rent_request || {};
           const prop = rr.property || {};

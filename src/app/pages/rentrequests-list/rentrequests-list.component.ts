@@ -9,7 +9,8 @@ import { UserRoleService } from '../../../services/user-role.service';
 import { RentRequestsService } from '../../../services/rent-requests.service';
 import { PropertyCategoriesService } from '../../../services/property-categories.service';
 import { PropertyTypesService } from '../../../services/property-types.service';
-import { forkJoin } from 'rxjs';
+import { forkJoin, of } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 
 interface TableItem {
   id: number;
@@ -78,7 +79,9 @@ export class RentrequestsListComponent implements OnInit {
 
   ngOnInit(): void {
     this.isLoading = true;
-    this.loadReferenceData(() => this.loadPage(this.currentPage));
+    this.loadReferenceData(() => {
+      this.loadPage(this.currentPage);
+    });
 
     // Update labels on language toggle without reload
     this.translate.onLangChange.subscribe((event) => {
@@ -106,43 +109,42 @@ export class RentrequestsListComponent implements OnInit {
   private typesRaw: any[] = [];
 
   private mapApiToTableItems(apiData: any[]): TableItem[] {
-    return apiData.map((rr: any) => ({
-      id: rr.id,
-      propertyName:
-        this.currentLang === 'ar'
-          ? rr.property?.name_ar || rr.property?.name_en || '-'
-          : rr.property?.name_en || rr.property?.name_ar || '-',
-      propertyNameEn: rr.property?.name_en,
-      propertyNameAr: rr.property?.name_ar,
-      tenantName: rr.name || '-',
-      ownerName: rr.property?.name || '-',
-      city: rr.property?.city || '-',
-      status: rr.status || '-',
-      propertyCategoryId: rr.property?.property_category_id,
-      propertyTypeId: rr.property?.property_type_id,
-      propertyCategory:
-        (rr.property?.property_category_id &&
-          this.categoryIdToName[rr.property.property_category_id]) ||
-        rr.property?.property_category_id?.toString() ||
-        '-',
-      propertyType:
-        (rr.property?.property_type_id &&
-          this.typeIdToName[rr.property.property_type_id]) ||
-        rr.property?.property_type_id?.toString() ||
-        '-',
-      dateAdded: rr.created_at ? rr.created_at.split('T')[0] : '-',
-      dateModified: rr.updated_at ? rr.updated_at.split('T')[0] : '-',
-      rejectedReason: rr.status_description || '-',
-    }));
+    return apiData.map((rr: any) => {
+      const categoryId = rr.property?.property_category_id;
+      const typeId = rr.property?.property_type_id;
+
+      return {
+        id: rr.id,
+        propertyName:
+          this.currentLang === 'ar'
+            ? rr.property?.name_ar || rr.property?.name_en || '-'
+            : rr.property?.name_en || rr.property?.name_ar || '-',
+        propertyNameEn: rr.property?.name_en,
+        propertyNameAr: rr.property?.name_ar,
+        tenantName: rr.name || '-',
+        ownerName: rr.property?.name || '-',
+        city: rr.property?.city || '-',
+        status: rr.status || '-',
+        propertyCategoryId: categoryId,
+        propertyTypeId: typeId,
+        propertyCategory:
+          (categoryId && this.categoryIdToName[categoryId]) ||
+          categoryId?.toString() ||
+          '-',
+        propertyType:
+          (typeId && this.typeIdToName[typeId]) || typeId?.toString() || '-',
+        dateAdded: rr.created_at ? rr.created_at.split('T')[0] : '-',
+        dateModified: rr.updated_at ? rr.updated_at.split('T')[0] : '-',
+        rejectedReason: rr.status_description || '-',
+      };
+    });
   }
 
   private loadPage(page: number): void {
     this.isLoading = true;
+
     this.rentRequestsService.getRentRequests(page).subscribe({
       next: (response) => {
-        // Console for debugging as requested previously
-        console.log('Rent requests response:', response);
-
         this.apiTotal = response.total;
         this.apiPerPage = response.per_page;
         this.apiLastPage = response.last_page;
@@ -154,6 +156,17 @@ export class RentrequestsListComponent implements OnInit {
         this.allItems = items;
         this.filteredItems = [...items];
         this.paginatedItems = [...items]; // server already paginated
+
+        // If reference data wasn't loaded in time, try to load it now and reapply
+        if (
+          Object.keys(this.categoryIdToName).length === 0 ||
+          Object.keys(this.typeIdToName).length === 0
+        ) {
+          this.loadReferenceData(() => {
+            this.applyNamesFromMaps();
+          });
+        }
+
         this.isLoading = false;
       },
       error: (error) => {
@@ -172,13 +185,28 @@ export class RentrequestsListComponent implements OnInit {
   }
 
   private loadReferenceData(onComplete?: () => void): void {
-    const categories$ = this.propertyCategoriesService.getPropertyCategories();
-    const types$ = this.propertyTypesService.getPropertyTypes();
+    // Load categories and types separately to get better error information
+    const categories$ = this.propertyCategoriesService
+      .getPropertyCategories()
+      .pipe(
+        catchError((error) => {
+          console.error('Categories service error for admin:', error);
+          return of({ data: [] } as any);
+        })
+      );
+
+    const types$ = this.propertyTypesService.getPropertyTypes().pipe(
+      catchError((error) => {
+        console.error('Types service error for admin:', error);
+        return of({ data: [] } as any);
+      })
+    );
 
     forkJoin([categories$, types$]).subscribe({
       next: ([catRes, typeRes]) => {
         this.categoriesRaw = catRes?.data || [];
         this.typesRaw = typeRes?.data || [];
+
         this.rebuildLabelMaps();
 
         // If we already have items, apply names now
@@ -188,7 +216,8 @@ export class RentrequestsListComponent implements OnInit {
 
         if (onComplete) onComplete();
       },
-      error: () => {
+      error: (error) => {
+        console.error('Error loading reference data:', error);
         if (onComplete) onComplete();
       },
     });
@@ -216,20 +245,29 @@ export class RentrequestsListComponent implements OnInit {
   private rebuildLabelMaps(): void {
     this.categoryIdToName = {};
     this.categoriesRaw.forEach((c: any) => {
-      this.categoryIdToName[c.id] =
-        this.currentLang === 'ar' ? c.name_ar : c.name_en;
+      const name =
+        this.currentLang === 'ar' ? c.name_ar || c.name : c.name_en || c.name;
+      this.categoryIdToName[c.id] = name || `Category ${c.id}`;
     });
 
     this.typeIdToName = {};
     this.typesRaw.forEach((t: any) => {
-      this.typeIdToName[t.id] =
-        this.currentLang === 'ar' ? t.name_ar : t.name_en;
+      const name =
+        this.currentLang === 'ar' ? t.name_ar || t.name : t.name_en || t.name;
+      this.typeIdToName[t.id] = name || `Type ${t.id}`;
     });
   }
 
   private relocalizeLabels(): void {
     this.rebuildLabelMaps();
     this.applyNamesFromMaps();
+  }
+
+  // Method to manually refresh reference data if needed
+  refreshReferenceData(): void {
+    this.loadReferenceData(() => {
+      this.applyNamesFromMaps();
+    });
   }
 
   // Override client-side pagination helpers to reflect server-side values

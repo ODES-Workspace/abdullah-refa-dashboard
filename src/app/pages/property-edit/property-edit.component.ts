@@ -159,7 +159,6 @@ export class PropertyEditComponent implements OnInit, AfterViewInit {
     this.propertiesService
       .getAgentPropertyDetails(propertyId)
       .subscribe(({ data }) => {
-        console.log(data);
         // Patch basic fields
         // Normalize furnishment value to match select options
         const normalizedFurnish = this.normalizeFurnishment(
@@ -385,8 +384,6 @@ export class PropertyEditComponent implements OnInit, AfterViewInit {
     this.clearError();
 
     if (this.form.invalid) {
-      console.log('Form is invalid:', this.form.errors);
-
       // Mark all fields as touched to show validation errors
       Object.keys(this.form.controls).forEach((key) => {
         const control = this.form.get(key);
@@ -472,13 +469,10 @@ export class PropertyEditComponent implements OnInit, AfterViewInit {
       propertyData.images_to_remove = this.imagesToDelete;
     }
 
-    console.log('Submitting property data:', propertyData);
-
     this.propertiesService
       .updateAgentProperty(propertyId, propertyData)
       .subscribe({
         next: (response) => {
-          console.log('Property updated successfully:', response);
           // Clear local image mutation state and refresh images from response if present
           this.pendingUploads = [];
           this.imagesToDelete = [];

@@ -147,7 +147,6 @@ export class PaymentsComponent implements OnInit {
     this.isLoading = true;
     this.contractsService.getContracts(page, undefined, 'pending').subscribe({
       next: (res) => {
-        console.log('Payments contracts (pending):', res);
         this.apiTotal = res.total;
         this.apiPerPage = res.per_page;
         this.apiLastPage = res.last_page;

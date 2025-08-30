@@ -80,7 +80,6 @@ export class TerminatedComponent implements OnInit {
     this.isLoading = true;
     this.contractsService.getContracts(1, undefined, 'cancelled').subscribe({
       next: (res) => {
-        console.log('Terminated contracts (cancelled):', res);
         const items = (res.data || []).map((c: any) => {
           const rr = c.rent_request || {};
           const prop = rr.property || {};

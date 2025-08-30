@@ -67,11 +67,6 @@ export class PropertiesComponent {
       )
       .subscribe({
         next: (response: any) => {
-          console.log('API Response:', response);
-          console.log('Search term:', this.searchTerm);
-          console.log('Current page:', this.currentPage);
-          console.log('Items per page:', this.itemsPerPage);
-
           this.properties = (response?.data || []).map((item: any) => ({
             id: item.id,
             title: item.name_en,
@@ -107,12 +102,6 @@ export class PropertiesComponent {
             response?.last_page ||
             Math.ceil(this.totalItems / this.itemsPerPage);
           this.currentPage = response?.current_page || 1;
-
-          console.log('Component state after update:');
-          console.log('totalItems:', this.totalItems);
-          console.log('totalPages:', this.totalPages);
-          console.log('currentPage:', this.currentPage);
-          console.log('properties length:', this.properties.length);
 
           this.loading = false;
         },

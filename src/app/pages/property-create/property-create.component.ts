@@ -185,24 +185,14 @@ export class PropertyCreateComponent implements OnInit, AfterViewInit {
     // Load all amenities first
     this.amenitiesService.getAmenities().subscribe({
       next: (response) => {
-        console.log('All amenities loaded:', response.data);
-
         // Filter property amenities (features that don't require distance)
         this.propertyAmenities = response.data.filter(
           (amenity) => amenity.requires_distance === 0
-        );
-        console.log(
-          'Property amenities (no distance):',
-          this.propertyAmenities
         );
 
         // Filter distance amenities (nearby facilities that require distance)
         this.distanceAmenities = response.data.filter(
           (amenity) => amenity.requires_distance === 1
-        );
-        console.log(
-          'Distance amenities (with distance):',
-          this.distanceAmenities
         );
 
         // Add form controls for amenities
@@ -486,12 +476,10 @@ export class PropertyCreateComponent implements OnInit, AfterViewInit {
     if (this.propertyForm.valid) {
       try {
         const formData = await this.getFormData();
-        console.log('Submitting property:', formData);
 
         // Call the API service to create the property
         this.propertiesService.createProperty(formData).subscribe({
           next: (response) => {
-            console.log('Property created successfully:', response);
             const successMsg =
               this.currentLanguage === 'ar'
                 ? 'تم إنشاء العقار بنجاح'
@@ -525,9 +513,7 @@ export class PropertyCreateComponent implements OnInit, AfterViewInit {
     this.router.navigate(['/agent/properties']);
   }
 
-  onSaveDraft(): void {
-    console.log('Saving as draft:', this.propertyForm.value);
-  }
+  onSaveDraft(): void {}
 
   onFileSelected(event: Event): void {
     const input = event.target as HTMLInputElement;

@@ -40,7 +40,6 @@ export class PropertyDetailsComponent implements OnInit {
         next: (property) => {
           if (property && property.data) {
             this.property = property.data;
-            console.log('Agent Property Details:', property.data);
           } else {
             this.error = 'Property not found';
           }

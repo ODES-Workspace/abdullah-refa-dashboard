@@ -286,7 +286,6 @@ export class SidebarComponent implements OnInit {
 
     this.agentService.logoutAgent().subscribe({
       next: (response) => {
-        console.log('Logout successful:', response.message);
         this.isLoading = false;
         this.showLogoutModal = false;
         this.router.navigate(['/login']);

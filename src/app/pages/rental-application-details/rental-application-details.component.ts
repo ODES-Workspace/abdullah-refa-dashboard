@@ -110,7 +110,6 @@ export class RentalApplicationDetailsComponent implements OnInit {
           .getRentRequestById(this.applicationId)
           .subscribe({
             next: (res) => {
-              console.log('Rent request details:', res);
               this.rentRequest = res;
               this.updatePropertyTypeLabel();
             },

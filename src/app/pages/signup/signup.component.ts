@@ -123,7 +123,6 @@ export class SignupComponent implements OnInit {
 
     this.agentService.registerAgent(registrationData).subscribe({
       next: (response) => {
-        console.log(response);
         this.isLoading = false;
         this.successMessage = response.message;
         setTimeout(() => {
