@@ -7,6 +7,7 @@ import {
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { environment } from '../environments/environment';
+import { UserRoleService } from './user-role.service';
 
 // Interfaces for type safety
 export interface RentRequest {
@@ -116,7 +117,10 @@ export interface RentRequestsResponse {
 export class RentRequestsService {
   private readonly baseUrl = environment.baseUrl;
 
-  constructor(private http: HttpClient) {}
+  constructor(
+    private http: HttpClient,
+    private userRoleService: UserRoleService
+  ) {}
 
   /**
    * List all rent requests for admin
@@ -128,7 +132,8 @@ export class RentRequestsService {
     page: number = 1,
     perPage?: number
   ): Observable<RentRequestsResponse> {
-    const url = `${this.baseUrl}/agent/rent-requests`;
+    const roleSegment = this.userRoleService.isAdmin() ? 'admin' : 'agent';
+    const url = `${this.baseUrl}/${roleSegment}/rent-requests`;
 
     let params = new HttpParams();
     if (page) {
@@ -149,7 +154,8 @@ export class RentRequestsService {
    * @returns Observable of the rent request details
    */
   getRentRequestById(id: number): Observable<any> {
-    const url = `${this.baseUrl}/agent/rent-requests/${id}`;
+    const roleSegment = this.userRoleService.isAdmin() ? 'admin' : 'agent';
+    const url = `${this.baseUrl}/${roleSegment}/rent-requests/${id}`;
     return this.http
       .get<any>(url)
       .pipe(catchError((error: HttpErrorResponse) => this.handleError(error)));
