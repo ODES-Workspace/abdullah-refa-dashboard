@@ -11,6 +11,7 @@ import { UserRoleService } from '../../../services/user-role.service';
 import { PropertyTypesService } from '../../../services/property-types.service';
 import { CitiesService, City } from '../../../services/cities.service';
 import { ToastService } from '../../../services/toast.service';
+import { environment } from '../../../environments/environment';
 
 interface ScheduleItem {
   dueDate: string;
@@ -61,7 +62,7 @@ export class RentalApplicationDetailsComponent implements OnInit {
   private typeIdToName: { [id: number]: string } = {};
   private typesRaw: any[] = [];
   private cityIdToName: { [id: number]: string } = {};
-  private citiesRaw: City[] = [];
+  citiesRaw: City[] = [];
   private currentLang: 'en' | 'ar' =
     (localStorage.getItem('lang') as 'en' | 'ar') || 'en';
   activeTab: 'overview' | 'assessment' | 'schedule' = this.getStoredActiveTab();
@@ -221,6 +222,10 @@ export class RentalApplicationDetailsComponent implements OnInit {
     const id = Number(cityId);
     if (Number.isNaN(id)) return '-';
     return this.cityIdToName[id] || '-';
+  }
+
+  getLocalizedCityName(city: City): string {
+    return this.currentLang === 'ar' ? city.name_ar : city.name_en;
   }
 
   private hydrateApplicationFromRentRequest(): void {
@@ -521,13 +526,11 @@ export class RentalApplicationDetailsComponent implements OnInit {
 
   // ======== Edit helpers: show existing doc links / selected file names ========
   get currentIncomeDocUrl(): string | null {
-    const path = this.rentRequest?.proof_of_income_document;
-    return path ? `/${path}` : null;
+    return this.getDocumentUrl(this.rentRequest?.proof_of_income_document);
   }
 
   get currentCreditDocUrl(): string | null {
-    const path = this.rentRequest?.credit_score_document;
-    return path ? `/${path}` : null;
+    return this.getDocumentUrl(this.rentRequest?.credit_score_document);
   }
 
   private basename(path: string | null | undefined): string | null {
@@ -549,5 +552,17 @@ export class RentalApplicationDetailsComponent implements OnInit {
   get currentCreditDocName(): string | null {
     if (this.creditDocFile) return this.creditDocFile.name;
     return this.basename(this.rentRequest?.credit_score_document);
+  }
+
+  // Build absolute URL for backend-served documents
+  private getDocumentUrl(path: string | null | undefined): string | null {
+    if (!path) return null;
+    const trimmed = path.trim();
+    if (/^https?:\/\//i.test(trimmed)) return trimmed;
+    // Convert https://dev.refa.sa/api -> https://dev.refa.sa/
+    const apiBase = environment.baseUrl || '';
+    const filesBase = apiBase.replace(/\/api\/?$/, '/');
+    const normalized = trimmed.replace(/^\/?/, '');
+    return `${filesBase}${normalized}`;
   }
 }

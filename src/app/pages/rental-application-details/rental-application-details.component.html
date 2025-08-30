@@ -230,7 +230,11 @@
             </div>
             <div class="application-assessment-card--content--item">
               <span> {{ "Location" | translate }} </span>
-              <input type="number" [(ngModel)]="reviseForm!.city_id" />
+              <select [(ngModel)]="reviseForm!.city_id">
+                <option *ngFor="let c of citiesRaw" [ngValue]="c.id">
+                  {{ getLocalizedCityName(c) }}
+                </option>
+              </select>
             </div>
             <div class="application-assessment-card--content--item">
               <span> {{ "Date of birth" | translate }} </span>
@@ -295,10 +299,7 @@
             <ng-container
               *ngIf="rentRequest?.proof_of_income_document; else noIncomeDoc"
             >
-              <a
-                [href]="'/' + rentRequest?.proof_of_income_document"
-                target="_blank"
-              >
+              <a [href]="currentIncomeDocUrl" target="_blank">
                 {{ "Income Certificate" | translate }}
               </a>
             </ng-container>
@@ -450,10 +451,7 @@
             <ng-container
               *ngIf="rentRequest?.credit_score_document; else noCreditDoc"
             >
-              <a
-                [href]="'/' + rentRequest?.credit_score_document"
-                target="_blank"
-              >
+              <a [href]="currentCreditDocUrl" target="_blank">
                 {{ "Credit Score Document" | translate }}
               </a>
             </ng-container>
