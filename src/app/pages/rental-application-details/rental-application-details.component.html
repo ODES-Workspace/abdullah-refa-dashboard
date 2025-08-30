@@ -173,7 +173,10 @@
           <img src="/assets/icons/tenant-icon.svg" alt="" />
           <span> {{ "Personal Details" | translate }} </span>
         </div>
-        <div class="application-assessment-card--content">
+        <div
+          class="application-assessment-card--content"
+          *ngIf="!isEditingAssessment; else personalEdit"
+        >
           <div class="application-assessment-card--content--item">
             <span> {{ "Full Name" | translate }} </span>
             {{ rentRequest?.name || "-" }}
@@ -211,6 +214,45 @@
             {{ rentRequest?.national_id || "-" }}
           </div>
         </div>
+        <ng-template #personalEdit>
+          <div class="application-assessment-card--content">
+            <div class="application-assessment-card--content--item">
+              <span> {{ "Full Name" | translate }} </span>
+              <input type="text" [(ngModel)]="reviseForm!.name" />
+            </div>
+            <div class="application-assessment-card--content--item">
+              <span> {{ "Mobile Number" | translate }} </span>
+              <input type="text" [(ngModel)]="reviseForm!.phone" />
+            </div>
+            <div class="application-assessment-card--content--item">
+              <span> {{ "Email" | translate }} </span>
+              <input type="email" [(ngModel)]="reviseForm!.email" />
+            </div>
+            <div class="application-assessment-card--content--item">
+              <span> {{ "Location" | translate }} </span>
+              <input type="number" [(ngModel)]="reviseForm!.city_id" />
+            </div>
+            <div class="application-assessment-card--content--item">
+              <span> {{ "Date of birth" | translate }} </span>
+              <input type="date" [(ngModel)]="reviseForm!.date_of_birth" />
+            </div>
+            <div class="application-assessment-card--content--item">
+              <span> {{ "Nationality" | translate }} </span>
+              <input type="number" [(ngModel)]="reviseForm!.nationality" />
+            </div>
+            <div class="application-assessment-card--content--item">
+              <span> {{ "No. of members" | translate }} </span>
+              <input
+                type="number"
+                [(ngModel)]="reviseForm!.number_of_family_members"
+              />
+            </div>
+            <div class="application-assessment-card--content--item">
+              <span> {{ "National ID Number" | translate }} </span>
+              <input type="text" [(ngModel)]="reviseForm!.national_id" />
+            </div>
+          </div>
+        </ng-template>
       </div>
       <!-- card 2 -->
       <div class="application-assessment-card">
@@ -218,7 +260,10 @@
           <img src="/assets/icons/employment-icon.svg" alt="" />
           <span> {{ "Employment Details" | translate }} </span>
         </div>
-        <div class="application-assessment-card--content">
+        <div
+          class="application-assessment-card--content"
+          *ngIf="!isEditingAssessment; else employmentEdit"
+        >
           <div class="application-assessment-card--content--checkgroup">
             <div class="application-assessment-card--content--checkitem">
               <span [class.active]="isEmployed"></span>
@@ -279,6 +324,116 @@
             </div>
           </div>
         </div>
+        <ng-template #employmentEdit>
+          <div class="application-assessment-card--content">
+            <div class="application-assessment-card--content--item">
+              <span> {{ "Work Start Date" | translate }} </span>
+              <input type="date" [(ngModel)]="reviseForm!.job_start_date" />
+            </div>
+            <div class="application-assessment-card--content--item">
+              <span> {{ "Name of Working place" | translate }} </span>
+              <input type="text" [(ngModel)]="reviseForm!.working_place" />
+            </div>
+            <div class="application-assessment-card--content--item">
+              <span> {{ "Job Sector" | translate }} </span>
+              <input type="text" [(ngModel)]="reviseForm!.sector" />
+            </div>
+            <div class="application-assessment-card--content--item">
+              <span> {{ "Sub Sector" | translate }} </span>
+              <input type="text" [(ngModel)]="reviseForm!.subsector" />
+            </div>
+            <div class="application-assessment-card--content--item">
+              <span> {{ "Job Title" | translate }} </span>
+              <input type="text" [(ngModel)]="reviseForm!.job_title" />
+            </div>
+            <div class="application-assessment-card--content--item">
+              <span> {{ "Income Certificate" | translate }} </span>
+              <input
+                type="file"
+                (change)="onIncomeDocSelected($event)"
+                accept=".pdf,.jpg,.jpeg,.png"
+              />
+              <div
+                class="doc-row"
+                *ngIf="currentIncomeDocName || currentIncomeDocUrl"
+              >
+                <ng-container *ngIf="incomeDocFile; else existingIncomeDoc">
+                  <span class="doc-label">Selected:</span>
+                  <span>{{ currentIncomeDocName }}</span>
+                </ng-container>
+                <ng-template #existingIncomeDoc>
+                  <span class="doc-label">Current:</span>
+                  <a
+                    *ngIf="currentIncomeDocUrl"
+                    [href]="currentIncomeDocUrl"
+                    target="_blank"
+                    >Show Document</a
+                  >
+                </ng-template>
+              </div>
+            </div>
+            <div class="application-assessment-card--content--item">
+              <span> {{ "Credit Score Document" | translate }} </span>
+              <input
+                type="file"
+                (change)="onCreditDocSelected($event)"
+                accept=".pdf,.jpg,.jpeg,.png"
+              />
+              <div
+                class="doc-row"
+                *ngIf="currentCreditDocName || currentCreditDocUrl"
+              >
+                <ng-container *ngIf="creditDocFile; else existingCreditDoc">
+                  <span class="doc-label">Selected:</span>
+                  <span>{{ currentCreditDocName }}</span>
+                </ng-container>
+                <ng-template #existingCreditDoc>
+                  <span class="doc-label">Current:</span>
+                  <a
+                    *ngIf="currentCreditDocUrl"
+                    [href]="currentCreditDocUrl"
+                    target="_blank"
+                    >Show Document</a
+                  >
+                </ng-template>
+              </div>
+            </div>
+            <div class="application-assessment-card--content--check">
+              <p>{{ "Do you have any existing debts ?" | translate }}</p>
+              <div class="application-assessment-card--content--checkgroup">
+                <div class="application-assessment-card--content--checkitem">
+                  <span [class.active]="reviseForm!.has_debts === true"></span>
+                  <span>{{ "Yes" | translate }}</span>
+                </div>
+                <div class="application-assessment-card--content--checkitem">
+                  <span [class.active]="reviseForm!.has_debts === false"></span>
+                  <span>{{ "No" | translate }}</span>
+                </div>
+              </div>
+              <div class="application-assessment-card--content--item">
+                <span> {{ "Has Debts" | translate }} </span>
+                <select [(ngModel)]="reviseForm!.has_debts">
+                  <option [ngValue]="true">{{ "Yes" | translate }}</option>
+                  <option [ngValue]="false">{{ "No" | translate }}</option>
+                </select>
+              </div>
+              <div class="application-assessment-card--content--item">
+                <span> {{ "Debts Monthly Amount" | translate }} </span>
+                <input
+                  type="number"
+                  [(ngModel)]="reviseForm!.debts_monthly_amount"
+                />
+              </div>
+              <div class="application-assessment-card--content--item">
+                <span> {{ "Debts Remaining Months" | translate }} </span>
+                <input
+                  type="number"
+                  [(ngModel)]="reviseForm!.debts_remaining_months"
+                />
+              </div>
+            </div>
+          </div>
+        </ng-template>
       </div>
       <!-- card 3 -->
       <div class="application-assessment-card">
@@ -286,7 +441,10 @@
           <img src="/assets/icons/employment-icon.svg" alt="" />
           <span> {{ "Employment Details" | translate }} </span>
         </div>
-        <div class="application-assessment-card--content">
+        <div
+          class="application-assessment-card--content"
+          *ngIf="!isEditingAssessment; else financeEdit"
+        >
           <!-- Credit Score Document -->
           <div class="application-assessment-csd">
             <ng-container
@@ -332,7 +490,79 @@
             {{ "SAR" | translate }}
           </div>
         </div>
+        <ng-template #financeEdit>
+          <div class="application-assessment-card--content">
+            <div class="application-assessment-card--content--item">
+              <span> {{ "Monthly Income" | translate }} </span>
+              <input type="number" [(ngModel)]="reviseForm!.monthly_income" />
+            </div>
+            <div class="application-assessment-card--content--item">
+              <span> {{ "Employer Name" | translate }} </span>
+              <input type="text" [(ngModel)]="reviseForm!.employer_name" />
+            </div>
+            <div class="application-assessment-card--content--item">
+              <span> {{ "Expected Monthly Expenses" | translate }} </span>
+              <input
+                type="number"
+                [(ngModel)]="reviseForm!.expected_monthly_cost"
+              />
+            </div>
+            <div class="application-assessment-card--content--item">
+              <span>{{ "No of Installments" | translate }} </span>
+              <input
+                type="number"
+                [(ngModel)]="reviseForm!.number_of_installments"
+              />
+            </div>
+            <div class="application-assessment-card--content--item">
+              <span>{{ "Monthly Installment" | translate }} </span>
+              <input
+                type="number"
+                [(ngModel)]="reviseForm!.monthly_installment"
+              />
+            </div>
+            <div class="application-assessment-card--content--item">
+              <span>{{ "Down Payment" | translate }} </span>
+              <input type="number" [(ngModel)]="reviseForm!.down_payment" />
+            </div>
+            <div class="application-assessment-card--content--item">
+              <span>{{ "Agent Fees" | translate }} </span>
+              <input
+                type="number"
+                [(ngModel)]="reviseForm!.additional_charges.agent_fees"
+              />
+            </div>
+            <div class="application-assessment-card--content--item">
+              <span>{{ "Eijar Fees" | translate }} </span>
+              <input
+                type="number"
+                [(ngModel)]="reviseForm!.additional_charges.eijar_fees"
+              />
+            </div>
+            <div class="application-assessment-card--content--item">
+              <span>{{ "Processing Fees" | translate }} </span>
+              <input
+                type="number"
+                [(ngModel)]="reviseForm!.additional_charges.processing_fees"
+              />
+            </div>
+          </div>
+        </ng-template>
       </div>
+    </div>
+    <div
+      class="application-assessment-actions"
+      *ngIf="userRoleService.getCurrentRole() === 'admin'"
+    >
+      <button *ngIf="!isEditingAssessment" (click)="startEditingAssessment()">
+        {{ "Edit" | translate }}
+      </button>
+      <ng-container *ngIf="isEditingAssessment">
+        <button (click)="cancelEditingAssessment()">
+          {{ "Cancel" | translate }}
+        </button>
+        <button (click)="saveAssessment()">{{ "Update" | translate }}</button>
+      </ng-container>
     </div>
   </div>
   <!-- schedule -->

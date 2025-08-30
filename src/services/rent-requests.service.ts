@@ -111,6 +111,46 @@ export interface RentRequestsResponse {
   total: number;
 }
 
+// Payload for revise rent request endpoint
+export interface ReviseRentRequestPayload {
+  id: number;
+  created_by: number;
+  property_id: number;
+  name: string;
+  email: string;
+  phone: string;
+  city_id: number;
+  date_of_birth: string; // ISO string
+  nationality: number;
+  number_of_family_members: number;
+  national_id: string;
+  job_title: string;
+  job_start_date: string; // ISO string
+  employer_name: string;
+  working_place?: string; // optional UI-only field
+  sector: string;
+  subsector: string;
+  proof_of_income_document: string;
+  credit_score_document: string;
+  has_debts: boolean;
+  debts_monthly_amount: string | number | null;
+  debts_remaining_months: number | null;
+  monthly_income: string | number;
+  expected_monthly_cost: string | number;
+  number_of_installments: number;
+  additional_charges: {
+    agent_fees: number | string;
+    eijar_fees: string | number;
+    processing_fees: string | number;
+  };
+  down_payment: string | number;
+  status: string;
+  status_description: string | null;
+  created_at: string; // ISO string
+  updated_at: string; // ISO string
+  monthly_installment?: number;
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -181,6 +221,33 @@ export class RentRequestsService {
     payload: Record<string, any> = {}
   ): Observable<any> {
     const url = `${this.baseUrl}/admin/rent-requests/${id}/reject`;
+    return this.http
+      .put<any>(url, payload)
+      .pipe(catchError((error: HttpErrorResponse) => this.handleError(error)));
+  }
+
+  /**
+   * Revise a rent request (admin only)
+   * @param id Rent request ID
+   * @param payload Full payload for revising the rent request
+   */
+  reviseRentRequest(
+    id: number,
+    payload: ReviseRentRequestPayload | FormData
+  ): Observable<any> {
+    const url = `${this.baseUrl}/admin/rent-requests/${id}/revise`;
+    // When uploading files, use POST with method override so the backend receives files
+    if (payload instanceof FormData) {
+      if (!payload.has('_method')) {
+        payload.append('_method', 'PUT');
+      }
+      return this.http
+        .post<any>(url, payload)
+        .pipe(
+          catchError((error: HttpErrorResponse) => this.handleError(error))
+        );
+    }
+
     return this.http
       .put<any>(url, payload)
       .pipe(catchError((error: HttpErrorResponse) => this.handleError(error)));

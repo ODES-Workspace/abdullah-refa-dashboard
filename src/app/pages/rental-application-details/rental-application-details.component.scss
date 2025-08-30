@@ -255,9 +255,38 @@
             padding: 0 3px;
             width: fit-content;
           }
+
+          .doc-row {
+            margin-top: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            a,
+            span {
+              font-size: 12px;
+              position: static;
+              transform: none;
+              background: none;
+              padding: 0;
+              color: #001f7a;
+              text-decoration: underline;
+              cursor: pointer;
+              display: inline-block;
+              text-wrap: wrap;
+            }
+
+            .doc-label {
+              color: #404040;
+              text-decoration: none;
+              cursor: default;
+            }
+          }
         }
 
         &--check {
+          display: flex;
+          flex-direction: column;
+          gap: 10px;
           p {
             font-size: 13px;
             line-height: 14px;
@@ -326,6 +355,26 @@
       display: flex;
       align-items: center;
       justify-content: center;
+    }
+
+    &-actions {
+      display: flex;
+      gap: 10px;
+      padding: 12px 0 0 0;
+
+      button {
+        padding: 8px 16px;
+        border-radius: 6px;
+        border: 1px solid #1951fd;
+        background-color: #1951fd;
+        color: #ffffff;
+        cursor: pointer;
+
+        &:first-child {
+          background-color: transparent;
+          color: #1951fd;
+        }
+      }
     }
   }
 
