@@ -1,10 +1,11 @@
 import { NgFor, NgIf } from '@angular/common';
-import { Component, HostListener } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { Router } from '@angular/router';
 import { ToastService } from '../../../services/toast.service';
 import { ToastComponent } from '../../ui/toast/toast.component';
+import { ContractsService } from '../../../services/contracts.service';
 
 interface TableItem {
   id: number;
@@ -24,27 +25,14 @@ interface TableItem {
   templateUrl: './payments.component.html',
   styleUrl: './payments.component.scss',
 })
-export class PaymentsComponent {
-  allItems: TableItem[] = [
-    {
-      id: 1,
-      tenantName: 'Ahmed bin Said',
-      tenantMobile: '+966558441496',
-      ownerName: 'Hamill',
-      ownerMobile: '+966558441496',
-      propertyType: 'Apartment',
-      location: 'Thaqif',
-      startDate: '2023-01-01',
-      endOfContract: '2023-12-31',
-      status: 'Approved',
-    },
-  ];
+export class PaymentsComponent implements OnInit {
+  allItems: TableItem[] = [];
 
   searchTerm = '';
   filteredItems: TableItem[] = [...this.allItems];
   paginatedItems: TableItem[] = [];
   currentPage = 1;
-  itemsPerPage = 10;
+  itemsPerPage = 10; // local UI control (unused when relying solely on server)
   showViewModal = false;
   showEditModal = false;
   selectedTenant: TableItem | null = null;
@@ -63,8 +51,16 @@ export class PaymentsComponent {
   showReviseModal = false;
   editedItem: TableItem | null = null;
 
+  // Server-side pagination metadata
+  isLoading = false;
+  apiTotal: number = 0;
+  apiPerPage: number = 10;
+  apiLastPage: number = 1;
+  apiFrom: number | null = null;
+  apiTo: number | null = null;
+
   get totalPages(): number {
-    return Math.ceil(this.filteredItems.length / this.itemsPerPage);
+    return this.apiLastPage || 1;
   }
 
   get totalPagesArray(): number[] {
@@ -72,18 +68,74 @@ export class PaymentsComponent {
   }
 
   get paginationStart(): number {
-    return (this.currentPage - 1) * this.itemsPerPage;
+    if (this.apiTotal <= 0 || this.apiPerPage <= 0) return 0;
+    return (this.currentPage - 1) * this.apiPerPage;
   }
 
   get paginationEnd(): number {
-    return Math.min(
-      this.paginationStart + this.itemsPerPage,
-      this.filteredItems.length
-    );
+    if (this.apiTotal <= 0 || this.apiPerPage <= 0) return 0;
+    return Math.min(this.currentPage * this.apiPerPage, this.apiTotal);
   }
 
-  constructor(private router: Router, private toastService: ToastService) {
-    this.updatePagination();
+  constructor(
+    private router: Router,
+    private toastService: ToastService,
+    private contractsService: ContractsService
+  ) {}
+
+  ngOnInit(): void {
+    this.loadPage(1);
+  }
+
+  private loadPage(page: number): void {
+    this.isLoading = true;
+    this.contractsService.getContracts(page, undefined, 'pending').subscribe({
+      next: (res) => {
+        console.log('Payments contracts (pending):', res);
+        this.apiTotal = res.total;
+        this.apiPerPage = res.per_page;
+        this.apiLastPage = res.last_page;
+        this.apiFrom = res.from ?? null;
+        this.apiTo = res.to ?? null;
+        this.currentPage = res.current_page;
+
+        const items = (res.data || []).map((c: any) => {
+          const rr = c.rent_request || {};
+          const prop = rr.property || {};
+          return {
+            id: c.id,
+            tenantName: rr.name || '-',
+            tenantMobile: rr.phone || '-',
+            ownerName: '-',
+            ownerMobile: '-',
+            propertyType:
+              prop.property_type_id != null
+                ? String(prop.property_type_id)
+                : '-',
+            location: prop.city || '-',
+            startDate: c.start_date || '-',
+            endOfContract: c.end_date || '-',
+            status: c.status || '-',
+          } as TableItem;
+        });
+
+        this.allItems = items;
+        this.filteredItems = [...items];
+        this.paginatedItems = [...items];
+        this.isLoading = false;
+      },
+      error: (err) => {
+        console.error('Failed to fetch pending contracts:', err);
+        this.allItems = [];
+        this.filteredItems = [];
+        this.paginatedItems = [];
+        this.apiTotal = 0;
+        this.apiLastPage = 1;
+        this.apiFrom = null;
+        this.apiTo = null;
+        this.isLoading = false;
+      },
+    });
   }
 
   onSearch(): void {
@@ -130,21 +182,20 @@ export class PaymentsComponent {
 
   prevPage(): void {
     if (this.currentPage > 1) {
-      this.currentPage--;
-      this.updatePagination();
+      this.loadPage(this.currentPage - 1);
     }
   }
 
   nextPage(): void {
     if (this.currentPage < this.totalPages) {
-      this.currentPage++;
-      this.updatePagination();
+      this.loadPage(this.currentPage + 1);
     }
   }
 
   goToPage(page: number): void {
-    this.currentPage = page;
-    this.updatePagination();
+    if (page >= 1 && page <= this.totalPages) {
+      this.loadPage(page);
+    }
   }
 
   toggleDropdown(itemId: number): void {

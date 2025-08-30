@@ -103,42 +103,47 @@
     </div>
   </div>
 
+  <!-- Loading state -->
+  <div *ngIf="isLoading" class="loading">{{ "Loading..." | translate }}</div>
+
   <!-- No data -->
-  <div *ngIf="filteredItems.length === 0" class="table-no-data">
+  <div *ngIf="!isLoading && filteredItems.length === 0" class="table-no-data">
     {{ "No data found" | translate }}
   </div>
   <!-- Table rows -->
-  <div class="table-row" *ngFor="let item of paginatedItems">
-    <div>{{ item.tenantName }}</div>
-    <div>{{ item.tenantMobile }}</div>
-    <div>{{ item.ownerName }}</div>
-    <div>{{ item.ownerMobile }}</div>
-    <div>{{ item.propertyType }}</div>
-    <div>{{ item.location }}</div>
-    <div>{{ item.startDate }}</div>
-    <div>{{ item.endOfContract }}</div>
+  <ng-container *ngIf="!isLoading">
+    <div class="table-row" *ngFor="let item of paginatedItems">
+      <div>{{ item.tenantName }}</div>
+      <div>{{ item.tenantMobile }}</div>
+      <div>{{ item.ownerName }}</div>
+      <div>{{ item.ownerMobile }}</div>
+      <div>{{ item.propertyType }}</div>
+      <div>{{ item.location }}</div>
+      <div>{{ item.startDate }}</div>
+      <div>{{ item.endOfContract }}</div>
 
-    <div class="table-actions">
-      <span (click)="toggleDropdown(item.id)">
-        <img src="/assets/icons/more.svg" alt="more icon" />
-      </span>
+      <div class="table-actions">
+        <span (click)="toggleDropdown(item.id)">
+          <img src="/assets/icons/more.svg" alt="more icon" />
+        </span>
 
-      <ul *ngIf="activeDropdown === item.id">
-        <li (click)="approveRequest(item)">
-          {{ "Approve" | translate }}
-        </li>
-        <li (click)="openRejectModal(item)">
-          {{ "Reject" | translate }}
-        </li>
-        <li (click)="reviseRequest(item)">
-          {{ "Revise" | translate }}
-        </li>
-        <li (click)="viewDetails(item)">
-          {{ "View" | translate }}
-        </li>
-      </ul>
+        <ul *ngIf="activeDropdown === item.id">
+          <li (click)="approveRequest(item)">
+            {{ "Approve" | translate }}
+          </li>
+          <li (click)="openRejectModal(item)">
+            {{ "Reject" | translate }}
+          </li>
+          <li (click)="reviseRequest(item)">
+            {{ "Revise" | translate }}
+          </li>
+          <li (click)="viewDetails(item)">
+            {{ "View" | translate }}
+          </li>
+        </ul>
+      </div>
     </div>
-  </div>
+  </ng-container>
 
   <!-- Reject Modal -->
   <div class="modal modal-reject" *ngIf="showRejectModal">
@@ -286,23 +291,13 @@
 
   <!-- Table pagination -->
   <div class="table-pagination" *ngIf="filteredItems.length > 0">
-    <div class="table-pagination--show">
-      <span> {{ "Show" | translate }} </span>
-      <select [(ngModel)]="itemsPerPage" (change)="updatePagination()">
-        <option *ngFor="let num of [10, 20, 30]" [value]="num">
-          {{ num }}
-        </option>
-      </select>
-      <span> {{ "per page" | translate }} </span>
-    </div>
-
+    <div></div>
     <div class="table-pagination--pages">
       <div class="table-pagination--pages--count">
         {{ paginationStart + 1 }}-{{ paginationEnd }}
         {{ "of" | translate }}
-        {{ filteredItems.length }}
+        {{ apiTotal }}
       </div>
-
       <div class="table-pagination--pages--buttons" dir="ltr">
         <button (click)="prevPage()" [disabled]="currentPage === 1">
           <img src="/assets/icons/arrow-left.svg" alt="prev icon" />
