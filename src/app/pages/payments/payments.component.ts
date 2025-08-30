@@ -1,17 +1,19 @@
 import { NgFor, NgIf } from '@angular/common';
 import { Component, HostListener, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { Router } from '@angular/router';
 import { ToastService } from '../../../services/toast.service';
 import { ToastComponent } from '../../ui/toast/toast.component';
 import { ContractsService } from '../../../services/contracts.service';
+import { PropertyTypesService } from '../../../services/property-types.service';
 
 interface TableItem {
   id: number;
   tenantName: string;
   ownerName: string;
   propertyType: string;
+  propertyTypeId?: number;
   tenantMobile: string;
   ownerMobile: string;
   location: string;
@@ -80,11 +82,65 @@ export class PaymentsComponent implements OnInit {
   constructor(
     private router: Router,
     private toastService: ToastService,
-    private contractsService: ContractsService
+    private contractsService: ContractsService,
+    private propertyTypesService: PropertyTypesService,
+    private translate: TranslateService
   ) {}
 
   ngOnInit(): void {
-    this.loadPage(1);
+    // Load types first then load contracts
+    this.loadTypes(() => this.loadPage(1));
+
+    // React to language changes
+    this.translate.onLangChange.subscribe((event) => {
+      const newLang = event.lang === 'ar' ? 'ar' : 'en';
+      if (newLang !== this.currentLang) {
+        this.currentLang = newLang;
+        this.rebuildTypeMap();
+        this.applyTypeNamesFromMap();
+      }
+    });
+  }
+
+  // Localization maps for property types
+  private currentLang: 'en' | 'ar' =
+    (localStorage.getItem('lang') as 'en' | 'ar') || 'en';
+  private typesRaw: any[] = [];
+  private typeIdToName: { [id: number]: string } = {};
+
+  private loadTypes(onComplete?: () => void): void {
+    this.propertyTypesService.getPropertyTypes().subscribe({
+      next: (res: any) => {
+        this.typesRaw = res?.data || [];
+        this.rebuildTypeMap();
+        if (onComplete) onComplete();
+      },
+      error: () => {
+        this.typesRaw = [];
+        this.typeIdToName = {};
+        if (onComplete) onComplete();
+      },
+    });
+  }
+
+  private rebuildTypeMap(): void {
+    this.typeIdToName = {};
+    this.typesRaw.forEach((t: any) => {
+      this.typeIdToName[t.id] =
+        this.currentLang === 'ar' ? t.name_ar : t.name_en;
+    });
+  }
+
+  private applyTypeNamesFromMap(): void {
+    if (!this.allItems.length) return;
+    this.allItems = this.allItems.map((it) => ({
+      ...it,
+      propertyType:
+        (it.propertyTypeId && this.typeIdToName[it.propertyTypeId]) ||
+        it.propertyType,
+    }));
+    this.filteredItems = [...this.allItems];
+    this.paginatedItems = [...this.allItems];
   }
 
   private loadPage(page: number): void {
@@ -108,10 +164,14 @@ export class PaymentsComponent implements OnInit {
             tenantMobile: rr.phone || '-',
             ownerName: '-',
             ownerMobile: '-',
+            propertyTypeId: prop.property_type_id,
             propertyType:
-              prop.property_type_id != null
+              (prop.property_type_id &&
+                this.typeIdToName[prop.property_type_id]) ||
+              (prop.property_type_id != null
                 ? String(prop.property_type_id)
-                : '-',
+                : '-') ||
+              '-',
             location: prop.city || '-',
             startDate: c.start_date || '-',
             endOfContract: c.end_date || '-',
@@ -158,8 +218,10 @@ export class PaymentsComponent implements OnInit {
     }
 
     this.filteredItems.sort((a, b) => {
-      const valueA = a[key].toString().toLowerCase();
-      const valueB = b[key].toString().toLowerCase();
+      const rawA = (a as any)[key] ?? '';
+      const rawB = (b as any)[key] ?? '';
+      const valueA = rawA.toString().toLowerCase();
+      const valueB = rawB.toString().toLowerCase();
 
       if (valueA < valueB) {
         return this.isSortAscending ? -1 : 1;

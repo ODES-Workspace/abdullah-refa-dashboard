@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { environment } from '../environments/environment';
+import { UserRoleService } from './user-role.service';
 
 export interface PropertyCategory {
   id: number;
@@ -35,15 +36,19 @@ export interface PropertyTypesResponse {
 export class PropertyTypesService {
   private baseUrl = environment.baseUrl;
 
-  constructor(private http: HttpClient) {}
+  constructor(
+    private http: HttpClient,
+    private userRoleService: UserRoleService
+  ) {}
 
   /**
    * Get all active property types
    * @returns Observable of PropertyTypesResponse containing all active property types with their category information
    */
   getPropertyTypes(): Observable<PropertyTypesResponse> {
+    const roleSegment = this.userRoleService.isAdmin() ? 'admin' : 'agent';
     return this.http.get<PropertyTypesResponse>(
-      `${this.baseUrl}/agent/property-types`
+      `${this.baseUrl}/${roleSegment}/property-types`
     );
   }
 
@@ -53,8 +58,11 @@ export class PropertyTypesService {
    * @returns Observable of PropertyType array filtered by category
    */
   getPropertyTypesByCategory(categorySlug: string): Observable<PropertyType[]> {
+    const roleSegment = this.userRoleService.isAdmin() ? 'admin' : 'agent';
     return this.http
-      .get<PropertyTypesResponse>(`${this.baseUrl}/agent/property-types`)
+      .get<PropertyTypesResponse>(
+        `${this.baseUrl}/${roleSegment}/property-types`
+      )
       .pipe(
         map((response) =>
           response.data.filter((type) => type.category.slug === categorySlug)
@@ -68,8 +76,11 @@ export class PropertyTypesService {
    * @returns Observable of PropertyType array filtered by category ID
    */
   getPropertyTypesByCategoryId(categoryId: number): Observable<PropertyType[]> {
+    const roleSegment = this.userRoleService.isAdmin() ? 'admin' : 'agent';
     return this.http
-      .get<PropertyTypesResponse>(`${this.baseUrl}/agent/property-types`)
+      .get<PropertyTypesResponse>(
+        `${this.baseUrl}/${roleSegment}/property-types`
+      )
       .pipe(
         map((response) =>
           response.data.filter(
