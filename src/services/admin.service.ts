@@ -68,6 +68,13 @@ export class AdminService {
             const expirationTime = Date.now() + response.expires_in * 1000;
             localStorage.setItem('token_expires_in', expirationTime.toString());
           }
+
+          // Ensure role is set to admin for subsequent API calls
+          if (response.user) {
+            this.userRoleService.setUserData(response.user);
+          } else {
+            this.userRoleService.setUserRole('admin');
+          }
           return response;
         }),
         catchError(this.handleError)

@@ -31,8 +31,11 @@ export class UserRoleService {
         const user = JSON.parse(userData);
         this.userDataSubject.next(user);
         // Ensure the type is valid UserRole
-        const userType =
-          user.type === 'admin' || user.type === 'agent' ? user.type : 'agent';
+        const normalizedType = (user.type || '').toString().toLowerCase();
+        const userType: UserRole =
+          normalizedType === 'admin' || normalizedType === 'agent'
+            ? normalizedType
+            : 'agent';
         this.userRoleSubject.next(userType);
       } catch (error) {
         console.error('Error parsing user data from storage:', error);
@@ -51,8 +54,11 @@ export class UserRoleService {
     // Update subjects
     this.userDataSubject.next(user);
     // Ensure the type is valid UserRole
-    const userType =
-      user.type === 'admin' || user.type === 'agent' ? user.type : 'agent';
+    const normalizedType = (user.type || '').toString().toLowerCase();
+    const userType: UserRole =
+      normalizedType === 'admin' || normalizedType === 'agent'
+        ? normalizedType
+        : 'agent';
     this.userRoleSubject.next(userType);
   }
 

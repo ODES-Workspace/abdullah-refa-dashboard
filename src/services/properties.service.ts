@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { tap, map, catchError } from 'rxjs/operators';
 import { environment } from '../environments/environment';
+import { UserRoleService } from './user-role.service';
 
 export interface CreatePropertyRequest {
   name_en: string;
@@ -135,14 +136,22 @@ export class PropertiesService {
     propertyData: any
   ): Observable<{ data: CreatePropertyResponse }> {
     return this.http.put<{ data: CreatePropertyResponse }>(
-      `${this.baseUrl}/agent/properties/${id}`,
+      `${this.getPropertiesBasePath()}/${id}`,
       propertyData
     );
   }
   private baseUrl = environment.baseUrl;
   private propertiesData: any[] = [];
 
-  constructor(private http: HttpClient) {}
+  constructor(
+    private http: HttpClient,
+    private userRoleService: UserRoleService
+  ) {}
+
+  private getPropertiesBasePath(): string {
+    const roleSegment = this.userRoleService.isAdmin() ? 'admin' : 'agent';
+    return `${this.baseUrl}/${roleSegment}/properties`;
+  }
 
   /**
    * Get property details (Agent)
@@ -153,7 +162,7 @@ export class PropertiesService {
     id: number
   ): Observable<{ data: CreatePropertyResponse }> {
     return this.http.get<{ data: CreatePropertyResponse }>(
-      `${this.baseUrl}/agent/properties/${id}`
+      `${this.getPropertiesBasePath()}/${id}`
     );
   }
 
@@ -166,7 +175,7 @@ export class PropertiesService {
     propertyData: CreatePropertyRequest
   ): Observable<CreatePropertyResponse> {
     return this.http.post<CreatePropertyResponse>(
-      `${this.baseUrl}/agent/properties`,
+      `${this.getPropertiesBasePath()}`,
       propertyData
     );
   }
