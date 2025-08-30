@@ -57,7 +57,7 @@ export class PropertiesComponent {
     this.loading = true;
     this.error = null;
 
-    const token = localStorage.getItem('token') || '';
+    const token = localStorage.getItem('access_token') || '';
     this.agentPropertiesService
       .getAgentProperties(
         token,
@@ -131,7 +131,7 @@ export class PropertiesComponent {
 
   deleteProperty(id: number): void {
     if (confirm('Are you sure you want to delete this property?')) {
-      const token = localStorage.getItem('token') || '';
+      const token = localStorage.getItem('access_token') || '';
       this.agentPropertiesService.deleteAgentProperty(id, token).subscribe({
         next: () => {
           // Reload properties after deletion

@@ -6,6 +6,7 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { FormsModule } from '@angular/forms';
 import { UserRoleService } from '../../../services/user-role.service';
 import { PropertyTypesService } from '../../../services/property-types.service';
+import { CitiesService, City } from '../../../services/cities.service';
 
 interface ScheduleItem {
   dueDate: string;
@@ -55,6 +56,8 @@ export class RentalApplicationDetailsComponent implements OnInit {
 
   private typeIdToName: { [id: number]: string } = {};
   private typesRaw: any[] = [];
+  private cityIdToName: { [id: number]: string } = {};
+  private citiesRaw: City[] = [];
   private currentLang: 'en' | 'ar' =
     (localStorage.getItem('lang') as 'en' | 'ar') || 'en';
   activeTab: 'overview' | 'assessment' | 'schedule' = this.getStoredActiveTab();
@@ -70,7 +73,7 @@ export class RentalApplicationDetailsComponent implements OnInit {
 
   // Derive employment status from available data
   get isEmployed(): boolean {
-    const employerName: string | undefined = this.rentRequest?.employer_name;
+    const employerName: string | undefined = this.rentRequest?.job_title;
     return !!(employerName && employerName.trim().length > 0);
   }
 
@@ -79,7 +82,8 @@ export class RentalApplicationDetailsComponent implements OnInit {
     public userRoleService: UserRoleService,
     private rentRequestsService: RentRequestsService,
     private propertyTypesService: PropertyTypesService,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private citiesService: CitiesService
   ) {}
 
   ngOnInit(): void {
@@ -103,6 +107,7 @@ export class RentalApplicationDetailsComponent implements OnInit {
       if (newLang !== this.currentLang) {
         this.currentLang = newLang;
         this.rebuildTypeMap();
+        this.rebuildCityMap();
         this.updatePropertyTypeLabel();
       }
     });
@@ -126,6 +131,18 @@ export class RentalApplicationDetailsComponent implements OnInit {
             },
           });
       }
+    });
+
+    // Load cities for mapping city_id -> localized city name
+    this.citiesService.getCities().subscribe({
+      next: (cities) => {
+        this.citiesRaw = cities || [];
+        this.rebuildCityMap();
+      },
+      error: () => {
+        this.citiesRaw = [];
+        this.cityIdToName = {};
+      },
     });
   }
 
@@ -180,6 +197,21 @@ export class RentalApplicationDetailsComponent implements OnInit {
   private updatePropertyTypeLabel(): void {
     const typeId = this.rentRequest?.property?.property_type_id;
     this.propertyTypeLabel = typeId ? this.typeIdToName[typeId] || '-' : '-';
+  }
+
+  private rebuildCityMap(): void {
+    this.cityIdToName = {};
+    this.citiesRaw.forEach((c: City) => {
+      this.cityIdToName[c.id] =
+        this.currentLang === 'ar' ? c.name_ar : c.name_en;
+    });
+  }
+
+  getCityNameById(cityId: number | string | null | undefined): string {
+    if (cityId === null || cityId === undefined || cityId === '') return '-';
+    const id = Number(cityId);
+    if (Number.isNaN(id)) return '-';
+    return this.cityIdToName[id] || '-';
   }
 
   private hydrateApplicationFromRentRequest(): void {

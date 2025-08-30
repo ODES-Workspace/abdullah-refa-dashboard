@@ -1,4 +1,4 @@
-import { NgFor, NgIf, NgClass } from '@angular/common';
+import { NgFor, NgIf } from '@angular/common';
 import { Component, HostListener, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
@@ -9,8 +9,7 @@ import { UserRoleService } from '../../../services/user-role.service';
 import { RentRequestsService } from '../../../services/rent-requests.service';
 import { PropertyCategoriesService } from '../../../services/property-categories.service';
 import { PropertyTypesService } from '../../../services/property-types.service';
-import { forkJoin, of } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { forkJoin } from 'rxjs';
 
 interface TableItem {
   id: number;
@@ -32,7 +31,7 @@ interface TableItem {
 
 @Component({
   selector: 'app-rentrequests-list',
-  imports: [FormsModule, NgFor, NgIf, NgClass, TranslateModule, ToastComponent],
+  imports: [FormsModule, NgFor, NgIf, TranslateModule, ToastComponent],
   templateUrl: './rentrequests-list.component.html',
   styleUrl: './rentrequests-list.component.scss',
 })
@@ -58,6 +57,9 @@ export class RentrequestsListComponent implements OnInit {
   rejectReason = '';
   selectedItem: TableItem | null = null;
 
+  // Add new properties for revise/edit modal
+  showReviseModal = false;
+  editedItem: TableItem | null = null;
   isLoading = false;
 
   // client-side getters removed; server-side versions are defined below
@@ -76,6 +78,7 @@ export class RentrequestsListComponent implements OnInit {
 
   ngOnInit(): void {
     this.isLoading = true;
+    // Load reference data first, then load the rent requests
     this.loadReferenceData(() => {
       this.loadPage(this.currentPage);
     });
@@ -107,8 +110,30 @@ export class RentrequestsListComponent implements OnInit {
 
   private mapApiToTableItems(apiData: any[]): TableItem[] {
     return apiData.map((rr: any) => {
-      const categoryId = rr.property?.property_category_id;
-      const typeId = rr.property?.property_type_id;
+      const propertyCategoryId = rr.property?.property_category_id;
+      const propertyTypeId = rr.property?.property_type_id;
+      
+      // Get the category name from the reference data with better error handling
+      let categoryName = '-';
+      if (propertyCategoryId) {
+        if (this.categoryIdToName && this.categoryIdToName[propertyCategoryId]) {
+          categoryName = this.categoryIdToName[propertyCategoryId];
+        } else {
+          // Fallback to ID if name is not available
+          categoryName = propertyCategoryId.toString();
+        }
+      }
+      
+      // Get the type name from the reference data with better error handling
+      let typeName = '-';
+      if (propertyTypeId) {
+        if (this.typeIdToName && this.typeIdToName[propertyTypeId]) {
+          typeName = this.typeIdToName[propertyTypeId];
+        } else {
+          // Fallback to ID if name is not available
+          typeName = propertyTypeId.toString();
+        }
+      }
 
       return {
         id: rr.id,
@@ -122,14 +147,10 @@ export class RentrequestsListComponent implements OnInit {
         ownerName: rr.property?.name || '-',
         city: rr.property?.city || '-',
         status: rr.status || '-',
-        propertyCategoryId: categoryId,
-        propertyTypeId: typeId,
-        propertyCategory:
-          (categoryId && this.categoryIdToName[categoryId]) ||
-          categoryId?.toString() ||
-          '-',
-        propertyType:
-          (typeId && this.typeIdToName[typeId]) || typeId?.toString() || '-',
+        propertyCategoryId: propertyCategoryId,
+        propertyTypeId: propertyTypeId,
+        propertyCategory: categoryName,
+        propertyType: typeName,
         dateAdded: rr.created_at ? rr.created_at.split('T')[0] : '-',
         dateModified: rr.updated_at ? rr.updated_at.split('T')[0] : '-',
         rejectedReason: rr.status_description || '-',
@@ -139,9 +160,22 @@ export class RentrequestsListComponent implements OnInit {
 
   private loadPage(page: number): void {
     this.isLoading = true;
+    
+    // If reference data is not loaded yet, load it first
+    if (Object.keys(this.categoryIdToName).length === 0 || Object.keys(this.typeIdToName).length === 0) {
+      this.loadReferenceData(() => {
+        this.fetchRentRequests(page);
+      });
+    } else {
+      this.fetchRentRequests(page);
+    }
+  }
 
+  private fetchRentRequests(page: number): void {
     this.rentRequestsService.getRentRequests(page).subscribe({
       next: (response) => {
+        console.log('Rent requests response:', response);
+
         this.apiTotal = response.total;
         this.apiPerPage = response.per_page;
         this.apiLastPage = response.last_page;
@@ -149,22 +183,11 @@ export class RentrequestsListComponent implements OnInit {
         this.apiTo = response.to ?? null;
         this.currentPage = response.current_page;
 
-        // Keep API order as-is; do not reverse so S.ON ascends naturally
-        const items = this.mapApiToTableItems(response.data || []);
+        const items = this.mapApiToTableItems(response.data || []).reverse();
+        
         this.allItems = items;
         this.filteredItems = [...items];
         this.paginatedItems = [...items]; // server already paginated
-
-        // If reference data wasn't loaded in time, try to load it now and reapply
-        if (
-          Object.keys(this.categoryIdToName).length === 0 ||
-          Object.keys(this.typeIdToName).length === 0
-        ) {
-          this.loadReferenceData(() => {
-            this.applyNamesFromMaps();
-          });
-        }
-
         this.isLoading = false;
       },
       error: (error) => {
@@ -183,28 +206,16 @@ export class RentrequestsListComponent implements OnInit {
   }
 
   private loadReferenceData(onComplete?: () => void): void {
-    // Load categories and types separately to get better error information
-    const categories$ = this.propertyCategoriesService
-      .getPropertyCategories()
-      .pipe(
-        catchError((error) => {
-          console.error('Categories service error for admin:', error);
-          return of({ data: [] } as any);
-        })
-      );
-
-    const types$ = this.propertyTypesService.getPropertyTypes().pipe(
-      catchError((error) => {
-        console.error('Types service error for admin:', error);
-        return of({ data: [] } as any);
-      })
-    );
+    const categories$ = this.propertyCategoriesService.getPropertyCategories();
+    const types$ = this.propertyTypesService.getPropertyTypes();
 
     forkJoin([categories$, types$]).subscribe({
       next: ([catRes, typeRes]) => {
+        console.log('Categories response:', catRes);
+        console.log('Types response:', typeRes);
+        
         this.categoriesRaw = catRes?.data || [];
         this.typesRaw = typeRes?.data || [];
-
         this.rebuildLabelMaps();
 
         // If we already have items, apply names now
@@ -212,11 +223,17 @@ export class RentrequestsListComponent implements OnInit {
           this.applyNamesFromMaps();
         }
 
-        if (onComplete) onComplete();
+        // Call the completion callback after reference data is loaded
+        if (onComplete) {
+          onComplete();
+        }
       },
       error: (error) => {
-        console.error('Error loading reference data:', error);
-        if (onComplete) onComplete();
+        console.error('Failed to load reference data:', error);
+        // Even on error, call the completion callback
+        if (onComplete) {
+          onComplete();
+        }
       },
     });
   }
@@ -243,29 +260,23 @@ export class RentrequestsListComponent implements OnInit {
   private rebuildLabelMaps(): void {
     this.categoryIdToName = {};
     this.categoriesRaw.forEach((c: any) => {
-      const name =
-        this.currentLang === 'ar' ? c.name_ar || c.name : c.name_en || c.name;
-      this.categoryIdToName[c.id] = name || `Category ${c.id}`;
+      const categoryName = this.currentLang === 'ar' ? c.name_ar : c.name_en;
+      this.categoryIdToName[c.id] = categoryName || c.name_en || c.name_ar || 'Unknown Category';
     });
 
     this.typeIdToName = {};
     this.typesRaw.forEach((t: any) => {
-      const name =
-        this.currentLang === 'ar' ? t.name_ar || t.name : t.name_en || t.name;
-      this.typeIdToName[t.id] = name || `Type ${t.id}`;
+      const typeName = this.currentLang === 'ar' ? t.name_ar : t.name_en;
+      this.typeIdToName[t.id] = typeName || t.name_en || t.name_ar || 'Unknown Type';
     });
+
+    console.log('Rebuilt category map:', this.categoryIdToName);
+    console.log('Rebuilt type map:', this.typeIdToName);
   }
 
   private relocalizeLabels(): void {
     this.rebuildLabelMaps();
     this.applyNamesFromMaps();
-  }
-
-  // Method to manually refresh reference data if needed
-  refreshReferenceData(): void {
-    this.loadReferenceData(() => {
-      this.applyNamesFromMaps();
-    });
   }
 
   // Override client-side pagination helpers to reflect server-side values
@@ -324,20 +335,17 @@ export class RentrequestsListComponent implements OnInit {
     }
 
     this.filteredItems.sort((a, b) => {
-      const valueA = (a as any)[key];
-      const valueB = (b as any)[key];
+      const rawA = (a as any)[key] ?? '';
+      const rawB = (b as any)[key] ?? '';
+      const valueA = rawA.toString().toLowerCase();
+      const valueB = rawB.toString().toLowerCase();
 
-      // Numeric compare for numeric fields like id
-      if (key === 'id') {
-        const numA = Number(valueA) || 0;
-        const numB = Number(valueB) || 0;
-        return this.isSortAscending ? numA - numB : numB - numA;
+      if (valueA < valueB) {
+        return this.isSortAscending ? -1 : 1;
       }
-
-      const strA = (valueA ?? '').toString().toLowerCase();
-      const strB = (valueB ?? '').toString().toLowerCase();
-      if (strA < strB) return this.isSortAscending ? -1 : 1;
-      if (strA > strB) return this.isSortAscending ? 1 : -1;
+      if (valueA > valueB) {
+        return this.isSortAscending ? 1 : -1;
+      }
       return 0;
     });
 
@@ -370,24 +378,10 @@ export class RentrequestsListComponent implements OnInit {
 
   // Add new methods for actions
   approveRequest(item: TableItem): void {
-    // Call API to approve and optimistically update UI on success
-    this.isLoading = true;
-    this.rentRequestsService.approveRentRequest(item.id).subscribe({
-      next: () => {
-        item.status = 'Approved';
-        item.dateModified = new Date().toISOString().split('T')[0];
-        this.toastService.show('requestApproved');
-        this.isLoading = false;
-      },
-      error: (err) => {
-        console.error('Approve request failed', err);
-        this.toastService.show('requestApprovalFailed');
-        this.isLoading = false;
-      },
-      complete: () => {
-        this.closeDropdown();
-      },
-    });
+    item.status = 'Approved';
+    item.dateModified = new Date().toISOString().split('T')[0];
+    this.toastService.show('requestApproved');
+    this.closeDropdown();
   }
 
   openRejectModal(item: TableItem): void {
@@ -404,37 +398,42 @@ export class RentrequestsListComponent implements OnInit {
 
   submitReject(): void {
     if (this.selectedItem) {
-      const id = this.selectedItem.id;
-      const reason = this.rejectReason;
-      this.isLoading = true;
-      this.rentRequestsService
-        .rejectRentRequest(id, { reject_reason: reason })
-        .subscribe({
-          next: () => {
-            this.selectedItem!.status = 'Rejected';
-            this.selectedItem!.rejectedReason = reason;
-            this.selectedItem!.dateModified = new Date()
-              .toISOString()
-              .split('T')[0];
-            this.toastService.show(
-              this.currentLang === 'ar'
-                ? 'تم رفض الطلب بنجاح'
-                : 'Request Rejected'
-            );
+      this.selectedItem.status = 'Rejected';
+      this.selectedItem.rejectedReason = this.rejectReason;
+      this.selectedItem.dateModified = new Date().toISOString().split('T')[0];
+      this.closeRejectModal();
+    }
+  }
 
-            this.isLoading = false;
-            this.closeRejectModal();
-          },
-          error: (err) => {
-            console.error('Reject request failed', err);
-            this.toastService.show(
-              this.currentLang === 'ar'
-                ? 'فشل رفض الطلب'
-                : 'Request Rejection Failed'
-            );
-            this.isLoading = false;
-          },
-        });
+  // Modified revise method to open the edit modal
+  reviseRequest(item: TableItem): void {
+    this.editedItem = { ...item }; // Create a copy to edit
+    this.showReviseModal = true;
+    this.closeDropdown();
+  }
+
+  // New methods for edit modal
+  closeReviseModal(): void {
+    this.showReviseModal = false;
+    this.editedItem = null;
+  }
+
+  submitRevise(): void {
+    if (this.editedItem) {
+      // Find the original item and update it
+      const originalItem = this.allItems.find(
+        (item) => item.id === this.editedItem!.id
+      );
+      if (originalItem) {
+        Object.assign(originalItem, this.editedItem);
+        originalItem.status = 'Pending';
+        originalItem.dateModified = new Date().toISOString().split('T')[0];
+      }
+
+      // Update filtered items as well
+      this.onSearch(); // This will refresh the filtered items
+      this.updatePagination();
+      this.closeReviseModal();
     }
   }
 

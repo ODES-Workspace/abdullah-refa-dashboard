@@ -188,7 +188,7 @@
           </div>
           <div class="application-assessment-card--content--item">
             <span> {{ "Location" | translate }} </span>
-            {{ rentRequest?.property?.city || "-" }}
+            {{ getCityNameById(rentRequest?.city_id) }}
           </div>
           <div class="application-assessment-card--content--item">
             <span> {{ "Date of birth" | translate }} </span>
@@ -239,7 +239,7 @@
           </div>
           <div class="application-assessment-card--content--item">
             <span> {{ "Name of Working place" | translate }} </span>
-            {{ rentRequest?.employer_name || "-" }}
+            {{ rentRequest?.working_place || "-" }}
           </div>
           <div class="application-assessment-card--content--item">
             <span> {{ "Job Sector" | translate }} </span>
@@ -306,7 +306,7 @@
           </div>
           <div class="application-assessment-card--content--item">
             <span> {{ "Annual Rent" | translate }} </span>
-            {{ rentRequest?.property?.annual_rent | number }}
+            {{ rentRequest?.annual_rent || "-" }}
             {{ "SAR" | translate }}
           </div>
           <div class="application-assessment-card--content--item">
