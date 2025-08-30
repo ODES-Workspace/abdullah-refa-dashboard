@@ -121,7 +121,14 @@ export class ExistingContractComponent implements OnInit {
 
   private loadPage(page: number): void {
     this.isLoading = true;
-    this.contractsService.getContracts(page).subscribe({
+    // If admin, filter active contracts
+    const isAdmin =
+      (localStorage.getItem('user_data') &&
+        JSON.parse(localStorage.getItem('user_data') as string)?.type ===
+          'admin') ||
+      false;
+    const status = isAdmin ? 'active' : '';
+    this.contractsService.getContracts(page, undefined, status).subscribe({
       next: (response) => {
         console.log('Contracts response:', response);
         this.apiTotal = response.total;
