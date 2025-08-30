@@ -7,6 +7,7 @@ import {
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { environment } from '../environments/environment';
+import { UserRoleService } from './user-role.service';
 
 export interface ContractProperty {
   id: number;
@@ -68,7 +69,10 @@ export interface ContractsResponse {
 export class ContractsService {
   private readonly baseUrl = environment.baseUrl;
 
-  constructor(private http: HttpClient) {}
+  constructor(
+    private http: HttpClient,
+    private userRoleService: UserRoleService
+  ) {}
 
   /**
    * Get list of contracts for the authenticated customer (agent)
@@ -77,9 +81,11 @@ export class ContractsService {
    */
   getContracts(
     page: number = 1,
-    perPage?: number
+    perPage?: number,
+    status: string = ''
   ): Observable<ContractsResponse> {
-    const url = `${this.baseUrl}/agent/contracts`;
+    const roleSegment = this.userRoleService.isAdmin() ? 'admin' : 'agent';
+    const url = `${this.baseUrl}/${roleSegment}/contracts`;
     let params = new HttpParams();
     if (page) {
       params = params.set('page', page.toString());
@@ -87,6 +93,8 @@ export class ContractsService {
     if (perPage) {
       params = params.set('per_page', perPage.toString());
     }
+    // Always include status param with default empty string
+    params = params.set('status', status);
     return this.http
       .get<ContractsResponse>(url, { params })
       .pipe(catchError((error: HttpErrorResponse) => this.handleError(error)));
