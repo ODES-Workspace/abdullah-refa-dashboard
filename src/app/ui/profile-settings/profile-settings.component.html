@@ -142,7 +142,7 @@
           <input type="text" id="province" [(ngModel)]="profileData.province" />
         </div>
         <div class="profile-info-item">
-          <label for="city">{{ "city" | translate }}</label>
+          <label for="city">{{ "City" | translate }}</label>
           <select id="city" [(ngModel)]="profileData.city">
             <option value="">{{ "Select City" | translate }}</option>
             <option *ngFor="let city of cities" [value]="city.id">

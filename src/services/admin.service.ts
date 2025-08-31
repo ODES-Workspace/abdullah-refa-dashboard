@@ -58,6 +58,23 @@ export interface UpdateAdminProfileResponse {
   admin?: AdminProfile;
 }
 
+export interface ApplicationSettings {
+  eijar_fees: number;
+  agent_fees: number;
+  processing_fees: number;
+}
+
+export interface UpdateSettingsRequest {
+  eijar_fees?: number;
+  agent_fees?: number;
+  processing_fees?: number;
+}
+
+export interface UpdateSettingsResponse {
+  message?: string;
+  settings?: ApplicationSettings;
+}
+
 export interface AdminLoginResponse {
   access_token: string;
   token_type: string;
@@ -141,6 +158,33 @@ export class AdminService {
 
     return this.http
       .post<UpdateAdminProfileResponse>(url, profileData)
+      .pipe(catchError((error: HttpErrorResponse) => this.handleError(error)));
+  }
+
+  /**
+   * Get all application settings
+   * @returns Observable of the application settings
+   */
+  getApplicationSettings(): Observable<ApplicationSettings> {
+    const url = `${this.baseUrl}/admin/settings`;
+
+    return this.http
+      .get<ApplicationSettings>(url)
+      .pipe(catchError((error: HttpErrorResponse) => this.handleError(error)));
+  }
+
+  /**
+   * Update application settings
+   * @param settingsData - The settings data to update
+   * @returns Observable of the update response
+   */
+  updateApplicationSettings(
+    settingsData: UpdateSettingsRequest
+  ): Observable<UpdateSettingsResponse> {
+    const url = `${this.baseUrl}/admin/settings`;
+
+    return this.http
+      .put<UpdateSettingsResponse>(url, settingsData)
       .pipe(catchError((error: HttpErrorResponse) => this.handleError(error)));
   }
 
