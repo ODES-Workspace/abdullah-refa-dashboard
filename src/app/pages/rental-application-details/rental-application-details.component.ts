@@ -236,32 +236,57 @@ export class RentalApplicationDetailsComponent implements OnInit {
     if (!rr) return;
 
     const numInstallments: number = Number(rr.number_of_installments) || 0;
-    const installmentAmount: number = Number(rr.expected_monthly_cost) || 0;
+    const monthlyInstallment: number =
+      Number(rr.monthly_installment || rr.expected_monthly_cost) || 0;
+    const downPayment: number = Number(rr.down_payment) || 0;
+    const annualRent: number = Number(rr.property?.annual_rent) || 0;
+
+    // Calculate sum of additional charges
+    const additionalCharges = rr.additional_charges || {};
+    const agentFees = Number(additionalCharges.agent_fees) || 0;
+    const eijarFees = Number(additionalCharges.eijar_fees) || 0;
+    const processingFees = Number(additionalCharges.processing_fees) || 0;
+    const sumAdditionalCharges = agentFees + eijarFees + processingFees;
+
+    // Total amount to be paid = annual rent + additional charges
+    const totalAmount = annualRent + sumAdditionalCharges;
 
     const createdAt: Date = rr.created_at
       ? new Date(rr.created_at)
       : new Date();
-    const firstDueDate = new Date(createdAt);
-    firstDueDate.setMonth(firstDueDate.getMonth() + 1);
 
-    const totalAmount: number = installmentAmount * numInstallments;
-    let remainingBalance: number = totalAmount;
+    const schedule: ScheduleItem[] = [];
+    let remainingBalance = totalAmount;
 
-    const schedule: ScheduleItem[] = Array.from(
-      { length: numInstallments },
-      (_, index) => {
-        const dueDate = new Date(firstDueDate);
-        dueDate.setMonth(firstDueDate.getMonth() + index);
-        // Balance after this payment
-        remainingBalance = Math.max(0, remainingBalance - installmentAmount);
-        return {
-          dueDate: dueDate.toISOString().split('T')[0],
-          amount: installmentAmount,
-          balance: remainingBalance,
-          status: 'upcoming',
-        } as ScheduleItem;
-      }
-    );
+    // First row: Down payment (immediate due date)
+    if (downPayment > 0) {
+      remainingBalance = Math.max(0, totalAmount - downPayment);
+      schedule.push({
+        dueDate: createdAt.toISOString().split('T')[0],
+        amount: downPayment,
+        balance: remainingBalance,
+        status: 'upcoming',
+      });
+    }
+
+    // Subsequent rows: Monthly installments
+    let currentDate = new Date(createdAt);
+    currentDate.setMonth(currentDate.getMonth() + 1); // Start from next month
+
+    while (remainingBalance > 0 && schedule.length < numInstallments + 1) {
+      const paymentAmount = Math.min(monthlyInstallment, remainingBalance);
+      remainingBalance = Math.max(0, remainingBalance - paymentAmount);
+
+      schedule.push({
+        dueDate: currentDate.toISOString().split('T')[0],
+        amount: paymentAmount,
+        balance: remainingBalance,
+        status: 'upcoming',
+      });
+
+      // Move to next month
+      currentDate.setMonth(currentDate.getMonth() + 1);
+    }
 
     // Build a minimal application model for the schedule tab
     this.application = {
