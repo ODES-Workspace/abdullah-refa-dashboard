@@ -88,31 +88,38 @@
     </div>
   </div>
 
+  <!-- Loading state -->
+  <div *ngIf="isLoading" class="loading">
+    {{ "Loading..." | translate }}
+  </div>
+
   <!-- No data -->
-  <div *ngIf="filteredItems.length === 0" class="table-no-data">
+  <div *ngIf="!isLoading && filteredItems.length === 0" class="table-no-data">
     {{ "No data found" | translate }}
   </div>
   <!-- Table rows -->
-  <div class="table-row" *ngFor="let item of paginatedItems">
-    <div>{{ item.id }}</div>
-    <div>{{ item.name }}</div>
-    <div>{{ item.mobile }}</div>
-    <div>{{ item.email }}</div>
-    <div>
-      <span class="angency">
-        {{ item.angency }}
-      </span>
+  <ng-container *ngIf="!isLoading">
+    <div class="table-row" *ngFor="let item of paginatedItems">
+      <div>{{ item.id }}</div>
+      <div>{{ item.name }}</div>
+      <div>{{ item.mobile }}</div>
+      <div>{{ item.email }}</div>
+      <div>
+        <span class="angency">
+          {{ item.angency | translate }}
+        </span>
+      </div>
+      <div [class]="getStatusClass(item.status)">
+        <span>
+          {{ item.status | translate }}
+        </span>
+      </div>
+      <div>{{ item.DateAdded }}</div>
+      <div>{{ item.DateModified }}</div>
     </div>
-    <div [class]="getStatusClass(item.status)">
-      <span>
-        {{ item.status }}
-      </span>
-    </div>
-    <div>{{ item.DateAdded }}</div>
-    <div>{{ item.DateModified }}</div>
-  </div>
+  </ng-container>
   <!-- Table pagination -->
-  <div class="table-pagination" *ngIf="filteredItems.length > 0">
+  <div class="table-pagination" *ngIf="!isLoading && filteredItems.length > 0">
     <div class="table-pagination--show">
       <span> {{ "Show" | translate }} </span>
       <select [(ngModel)]="itemsPerPage" (change)="updatePagination()">

@@ -1,7 +1,9 @@
 import { NgFor, NgIf } from '@angular/common';
-import { Component, HostListener } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
+import { AgentsService, Agent } from '../../../services/agents.service';
+import { ToastService } from '../../../services/toast.service';
 
 interface TableItem {
   id: number;
@@ -12,6 +14,9 @@ interface TableItem {
   angency: string;
   DateAdded: string;
   DateModified: string;
+  active: number;
+  role: string | null;
+  type: string;
 }
 
 @Component({
@@ -20,39 +25,8 @@ interface TableItem {
   templateUrl: './adminaprovals.component.html',
   styleUrl: './adminaprovals.component.scss',
 })
-export class AdminaprovalsComponent {
-  allItems: TableItem[] = [
-    {
-      id: 1,
-      name: 'Ahmed bin Said',
-      mobile: '+966558441496',
-      email: 'Hamill@gmail.com',
-      angency: 'Agency',
-      status: 'Under Review',
-      DateAdded: '09-02-2025',
-      DateModified: '09-01-2025',
-    },
-    {
-      id: 2,
-      name: 'Ahmed bin Said',
-      mobile: '+966558441496',
-      email: 'Hamill@gmail.com',
-      angency: 'Agency',
-      status: 'Rejected',
-      DateAdded: '09-01-2025',
-      DateModified: '09-01-2025',
-    },
-    {
-      id: 3,
-      name: 'Ahmed bin Said',
-      mobile: '+966558441496',
-      email: 'Hamill@gmail.com',
-      angency: 'Agency',
-      status: 'Approved',
-      DateAdded: '09-01-2025',
-      DateModified: '09-01-2025',
-    },
-  ];
+export class AdminaprovalsComponent implements OnInit {
+  allItems: TableItem[] = [];
 
   searchTerm = '';
   filteredItems: TableItem[] = [...this.allItems];
@@ -63,6 +37,7 @@ export class AdminaprovalsComponent {
   showEditModal = false;
   selectedTenant: TableItem | null = null;
   activeDropdown: number | null = null;
+  isLoading = false;
 
   // Track sorting state
   currentSortColumn: keyof TableItem | null = null;
@@ -87,8 +62,57 @@ export class AdminaprovalsComponent {
     );
   }
 
-  constructor() {
+  constructor(
+    private agentsService: AgentsService,
+    private toast: ToastService
+  ) {
     this.updatePagination();
+  }
+
+  ngOnInit(): void {
+    this.loadApprovedAgents();
+  }
+
+  loadApprovedAgents(): void {
+    this.isLoading = true;
+    this.agentsService.getAgents().subscribe({
+      next: (res) => {
+        console.log('Agents API Response:', res);
+        // Filter to show only approved agents
+        const approvedAgents = res.filter(
+          (agent) => agent.active === 1 || agent.role === 'admin'
+        );
+        this.allItems = this.mapAgentsToTableItems(approvedAgents);
+        this.filteredItems = [...this.allItems];
+        this.updatePagination();
+        this.isLoading = false;
+      },
+      error: (err) => {
+        console.error('Error loading agents:', err);
+        this.isLoading = false;
+      },
+    });
+  }
+
+  private mapAgentsToTableItems(agents: Agent[]): TableItem[] {
+    return agents.map((agent) => ({
+      id: agent.id,
+      name: agent.name,
+      mobile: agent.phone_number,
+      email: agent.email,
+      status: 'Approved', // All agents here are approved
+      angency: agent.type === 'agent' ? 'Agency' : agent.type,
+      DateAdded: this.formatDate(agent.created_at),
+      DateModified: this.formatDate(agent.updated_at),
+      active: agent.active,
+      role: agent.role,
+      type: agent.type,
+    }));
+  }
+
+  private formatDate(dateString: string): string {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-GB'); // DD/MM/YYYY format
   }
 
   onSearch(): void {
@@ -96,7 +120,8 @@ export class AdminaprovalsComponent {
     this.filteredItems = this.allItems.filter(
       (item) =>
         item.name.toLowerCase().includes(searchTermLower) ||
-        item.mobile.toLowerCase().includes(searchTermLower)
+        item.mobile.toLowerCase().includes(searchTermLower) ||
+        item.email.toLowerCase().includes(searchTermLower)
     );
     this.currentPage = 1;
     this.updatePagination();
@@ -111,8 +136,8 @@ export class AdminaprovalsComponent {
     }
 
     this.filteredItems.sort((a, b) => {
-      const valueA = a[key].toString().toLowerCase();
-      const valueB = b[key].toString().toLowerCase();
+      const valueA = (a[key] ?? '').toString().toLowerCase();
+      const valueB = (b[key] ?? '').toString().toLowerCase();
 
       if (valueA < valueB) {
         return this.isSortAscending ? -1 : 1;

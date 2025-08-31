@@ -2,7 +2,12 @@ import { NgFor, NgIf } from '@angular/common';
 import { Component, OnInit, HostListener } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
-import { AgentsService, Agent } from '../../../services/agents.service';
+import {
+  AgentsService,
+  Agent,
+  UpdateAgentPayload,
+} from '../../../services/agents.service';
+import { ToastService } from '../../../services/toast.service';
 
 interface TableItem {
   id: number;
@@ -60,7 +65,10 @@ export class ListofAgencyOwnerComponent implements OnInit {
     );
   }
 
-  constructor(private agentsService: AgentsService) {
+  constructor(
+    private agentsService: AgentsService,
+    private toast: ToastService
+  ) {
     this.updatePagination();
   }
 
@@ -106,6 +114,10 @@ export class ListofAgencyOwnerComponent implements OnInit {
       return 'Approved';
     } else if (agent.role === 'admin') {
       return 'Approved';
+    } else if (agent.active === 0) {
+      // If agent is inactive, we'll assume they were rejected
+      // This is based on the backend behavior where reject action sets active = 0
+      return 'Rejected';
     } else {
       return 'Under Review';
     }
@@ -228,33 +240,82 @@ export class ListofAgencyOwnerComponent implements OnInit {
 
   private approveItem(item: TableItem): void {
     console.log('Approving item:', item);
-    // Update item status
-    item.status = 'Approved';
-    item.active = 1;
-    item.DateModified = new Date().toLocaleDateString('en-GB');
-    // Here you would typically call an API to approve the agent
-    // this.agentsService.approveAgent(item.id).subscribe(...)
+
+    const payload: UpdateAgentPayload = { active: true };
+
+    this.agentsService.updateAgent(item.id, payload).subscribe({
+      next: (response) => {
+        console.log('Agent approved successfully:', response);
+        // Update local item with server response
+        item.status = 'Approved';
+        item.active = 1;
+        item.DateModified = new Date().toLocaleDateString('en-GB');
+        this.toast.show('Agent approved successfully');
+      },
+      error: (err) => {
+        console.error('Error approving agent:', err);
+        if (err.status === 404) {
+          this.toast.show('Agent not found');
+        } else if (err.status === 422) {
+          this.toast.show('Validation error occurred');
+        } else {
+          this.toast.show('Failed to approve agent');
+        }
+      },
+    });
   }
 
   private rejectItem(item: TableItem): void {
     console.log('Rejecting item:', item);
-    // Update item status
-    item.status = 'Rejected';
-    item.active = 0;
-    item.DateModified = new Date().toLocaleDateString('en-GB');
-    // Here you would typically call an API to reject the agent
-    // this.agentsService.rejectAgent(item.id).subscribe(...)
+
+    const payload: UpdateAgentPayload = { active: false };
+
+    this.agentsService.updateAgent(item.id, payload).subscribe({
+      next: (response) => {
+        console.log('Agent rejected successfully:', response);
+        // Update local item with server response
+        item.status = 'Rejected';
+        item.active = 0;
+        item.DateModified = new Date().toLocaleDateString('en-GB');
+        this.toast.show('Agent rejected successfully');
+      },
+      error: (err) => {
+        console.error('Error rejecting agent:', err);
+        if (err.status === 404) {
+          this.toast.show('Agent not found');
+        } else if (err.status === 422) {
+          this.toast.show('Validation error occurred');
+        } else {
+          this.toast.show('Failed to reject agent');
+        }
+      },
+    });
   }
 
   private deleteItem(item: TableItem): void {
     console.log('Deleting item:', item);
-    // Remove item from arrays
-    const index = this.allItems.findIndex((i) => i.id === item.id);
-    if (index > -1) {
-      this.allItems.splice(index, 1);
-      this.onSearch(); // Refresh filtered items and pagination
-    }
-    // Here you would typically call an API to delete the agent
-    // this.agentsService.deleteAgent(item.id).subscribe(...)
+
+    this.agentsService.deleteAgent(item.id).subscribe({
+      next: (response) => {
+        console.log('Agent deactivated successfully:', response);
+        // Remove item from local arrays since it's deactivated
+        const index = this.allItems.findIndex((i) => i.id === item.id);
+        if (index > -1) {
+          this.allItems.splice(index, 1);
+          this.onSearch(); // Refresh filtered items and pagination
+        }
+        this.toast.show('Agent deactivated successfully');
+      },
+      error: (err) => {
+        console.error('Error deactivating agent:', err);
+        if (err.status === 404) {
+          this.toast.show('Agent not found');
+        } else if (err.status === 403) {
+          this.toast.show('Access denied');
+        } else {
+          this.toast.show('Failed to deactivate agent');
+        }
+      },
+    });
   }
 }

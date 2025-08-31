@@ -21,6 +21,27 @@ export interface Agent {
   city: any | null;
 }
 
+// Interface for updating an agent
+export interface UpdateAgentPayload {
+  name?: string;
+  email?: string;
+  phone_number?: string;
+  national_id?: string;
+  active?: boolean;
+}
+
+// Interface for update agent response
+export interface UpdateAgentResponse {
+  message: string;
+  agent: Agent;
+}
+
+// Interface for delete agent response
+export interface DeleteAgentResponse {
+  message: string;
+  agent: Agent;
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -37,6 +58,34 @@ export class AgentsService {
     const url = `${this.baseUrl}/admin/agents`;
     return this.http
       .get<Agent[]>(url)
+      .pipe(catchError((error: HttpErrorResponse) => this.handleError(error)));
+  }
+
+  /**
+   * Update an agent (admin only)
+   * @param id - Agent ID
+   * @param payload - Update payload with agent data
+   * @returns Observable of the update response
+   */
+  updateAgent(
+    id: number,
+    payload: UpdateAgentPayload
+  ): Observable<UpdateAgentResponse> {
+    const url = `${this.baseUrl}/admin/agents/${id}`;
+    return this.http
+      .put<UpdateAgentResponse>(url, payload)
+      .pipe(catchError((error: HttpErrorResponse) => this.handleError(error)));
+  }
+
+  /**
+   * Delete (deactivate) an agent (admin only)
+   * @param id - Agent ID
+   * @returns Observable of the delete response
+   */
+  deleteAgent(id: number): Observable<DeleteAgentResponse> {
+    const url = `${this.baseUrl}/admin/agents/${id}`;
+    return this.http
+      .delete<DeleteAgentResponse>(url)
       .pipe(catchError((error: HttpErrorResponse) => this.handleError(error)));
   }
 
