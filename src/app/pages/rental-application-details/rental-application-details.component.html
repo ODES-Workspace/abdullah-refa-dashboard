@@ -359,16 +359,16 @@
                 *ngIf="currentIncomeDocName || currentIncomeDocUrl"
               >
                 <ng-container *ngIf="incomeDocFile; else existingIncomeDoc">
-                  <span class="doc-label">Selected:</span>
+                  <span class="doc-label">{{ "Selected" | translate }}:</span>
                   <span>{{ currentIncomeDocName }}</span>
                 </ng-container>
                 <ng-template #existingIncomeDoc>
-                  <span class="doc-label">Current:</span>
+                  <span class="doc-label">{{ "Current" | translate }}:</span>
                   <a
                     *ngIf="currentIncomeDocUrl"
                     [href]="currentIncomeDocUrl"
                     target="_blank"
-                    >Show Document</a
+                    >{{ "Show Document" | translate }}</a
                   >
                 </ng-template>
               </div>
@@ -385,16 +385,16 @@
                 *ngIf="currentCreditDocName || currentCreditDocUrl"
               >
                 <ng-container *ngIf="creditDocFile; else existingCreditDoc">
-                  <span class="doc-label">Selected:</span>
+                  <span class="doc-label">{{ "Selected" | translate }}:</span>
                   <span>{{ currentCreditDocName }}</span>
                 </ng-container>
                 <ng-template #existingCreditDoc>
-                  <span class="doc-label">Current:</span>
+                  <span class="doc-label">{{ "Current" | translate }}:</span>
                   <a
                     *ngIf="currentCreditDocUrl"
                     [href]="currentCreditDocUrl"
                     target="_blank"
-                    >Show Document</a
+                    >{{ "Show Document" | translate }}</a
                   >
                 </ng-template>
               </div>
@@ -595,12 +595,6 @@
             <img src="/assets/icons/sort-img.svg" alt="" />
           </span>
         </div>
-        <div>
-          <span>{{ "Status" | translate }}</span>
-          <span (click)="sortSchedule('status')">
-            <img src="/assets/icons/sort-img.svg" alt="" />
-          </span>
-        </div>
       </div>
       <div
         class="table-row"
@@ -609,26 +603,6 @@
         <div>{{ item.dueDate }}</div>
         <div>{{ item.amount | number : "1.2-2" }} {{ "SAR" | translate }}</div>
         <div>{{ item.balance | number : "1.2-2" }} {{ "SAR" | translate }}</div>
-        <div [class]="'status-' + item.status">
-          <span>{{ item.status | titlecase }}</span>
-        </div>
-      </div>
-
-      <div class="table-settings">
-        <div (click)="openReviseModal()" class="table-settings-revise">
-          <img src="/assets/icons/revise.svg" alt="" />
-          {{ "Revise" | translate }}
-        </div>
-        <div (click)="rejectSchedule()" class="table-settings-reject">
-          <img src="/assets/icons/reject-icon.svg" alt="" />
-
-          {{ "Reject" | translate }}
-        </div>
-        <div (click)="approveSchedule()" class="table-settings-approve">
-          <img src="/assets/icons/confirm-icon.svg" alt="" />
-
-          {{ "Approve" | translate }}
-        </div>
       </div>
     </div>
   </div>

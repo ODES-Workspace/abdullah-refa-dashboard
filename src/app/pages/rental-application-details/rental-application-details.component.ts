@@ -500,12 +500,28 @@ export class RentalApplicationDetailsComponent implements OnInit {
       .reviseRentRequest(this.applicationId, payload)
       .subscribe({
         next: (res) => {
-          this.rentRequest = res || this.rentRequest;
+          // Merge server response with locally edited values to ensure schedule reflects latest
+          const merged = { ...(res || this.rentRequest) } as any;
+          if (this.reviseForm) {
+            merged.expected_monthly_cost =
+              this.reviseForm.expected_monthly_cost;
+            merged.number_of_installments =
+              this.reviseForm.number_of_installments;
+            merged.monthly_income = this.reviseForm.monthly_income;
+            merged.employer_name = this.reviseForm.employer_name;
+            merged.sector = this.reviseForm.sector;
+            merged.subsector = this.reviseForm.subsector;
+            merged.job_title = this.reviseForm.job_title;
+            merged.job_start_date = this.reviseForm.job_start_date;
+          }
+          this.rentRequest = merged;
           this.isEditingAssessment = false;
           this.reviseForm = null;
           this.incomeDocFile = null;
           this.creditDocFile = null;
           this.updatePropertyTypeLabel();
+          // Rebuild the payment schedule immediately
+          this.hydrateApplicationFromRentRequest();
           this.toast.show('Updated successfully');
         },
         error: () => {

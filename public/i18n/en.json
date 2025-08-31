@@ -407,5 +407,8 @@
   "ding property details...": "Loading property details...",
   "Pending": "Pending",
   "Approved": "Approved",
-  "Rejected": "Rejected"
+  "Rejected": "Rejected",
+  "Selected": "Selected",
+  "Current": "Current",
+  "Show Document": "Show Document"
 }
