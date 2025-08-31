@@ -410,5 +410,6 @@
   "Rejected": "Rejected",
   "Selected": "Selected",
   "Current": "Current",
-  "Show Document": "Show Document"
+  "Show Document": "Show Document",
+  "Validation Errors": "Validation Errors"
 }

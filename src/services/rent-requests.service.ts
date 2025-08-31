@@ -259,40 +259,9 @@ export class RentRequestsService {
    * @returns Observable that throws the error
    */
   private handleError = (error: HttpErrorResponse): Observable<never> => {
-    let errorMessage = 'An error occurred';
-
-    if (error.error instanceof ErrorEvent) {
-      // Client-side error
-      errorMessage = `Error: ${error.error.message}`;
-    } else {
-      // Server-side error
-      switch (error.status) {
-        case 400:
-          errorMessage = 'Bad Request - Invalid parameters';
-          break;
-        case 401:
-          errorMessage = 'Unauthorized - Please check your authentication';
-          break;
-        case 403:
-          errorMessage =
-            'Forbidden - You do not have permission to access this resource';
-          break;
-        case 404:
-          errorMessage = 'Not Found - The requested resource was not found';
-          break;
-        case 422:
-          errorMessage = 'Validation Error - Please check your input data';
-          break;
-        case 500:
-          errorMessage = 'Internal Server Error - Please try again later';
-          break;
-        default:
-          errorMessage = `Error ${error.status}: ${error.statusText}`;
-          break;
-      }
-    }
-
+    // Always return the original HttpErrorResponse so callers can inspect
+    // status codes and backend-provided validation payloads (e.g. 422 errors).
     console.error('Rent Requests service error:', error);
-    return throwError(() => new Error(errorMessage));
+    return throwError(() => error);
   };
 }

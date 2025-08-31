@@ -57,6 +57,7 @@
         <img src="/assets/icons/tenant-icon.svg" alt="" />
         <span> {{ "Tenant Information" | translate }} </span>
       </div>
+
       <div class="application-overview-card--content type1">
         <div class="application-overview-card--content--img">
           <img src="/assets/images/user-dummy.png" alt="" />
@@ -548,6 +549,8 @@
         </ng-template>
       </div>
     </div>
+    <!-- Errors Messages -->
+
     <div
       class="application-assessment-actions"
       *ngIf="userRoleService.getCurrentRole() === 'admin'"
@@ -559,8 +562,19 @@
         <button (click)="cancelEditingAssessment()">
           {{ "Cancel" | translate }}
         </button>
-        <button (click)="saveAssessment()">{{ "Update" | translate }}</button>
+        <button (click)="saveAssessment()" [disabled]="!hasAssessmentChanges()">
+          {{ "Update" | translate }}
+        </button>
       </ng-container>
+    </div>
+
+    <!-- Validation errors (shown under the assessment form) -->
+    <div class="validation-errors" *ngIf="hasValidationErrors">
+      <ul class="validation-list">
+        <li *ngFor="let kv of validationErrors | keyvalue">
+          {{ normalizeErrorMessage(kv.value[0]) }}
+        </li>
+      </ul>
     </div>
   </div>
   <!-- schedule -->

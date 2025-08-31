@@ -77,8 +77,11 @@ export class RentalApplicationDetailsComponent implements OnInit {
   currentSortDirection: SortDirection = 'asc';
   isEditingAssessment = false;
   reviseForm: ReviseRentRequestPayload | null = null;
+  private originalReviseForm: ReviseRentRequestPayload | null = null;
   incomeDocFile: File | null = null;
   creditDocFile: File | null = null;
+  validationErrors: { [key: string]: string[] } = {};
+  validationMessage: string | null = null;
 
   // Derive employment status from available data
   get isEmployed(): boolean {
@@ -324,6 +327,9 @@ export class RentalApplicationDetailsComponent implements OnInit {
   }
 
   setActiveTab(tab: 'overview' | 'assessment' | 'schedule'): void {
+    if (this.isEditingAssessment) {
+      this.cancelEditingAssessment();
+    }
     this.activeTab = tab;
     localStorage.setItem('rentalApplicationActiveTab', tab);
   }
@@ -375,6 +381,11 @@ export class RentalApplicationDetailsComponent implements OnInit {
       monthly_installment: rr.monthly_installment ?? undefined,
     } as ReviseRentRequestPayload;
 
+    // Take a deep snapshot for dirty check
+    this.originalReviseForm = JSON.parse(
+      JSON.stringify(this.reviseForm)
+    ) as ReviseRentRequestPayload;
+
     this.isEditingAssessment = true;
   }
 
@@ -383,6 +394,9 @@ export class RentalApplicationDetailsComponent implements OnInit {
     this.reviseForm = null;
     this.incomeDocFile = null;
     this.creditDocFile = null;
+    this.validationErrors = {};
+    this.validationMessage = null;
+    this.originalReviseForm = null;
   }
 
   saveAssessment(): void {
@@ -390,6 +404,10 @@ export class RentalApplicationDetailsComponent implements OnInit {
 
     const toIsoOrEmpty = (d: string | null | undefined): string =>
       d ? new Date(d).toISOString() : '';
+
+    // reset validation state
+    this.validationErrors = {};
+    this.validationMessage = null;
 
     const useFormData = !!(this.incomeDocFile || this.creditDocFile);
     let payload: ReviseRentRequestPayload | FormData;
@@ -524,7 +542,11 @@ export class RentalApplicationDetailsComponent implements OnInit {
           this.hydrateApplicationFromRentRequest();
           this.toast.show('Updated successfully');
         },
-        error: () => {
+        error: (err) => {
+          if (err?.status === 422 && err?.error) {
+            this.validationMessage = err.error.message || null;
+            this.validationErrors = err.error.errors || {};
+          }
           this.toast.show('Failed to update');
         },
       });
@@ -580,5 +602,96 @@ export class RentalApplicationDetailsComponent implements OnInit {
     const filesBase = apiBase.replace(/\/api\/?$/, '/');
     const normalized = trimmed.replace(/^\/?/, '');
     return `${filesBase}${normalized}`;
+  }
+
+  // Helper for template to avoid using global Object in Angular expression
+  get hasValidationErrors(): boolean {
+    const hasFieldErrors =
+      this.validationErrors &&
+      Object.keys(this.validationErrors || {}).length > 0;
+    return !!this.validationMessage || hasFieldErrors;
+  }
+
+  // Present a readable label from snake_case/dot.notation keys
+  humanizeFieldName(field: string): string {
+    if (!field) return '';
+    const replaced = field.replace(/[._]+/g, ' ').trim();
+    const words = replaced.split(/\s+/).filter(Boolean);
+    const lowerWords = new Set([
+      'of',
+      'and',
+      'the',
+      'a',
+      'an',
+      'to',
+      'in',
+      'on',
+      'for',
+      'or',
+    ]);
+    return words
+      .map((word, index) => {
+        const lower = word.toLowerCase();
+        if (index > 0 && lowerWords.has(lower)) return lower;
+        return lower.charAt(0).toUpperCase() + lower.slice(1);
+      })
+      .join(' ');
+  }
+
+  // Replace underscores with spaces in backend messages
+  normalizeErrorMessage(message: string | null | undefined): string {
+    if (!message) return '';
+    return message.replace(/_/g, ' ');
+  }
+
+  // ===================== Dirty Check for Update Button =====================
+  private normalizeReviseForm(form: ReviseRentRequestPayload | null): any {
+    if (!form) return null;
+    const pick = JSON.parse(JSON.stringify(form));
+    // Remove volatile timestamps to avoid false positives
+    delete pick.created_at;
+    delete pick.updated_at;
+
+    const toStringIfNotNull = (v: any) =>
+      v === null || v === undefined ? v : String(v);
+    const numericLikeKeys = [
+      'nationality',
+      'number_of_family_members',
+      'debts_monthly_amount',
+      'debts_remaining_months',
+      'monthly_income',
+      'expected_monthly_cost',
+      'number_of_installments',
+      'down_payment',
+      'monthly_installment',
+    ];
+    numericLikeKeys.forEach((k) => {
+      if (k in pick) pick[k] = toStringIfNotNull(pick[k]);
+    });
+    if (pick.additional_charges) {
+      pick.additional_charges.agent_fees = toStringIfNotNull(
+        pick.additional_charges.agent_fees
+      );
+      pick.additional_charges.eijar_fees = toStringIfNotNull(
+        pick.additional_charges.eijar_fees
+      );
+      pick.additional_charges.processing_fees = toStringIfNotNull(
+        pick.additional_charges.processing_fees
+      );
+    }
+    return pick;
+  }
+
+  hasAssessmentChanges(): boolean {
+    if (!this.isEditingAssessment || !this.reviseForm) return false;
+    // File selections count as changes
+    if (this.incomeDocFile || this.creditDocFile) return true;
+    const current = this.normalizeReviseForm(this.reviseForm);
+    const original = this.normalizeReviseForm(this.originalReviseForm);
+    try {
+      return JSON.stringify(current) !== JSON.stringify(original);
+    } catch {
+      return true;
+    }
   }
 }
