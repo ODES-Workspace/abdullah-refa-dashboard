@@ -61,43 +61,43 @@
     </div>
   </div>
 
+  <!-- Loading state -->
+  <div *ngIf="isLoading" class="loading">
+    {{ "Loading..." | translate }}
+  </div>
+
   <!-- No data -->
-  <div *ngIf="filteredItems.length === 0" class="table-no-data">
+  <div *ngIf="!isLoading && filteredItems.length === 0" class="table-no-data">
     {{ "No data found" | translate }}
   </div>
   <!-- Table rows -->
-  <div class="table-row" *ngFor="let item of paginatedItems">
-    <div>{{ item.name }}</div>
-    <div>{{ item.mobile }}</div>
-    <div>{{ item.email }}</div>
-    <div>{{ item.city }}</div>
-    <div>{{ item.DateAdded }}</div>
-    <div class="table-actions">
-      <span (click)="openViewModal(item)">
-        <img src="/assets/icons/show-icon.svg" alt="show icon" />
-      </span>
-      <span (click)="openEditModal(item)">
-        <img src="/assets/icons/edit-table-icon.svg" alt="edit icon" />
-      </span>
+  <ng-container *ngIf="!isLoading">
+    <div class="table-row" *ngFor="let item of paginatedItems">
+      <div>{{ item.name }}</div>
+      <div>{{ item.mobile }}</div>
+      <div>{{ item.email }}</div>
+      <div>{{ item.city }}</div>
+      <div>{{ item.DateAdded }}</div>
+      <div class="table-actions">
+        <span (click)="openViewModal(item)">
+          <img src="/assets/icons/show-icon.svg" alt="show icon" />
+        </span>
+        <span (click)="openEditModal(item)">
+          <img src="/assets/icons/edit-table-icon.svg" alt="edit icon" />
+        </span>
+      </div>
     </div>
-  </div>
+  </ng-container>
+
   <!-- Table pagination -->
-  <div class="table-pagination" *ngIf="filteredItems.length > 0">
-    <div class="table-pagination--show">
-      <span> {{ "Show" | translate }} </span>
-      <select [(ngModel)]="itemsPerPage" (change)="updatePagination()">
-        <option *ngFor="let num of [10, 20, 30]" [value]="num">
-          {{ num }}
-        </option>
-      </select>
-      <span> {{ "per page" | translate }} </span>
-    </div>
+  <div class="table-pagination" *ngIf="!isLoading && filteredItems.length > 0">
+    <div></div>
 
     <div class="table-pagination--pages">
       <div class="table-pagination--pages--count">
-        {{ paginationStart + 1 }}-{{ paginationEnd }}
+        {{ apiFrom || 0 }}-{{ apiTo || 0 }}
         {{ "of" | translate }}
-        {{ filteredItems.length }}
+        {{ apiTotal }}
       </div>
 
       <div class="table-pagination--pages--buttons" dir="ltr">
@@ -172,11 +172,16 @@
       </div>
       <div class="modal-row">
         <span class="label">{{ "City" | translate }}:</span>
-        <input type="text" [(ngModel)]="selectedTenant!.city" />
+        <select [(ngModel)]="selectedTenant!.cityId">
+          <option [value]="null">{{ "Select City" | translate }}</option>
+          <option *ngFor="let city of cities" [value]="city.id">
+            {{ currentLang === "ar" ? city.name_ar : city.name_en }}
+          </option>
+        </select>
       </div>
       <div class="modal-row">
         <span class="label">{{ "Date added" | translate }}:</span>
-        <input type="text" [(ngModel)]="selectedTenant!.DateAdded" />
+        <input type="text" [(ngModel)]="selectedTenant!.DateAdded" readonly />
       </div>
     </div>
     <div class="modal-footer">
@@ -189,3 +194,6 @@
     </div>
   </div>
 </div>
+
+<!-- Toast Component -->
+<app-toast></app-toast>

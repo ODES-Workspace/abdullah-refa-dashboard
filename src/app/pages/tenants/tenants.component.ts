@@ -1,7 +1,17 @@
 import { NgFor, NgIf } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { forkJoin } from 'rxjs';
+import {
+  TenantsService,
+  Tenant,
+  TenantsResponse,
+  UpdateTenantPayload,
+} from '../../../services/tenants.service';
+import { CitiesService, City } from '../../../services/cities.service';
+import { ToastService } from '../../../services/toast.service';
+import { ToastComponent } from '../../ui/toast/toast.component';
 
 interface TableItem {
   id: number;
@@ -9,59 +19,50 @@ interface TableItem {
   mobile: string;
   email: string;
   city: string;
+  cityId?: number;
   DateAdded: string;
+  monthly_installment?: number;
+  property_name?: string;
 }
 
 @Component({
   selector: 'app-tenants',
-  imports: [FormsModule, NgFor, NgIf, TranslateModule],
+  imports: [FormsModule, NgFor, NgIf, TranslateModule, ToastComponent],
   standalone: true,
   templateUrl: './tenants.component.html',
   styleUrl: './tenants.component.scss',
 })
-export class TenantsComponent {
-  allItems: TableItem[] = [
-    {
-      id: 1,
-      name: 'Ahmed bin Said',
-      mobile: '+966558441496',
-      email: 'vMq6W@example.com',
-      city: 'Dammam',
-      DateAdded: 'Cody Mayer',
-    },
-    {
-      id: 2,
-      name: 'Rashid Rashid',
-      mobile: '+966558441495',
-      email: 'vMq6W@example.com',
-      city: 'Tabuk',
-      DateAdded: 'Cody Cayer',
-    },
-    {
-      id: 3,
-      name: 'Nora Al Kaabi',
-      mobile: '+966558441492',
-      email: 'vMq6W@example.com',
-      city: 'Al-Hofuf',
-      DateAdded: 'Cody Kayer',
-    },
-  ];
+export class TenantsComponent implements OnInit {
+  allItems: TableItem[] = [];
 
   searchTerm = '';
-  filteredItems: TableItem[] = [...this.allItems];
+  filteredItems: TableItem[] = [];
   paginatedItems: TableItem[] = [];
   currentPage = 1;
-  itemsPerPage = 10;
   showViewModal = false;
   showEditModal = false;
   selectedTenant: TableItem | null = null;
+  isLoading = false;
+
+  // Server-side pagination metadata
+  apiTotal: number = 0;
+  apiPerPage: number = 10;
+  apiLastPage: number = 1;
+  apiFrom: number | null = null;
+  apiTo: number | null = null;
+
+  // Cities data
+  cities: City[] = [];
+  currentLang: 'en' | 'ar' =
+    (localStorage.getItem('lang') as 'en' | 'ar') || 'en';
 
   // Track sorting state
   currentSortColumn: keyof TableItem | null = null;
   isSortAscending = true;
 
+  // Server-side pagination getters
   get totalPages(): number {
-    return Math.ceil(this.filteredItems.length / this.itemsPerPage);
+    return this.apiLastPage || 1;
   }
 
   get totalPagesArray(): number[] {
@@ -69,18 +70,122 @@ export class TenantsComponent {
   }
 
   get paginationStart(): number {
-    return (this.currentPage - 1) * this.itemsPerPage;
+    return this.apiFrom ? this.apiFrom - 1 : 0;
   }
 
   get paginationEnd(): number {
-    return Math.min(
-      this.paginationStart + this.itemsPerPage,
-      this.filteredItems.length
-    );
+    return this.apiTo ?? this.paginatedItems.length;
   }
 
-  constructor() {
-    this.updatePagination();
+  constructor(
+    private tenantsService: TenantsService,
+    private citiesService: CitiesService,
+    private translate: TranslateService,
+    private toastService: ToastService
+  ) {}
+
+  ngOnInit(): void {
+    this.isLoading = true;
+    this.loadReferenceData(() => this.loadPage(1));
+
+    this.translate.onLangChange.subscribe((event) => {
+      const newLang = event.lang === 'ar' ? 'ar' : 'en';
+      if (newLang !== this.currentLang) {
+        this.currentLang = newLang;
+        this.relocalizeLabels();
+      }
+    });
+  }
+
+  private loadPage(page: number): void {
+    this.isLoading = true;
+    this.tenantsService.getTenants(page, this.apiPerPage).subscribe({
+      next: (response: TenantsResponse) => {
+        console.log('Tenants API Response:', response);
+
+        // Update pagination metadata
+        this.apiTotal = response.total;
+        this.apiPerPage = response.per_page;
+        this.apiLastPage = response.last_page;
+        this.apiFrom = response.from ?? null;
+        this.apiTo = response.to ?? null;
+        this.currentPage = response.current_page;
+
+        // Map and assign data
+        const items = this.mapTenantsToTableItems(response.data);
+        this.allItems = items;
+        this.filteredItems = [...items];
+        this.paginatedItems = [...items]; // Server already paginated
+        this.isLoading = false;
+      },
+      error: (error) => {
+        console.error('Error loading tenants:', error);
+        // Reset to empty state on error
+        this.allItems = [];
+        this.filteredItems = [];
+        this.paginatedItems = [];
+        this.apiTotal = 0;
+        this.apiLastPage = 1;
+        this.apiFrom = null;
+        this.apiTo = null;
+        this.isLoading = false;
+      },
+    });
+  }
+
+  private loadReferenceData(onComplete?: () => void): void {
+    const cities$ = this.citiesService.getCities();
+
+    cities$.subscribe({
+      next: (citiesRes) => {
+        this.cities = citiesRes || [];
+
+        if (this.allItems && this.allItems.length > 0) {
+          this.applyCityNamesFromMaps();
+        }
+
+        if (onComplete) onComplete();
+      },
+      error: () => {
+        if (onComplete) onComplete();
+      },
+    });
+  }
+
+  private getCityName(cityId: number): string {
+    const city = this.cities.find((c) => c.id === cityId);
+    if (!city) return '-';
+
+    return this.currentLang === 'ar' ? city.name_ar : city.name_en;
+  }
+
+  private relocalizeLabels(): void {
+    this.applyCityNamesFromMaps();
+  }
+
+  private applyCityNamesFromMaps(): void {
+    this.allItems = this.allItems.map((it) => ({
+      ...it,
+      city: it.cityId ? this.getCityName(it.cityId) : it.city,
+    }));
+    this.filteredItems = [...this.allItems];
+    this.paginatedItems = [...this.allItems];
+  }
+
+  private mapTenantsToTableItems(tenants: Tenant[]): TableItem[] {
+    return tenants.map((tenant) => ({
+      id: tenant.id,
+      name: tenant.name,
+      mobile: tenant.phone,
+      email: tenant.email,
+      city: tenant.city_id
+        ? this.getCityName(tenant.city_id)
+        : tenant.property?.city || 'N/A',
+      cityId: tenant.city_id,
+      DateAdded: new Date(tenant.created_at).toLocaleDateString('en-GB'),
+      monthly_installment: tenant.monthly_installment,
+      property_name: tenant.property?.name_en || 'N/A',
+    }));
   }
 
   onSearch(): void {
@@ -88,10 +193,11 @@ export class TenantsComponent {
     this.filteredItems = this.allItems.filter(
       (item) =>
         item.name.toLowerCase().includes(searchTermLower) ||
-        item.mobile.toLowerCase().includes(searchTermLower)
+        item.mobile.toLowerCase().includes(searchTermLower) ||
+        item.email.toLowerCase().includes(searchTermLower)
     );
-    this.currentPage = 1;
-    this.updatePagination();
+    // For client-side search on current page data
+    this.paginatedItems = [...this.filteredItems];
   }
 
   sortBy(key: keyof TableItem): void {
@@ -102,9 +208,10 @@ export class TenantsComponent {
       this.isSortAscending = true;
     }
 
+    // Sort current page data
     this.filteredItems.sort((a, b) => {
-      const valueA = a[key].toString().toLowerCase();
-      const valueB = b[key].toString().toLowerCase();
+      const valueA = (a[key] ?? '').toString().toLowerCase();
+      const valueB = (b[key] ?? '').toString().toLowerCase();
 
       if (valueA < valueB) {
         return this.isSortAscending ? -1 : 1;
@@ -115,33 +222,31 @@ export class TenantsComponent {
       return 0;
     });
 
-    this.updatePagination();
+    this.paginatedItems = [...this.filteredItems];
   }
 
   updatePagination(): void {
-    this.paginatedItems = this.filteredItems.slice(
-      this.paginationStart,
-      this.paginationEnd
-    );
+    // No longer needed for server-side pagination
+    // Data is already paginated by the server
   }
 
+  // Server-side pagination navigation
   prevPage(): void {
     if (this.currentPage > 1) {
-      this.currentPage--;
-      this.updatePagination();
+      this.loadPage(this.currentPage - 1);
     }
   }
 
   nextPage(): void {
     if (this.currentPage < this.totalPages) {
-      this.currentPage++;
-      this.updatePagination();
+      this.loadPage(this.currentPage + 1);
     }
   }
 
   goToPage(page: number): void {
-    this.currentPage = page;
-    this.updatePagination();
+    if (page >= 1 && page <= this.totalPages) {
+      this.loadPage(page);
+    }
   }
 
   openViewModal(tenant: TableItem): void {
@@ -165,21 +270,72 @@ export class TenantsComponent {
   }
 
   saveTenantChanges(): void {
-    if (this.selectedTenant) {
-      const index = this.allItems.findIndex(
-        (item) => item.id === this.selectedTenant?.id
-      );
+    if (!this.selectedTenant) return;
 
-      if (index !== -1) {
-        this.allItems[index] = { ...this.selectedTenant };
+    const selectedTenant = this.selectedTenant; // Create a non-null reference
 
-        this.filteredItems = this.allItems.filter((item) =>
-          item.name.toLowerCase().includes(this.searchTerm.toLowerCase())
+    const payload: UpdateTenantPayload = {
+      name: selectedTenant.name,
+      email: selectedTenant.email,
+      phone: selectedTenant.mobile,
+      city_id: selectedTenant.cityId,
+    };
+
+    this.tenantsService.updateTenant(selectedTenant.id, payload).subscribe({
+      next: (response) => {
+        console.log('Update tenant API response:', response);
+
+        // Update the item in local arrays
+        const index = this.allItems.findIndex(
+          (item) => item.id === selectedTenant.id
         );
 
-        this.updatePagination();
-      }
-    }
-    this.closeEditModal();
+        if (index !== -1) {
+          // Check if response has tenant data, otherwise use selectedTenant data
+          const updatedTenant = response.tenant || response;
+
+          if (updatedTenant && typeof updatedTenant === 'object') {
+            this.allItems[index] = {
+              ...this.allItems[index],
+              name: updatedTenant.name || selectedTenant.name,
+              mobile: updatedTenant.phone || selectedTenant.mobile,
+              email: updatedTenant.email || selectedTenant.email,
+              city: updatedTenant.city_id
+                ? this.getCityName(updatedTenant.city_id)
+                : selectedTenant.cityId
+                ? this.getCityName(selectedTenant.cityId)
+                : selectedTenant.city,
+              cityId: updatedTenant.city_id || selectedTenant.cityId,
+            };
+          } else {
+            // Fallback: use selectedTenant data if response doesn't have tenant object
+            this.allItems[index] = {
+              ...this.allItems[index],
+              name: selectedTenant.name,
+              mobile: selectedTenant.mobile,
+              email: selectedTenant.email,
+              city: selectedTenant.cityId
+                ? this.getCityName(selectedTenant.cityId)
+                : selectedTenant.city,
+              cityId: selectedTenant.cityId,
+            };
+          }
+
+          // Update filtered items
+          this.onSearch();
+        }
+
+        this.toastService.show('Tenant updated successfully!');
+        this.closeEditModal();
+      },
+      error: (error) => {
+        console.error('Error updating tenant:', error);
+        if (error.status === 422) {
+          this.toastService.show('Validation error. Please check your input.');
+        } else {
+          this.toastService.show('Failed to update tenant. Please try again.');
+        }
+      },
+    });
   }
 }
