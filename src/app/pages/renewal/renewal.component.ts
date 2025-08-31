@@ -6,6 +6,8 @@ import { Router } from '@angular/router';
 import { ToastService } from '../../../services/toast.service';
 import { ToastComponent } from '../../ui/toast/toast.component';
 import { ContractsService } from '../../../services/contracts.service';
+import { CitiesService, City } from '../../../services/cities.service';
+import { forkJoin } from 'rxjs';
 
 interface TableItem {
   id: number;
@@ -15,6 +17,7 @@ interface TableItem {
   tenantMobile: string;
   ownerMobile: string;
   location: string;
+  cityId?: number;
   startDate: string;
   endOfContract: string;
   status: string;
@@ -52,6 +55,11 @@ export class RenewalComponent implements OnInit {
   editedItem: TableItem | null = null;
   isLoading = true;
 
+  // Cities data
+  cities: City[] = [];
+  private currentLang: 'en' | 'ar' =
+    (localStorage.getItem('lang') as 'en' | 'ar') || 'en';
+
   get totalPages(): number {
     return Math.ceil(this.filteredItems.length / this.itemsPerPage);
   }
@@ -74,13 +82,28 @@ export class RenewalComponent implements OnInit {
   constructor(
     private router: Router,
     private toastService: ToastService,
-    private contractsService: ContractsService
+    private contractsService: ContractsService,
+    private citiesService: CitiesService
   ) {
     this.updatePagination();
   }
 
   ngOnInit(): void {
     this.isLoading = true;
+    // Load cities first, then load contracts
+    this.citiesService.getCities().subscribe({
+      next: (citiesRes) => {
+        this.cities = citiesRes || [];
+        this.loadContracts();
+      },
+      error: () => {
+        this.cities = [];
+        this.loadContracts();
+      },
+    });
+  }
+
+  private loadContracts(): void {
     this.contractsService.getContracts(1, undefined, 'completed').subscribe({
       next: (res) => {
         const items = (res.data || []).map((c: any) => {
@@ -96,7 +119,10 @@ export class RenewalComponent implements OnInit {
               prop.property_type_id != null
                 ? String(prop.property_type_id)
                 : '-',
-            location: prop.city || '-',
+            location: rr.city_id
+              ? this.getCityName(rr.city_id)
+              : prop.city || '-',
+            cityId: rr.city_id,
             startDate: c.start_date || '-',
             endOfContract: c.end_date || '-',
             status: c.status || '-',
@@ -116,6 +142,13 @@ export class RenewalComponent implements OnInit {
         this.isLoading = false;
       },
     });
+  }
+
+  private getCityName(cityId: number): string {
+    const city = this.cities.find((c) => c.id === cityId);
+    if (!city) return '-';
+
+    return this.currentLang === 'ar' ? city.name_ar : city.name_en;
   }
 
   onSearch(): void {
@@ -138,8 +171,8 @@ export class RenewalComponent implements OnInit {
     }
 
     this.filteredItems.sort((a, b) => {
-      const valueA = a[key].toString().toLowerCase();
-      const valueB = b[key].toString().toLowerCase();
+      const valueA = (a[key] ?? '').toString().toLowerCase();
+      const valueB = (b[key] ?? '').toString().toLowerCase();
 
       if (valueA < valueB) {
         return this.isSortAscending ? -1 : 1;

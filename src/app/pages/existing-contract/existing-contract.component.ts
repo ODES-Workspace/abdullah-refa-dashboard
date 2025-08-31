@@ -5,6 +5,8 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { Router } from '@angular/router';
 import { ContractsService } from '../../../services/contracts.service';
 import { PropertyTypesService } from '../../../services/property-types.service';
+import { CitiesService, City } from '../../../services/cities.service';
+import { forkJoin } from 'rxjs';
 
 interface TableItem {
   id: number;
@@ -15,6 +17,7 @@ interface TableItem {
   tenantMobile: string;
   ownerMobile: string;
   location: string;
+  cityId?: number;
   startDate: string;
   endOfContract: string;
   status: string;
@@ -65,6 +68,9 @@ export class ExistingContractComponent implements OnInit {
   private currentLang: 'en' | 'ar' =
     (localStorage.getItem('lang') as 'en' | 'ar') || 'en';
 
+  // Cities data
+  cities: City[] = [];
+
   get totalPages(): number {
     return this.apiLastPage || 1;
   }
@@ -85,6 +91,7 @@ export class ExistingContractComponent implements OnInit {
     private router: Router,
     private contractsService: ContractsService,
     private propertyTypesService: PropertyTypesService,
+    private citiesService: CitiesService,
     private translate: TranslateService
   ) {
     this.updatePagination();
@@ -94,15 +101,20 @@ export class ExistingContractComponent implements OnInit {
     // Ensure loading state shows immediately
     this.isLoading = true;
 
-    // Load property types for mapping, then load contracts
-    this.propertyTypesService.getPropertyTypes().subscribe({
-      next: (res: any) => {
-        this.typesRaw = res?.data || [];
+    // Load property types and cities for mapping, then load contracts
+    const types$ = this.propertyTypesService.getPropertyTypes();
+    const cities$ = this.citiesService.getCities();
+
+    forkJoin([types$, cities$]).subscribe({
+      next: ([typesRes, citiesRes]) => {
+        this.typesRaw = typesRes?.data || [];
+        this.cities = citiesRes || [];
         this.rebuildTypeMap();
         this.loadPage(this.currentPage);
       },
       error: () => {
         this.typesRaw = [];
+        this.cities = [];
         this.typeIdToName = {};
         this.loadPage(this.currentPage);
       },
@@ -151,7 +163,10 @@ export class ExistingContractComponent implements OnInit {
                 (typeId && this.typeIdToName[typeId]) ||
                 (typeId != null ? String(typeId) : '-') ||
                 '-',
-              location: c.rent_request?.property?.city || '-',
+              location: c.rent_request?.city_id
+                ? this.getCityName(c.rent_request.city_id)
+                : c.rent_request?.property?.city || '-',
+              cityId: c.rent_request?.city_id,
               startDate: c.start_date || '-',
               endOfContract: c.end_date || '-',
               status: c.status || '-',
@@ -193,9 +208,17 @@ export class ExistingContractComponent implements OnInit {
       propertyType:
         (it.propertyTypeId && this.typeIdToName[it.propertyTypeId]) ||
         it.propertyType,
+      location: it.cityId ? this.getCityName(it.cityId) : it.location,
     }));
     this.filteredItems = [...this.allItems];
     this.paginatedItems = [...this.allItems];
+  }
+
+  private getCityName(cityId: number): string {
+    const city = this.cities.find((c) => c.id === cityId);
+    if (!city) return '-';
+
+    return this.currentLang === 'ar' ? city.name_ar : city.name_en;
   }
 
   onSearch(): void {

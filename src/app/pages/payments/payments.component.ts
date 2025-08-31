@@ -7,6 +7,8 @@ import { ToastService } from '../../../services/toast.service';
 import { ToastComponent } from '../../ui/toast/toast.component';
 import { ContractsService } from '../../../services/contracts.service';
 import { PropertyTypesService } from '../../../services/property-types.service';
+import { CitiesService, City } from '../../../services/cities.service';
+import { forkJoin } from 'rxjs';
 
 interface TableItem {
   id: number;
@@ -17,6 +19,7 @@ interface TableItem {
   tenantMobile: string;
   ownerMobile: string;
   location: string;
+  cityId?: number;
   startDate: string;
   endOfContract: string;
   status: string;
@@ -61,6 +64,11 @@ export class PaymentsComponent implements OnInit {
   apiFrom: number | null = null;
   apiTo: number | null = null;
 
+  // Cities data
+  cities: City[] = [];
+  private currentLang: 'en' | 'ar' =
+    (localStorage.getItem('lang') as 'en' | 'ar') || 'en';
+
   get totalPages(): number {
     return this.apiLastPage || 1;
   }
@@ -84,6 +92,7 @@ export class PaymentsComponent implements OnInit {
     private toastService: ToastService,
     private contractsService: ContractsService,
     private propertyTypesService: PropertyTypesService,
+    private citiesService: CitiesService,
     private translate: TranslateService
   ) {}
 
@@ -103,20 +112,24 @@ export class PaymentsComponent implements OnInit {
   }
 
   // Localization maps for property types
-  private currentLang: 'en' | 'ar' =
-    (localStorage.getItem('lang') as 'en' | 'ar') || 'en';
+
   private typesRaw: any[] = [];
   private typeIdToName: { [id: number]: string } = {};
 
   private loadTypes(onComplete?: () => void): void {
-    this.propertyTypesService.getPropertyTypes().subscribe({
-      next: (res: any) => {
-        this.typesRaw = res?.data || [];
+    const types$ = this.propertyTypesService.getPropertyTypes();
+    const cities$ = this.citiesService.getCities();
+
+    forkJoin([types$, cities$]).subscribe({
+      next: ([typesRes, citiesRes]) => {
+        this.typesRaw = typesRes?.data || [];
+        this.cities = citiesRes || [];
         this.rebuildTypeMap();
         if (onComplete) onComplete();
       },
       error: () => {
         this.typesRaw = [];
+        this.cities = [];
         this.typeIdToName = {};
         if (onComplete) onComplete();
       },
@@ -138,9 +151,17 @@ export class PaymentsComponent implements OnInit {
       propertyType:
         (it.propertyTypeId && this.typeIdToName[it.propertyTypeId]) ||
         it.propertyType,
+      location: it.cityId ? this.getCityName(it.cityId) : it.location,
     }));
     this.filteredItems = [...this.allItems];
     this.paginatedItems = [...this.allItems];
+  }
+
+  private getCityName(cityId: number): string {
+    const city = this.cities.find((c) => c.id === cityId);
+    if (!city) return '-';
+
+    return this.currentLang === 'ar' ? city.name_ar : city.name_en;
   }
 
   private loadPage(page: number): void {
@@ -171,7 +192,10 @@ export class PaymentsComponent implements OnInit {
                 ? String(prop.property_type_id)
                 : '-') ||
               '-',
-            location: prop.city || '-',
+            location: rr.city_id
+              ? this.getCityName(rr.city_id)
+              : prop.city || '-',
+            cityId: rr.city_id,
             startDate: c.start_date || '-',
             endOfContract: c.end_date || '-',
             status: c.status || '-',
