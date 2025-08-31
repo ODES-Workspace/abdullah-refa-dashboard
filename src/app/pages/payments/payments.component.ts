@@ -166,59 +166,61 @@ export class PaymentsComponent implements OnInit {
 
   private loadPage(page: number): void {
     this.isLoading = true;
-    this.contractsService.getContracts(page, undefined, 'pending').subscribe({
-      next: (res) => {
-        this.apiTotal = res.total;
-        this.apiPerPage = res.per_page;
-        this.apiLastPage = res.last_page;
-        this.apiFrom = res.from ?? null;
-        this.apiTo = res.to ?? null;
-        this.currentPage = res.current_page;
+    this.contractsService
+      .getContracts(page, undefined, 'payment_due')
+      .subscribe({
+        next: (res) => {
+          this.apiTotal = res.total;
+          this.apiPerPage = res.per_page;
+          this.apiLastPage = res.last_page;
+          this.apiFrom = res.from ?? null;
+          this.apiTo = res.to ?? null;
+          this.currentPage = res.current_page;
 
-        const items = (res.data || []).map((c: any) => {
-          const rr = c.rent_request || {};
-          const prop = rr.property || {};
-          return {
-            id: c.id,
-            tenantName: rr.name || '-',
-            tenantMobile: rr.phone || '-',
-            ownerName: '-',
-            ownerMobile: '-',
-            propertyTypeId: prop.property_type_id,
-            propertyType:
-              (prop.property_type_id &&
-                this.typeIdToName[prop.property_type_id]) ||
-              (prop.property_type_id != null
-                ? String(prop.property_type_id)
-                : '-') ||
-              '-',
-            location: rr.city_id
-              ? this.getCityName(rr.city_id)
-              : prop.city || '-',
-            cityId: rr.city_id,
-            startDate: c.start_date || '-',
-            endOfContract: c.end_date || '-',
-            status: c.status || '-',
-          } as TableItem;
-        });
+          const items = (res.data || []).map((c: any) => {
+            const rr = c.rent_request || {};
+            const prop = rr.property || {};
+            return {
+              id: c.id,
+              tenantName: rr.name || '-',
+              tenantMobile: rr.phone || '-',
+              ownerName: '-',
+              ownerMobile: '-',
+              propertyTypeId: prop.property_type_id,
+              propertyType:
+                (prop.property_type_id &&
+                  this.typeIdToName[prop.property_type_id]) ||
+                (prop.property_type_id != null
+                  ? String(prop.property_type_id)
+                  : '-') ||
+                '-',
+              location: rr.city_id
+                ? this.getCityName(rr.city_id)
+                : prop.city || '-',
+              cityId: rr.city_id,
+              startDate: c.start_date || '-',
+              endOfContract: c.end_date || '-',
+              status: c.status || '-',
+            } as TableItem;
+          });
 
-        this.allItems = items;
-        this.filteredItems = [...items];
-        this.paginatedItems = [...items];
-        this.isLoading = false;
-      },
-      error: (err) => {
-        console.error('Failed to fetch pending contracts:', err);
-        this.allItems = [];
-        this.filteredItems = [];
-        this.paginatedItems = [];
-        this.apiTotal = 0;
-        this.apiLastPage = 1;
-        this.apiFrom = null;
-        this.apiTo = null;
-        this.isLoading = false;
-      },
-    });
+          this.allItems = items;
+          this.filteredItems = [...items];
+          this.paginatedItems = [...items];
+          this.isLoading = false;
+        },
+        error: (err) => {
+          console.error('Failed to fetch pending contracts:', err);
+          this.allItems = [];
+          this.filteredItems = [];
+          this.paginatedItems = [];
+          this.apiTotal = 0;
+          this.apiLastPage = 1;
+          this.apiFrom = null;
+          this.apiTo = null;
+          this.isLoading = false;
+        },
+      });
   }
 
   onSearch(): void {
