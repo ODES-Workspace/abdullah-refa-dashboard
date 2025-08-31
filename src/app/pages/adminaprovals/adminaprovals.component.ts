@@ -1,5 +1,5 @@
 import { NgFor, NgIf } from '@angular/common';
-import { Component, HostListener, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { AgentsService, Agent } from '../../../services/agents.service';
@@ -36,7 +36,6 @@ export class AdminaprovalsComponent implements OnInit {
   showViewModal = false;
   showEditModal = false;
   selectedTenant: TableItem | null = null;
-  activeDropdown: number | null = null;
   isLoading = false;
 
   // Track sorting state
@@ -216,34 +215,6 @@ export class AdminaprovalsComponent implements OnInit {
     this.closeEditModal();
   }
 
-  toggleDropdown(itemId: number): void {
-    this.activeDropdown = this.activeDropdown === itemId ? null : itemId;
-  }
-
-  closeDropdown(): void {
-    this.activeDropdown = null;
-  }
-
-  handleAction(item: TableItem, action: string): void {
-    switch (action) {
-      case 'approve':
-        item.status = 'Approved';
-        break;
-      case 'reject':
-        item.status = 'Rejected';
-        break;
-      case 'delete':
-        const index = this.allItems.findIndex((i) => i.id === item.id);
-        if (index !== -1) {
-          this.allItems.splice(index, 1);
-          this.filteredItems = this.allItems;
-          this.updatePagination();
-        }
-        break;
-    }
-    this.closeDropdown();
-  }
-
   getStatusClass(status: string): string {
     switch (status.toLowerCase()) {
       case 'approved':
@@ -254,15 +225,6 @@ export class AdminaprovalsComponent implements OnInit {
         return 'status-pending';
       default:
         return '';
-    }
-  }
-
-  @HostListener('document:click', ['$event'])
-  onDocumentClick(event: MouseEvent): void {
-    const target = event.target as HTMLElement;
-    const dropdown = target.closest('.table-actions');
-    if (!dropdown && this.activeDropdown !== null) {
-      this.closeDropdown();
     }
   }
 }
