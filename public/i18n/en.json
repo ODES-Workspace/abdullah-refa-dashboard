@@ -408,6 +408,8 @@
   "Pending": "Pending",
   "Approved": "Approved",
   "Rejected": "Rejected",
+  "Under Review": "Under Review",
+  "Agency": "Agency",
   "Selected": "Selected",
   "Current": "Current",
   "Show Document": "Show Document",

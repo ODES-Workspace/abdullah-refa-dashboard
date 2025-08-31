@@ -427,8 +427,10 @@
   "Enter property name in Arabic": "أدخل اسم العقار بالعربية",
   "ding property details...": "جاري تحميل تفاصيل العقار...",
   "Pending": "معلق",
-  "Approved": "موافق",
+  "Approved": "مقبول",
   "Rejected": "مرفوض",
+  "Under Review": "قيد المراجعة",
+  "Agency": "وكالة",
   "Selected": "المحدد",
   "Current": "الحالي",
   "Show Document": "عرض الوثيقة",
@@ -447,5 +449,6 @@
   "Processing Fees": "رسوم معالجة",
   "Status Description": "وصف الحالة",
   "Created At": "تاريخ الإنشاء",
-  "Updated At": "تاريخ التحديث"
+  "Updated At": "تاريخ التحديث",
+  "List of Agency/Owner": "قائمة وكالة/مالك"
 }
