@@ -9,6 +9,7 @@ import { UserRoleService } from '../../../services/user-role.service';
 import { RentRequestsService } from '../../../services/rent-requests.service';
 import { PropertyCategoriesService } from '../../../services/property-categories.service';
 import { PropertyTypesService } from '../../../services/property-types.service';
+import { CitiesService, City } from '../../../services/cities.service';
 import { forkJoin } from 'rxjs';
 
 interface TableItem {
@@ -19,6 +20,7 @@ interface TableItem {
   tenantName: string;
   ownerName: string;
   city: string;
+  cityId?: number;
   status: string;
   propertyCategory: string;
   propertyType: string;
@@ -62,6 +64,9 @@ export class RentrequestsListComponent implements OnInit {
   editedItem: TableItem | null = null;
   isLoading = false;
 
+  // Cities data
+  cities: City[] = [];
+
   // client-side getters removed; server-side versions are defined below
 
   constructor(
@@ -71,6 +76,7 @@ export class RentrequestsListComponent implements OnInit {
     private rentRequestsService: RentRequestsService,
     private propertyCategoriesService: PropertyCategoriesService,
     private propertyTypesService: PropertyTypesService,
+    private citiesService: CitiesService,
     private translate: TranslateService
   ) {
     this.updatePagination();
@@ -112,18 +118,21 @@ export class RentrequestsListComponent implements OnInit {
     return apiData.map((rr: any) => {
       const propertyCategoryId = rr.property?.property_category_id;
       const propertyTypeId = rr.property?.property_type_id;
-      
+
       // Get the category name from the reference data with better error handling
       let categoryName = '-';
       if (propertyCategoryId) {
-        if (this.categoryIdToName && this.categoryIdToName[propertyCategoryId]) {
+        if (
+          this.categoryIdToName &&
+          this.categoryIdToName[propertyCategoryId]
+        ) {
           categoryName = this.categoryIdToName[propertyCategoryId];
         } else {
           // Fallback to ID if name is not available
           categoryName = propertyCategoryId.toString();
         }
       }
-      
+
       // Get the type name from the reference data with better error handling
       let typeName = '-';
       if (propertyTypeId) {
@@ -145,7 +154,10 @@ export class RentrequestsListComponent implements OnInit {
         propertyNameAr: rr.property?.name_ar,
         tenantName: rr.name || '-',
         ownerName: rr.property?.name || '-',
-        city: rr.property?.city || '-',
+        city: rr.city_id
+          ? this.getCityName(rr.city_id)
+          : rr.property?.city || '-',
+        cityId: rr.city_id,
         status: rr.status || '-',
         propertyCategoryId: propertyCategoryId,
         propertyTypeId: propertyTypeId,
@@ -160,9 +172,12 @@ export class RentrequestsListComponent implements OnInit {
 
   private loadPage(page: number): void {
     this.isLoading = true;
-    
+
     // If reference data is not loaded yet, load it first
-    if (Object.keys(this.categoryIdToName).length === 0 || Object.keys(this.typeIdToName).length === 0) {
+    if (
+      Object.keys(this.categoryIdToName).length === 0 ||
+      Object.keys(this.typeIdToName).length === 0
+    ) {
       this.loadReferenceData(() => {
         this.fetchRentRequests(page);
       });
@@ -184,7 +199,7 @@ export class RentrequestsListComponent implements OnInit {
         this.currentPage = response.current_page;
 
         const items = this.mapApiToTableItems(response.data || []).reverse();
-        
+
         this.allItems = items;
         this.filteredItems = [...items];
         this.paginatedItems = [...items]; // server already paginated
@@ -208,14 +223,17 @@ export class RentrequestsListComponent implements OnInit {
   private loadReferenceData(onComplete?: () => void): void {
     const categories$ = this.propertyCategoriesService.getPropertyCategories();
     const types$ = this.propertyTypesService.getPropertyTypes();
+    const cities$ = this.citiesService.getCities();
 
-    forkJoin([categories$, types$]).subscribe({
-      next: ([catRes, typeRes]) => {
+    forkJoin([categories$, types$, cities$]).subscribe({
+      next: ([catRes, typeRes, citiesRes]) => {
         console.log('Categories response:', catRes);
         console.log('Types response:', typeRes);
-        
+        console.log('Cities response:', citiesRes);
+
         this.categoriesRaw = catRes?.data || [];
         this.typesRaw = typeRes?.data || [];
+        this.cities = citiesRes || [];
         this.rebuildLabelMaps();
 
         // If we already have items, apply names now
@@ -252,6 +270,7 @@ export class RentrequestsListComponent implements OnInit {
         this.currentLang === 'ar'
           ? it.propertyNameAr || it.propertyNameEn || it.propertyName
           : it.propertyNameEn || it.propertyNameAr || it.propertyName,
+      city: it.cityId ? this.getCityName(it.cityId) : it.city,
     }));
     this.filteredItems = [...this.allItems];
     this.paginatedItems = [...this.allItems];
@@ -261,13 +280,15 @@ export class RentrequestsListComponent implements OnInit {
     this.categoryIdToName = {};
     this.categoriesRaw.forEach((c: any) => {
       const categoryName = this.currentLang === 'ar' ? c.name_ar : c.name_en;
-      this.categoryIdToName[c.id] = categoryName || c.name_en || c.name_ar || 'Unknown Category';
+      this.categoryIdToName[c.id] =
+        categoryName || c.name_en || c.name_ar || 'Unknown Category';
     });
 
     this.typeIdToName = {};
     this.typesRaw.forEach((t: any) => {
       const typeName = this.currentLang === 'ar' ? t.name_ar : t.name_en;
-      this.typeIdToName[t.id] = typeName || t.name_en || t.name_ar || 'Unknown Type';
+      this.typeIdToName[t.id] =
+        typeName || t.name_en || t.name_ar || 'Unknown Type';
     });
 
     console.log('Rebuilt category map:', this.categoryIdToName);
@@ -277,6 +298,13 @@ export class RentrequestsListComponent implements OnInit {
   private relocalizeLabels(): void {
     this.rebuildLabelMaps();
     this.applyNamesFromMaps();
+  }
+
+  private getCityName(cityId: number): string {
+    const city = this.cities.find((c) => c.id === cityId);
+    if (!city) return '-';
+
+    return this.currentLang === 'ar' ? city.name_ar : city.name_en;
   }
 
   // Override client-side pagination helpers to reflect server-side values

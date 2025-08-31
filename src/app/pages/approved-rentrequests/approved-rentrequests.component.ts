@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 import { RentRequestsService } from '../../../services/rent-requests.service';
 import { PropertyCategoriesService } from '../../../services/property-categories.service';
 import { PropertyTypesService } from '../../../services/property-types.service';
+import { CitiesService, City } from '../../../services/cities.service';
 import { forkJoin } from 'rxjs';
 
 interface TableItem {
@@ -16,6 +17,7 @@ interface TableItem {
   tenantName: string;
   ownerName: string;
   city: string;
+  cityId?: number;
   status: string;
   propertyCategory: string;
   propertyType: string;
@@ -72,6 +74,7 @@ export class ApprovedRentrequestsComponent implements OnInit {
   private typeIdToName: { [id: number]: string } = {};
   private categoriesRaw: any[] = [];
   private typesRaw: any[] = [];
+  private cities: City[] = [];
   private currentLang: 'en' | 'ar' =
     (localStorage.getItem('lang') as 'en' | 'ar') || 'en';
 
@@ -80,6 +83,7 @@ export class ApprovedRentrequestsComponent implements OnInit {
     private rentRequestsService: RentRequestsService,
     private propertyCategoriesService: PropertyCategoriesService,
     private propertyTypesService: PropertyTypesService,
+    private citiesService: CitiesService,
     private translate: TranslateService
   ) {
     this.updatePagination();
@@ -255,7 +259,10 @@ export class ApprovedRentrequestsComponent implements OnInit {
         propertyNameAr: rr.property?.name_ar,
         tenantName: rr.name || '-',
         ownerName: rr.property?.name || '-',
-        city: rr.property?.city || '-',
+        city: rr.city_id
+          ? this.getCityName(rr.city_id)
+          : rr.property?.city || '-',
+        cityId: rr.city_id,
         status: rr.status || '-',
         propertyCategoryId: rr.property?.property_category_id,
         propertyTypeId: rr.property?.property_type_id,
@@ -277,42 +284,46 @@ export class ApprovedRentrequestsComponent implements OnInit {
 
   private loadPage(page: number): void {
     this.isLoading = true;
-    this.rentRequestsService.getRentRequests(page).subscribe({
-      next: (response) => {
-        this.apiTotal = response.total;
-        this.apiPerPage = response.per_page;
-        this.apiLastPage = response.last_page;
-        this.apiFrom = response.from ?? null;
-        this.apiTo = response.to ?? null;
-        this.currentPage = response.current_page;
+    this.rentRequestsService
+      .getRentRequests(page, undefined, 'approved')
+      .subscribe({
+        next: (response) => {
+          this.apiTotal = response.total;
+          this.apiPerPage = response.per_page;
+          this.apiLastPage = response.last_page;
+          this.apiFrom = response.from ?? null;
+          this.apiTo = response.to ?? null;
+          this.currentPage = response.current_page;
 
-        const items = this.mapApiToTableItems(response.data || []).reverse();
-        this.allItems = items;
-        this.filteredItems = [...items];
-        this.paginatedItems = [...items];
-        this.isLoading = false;
-      },
-      error: () => {
-        this.allItems = [];
-        this.filteredItems = [];
-        this.paginatedItems = [];
-        this.apiTotal = 0;
-        this.apiLastPage = 1;
-        this.apiFrom = null;
-        this.apiTo = null;
-        this.isLoading = false;
-      },
-    });
+          const items = this.mapApiToTableItems(response.data || []).reverse();
+          this.allItems = items;
+          this.filteredItems = [...items];
+          this.paginatedItems = [...items];
+          this.isLoading = false;
+        },
+        error: () => {
+          this.allItems = [];
+          this.filteredItems = [];
+          this.paginatedItems = [];
+          this.apiTotal = 0;
+          this.apiLastPage = 1;
+          this.apiFrom = null;
+          this.apiTo = null;
+          this.isLoading = false;
+        },
+      });
   }
 
   private loadReferenceData(onComplete?: () => void): void {
     const categories$ = this.propertyCategoriesService.getPropertyCategories();
     const types$ = this.propertyTypesService.getPropertyTypes();
+    const cities$ = this.citiesService.getCities();
 
-    forkJoin([categories$, types$]).subscribe({
-      next: ([catRes, typeRes]) => {
+    forkJoin([categories$, types$, cities$]).subscribe({
+      next: ([catRes, typeRes, citiesRes]) => {
         this.categoriesRaw = catRes?.data || [];
         this.typesRaw = typeRes?.data || [];
+        this.cities = citiesRes || [];
         this.rebuildLabelMaps();
 
         if (this.allItems && this.allItems.length > 0) {
@@ -341,6 +352,7 @@ export class ApprovedRentrequestsComponent implements OnInit {
         this.currentLang === 'ar'
           ? it.propertyNameAr || it.propertyNameEn || it.propertyName
           : it.propertyNameEn || it.propertyNameAr || it.propertyName,
+      city: it.cityId ? this.getCityName(it.cityId) : it.city,
     }));
     this.filteredItems = [...this.allItems];
     this.paginatedItems = [...this.allItems];
@@ -363,6 +375,13 @@ export class ApprovedRentrequestsComponent implements OnInit {
   private relocalizeLabels(): void {
     this.rebuildLabelMaps();
     this.applyNamesFromMaps();
+  }
+
+  private getCityName(cityId: number): string {
+    const city = this.cities.find((c) => c.id === cityId);
+    if (!city) return '-';
+
+    return this.currentLang === 'ar' ? city.name_ar : city.name_en;
   }
 
   // server-side getter helpers

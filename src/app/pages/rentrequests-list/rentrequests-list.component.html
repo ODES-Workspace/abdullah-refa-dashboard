@@ -128,7 +128,7 @@
         <span
           class="status-badge"
           [class]="'status-badge status-' + (item.status || '').toLowerCase()"
-          >{{ item.status || "-" }}</span
+          >{{ item.status | translate }}</span
         >
       </div>
       <div>{{ item.dateAdded }}</div>

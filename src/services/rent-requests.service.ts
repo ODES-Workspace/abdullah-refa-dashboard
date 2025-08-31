@@ -166,11 +166,13 @@ export class RentRequestsService {
    * List all rent requests for admin
    * @param page - Page number for pagination (default: 1)
    * @param perPage - Page size (optional; backend default is 10)
+   * @param status - Filter by status (optional; empty by default)
    * @returns Observable of the rent requests response with pagination
    */
   getRentRequests(
     page: number = 1,
-    perPage?: number
+    perPage?: number,
+    status: string = ''
   ): Observable<RentRequestsResponse> {
     const roleSegment = this.userRoleService.isAdmin() ? 'admin' : 'agent';
     const url = `${this.baseUrl}/${roleSegment}/rent-requests`;
@@ -181,6 +183,9 @@ export class RentRequestsService {
     }
     if (perPage) {
       params = params.set('per_page', perPage.toString());
+    }
+    if (status) {
+      params = params.set('status', status);
     }
 
     return this.http
