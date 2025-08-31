@@ -183,6 +183,15 @@
         <span class="label">{{ "Date added" | translate }}:</span>
         <input type="text" [(ngModel)]="selectedTenant!.DateAdded" readonly />
       </div>
+      
+      <!-- Validation errors (shown below the form) -->
+      <div class="validation-errors" *ngIf="hasValidationErrors">
+        <ul class="validation-list">
+          <li *ngFor="let kv of validationErrors | keyvalue">
+            {{ normalizeErrorMessage(kv.value[0]) }}
+          </li>
+        </ul>
+      </div>
     </div>
     <div class="modal-footer">
       <button class="cancel-btn" (click)="closeEditModal()">

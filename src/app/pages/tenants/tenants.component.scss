@@ -116,3 +116,35 @@
     }
   }
 }
+
+.validation-errors {
+  margin-top: 16px;
+  border: 1px solid #f2caca;
+  background: #fff6f6;
+  padding: 12px;
+  border-radius: 6px;
+
+  .validation-title {
+    font-weight: 700;
+    color: #b00020;
+    margin-bottom: 8px;
+  }
+
+  .validation-message {
+    color: #b00020;
+    margin-bottom: 6px;
+    font-size: 12px;
+  }
+
+  .validation-list {
+    margin: 0;
+    padding-inline-start: 16px;
+    li {
+      font-size: 12px;
+      color: #b00020;
+      .field {
+        font-weight: 600;
+      }
+    }
+  }
+}

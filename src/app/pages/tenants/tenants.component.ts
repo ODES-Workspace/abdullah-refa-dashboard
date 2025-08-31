@@ -1,4 +1,4 @@
-import { NgFor, NgIf } from '@angular/common';
+import { NgFor, NgIf, KeyValuePipe } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
@@ -27,7 +27,7 @@ interface TableItem {
 
 @Component({
   selector: 'app-tenants',
-  imports: [FormsModule, NgFor, NgIf, TranslateModule, ToastComponent],
+  imports: [FormsModule, NgFor, NgIf, TranslateModule, ToastComponent, KeyValuePipe],
   standalone: true,
   templateUrl: './tenants.component.html',
   styleUrl: './tenants.component.scss',
@@ -43,6 +43,10 @@ export class TenantsComponent implements OnInit {
   showEditModal = false;
   selectedTenant: TableItem | null = null;
   isLoading = false;
+
+  // Validation error properties
+  validationErrors: { [key: string]: string[] } = {};
+  validationMessage: string | null = null;
 
   // Server-side pagination metadata
   apiTotal: number = 0;
@@ -75,6 +79,20 @@ export class TenantsComponent implements OnInit {
 
   get paginationEnd(): number {
     return this.apiTo ?? this.paginatedItems.length;
+  }
+
+  // Helper for template to check if there are validation errors
+  get hasValidationErrors(): boolean {
+    const hasFieldErrors =
+      this.validationErrors &&
+      Object.keys(this.validationErrors || {}).length > 0;
+    return !!this.validationMessage || hasFieldErrors;
+  }
+
+  // Method to normalize error messages (remove underscores)
+  normalizeErrorMessage(message: string): string {
+    if (!message) return '';
+    return message.replace(/_/g, ' ');
   }
 
   constructor(
@@ -262,11 +280,19 @@ export class TenantsComponent implements OnInit {
   openEditModal(tenant: TableItem): void {
     this.selectedTenant = { ...tenant };
     this.showEditModal = true;
+    
+    // Clear any previous validation errors
+    this.validationErrors = {};
+    this.validationMessage = null;
   }
 
   closeEditModal(): void {
     this.showEditModal = false;
     this.selectedTenant = null;
+    
+    // Clear validation errors when closing modal
+    this.validationErrors = {};
+    this.validationMessage = null;
   }
 
   saveTenantChanges(): void {
@@ -331,8 +357,11 @@ export class TenantsComponent implements OnInit {
       error: (error) => {
         console.error('Error updating tenant:', error);
         if (error.status === 422) {
-          this.toastService.show('Validation error. Please check your input.');
+          // Handle validation errors - display them below the form
+          this.validationMessage = error.error?.message || null;
+          this.validationErrors = error.error?.errors || {};
         } else {
+          // For non-validation errors, show toast
           this.toastService.show('Failed to update tenant. Please try again.');
         }
       },
