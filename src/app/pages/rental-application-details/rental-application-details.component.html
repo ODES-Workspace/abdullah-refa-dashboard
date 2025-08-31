@@ -269,16 +269,6 @@
           class="application-assessment-card--content"
           *ngIf="!isEditingAssessment; else employmentEdit"
         >
-          <div class="application-assessment-card--content--checkgroup">
-            <div class="application-assessment-card--content--checkitem">
-              <span [class.active]="isEmployed"></span>
-              <span>{{ "Employed" | translate }}</span>
-            </div>
-            <div class="application-assessment-card--content--checkitem">
-              <span [class.active]="!isEmployed"></span>
-              <span>{{ "Self-Employed" | translate }}</span>
-            </div>
-          </div>
           <div class="application-assessment-card--content--item">
             <span> {{ "Work Start Date" | translate }} </span>
             {{
@@ -289,7 +279,7 @@
           </div>
           <div class="application-assessment-card--content--item">
             <span> {{ "Name of Working place" | translate }} </span>
-            {{ rentRequest?.working_place || "-" }}
+            {{ rentRequest?.employer_name || "-" }}
           </div>
           <div class="application-assessment-card--content--item">
             <span> {{ "Job Sector" | translate }} </span>
@@ -334,7 +324,7 @@
             </div>
             <div class="application-assessment-card--content--item">
               <span> {{ "Name of Working place" | translate }} </span>
-              <input type="text" [(ngModel)]="reviseForm!.working_place" />
+              <input type="text" [(ngModel)]="reviseForm!.employer_name" />
             </div>
             <div class="application-assessment-card--content--item">
               <span> {{ "Job Sector" | translate }} </span>
@@ -461,11 +451,7 @@
               {{ "Not Provided" | translate }}
             </ng-template>
           </div>
-          <div class="application-assessment-card--content--item">
-            <span> {{ "Annual Rent" | translate }} </span>
-            {{ rentRequest?.annual_rent || "-" }}
-            {{ "SAR" | translate }}
-          </div>
+
           <div class="application-assessment-card--content--item">
             <span> {{ "Monthl Income" | translate }} </span>
             {{ rentRequest?.monthly_income | number }} {{ "SAR" | translate }}
