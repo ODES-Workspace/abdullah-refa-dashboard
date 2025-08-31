@@ -27,7 +27,14 @@ interface TableItem {
 
 @Component({
   selector: 'app-tenants',
-  imports: [FormsModule, NgFor, NgIf, TranslateModule, ToastComponent, KeyValuePipe],
+  imports: [
+    FormsModule,
+    NgFor,
+    NgIf,
+    TranslateModule,
+    ToastComponent,
+    KeyValuePipe,
+  ],
   standalone: true,
   templateUrl: './tenants.component.html',
   styleUrl: './tenants.component.scss',
@@ -280,7 +287,7 @@ export class TenantsComponent implements OnInit {
   openEditModal(tenant: TableItem): void {
     this.selectedTenant = { ...tenant };
     this.showEditModal = true;
-    
+
     // Clear any previous validation errors
     this.validationErrors = {};
     this.validationMessage = null;
@@ -289,7 +296,7 @@ export class TenantsComponent implements OnInit {
   closeEditModal(): void {
     this.showEditModal = false;
     this.selectedTenant = null;
-    
+
     // Clear validation errors when closing modal
     this.validationErrors = {};
     this.validationMessage = null;
