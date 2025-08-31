@@ -2,11 +2,23 @@
   <div class="profile-header">
     <h3>{{ "Profile Information" | translate }}</h3>
     <div>
-      <button *ngIf="!isEditing" (click)="toggleEdit()" class="edit">
+      <button
+        *ngIf="!isEditing"
+        (click)="toggleEdit()"
+        class="edit"
+        [disabled]="isLoading"
+      >
         {{ "Edit Profile" | translate }}
       </button>
-      <button *ngIf="isEditing" (click)="saveProfile()" class="save-change">
-        {{ "Save Changes" | translate }}
+      <button
+        *ngIf="isEditing"
+        (click)="saveProfile()"
+        class="save-change"
+        [disabled]="isSaving"
+      >
+        {{
+          isSaving ? ("Saving..." | translate) : ("Save Changes" | translate)
+        }}
       </button>
     </div>
   </div>
@@ -16,15 +28,19 @@
     <div class="profile-info-card">
       <div class="profile-info-item">
         <span>{{ "Name" | translate }}</span>
-        <div>{{ profileData.name }}</div>
+        <div>{{ profileData.name || "-" }}</div>
       </div>
       <div class="profile-info-item">
         <span>{{ "Email" | translate }}</span>
-        <div>{{ profileData.email }}</div>
+        <div>{{ profileData.email || "-" }}</div>
       </div>
       <div class="profile-info-item">
         <span>{{ "Contact" | translate }}</span>
-        <div dir="ltr">{{ profileData.contact }}</div>
+        <div dir="ltr">{{ profileData.contact || "-" }}</div>
+      </div>
+      <div class="profile-info-item">
+        <span>{{ "National ID" | translate }}</span>
+        <div>{{ profileData.nationalId || "-" }}</div>
       </div>
     </div>
 
@@ -35,31 +51,31 @@
       <div class="profile-address-info-card--container">
         <div class="profile-info-item">
           <span>{{ "line1" | translate }}</span>
-          <div>{{ profileData.line1 }}</div>
+          <div>{{ profileData.line1 || "-" }}</div>
         </div>
         <div class="profile-info-item">
           <span>{{ "line2" | translate }}</span>
-          <div>{{ profileData.line2 }}</div>
+          <div>{{ profileData.line2 || "-" }}</div>
         </div>
         <div class="profile-info-item">
           <span>{{ "building" | translate }}</span>
-          <div>{{ profileData.building }}</div>
+          <div>{{ profileData.building || "-" }}</div>
         </div>
         <div class="profile-info-item">
           <span>{{ "country" | translate }}</span>
-          <div>{{ profileData.country }}</div>
+          <div>{{ profileData.country || "-" }}</div>
         </div>
         <div class="profile-info-item">
           <span>{{ "province" | translate }}</span>
-          <div>{{ profileData.province }}</div>
+          <div>{{ profileData.province || "-" }}</div>
         </div>
         <div class="profile-info-item">
           <span>{{ "City" | translate }}</span>
-          <div>{{ profileData.city }}</div>
+          <div>{{ getCityName(profileData.city) || "-" }}</div>
         </div>
         <div class="profile-info-item">
           <span>{{ "postalcode" | translate }}</span>
-          <div>{{ profileData.postalCode }}</div>
+          <div>{{ profileData.postalCode || "-" }}</div>
         </div>
       </div>
     </div>
@@ -67,6 +83,15 @@
 
   <!-- Profile Info Edit -->
   <div class="profile-info-editForm" *ngIf="isEditing">
+    <!-- Validation Errors -->
+    <div class="validation-errors" *ngIf="hasValidationErrors">
+      <ul class="validation-list">
+        <li *ngFor="let kv of validationErrors | keyvalue">
+          {{ normalizeErrorMessage(kv.value[0]) }}
+        </li>
+      </ul>
+    </div>
+
     <div class="profile-info-card">
       <div class="profile-info-item">
         <label for="name">{{ "Name" | translate }}</label>
@@ -79,6 +104,14 @@
       <div class="profile-info-item">
         <label for="contact">{{ "Contact" | translate }}</label>
         <input type="tel" id="contact" [(ngModel)]="profileData.contact" />
+      </div>
+      <div class="profile-info-item">
+        <label for="nationalId">{{ "National ID" | translate }}</label>
+        <input
+          type="text"
+          id="nationalId"
+          [(ngModel)]="profileData.nationalId"
+        />
       </div>
     </div>
 
@@ -110,7 +143,12 @@
         </div>
         <div class="profile-info-item">
           <label for="city">{{ "city" | translate }}</label>
-          <input type="text" id="city" [(ngModel)]="profileData.city" />
+          <select id="city" [(ngModel)]="profileData.city">
+            <option value="">{{ "Select City" | translate }}</option>
+            <option *ngFor="let city of cities" [value]="city.id">
+              {{ currentLang === "ar" ? city.name_ar : city.name_en }}
+            </option>
+          </select>
         </div>
         <div class="profile-info-item">
           <label for="postalCode">{{ "Postal Code" | translate }}</label>
@@ -162,3 +200,6 @@
     </div>
   </div>
 </div>
+
+<!-- Toast Component -->
+<app-toast></app-toast>

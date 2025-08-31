@@ -22,6 +22,42 @@ export interface Admin {
   role?: string;
 }
 
+export interface AdminProfile {
+  id: number;
+  type: string;
+  name: string;
+  email: string;
+  phone_number: string;
+  national_id: string;
+  city_id: number | null;
+  email_verified_at: string | null;
+  active: number;
+  role: string;
+  created_at: string;
+  updated_at: string;
+  city: any | null;
+  admin_profile: any | null;
+}
+
+export interface UpdateAdminProfileRequest {
+  address_line1?: string;
+  address_line2?: string;
+  name?: string;
+  email?: string;
+  phone_number?: string;
+  city_id?: string;
+  country?: string;
+  postal_code?: string;
+  province?: string;
+  national_id?: string;
+  building?: string;
+}
+
+export interface UpdateAdminProfileResponse {
+  message?: string;
+  admin?: AdminProfile;
+}
+
 export interface AdminLoginResponse {
   access_token: string;
   token_type: string;
@@ -79,6 +115,33 @@ export class AdminService {
         }),
         catchError(this.handleError)
       );
+  }
+
+  /**
+   * Get admin profile
+   * @returns Observable of the admin profile
+   */
+  getAdminProfile(): Observable<AdminProfile> {
+    const url = `${this.baseUrl}/admin/me`;
+
+    return this.http
+      .get<AdminProfile>(url)
+      .pipe(catchError((error: HttpErrorResponse) => this.handleError(error)));
+  }
+
+  /**
+   * Create or update admin profile
+   * @param profileData - The admin profile data to update
+   * @returns Observable of the update response
+   */
+  updateAdminProfile(
+    profileData: UpdateAdminProfileRequest
+  ): Observable<UpdateAdminProfileResponse> {
+    const url = `${this.baseUrl}/admin/me`;
+
+    return this.http
+      .post<UpdateAdminProfileResponse>(url, profileData)
+      .pipe(catchError((error: HttpErrorResponse) => this.handleError(error)));
   }
 
   private handleError = (error: HttpErrorResponse): Observable<never> => {
