@@ -5,6 +5,10 @@ import { NgClass } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
 import { TableComponent } from '../../ui/agent-agencies-table/agent-agencies-table.component';
 import { AgentdashboardchartsComponent } from '../../ui/agentdashboardcharts/agentdashboardcharts.component';
+import {
+  DashboardService,
+  AgentDashboardResponse,
+} from '../../../services/dashboard.service';
 
 @Component({
   selector: 'app-agentdashboard',
@@ -20,6 +24,7 @@ import { AgentdashboardchartsComponent } from '../../ui/agentdashboardcharts/age
   styleUrl: './agentdashboard.component.scss',
 })
 export class AgentdashboardComponent implements OnInit {
+  rentRequests: any[] = [];
   stats: Stat[] = [
     {
       title: 'Total Properties',
@@ -62,15 +67,39 @@ export class AgentdashboardComponent implements OnInit {
     return `${change > 0 ? '+' : ''}${change}%`;
   }
 
-  constructor() {}
+  constructor(private dashboardService: DashboardService) {}
 
   ngOnInit(): void {
-    // Set static values for stats instead of API calls
-    this.stats[0].value = 25; // Total Properties
-    this.stats[1].value = 150; // Total Rent Request
-    this.stats[2].value = 120; // Accepted Requests
-    this.stats[3].value = 30; // Rejected Requests
-    this.stats[4].value = 450000; // Total Rent Value
+    // Load dashboard data from API
+    this.loadDashboardData();
+  }
+
+  private loadDashboardData(): void {
+    this.dashboardService.getAgentDashboard().subscribe({
+      next: (response: AgentDashboardResponse) => {
+        console.log('Agent Dashboard Response:', response);
+
+        // Update stats with real data from API
+        this.stats[0].value = response.total_properties;
+        this.stats[1].value = response.total_rent_requests;
+        this.stats[2].value = response.total_accepted_rent_requests;
+        this.stats[3].value = response.total_rejected_rent_requests;
+        this.stats[4].value = response.total_contract_amounts;
+
+        // Pass rent requests data to charts component
+        this.rentRequests = response.rent_requests;
+      },
+      error: (error) => {
+        console.error('Error loading dashboard data:', error);
+
+        // Fallback to static values on error
+        this.stats[0].value = 25; // Total Properties
+        this.stats[1].value = 150; // Total Rent Request
+        this.stats[2].value = 120; // Accepted Requests
+        this.stats[3].value = 30; // Rejected Requests
+        this.stats[4].value = 450000; // Total Rent Value
+      },
+    });
   }
 }
 

@@ -3,6 +3,9 @@ import {
   ChangeDetectionStrategy,
   OnInit,
   ViewChild,
+  Input,
+  OnChanges,
+  SimpleChanges,
 } from '@angular/core';
 import { Chart, ChartConfiguration, ChartType } from 'chart.js';
 import { NgChartsModule, BaseChartDirective } from 'ng2-charts';
@@ -49,14 +52,9 @@ interface PropertyTypeData {
   templateUrl: './agentdashboardcharts.component.html',
   styleUrl: './agentdashboardcharts.component.scss',
 })
-export class AgentdashboardchartsComponent implements OnInit {
-  chartLabels = [
-    'Villa',
-    'Flats',
-    'Apartments',
-    'Independent House',
-    'Gated Community',
-  ];
+export class AgentdashboardchartsComponent implements OnInit, OnChanges {
+  @Input() rentRequests: any[] = [];
+
   translatedLabels: string[] = [];
   selectedMonths: string = '12';
   monthOptions = [
@@ -254,13 +252,19 @@ export class AgentdashboardchartsComponent implements OnInit {
     const total = this.monthlyCounts
       .slice(-parseInt(this.selectedMonths))
       .reduce((a, b) => a + b, 0);
+
+    console.log(
+      'Current Total Property Insights:',
+      total,
+      'for',
+      this.selectedMonths,
+      'months'
+    );
     return { months: '', totalInsights: total };
   }
 
   public donutChartData: ChartConfiguration['data'] = {
-    labels: this.translatedLabels.length
-      ? this.translatedLabels
-      : this.chartLabels,
+    labels: this.translatedLabels,
     datasets: [
       {
         data: [0, 0, 0, 0, 0],
@@ -299,6 +303,10 @@ export class AgentdashboardchartsComponent implements OnInit {
     // Subscribe to language changes
     this.translateService.onLangChange.subscribe(() => {
       this.translateMonthsAndUpdate();
+      // Retranslate property types when language changes
+      if (this.rentRequests && this.rentRequests.length > 0) {
+        this.retranslatePropertyTypes();
+      }
     });
 
     // Initial translation
@@ -308,9 +316,24 @@ export class AgentdashboardchartsComponent implements OnInit {
     this.loadStaticData();
   }
 
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['rentRequests'] && changes['rentRequests'].currentValue) {
+      console.log('Rent requests input changed, reprocessing data...');
+      this.loadStaticData(); // This will now use the new rent requests data
+    }
+  }
+
   getRequestMax(): number {
     const data = this.currentData;
-    return data.totalInsights;
+    const max = data.totalInsights;
+    console.log('Request Max (Total Property Insights):', max);
+    return max;
+  }
+
+  getTotalInsights(): number {
+    const total = this.monthlyCounts.reduce((a, b) => a + b, 0);
+    console.log('Total Property Insights across all months:', total);
+    return total;
   }
 
   calculateWidth(value: number, max: number): number {
@@ -392,19 +415,116 @@ export class AgentdashboardchartsComponent implements OnInit {
   }
 
   private loadStaticData(): void {
-    // Set static monthly counts for the last 12 months
-    this.monthlyCounts = [15, 22, 18, 25, 30, 28, 35, 32, 40, 38, 45, 42];
+    console.log('loadStaticData called with rentRequests:', this.rentRequests);
+
+    if (this.rentRequests && this.rentRequests.length > 0) {
+      console.log(
+        'Using real rent requests data, length:',
+        this.rentRequests.length
+      );
+      // Use real data from rent requests
+      this.processRentRequestsData();
+    } else {
+      console.log('No rent requests data available');
+      // Initialize with empty data when no rent requests are available
+      this.monthlyCounts = Array(12).fill(0);
+      this.updateLineChartData();
+
+      this.donutLabels = [];
+      this.donutCounts = [];
+      this.updateChartData();
+    }
+  }
+
+  private processRentRequestsData(): void {
+    console.log('Processing rent requests data:', this.rentRequests);
+
+    // Process monthly data from rent requests for Total Property Insights
+    const months = this.getLast12MonthsDateObjs();
+    const indexMap = new Map<string, number>();
+    months.forEach((m, idx) => indexMap.set(`${m.year}-${m.month}`, idx));
+    const counts = Array(12).fill(0);
+
+    this.rentRequests.forEach((rr: any) => {
+      const d = new Date(rr.created_at);
+      const key = `${d.getFullYear()}-${d.getMonth()}`;
+      const idx = indexMap.get(key);
+      if (idx !== undefined) counts[idx] += 1;
+    });
+
+    console.log('Monthly counts for Total Property Insights:', counts);
+    this.monthlyCounts = counts;
     this.updateLineChartData();
 
-    // Set static donut chart data
-    this.donutLabels = [
-      'Villa',
-      'Flats',
-      'Apartments',
-      'Independent House',
-      'Gated Community',
-    ];
-    this.donutCounts = [35, 28, 22, 12, 8];
+    // Process property type data for donut chart
+    const typeCount = new Map<string, number>();
+    this.rentRequests.forEach((rr: any) => {
+      const propertyType = rr?.property?.type?.name_en;
+      if (propertyType) {
+        typeCount.set(propertyType, (typeCount.get(propertyType) || 0) + 1);
+      }
+    });
+
+    const sorted = Array.from(typeCount.entries())
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 5);
+
+    console.log('Property type distribution:', sorted);
+
+    // Translate property type names based on current language
+    this.translatePropertyTypes(sorted);
+
+    this.updateChartData();
+
+    // Force chart updates to ensure UI reflects the new data
+    setTimeout(() => {
+      this.updateChart();
+    }, 100);
+  }
+
+  private translatePropertyTypes(sortedTypes: [string, number][]): void {
+    const currentLang = this.translateService.currentLang || 'en';
+    const translatedLabels: string[] = [];
+
+    sortedTypes.forEach(([type, count]) => {
+      if (currentLang === 'ar') {
+        // Get Arabic name from the original data
+        const rentRequest = this.rentRequests.find(
+          (rr) => rr?.property?.type?.name_en === type
+        );
+        const arabicName = rentRequest?.property?.type?.name_ar || type;
+        translatedLabels.push(arabicName);
+      } else {
+        // Use English name
+        translatedLabels.push(type);
+      }
+    });
+
+    this.donutLabels = translatedLabels;
+    this.donutCounts = sortedTypes.map(([, count]) => count);
+
+    console.log('Translated property types:', {
+      original: sortedTypes.map(([type]) => type),
+      translated: translatedLabels,
+      language: currentLang,
+    });
+  }
+
+  private retranslatePropertyTypes(): void {
+    // Recreate the type count map and retranslate
+    const typeCount = new Map<string, number>();
+    this.rentRequests.forEach((rr: any) => {
+      const propertyType = rr?.property?.type?.name_en;
+      if (propertyType) {
+        typeCount.set(propertyType, (typeCount.get(propertyType) || 0) + 1);
+      }
+    });
+
+    const sorted = Array.from(typeCount.entries())
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 5);
+
+    this.translatePropertyTypes(sorted);
     this.updateChartData();
   }
 
