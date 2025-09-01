@@ -83,13 +83,17 @@ export class SubAdminsManagementComponent implements OnInit {
 
   // Pagination properties
   currentPage = 1;
-  itemsPerPage = 5; // Reduced to 5 for testing pagination
   totalItems = 0;
   totalPages = 0;
 
   // Sorting
   sortColumn: string | null = null;
   sortDirection: 'asc' | 'desc' = 'asc';
+
+  // Current user admin details
+  currentUserRole: string | null = null;
+  currentUserActive: number | null = null;
+  canViewSubAdmins = false;
 
   constructor(
     private rolesService: RolesService,
@@ -132,7 +136,6 @@ export class SubAdminsManagementComponent implements OnInit {
     // Add pagination parameters to the API call
     const params = new URLSearchParams();
     params.set('page', page.toString());
-    params.set('per_page', this.itemsPerPage.toString());
 
     this.adminsService.getAdmins(params).subscribe({
       next: (response) => {
@@ -153,10 +156,12 @@ export class SubAdminsManagementComponent implements OnInit {
         console.log('Mapped subAdmins:', this.subAdmins);
         console.log('First admin permissions:', this.subAdmins[0]?.permissions);
 
+        // After loading admins, fetch details for the current user admin to console log
+        this.loadCurrentUserAdminDetails();
+
         // Update pagination info
         this.totalItems = response.total || response.data.length;
-        this.totalPages =
-          response.last_page || Math.ceil(this.totalItems / this.itemsPerPage);
+        this.totalPages = response.last_page || 1;
 
         this.isLoading = false;
       },
@@ -166,9 +171,55 @@ export class SubAdminsManagementComponent implements OnInit {
 
         // Set pagination for hardcoded data as fallback
         this.totalItems = this.subAdmins.length;
-        this.totalPages = Math.ceil(this.totalItems / this.itemsPerPage);
+        this.totalPages = 1;
       },
     });
+  }
+
+  private loadCurrentUserAdminDetails(): void {
+    // Get admin id from user_data in localStorage and fetch admin details
+    try {
+      const userDataStr = localStorage.getItem('user_data');
+      if (userDataStr) {
+        const userData = JSON.parse(userDataStr);
+        if (userData && userData.id) {
+          console.log('Current user ID from localStorage:', userData.id);
+
+          // Fetch individual admin details by ID and console log the response
+          this.adminsService.getAdminById(userData.id).subscribe({
+            next: (adminDetail: Admin) => {
+              console.log(`Admin Details for ID ${userData.id}:`, adminDetail);
+              console.log('Full admin details response:', adminDetail);
+
+              // Set current user details and determine if they can view sub-admins
+              this.currentUserRole = adminDetail.role;
+              this.currentUserActive = adminDetail.active;
+              this.canViewSubAdmins =
+                adminDetail.role === 'admin' && adminDetail.active === 1;
+
+              console.log('Current user role:', this.currentUserRole);
+              console.log(
+                'Current user active status:',
+                this.currentUserActive
+              );
+              console.log('Can view sub-admins:', this.canViewSubAdmins);
+            },
+            error: (error: any) => {
+              console.error(
+                `Error fetching admin details for ID ${userData.id}:`,
+                error
+              );
+            },
+          });
+        } else {
+          console.log('No user ID found in user_data');
+        }
+      } else {
+        console.log('No user_data found in localStorage');
+      }
+    } catch (e) {
+      console.error('Error parsing user_data from localStorage:', e);
+    }
   }
 
   private groupPermissions(): void {
@@ -670,8 +721,8 @@ export class SubAdminsManagementComponent implements OnInit {
   }
 
   get paginatedSubAdmins(): SubAdmin[] {
-    const startIndex = (this.currentPage - 1) * this.itemsPerPage;
-    const endIndex = startIndex + this.itemsPerPage;
-    return this.subAdmins.slice(startIndex, endIndex);
+    // Since the API returns paginated data, we don't need to slice
+    // The subAdmins array already contains only the current page's data
+    return this.subAdmins;
   }
 }

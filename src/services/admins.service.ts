@@ -95,6 +95,17 @@ export class AdminsService {
   }
 
   /**
+   * Get admin by ID
+   * GET /api/admin/admins/{id}
+   */
+  getAdminById(id: number): Observable<Admin> {
+    const url = `${this.baseUrl}/admin/admins/${id}`;
+    return this.http
+      .get<Admin>(url)
+      .pipe(catchError((error: HttpErrorResponse) => this.handleError(error)));
+  }
+
+  /**
    * Update an admin
    * PUT /api/admin/admins/{id}
    */

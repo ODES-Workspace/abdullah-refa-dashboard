@@ -1,5 +1,7 @@
 <app-toast></app-toast>
-<div class="table">
+
+<!-- Show table only if user is admin and active -->
+<div class="table" *ngIf="canViewSubAdmins">
   <div class="table-header">
     <div class="table-title">{{ "Sub Admins" | translate }}</div>
     <div class="table-header-group">
@@ -394,6 +396,25 @@
         {{ "Cancel" | translate }}
       </button>
     </div>
+  </div>
+</div>
+
+<!-- No access message for non-admin users -->
+<div
+  *ngIf="!canViewSubAdmins && currentUserRole !== null"
+  class="no-access-message"
+>
+  <div *ngIf="currentUserRole === 'sub-admin'">
+    {{
+      "You don't have permission to view sub-admins. Only admin users can access this page."
+        | translate
+    }}
+  </div>
+  <div *ngIf="currentUserRole === 'admin' && currentUserActive === 0">
+    {{
+      "Your admin account is not active. Please contact the system administrator."
+        | translate
+    }}
   </div>
 </div>
 
