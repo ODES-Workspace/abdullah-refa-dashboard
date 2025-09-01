@@ -723,8 +723,10 @@ export class SubAdminsManagementComponent implements OnInit {
    * Check if the current user is editing their own admin account
    */
   isEditingOwnAccount(): boolean {
-    return this.currentUserId !== null && 
-           this.selectedSubAdmin.id === this.currentUserId;
+    return (
+      this.currentUserId !== null &&
+      this.selectedSubAdmin.id === this.currentUserId
+    );
   }
 
   /**
@@ -733,8 +735,10 @@ export class SubAdminsManagementComponent implements OnInit {
   canEditSubAdmin(subAdminId: number): boolean {
     // Admin users can edit any sub-admin except themselves
     // Sub-admin users cannot edit anyone
-    return this.currentUserRole === 'admin' && 
-           this.currentUserActive === 1 && 
-           subAdminId !== this.currentUserId;
+    return (
+      this.currentUserRole === 'admin' &&
+      this.currentUserActive === 1 &&
+      subAdminId !== this.currentUserId
+    );
   }
 }
