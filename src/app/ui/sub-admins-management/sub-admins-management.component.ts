@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { ToastComponent } from '../toast/toast.component';
+import { TranslateService } from '@ngx-translate/core';
 import {
   RolesService,
   Permission,
@@ -23,6 +24,7 @@ interface SubAdmin {
   email: string;
   password?: string;
   status: 'active' | 'suspended';
+  role: 'admin' | 'sub-admin';
   permissions: number[]; // Array of permission IDs
 }
 
@@ -49,6 +51,7 @@ export class SubAdminsManagementComponent implements OnInit {
       lastName: 'Bayer',
       email: 'Hamill@gmail.com',
       status: 'active',
+      role: 'sub-admin',
       permissions: [15, 16, 17, 18, 20, 21, 22, 23, 24], // Sample permission IDs
     },
     {
@@ -57,6 +60,7 @@ export class SubAdminsManagementComponent implements OnInit {
       lastName: 'Hamill',
       email: 'sper80@gmail.com',
       status: 'suspended',
+      role: 'sub-admin',
       permissions: [15, 16, 17, 25, 26, 27, 28], // Sample permission IDs
     },
   ];
@@ -71,6 +75,7 @@ export class SubAdminsManagementComponent implements OnInit {
   selectedSubAdmin: SubAdmin = this.getEmptySubAdmin();
   searchQuery = '';
   isLoading = false;
+  currentLang = 'en';
 
   // Validation error properties
   validationMessage: string | null = null;
@@ -89,10 +94,20 @@ export class SubAdminsManagementComponent implements OnInit {
   constructor(
     private rolesService: RolesService,
     private adminsService: AdminsService,
-    private toastService: ToastService
+    private toastService: ToastService,
+    private translate: TranslateService
   ) {}
 
   ngOnInit(): void {
+    // Initialize current language
+    this.currentLang =
+      this.translate.currentLang || this.translate.getDefaultLang();
+
+    // Subscribe to language changes
+    this.translate.onLangChange.subscribe((event) => {
+      this.currentLang = event.lang;
+    });
+
     this.loadPermissions();
     this.loadAdmins(1);
   }
@@ -129,6 +144,7 @@ export class SubAdminsManagementComponent implements OnInit {
           lastName: admin.name.split(' ').slice(1).join(' ') || '',
           email: admin.email,
           status: admin.active === 1 ? 'active' : 'suspended',
+          role: (admin.role as 'admin' | 'sub-admin') || 'sub-admin',
           permissions: admin.permissions
             ? admin.permissions.map((p: AdminPermission) => p.id)
             : [],
@@ -180,6 +196,7 @@ export class SubAdminsManagementComponent implements OnInit {
       email: '',
       password: '',
       status: 'active',
+      role: 'sub-admin',
       permissions: [],
     };
   }
@@ -220,6 +237,7 @@ export class SubAdminsManagementComponent implements OnInit {
       email: subAdmin.email,
       password: '', // Reset password for security
       status: subAdmin.status,
+      role: subAdmin.role,
       permissions: subAdmin.permissions.map((p) => Number(p)), // Ensure permissions are numbers
     };
 
@@ -256,7 +274,7 @@ export class SubAdminsManagementComponent implements OnInit {
       name: `${this.selectedSubAdmin.firstName} ${this.selectedSubAdmin.lastName}`,
       email: this.selectedSubAdmin.email,
       password: this.selectedSubAdmin.password || '',
-      role: 'sub-admin', // You can make this configurable if needed
+      role: this.selectedSubAdmin.role,
       active: this.selectedSubAdmin.status === 'active',
       permissions: this.selectedSubAdmin.permissions,
     };
@@ -275,7 +293,11 @@ export class SubAdminsManagementComponent implements OnInit {
         this.loadAdmins(1);
 
         // Show success toast
-        this.toastService.show('Sub-admin created successfully!');
+        if (this.currentLang === 'ar') {
+          this.toastService.show('تم إنشاء المسؤول الفرعي بنجاح');
+        } else {
+          this.toastService.show('Admin created successfully!');
+        }
       },
       error: (error) => {
         console.error('Error creating admin:', error);
@@ -293,7 +315,10 @@ export class SubAdminsManagementComponent implements OnInit {
         } else {
           // For other errors, show general error message
           this.validationMessage =
-            error.message || 'An error occurred while creating the sub-admin.';
+            error.message ||
+            (this.currentLang === 'ar'
+              ? 'حدث خطأ أثناء إنشاء المسؤول الفرعي.'
+              : 'An error occurred while creating the sub-admin.');
         }
       },
     });
@@ -308,7 +333,7 @@ export class SubAdminsManagementComponent implements OnInit {
     const adminData: UpdateAdminRequest = {
       name: `${this.selectedSubAdmin.firstName} ${this.selectedSubAdmin.lastName}`,
       email: this.selectedSubAdmin.email,
-      role: 'sub-admin',
+      role: this.selectedSubAdmin.role,
       active: this.selectedSubAdmin.status === 'active',
       permissions: this.selectedSubAdmin.permissions.map((p) => Number(p)), // Ensure permissions are numbers
       ...(this.selectedSubAdmin.password && {
@@ -353,7 +378,11 @@ export class SubAdminsManagementComponent implements OnInit {
           this.loadAdmins(1);
 
           // Show success toast
-          this.toastService.show('Sub-admin updated successfully!');
+          if (this.currentLang === 'ar') {
+            this.toastService.show('تم تحديث البيانات بنجاح');
+          } else {
+            this.toastService.show('Admin updated successfully!');
+          }
         },
         error: (error) => {
           console.error('Error updating admin:', error);
@@ -372,7 +401,9 @@ export class SubAdminsManagementComponent implements OnInit {
             // For other errors, show general error message
             this.validationMessage =
               error.message ||
-              'An error occurred while updating the sub-admin.';
+              (this.currentLang === 'ar'
+                ? 'حدث خطأ أثناء تحديث المسؤول الفرعي.'
+                : 'An error occurred while updating the sub-admin.');
           }
         },
       });
@@ -396,7 +427,11 @@ export class SubAdminsManagementComponent implements OnInit {
         this.isLoading = false;
 
         // Show success toast
-        this.toastService.show('Admin deleted successfully!');
+        if (this.currentLang === 'ar') {
+          this.toastService.show('تم حذف المسؤول بنجاح');
+        } else {
+          this.toastService.show('Admin deleted successfully!');
+        }
 
         // Reload admins from API to get the updated list
         this.loadAdmins(1);
@@ -406,7 +441,11 @@ export class SubAdminsManagementComponent implements OnInit {
         this.isLoading = false;
 
         // Show error toast
-        this.toastService.show('Failed to delete admin. Please try again.');
+        if (this.currentLang === 'ar') {
+          this.toastService.show('فشل في حذف المسؤول. يرجى المحاولة مرة أخرى.');
+        } else {
+          this.toastService.show('Failed to delete admin. Please try again.');
+        }
       },
     });
   }

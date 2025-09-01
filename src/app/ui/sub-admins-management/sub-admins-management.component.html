@@ -43,6 +43,12 @@
           <img src="/assets/icons/sort-img.svg" />
         </span>
       </div>
+      <div (click)="sort('role')">
+        <span>{{ "Role" | translate }}</span>
+        <span>
+          <img src="/assets/icons/sort-img.svg" />
+        </span>
+      </div>
       <div>
         <span>{{ "Actions" | translate }}</span>
       </div>
@@ -55,6 +61,15 @@
         <div [class]="'status-' + subAdmin.status">
           <span>{{ subAdmin.status | titlecase | translate }}</span>
         </div>
+      </div>
+      <div>
+        <span class="role-badge" [class]="'role-' + subAdmin.role">
+          {{
+            subAdmin.role === "admin"
+              ? ("Admin" | translate)
+              : ("Sub Admin" | translate)
+          }}
+        </span>
       </div>
       <div class="table-actions">
         <span (click)="openDeleteModal(subAdmin)">
@@ -162,6 +177,14 @@
         />
       </div>
 
+      <div class="modal-input role-select">
+        <label for="role">{{ "Role" | translate }}</label>
+        <select id="role" [(ngModel)]="selectedSubAdmin.role" required>
+          <option value="sub-admin">{{ "Sub Admin" | translate }}</option>
+          <option value="admin">{{ "Admin" | translate }}</option>
+        </select>
+      </div>
+
       <div class="permissions-link" (click)="toggleModal('addPermissions')">
         {{ "Adding permissions" | translate }}
       </div>
@@ -265,6 +288,15 @@
           [(ngModel)]="selectedSubAdmin.password"
         />
       </div>
+
+      <div class="modal-input">
+        <label for="editRole">{{ "Role" | translate }}</label>
+        <select id="editRole" [(ngModel)]="selectedSubAdmin.role" required>
+          <option value="sub-admin">{{ "Sub Admin" | translate }}</option>
+          <option value="admin">{{ "Admin" | translate }}</option>
+        </select>
+      </div>
+
       <div class="permissions-section">
         <h3>{{ "Permissions allowed" | translate }}</h3>
         <div class="permissions-allowed">

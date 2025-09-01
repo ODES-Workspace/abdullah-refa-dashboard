@@ -479,5 +479,8 @@
   "You don't have permission to view payments": "ليس لديك صلاحية لعرض تفاصيل الدفعات",
   "You don't have permission to view renewals": "ليس لديك صلاحية لعرض تفاصيل التجديدات",
   "You don't have permission to view terminated contracts": "ليس لديك صلاحية لعرض تفاصيل العقود المنهية",
-  "You don't have permission to view existing contracts": "ليس لديك صلاحية لعرض تفاصيل العقود الحالية"
+  "You don't have permission to view existing contracts": "ليس لديك صلاحية لعرض تفاصيل العقود الحالية",
+  "Role": "الدور",
+  "Sub Admin": "مسؤول فرعي",
+  "Admin": "مسؤول"
 }

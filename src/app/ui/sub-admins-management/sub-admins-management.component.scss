@@ -2,7 +2,9 @@
   overflow-x: auto;
   &-titles,
   &-row {
-    grid-template-columns: repeat(3, minmax(330px, 1fr)) minmax(108px, 1FR);
+    grid-template-columns:
+      repeat(2, minmax(250px, 1fr)) minmax(150px, 1fr) minmax(150px, 1fr)
+      minmax(108px, 1fr);
   }
 
   &-header-group {
@@ -52,6 +54,29 @@
     width: 100%;
     text-align: center;
   }
+}
+
+.role-badge {
+  display: inline-block;
+  padding: 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  max-width: 120px;
+  width: 100%;
+  text-align: center;
+  font-weight: 500;
+}
+
+.role-admin {
+  color: #0c1892;
+  background-color: #eff6ff;
+  border: 1px solid #1b84ff33;
+}
+
+.role-sub-admin {
+  color: #059669;
+  background-color: #ecfdf5;
+  border: 1px solid #05966827;
 }
 
 .modal {
@@ -126,13 +151,19 @@
             color: #404040b2;
           }
 
-          input {
+          input,
+          select {
             padding: 12.5px 14px;
             font-size: 14px;
             color: #40404066;
             border: 1px solid #40404033;
             box-shadow: 0px 1px 2px 0px #e4e5e73d;
             border-radius: 6px;
+          }
+
+          select {
+            background-color: white;
+            cursor: pointer;
           }
         }
 
@@ -167,18 +198,25 @@
         }
 
         .permissions-allowed {
-          display: flex;
-          flex-direction: column;
+          display: grid;
+          grid-template-columns: repeat(3, 1fr);
+          flex-wrap: wrap;
           gap: 8px;
           margin-bottom: 24px;
+          div {
+            width: 100%;
+          }
           @media (max-width: 500px) {
             gap: 6px;
+            grid-template-columns: 1fr;
           }
         }
 
         .permission-category {
           display: flex;
           justify-content: space-between;
+          flex-direction: column;
+          text-align: center;
           align-items: center;
           padding: 8px 12px;
           background-color: white;
@@ -511,4 +549,13 @@ input:checked + .slider:before {
       gap: 5px;
     }
   }
+}
+
+.role-select,
+.permissions-link {
+  grid-column: 1/-1;
+}
+
+.permissions-link {
+  margin: 0 auto;
 }
