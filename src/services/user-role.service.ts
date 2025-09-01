@@ -146,4 +146,58 @@ export class UserRoleService {
     const user = this.getCurrentUser();
     return user ? user.phone_number || '' : '';
   }
+
+  /**
+   * Get stored admin ID from localStorage
+   */
+  getStoredAdminId(): number | null {
+    const adminId = localStorage.getItem('admin_id');
+    return adminId ? parseInt(adminId, 10) : null;
+  }
+
+  /**
+   * Get current user ID
+   */
+  getCurrentUserId(): number | null {
+    const user = this.getCurrentUser();
+    return user ? user.id : null;
+  }
+
+  /**
+   * Refresh admin profile data from localStorage
+   */
+  refreshAdminProfile(): void {
+    const adminId = this.getStoredAdminId();
+    if (adminId) {
+      // Update the current user data with the stored admin ID
+      const currentUser = this.getCurrentUser();
+      if (currentUser && currentUser.type === 'admin') {
+        const updatedUser = { ...currentUser, id: adminId };
+        this.setUserData(updatedUser);
+      }
+    }
+  }
+
+  /**
+   * Get stored agent ID from localStorage
+   */
+  getStoredAgentId(): number | null {
+    const agentId = localStorage.getItem('agent_id');
+    return agentId ? parseInt(agentId, 10) : null;
+  }
+
+  /**
+   * Refresh agent profile data from localStorage
+   */
+  refreshAgentProfile(): void {
+    const agentId = this.getStoredAgentId();
+    if (agentId) {
+      // Update the current user data with the stored agent ID
+      const currentUser = this.getCurrentUser();
+      if (currentUser && currentUser.type === 'agent') {
+        const updatedUser = { ...currentUser, id: agentId };
+        this.setUserData(updatedUser);
+      }
+    }
+  }
 }

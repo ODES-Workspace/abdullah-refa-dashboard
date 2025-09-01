@@ -19,6 +19,8 @@ import {
 } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
+import { HttpClient } from '@angular/common/http';
+import { ProfileAgentService } from '../../../services/profile-agent.service';
 
 @Component({
   selector: 'app-login',
@@ -41,7 +43,8 @@ export class LoginComponent implements OnInit {
     private adminService: AdminService,
     private userRoleService: UserRoleService,
     private formBuilder: FormBuilder,
-    private router: Router
+    private router: Router,
+    private http: HttpClient
   ) {}
 
   ngOnInit() {
@@ -132,22 +135,42 @@ export class LoginComponent implements OnInit {
 
     this.adminService.loginAdmin(adminLoginData).subscribe({
       next: (response) => {
-        this.isLoading = false;
-        this.successMessage = `WELCOME_BACK`;
+        console.log('Admin login response:', response);
 
         // Store token in localStorage
         localStorage.setItem('access_token', response.access_token);
         localStorage.setItem('token_type', response.token_type);
         localStorage.setItem('expires_in', response.expires_in.toString());
 
-        // Create admin user object and store it
+        // Fetch admin profile to get the actual admin ID and details
+        this.fetchAdminProfile(loginData);
+      },
+      error: (error) => {
+        // If admin login fails, try agent login
+        this.tryAgentLogin(loginData);
+      },
+    });
+  }
+
+  private fetchAdminProfile(loginData: any) {
+    this.adminService.getAdminProfile().subscribe({
+      next: (profile) => {
+        console.log('Admin profile response:', profile);
+
+        this.isLoading = false;
+        this.successMessage = `WELCOME_BACK`;
+
+        // Store admin ID in localStorage
+        localStorage.setItem('admin_id', profile.id.toString());
+
+        // Create admin user object with actual profile data and store it
         const adminUser = {
-          id: 0,
-          type: 'admin',
-          name: 'Admin',
-          email: loginData.email,
-          active: 1,
-          role: 'admin',
+          id: profile.id,
+          type: profile.type || 'admin',
+          name: profile.name,
+          email: profile.email,
+          active: profile.active,
+          role: profile.role,
         };
         this.userRoleService.setUserData(adminUser);
 
@@ -160,10 +183,39 @@ export class LoginComponent implements OnInit {
         }, 1500);
       },
       error: (error) => {
-        // If admin login fails, try agent login
-        this.tryAgentLogin(loginData);
+        console.error('Error fetching admin profile:', error);
+        this.isLoading = false;
+
+        // If profile fetch fails, we can still proceed with basic login
+        // but we'll use a fallback approach
+        this.handleAdminProfileError(loginData);
       },
     });
+  }
+
+  private handleAdminProfileError(loginData: any) {
+    // Create a fallback admin user object with basic data
+    const adminUser = {
+      id: 0, // Will be updated when profile is fetched later
+      type: 'admin',
+      name: 'Admin',
+      email: loginData.email,
+      active: 1,
+      role: 'admin',
+    };
+    this.userRoleService.setUserData(adminUser);
+
+    // Save credentials if remember me is checked
+    this.saveCredentials();
+
+    // Show warning message but still redirect
+    this.errorMessage =
+      'Warning: Could not fetch full profile. Some features may be limited.';
+
+    // Redirect to admin dashboard
+    setTimeout(() => {
+      this.router.navigate(['/admin/dashboard']);
+    }, 2000);
   }
 
   private tryAgentLogin(loginData: any) {
@@ -174,15 +226,58 @@ export class LoginComponent implements OnInit {
 
     this.agentService.loginAgent(agentLoginData).subscribe({
       next: (response) => {
+        console.log('Agent login response:', response);
+
+        // Store token in localStorage
+        localStorage.setItem('access_token', response.access_token);
+        localStorage.setItem('token_type', response.token_type);
+        localStorage.setItem('expires_in', response.expires_in.toString());
+
+        // Fetch agent profile to get the actual agent ID and details
+        this.fetchAgentProfile(loginData, response.user.type);
+      },
+      error: (error) => {
+        this.isLoading = false;
+        this.errorMessage = error.message;
+      },
+    });
+  }
+
+  private fetchAgentProfile(loginData: any, userType: string) {
+    const profileService = new ProfileAgentService(this.http);
+
+    profileService.getMyProfile().subscribe({
+      next: (profile) => {
+        console.log('Agent profile response:', profile);
+
         this.isLoading = false;
         this.successMessage = `WELCOME_BACK`;
+
+        // Store agent ID in localStorage
+        localStorage.setItem('agent_id', profile.id.toString());
+
+        // Create agent user object with actual profile data and store it
+        const agentUser = {
+          id: profile.id,
+          type: profile.type || userType,
+          name: profile.name,
+          email: profile.email,
+          active:
+            typeof profile.active === 'boolean'
+              ? profile.active
+                ? 1
+                : 0
+              : profile.active,
+          role: profile.role || 'agent',
+        };
+        this.userRoleService.setUserData(agentUser);
 
         // Save credentials if remember me is checked
         this.saveCredentials();
 
         // Redirect to appropriate dashboard based on user type
         setTimeout(() => {
-          if (response.user.type === 'admin') {
+          if (userType === 'admin') {
             this.router.navigate(['/admin/dashboard']);
           } else {
             this.router.navigate(['/agent/dashboard']);
@@ -190,10 +285,43 @@ export class LoginComponent implements OnInit {
         }, 1500);
       },
       error: (error) => {
+        console.error('Error fetching agent profile:', error);
         this.isLoading = false;
-        this.errorMessage = error.message;
+
+        // If profile fetch fails, we can still proceed with basic login
+        // but we'll use a fallback approach
+        this.handleAgentProfileError(loginData, userType);
       },
     });
+  }
+
+  private handleAgentProfileError(loginData: any, userType: string) {
+    // Create a fallback agent user object with basic data
+    const agentUser = {
+      id: 0, // Will be updated when profile is fetched later
+      type: userType,
+      name: 'Agent',
+      email: loginData.email,
+      active: 1,
+      role: 'agent',
+    };
+    this.userRoleService.setUserData(agentUser);
+
+    // Save credentials if remember me is checked
+    this.saveCredentials();
+
+    // Show warning message but still redirect
+    this.errorMessage =
+      'Warning: Could not fetch full profile. Some features may be limited.';
+
+    // Redirect to appropriate dashboard
+    setTimeout(() => {
+      if (userType === 'admin') {
+        this.router.navigate(['/admin/dashboard']);
+      } else {
+        this.router.navigate(['/agent/dashboard']);
+      }
+    }, 2000);
   }
 
   markFormGroupTouched() {
