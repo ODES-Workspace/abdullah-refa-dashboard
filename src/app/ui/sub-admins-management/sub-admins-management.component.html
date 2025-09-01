@@ -15,45 +15,89 @@
       </div>
     </div>
   </div>
-  <div class="table-titles">
-    <div (click)="sort('firstName')">
-      <span>{{ "Name" | translate }}</span>
-      <span>
-        <img src="/assets/icons/sort-img.svg" />
-      </span>
-    </div>
-    <div (click)="sort('email')">
-      <span>{{ "Email" | translate }}</span>
-      <span>
-        <img src="/assets/icons/sort-img.svg" />
-      </span>
-    </div>
-    <div (click)="sort('status')">
-      <span>{{ "Status" | translate }}</span>
-      <span>
-        <img src="/assets/icons/sort-img.svg" />
-      </span>
-    </div>
-    <div>
-      <span>{{ "Actions" | translate }}</span>
-    </div>
+
+  <!-- Loading indicator -->
+  <div *ngIf="isLoading" class="loading">
+    {{ "Loading..." | translate }}
   </div>
 
-  <div class="table-row" *ngFor="let subAdmin of filteredSubAdmins">
-    <div>{{ subAdmin.firstName }} {{ subAdmin.lastName }}</div>
-    <div>{{ subAdmin.email }}</div>
-    <div>
-      <div [class]="'status-' + subAdmin.status">
-        <span>{{ subAdmin.status | titlecase | translate }}</span>
+  <!-- Table content when not loading -->
+  <div *ngIf="!isLoading">
+    <div class="table-titles">
+      <div (click)="sort('firstName')">
+        <span>{{ "Name" | translate }}</span>
+        <span>
+          <img src="/assets/icons/sort-img.svg" />
+        </span>
+      </div>
+      <div (click)="sort('email')">
+        <span>{{ "Email" | translate }}</span>
+        <span>
+          <img src="/assets/icons/sort-img.svg" />
+        </span>
+      </div>
+      <div (click)="sort('status')">
+        <span>{{ "Status" | translate }}</span>
+        <span>
+          <img src="/assets/icons/sort-img.svg" />
+        </span>
+      </div>
+      <div>
+        <span>{{ "Actions" | translate }}</span>
       </div>
     </div>
-    <div class="table-actions">
-      <span (click)="openDeleteModal(subAdmin)">
-        <img src="/assets/icons/delete-admin.svg" alt="delete icon" />
-      </span>
-      <span (click)="openEditModal(subAdmin)">
-        <img src="/assets/icons/edit-admin.svg" alt="edit icon" />
-      </span>
+
+    <div class="table-row" *ngFor="let subAdmin of paginatedSubAdmins">
+      <div>{{ subAdmin.firstName }} {{ subAdmin.lastName }}</div>
+      <div>{{ subAdmin.email }}</div>
+      <div>
+        <div [class]="'status-' + subAdmin.status">
+          <span>{{ subAdmin.status | titlecase | translate }}</span>
+        </div>
+      </div>
+      <div class="table-actions">
+        <span (click)="openDeleteModal(subAdmin)">
+          <img src="/assets/icons/delete-admin.svg" alt="delete icon" />
+        </span>
+        <span (click)="openEditModal(subAdmin)">
+          <img src="/assets/icons/edit-admin.svg" alt="edit icon" />
+        </span>
+      </div>
+    </div>
+
+    <!-- Pagination -->
+    <div class="table-pagination" *ngIf="!isLoading">
+      <!-- Debug: totalPages={{ totalPages }}, totalItems={{ totalItems }}, currentPage={{ currentPage }}, itemsPerPage={{ itemsPerPage }} -->
+
+      <div></div>
+      <div class="pagination-controls">
+        <button
+          class="pagination-btn"
+          [disabled]="currentPage === 1"
+          (click)="onPageChange(currentPage - 1)"
+        >
+          {{ "Previous" | translate }}
+        </button>
+
+        <div class="page-numbers">
+          <button
+            *ngFor="let page of getPageNumbers()"
+            class="pagination-btn page-number"
+            [class.active]="page === currentPage"
+            (click)="onPageChange(page)"
+          >
+            {{ page }}
+          </button>
+        </div>
+
+        <button
+          class="pagination-btn"
+          [disabled]="currentPage === totalPages"
+          (click)="onPageChange(currentPage + 1)"
+        >
+          {{ "Next" | translate }}
+        </button>
+      </div>
     </div>
   </div>
 </div>

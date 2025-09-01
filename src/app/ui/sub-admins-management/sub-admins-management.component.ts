@@ -7,6 +7,7 @@ import {
   Permission,
   CreateAdminRequest,
 } from '../../../services/roles.service';
+import { AdminsService, Admin } from '../../../services/admins.service';
 
 interface SubAdmin {
   id: number;
@@ -31,6 +32,9 @@ interface PermissionGroup {
   imports: [CommonModule, FormsModule, TranslateModule],
 })
 export class SubAdminsManagementComponent implements OnInit {
+  // Make Math available in template
+  Math = Math;
+
   subAdmins: SubAdmin[] = [
     {
       id: 1,
@@ -65,14 +69,24 @@ export class SubAdminsManagementComponent implements OnInit {
   validationMessage: string | null = null;
   validationErrors: { [key: string]: string[] } = {};
 
+  // Pagination properties
+  currentPage = 1;
+  itemsPerPage = 5; // Reduced to 5 for testing pagination
+  totalItems = 0;
+  totalPages = 0;
+
   // Sorting
   sortColumn: string | null = null;
   sortDirection: 'asc' | 'desc' = 'asc';
 
-  constructor(private rolesService: RolesService) {}
+  constructor(
+    private rolesService: RolesService,
+    private adminsService: AdminsService
+  ) {}
 
   ngOnInit(): void {
     this.loadPermissions();
+    this.loadAdmins(1);
   }
 
   private loadPermissions(): void {
@@ -84,6 +98,62 @@ export class SubAdminsManagementComponent implements OnInit {
       },
       error: (error) => {
         console.error('Error loading permissions:', error);
+      },
+    });
+  }
+
+  private loadAdmins(page: number = 1): void {
+    this.isLoading = true;
+    this.currentPage = page;
+
+    // Add pagination parameters to the API call
+    const params = new URLSearchParams();
+    params.set('page', page.toString());
+    params.set('per_page', this.itemsPerPage.toString());
+
+    this.adminsService.getAdmins(params).subscribe({
+      next: (response) => {
+        console.log('Admins API Response:', response);
+        // Map API response to SubAdmin interface
+        this.subAdmins = response.data.map((admin: Admin) => ({
+          id: admin.id,
+          firstName: admin.name.split(' ')[0] || admin.name,
+          lastName: admin.name.split(' ').slice(1).join(' ') || '',
+          email: admin.email,
+          status: admin.active ? 'active' : 'suspended',
+          permissions: admin.permissions || [],
+        }));
+
+        // Update pagination info
+        this.totalItems = response.total || response.data.length;
+        this.totalPages =
+          response.last_page || Math.ceil(this.totalItems / this.itemsPerPage);
+
+        console.log('Pagination values:', {
+          totalItems: this.totalItems,
+          totalPages: this.totalPages,
+          currentPage: this.currentPage,
+          itemsPerPage: this.itemsPerPage,
+          responseTotal: response.total,
+          responseLastPage: response.last_page,
+          dataLength: response.data.length,
+        });
+
+        this.isLoading = false;
+      },
+      error: (error) => {
+        console.error('Error loading admins:', error);
+        this.isLoading = false;
+
+        // Set pagination for hardcoded data as fallback
+        this.totalItems = this.subAdmins.length;
+        this.totalPages = Math.ceil(this.totalItems / this.itemsPerPage);
+
+        console.log('Using hardcoded data fallback. Pagination:', {
+          totalItems: this.totalItems,
+          totalPages: this.totalPages,
+          itemsPerPage: this.itemsPerPage,
+        });
       },
     });
   }
@@ -160,13 +230,13 @@ export class SubAdminsManagementComponent implements OnInit {
       this.createNewAdmin();
     } else if (this.showEditModal) {
       // Update existing sub-admin
-      const index = this.subAdmins.findIndex(
-        (sa) => sa.id === this.selectedSubAdmin.id
-      );
-      if (index !== -1) {
-        this.subAdmins[index] = { ...this.selectedSubAdmin };
-      }
+      // For now, just close the modal since we're not implementing edit API yet
+      // In the future, you would call an update API here
       this.showEditModal = false;
+      this.clearValidationErrors();
+
+      // Reload admins from API to ensure data consistency
+      this.loadAdmins(1);
     }
   }
 
@@ -189,18 +259,14 @@ export class SubAdminsManagementComponent implements OnInit {
       next: (response) => {
         console.log('Admin created successfully:', response);
 
-        // Add to local array for immediate UI update
-        const newSubAdmin = {
-          ...this.selectedSubAdmin,
-          id: Date.now(), // Temporary ID, should use ID from API response if available
-        };
-        this.subAdmins.push(newSubAdmin);
-
         // Close modal and reset form
         this.showAddModal = false;
         this.selectedSubAdmin = this.getEmptySubAdmin();
         this.isLoading = false;
         this.clearValidationErrors();
+
+        // Reload admins from API to get the updated list
+        this.loadAdmins(1);
 
         // You can add success toast/notification here
         alert('Sub-admin created successfully!');
@@ -228,13 +294,12 @@ export class SubAdminsManagementComponent implements OnInit {
   }
 
   deleteSubAdmin() {
-    const index = this.subAdmins.findIndex(
-      (sa) => sa.id === this.selectedSubAdmin.id
-    );
-    if (index !== -1) {
-      this.subAdmins.splice(index, 1);
-    }
+    // For now, just close the modal since we're not implementing delete API yet
+    // In the future, you would call a delete API here
     this.showDeleteModal = false;
+
+    // Reload admins from API to ensure data consistency
+    this.loadAdmins(1);
   }
 
   toggleSelectAll(event: Event) {
@@ -400,5 +465,29 @@ export class SubAdminsManagementComponent implements OnInit {
    */
   getValidationErrorFields(): string[] {
     return Object.keys(this.validationErrors);
+  }
+
+  // Pagination methods
+  onPageChange(page: number): void {
+    if (page >= 1 && page <= this.totalPages) {
+      this.loadAdmins(page);
+    }
+  }
+
+  getPageNumbers(): number[] {
+    const pages: number[] = [];
+    const startPage = Math.max(1, this.currentPage - 2);
+    const endPage = Math.min(this.totalPages, this.currentPage + 2);
+
+    for (let i = startPage; i <= endPage; i++) {
+      pages.push(i);
+    }
+    return pages;
+  }
+
+  get paginatedSubAdmins(): SubAdmin[] {
+    const startIndex = (this.currentPage - 1) * this.itemsPerPage;
+    const endIndex = startIndex + this.itemsPerPage;
+    return this.subAdmins.slice(startIndex, endIndex);
   }
 }

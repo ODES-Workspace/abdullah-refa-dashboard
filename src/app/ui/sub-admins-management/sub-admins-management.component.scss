@@ -430,3 +430,67 @@ input:checked + .slider:before {
     }
   }
 }
+
+// Loading Styles
+.loading {
+  text-align: center;
+  padding: 40px 20px;
+  color: #666;
+  font-size: 16px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  margin: 20px 0;
+}
+
+// Pagination Styles
+.table-pagination {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 20px;
+  padding: 20px 10px;
+  border-top: 1px solid #e5e7eb;
+
+  .pagination-info {
+    color: #6b7280;
+    font-size: 14px;
+  }
+
+  .pagination-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    .pagination-btn {
+      padding: 8px 16px;
+      border: 1px solid #d1d5db;
+      background-color: #fff;
+      color: #374151;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: all 0.2s;
+
+      &:hover:not(:disabled) {
+        background-color: #f9fafb;
+        border-color: #9ca3af;
+      }
+
+      &:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+
+      &.active {
+        background-color: #0311d0;
+        color: #fff;
+        border-color: #0311d0;
+      }
+    }
+
+    .page-numbers {
+      display: flex;
+      gap: 5px;
+    }
+  }
+}
