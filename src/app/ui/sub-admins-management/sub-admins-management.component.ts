@@ -2,7 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
-import { RolesService, Permission } from '../../../services/roles.service';
+import {
+  RolesService,
+  Permission,
+  CreateAdminRequest,
+} from '../../../services/roles.service';
 
 interface SubAdmin {
   id: number;
@@ -55,6 +59,7 @@ export class SubAdminsManagementComponent implements OnInit {
   showEditPermissionsModal = false;
   selectedSubAdmin: SubAdmin = this.getEmptySubAdmin();
   searchQuery = '';
+  isLoading = false;
 
   // Sorting
   sortColumn: string | null = null;
@@ -142,13 +147,8 @@ export class SubAdminsManagementComponent implements OnInit {
 
   saveSubAdmin() {
     if (this.showAddModal) {
-      // Add new sub-admin
-      const newSubAdmin = {
-        ...this.selectedSubAdmin,
-        id: this.subAdmins.length + 1,
-      };
-      this.subAdmins.push(newSubAdmin);
-      this.showAddModal = false;
+      // Add new sub-admin using API
+      this.createNewAdmin();
     } else if (this.showEditModal) {
       // Update existing sub-admin
       const index = this.subAdmins.findIndex(
@@ -159,6 +159,52 @@ export class SubAdminsManagementComponent implements OnInit {
       }
       this.showEditModal = false;
     }
+  }
+
+  private createNewAdmin(): void {
+    if (!this.isFormValid()) {
+      return;
+    }
+
+    this.isLoading = true;
+
+    // Prepare admin data for API
+    const adminData: CreateAdminRequest = {
+      name: `${this.selectedSubAdmin.firstName} ${this.selectedSubAdmin.lastName}`,
+      email: this.selectedSubAdmin.email,
+      password: this.selectedSubAdmin.password || '',
+      role: 'sub-admin', // You can make this configurable if needed
+      active: this.selectedSubAdmin.status === 'active',
+      permissions: this.selectedSubAdmin.permissions,
+    };
+
+    this.rolesService.createAdmin(adminData).subscribe({
+      next: (response) => {
+        console.log('Admin created successfully:', response);
+
+        // Add to local array for immediate UI update
+        const newSubAdmin = {
+          ...this.selectedSubAdmin,
+          id: Date.now(), // Temporary ID, should use ID from API response if available
+        };
+        this.subAdmins.push(newSubAdmin);
+
+        // Close modal and reset form
+        this.showAddModal = false;
+        this.selectedSubAdmin = this.getEmptySubAdmin();
+        this.isLoading = false;
+
+        // You can add success toast/notification here
+        alert('Sub-admin created successfully!');
+      },
+      error: (error) => {
+        console.error('Error creating admin:', error);
+        this.isLoading = false;
+
+        // You can add error toast/notification here
+        alert('Error creating sub-admin: ' + error.message);
+      },
+    });
   }
 
   deleteSubAdmin() {

@@ -128,10 +128,10 @@
         <button
           class="btn-subadmin-save"
           (click)="saveSubAdmin()"
-          [disabled]="!isFormValid()"
+          [disabled]="!isFormValid() || isLoading"
         >
           <img src="/assets/icons/save-admin.svg" alt="" />
-          {{ "Save" | translate }}
+          {{ isLoading ? ("Saving..." | translate) : ("Save" | translate) }}
         </button>
         <button class="btn-subadmin-cancel" (click)="toggleModal('add')">
           <img src="/assets/icons/cancel-admin.svg" alt="" />

@@ -17,6 +17,20 @@ export interface PermissionsResponse {
   message?: string;
 }
 
+export interface CreateAdminRequest {
+  name: string;
+  email: string;
+  password: string;
+  role: string;
+  active: boolean;
+  permissions: number[];
+}
+
+export interface CreateAdminResponse {
+  message: string;
+  data?: any;
+}
+
 @Injectable({ providedIn: 'root' })
 export class RolesService {
   private readonly baseUrl = environment.baseUrl;
@@ -32,6 +46,18 @@ export class RolesService {
 
     return this.http
       .get<Permission[]>(url)
+      .pipe(catchError((error: HttpErrorResponse) => this.handleError(error)));
+  }
+
+  /**
+   * Create a new admin
+   * POST /api/admin/admins
+   */
+  createAdmin(adminData: CreateAdminRequest): Observable<CreateAdminResponse> {
+    const url = `${this.baseUrl}/admin/admins`;
+
+    return this.http
+      .post<CreateAdminResponse>(url, adminData)
       .pipe(catchError((error: HttpErrorResponse) => this.handleError(error)));
   }
 
