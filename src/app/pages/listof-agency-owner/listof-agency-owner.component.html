@@ -1,4 +1,4 @@
-<div class="table">
+<div class="table" *ngIf="canViewAgents">
   <!-- Table header -->
   <div class="table-header">
     <div class="table-title">{{ "List of Agency/Owner" | translate }}</div>
@@ -126,13 +126,13 @@
         </span>
 
         <ul *ngIf="activeDropdown === item.id">
-          <li (click)="handleAction(item, 'approve')">
+          <li *ngIf="canEditAgents" (click)="handleAction(item, 'approve')">
             {{ "Approve" | translate }}
           </li>
-          <li (click)="handleAction(item, 'reject')">
+          <li *ngIf="canEditAgents" (click)="handleAction(item, 'reject')">
             {{ "Reject" | translate }}
           </li>
-          <li (click)="handleAction(item, 'delete')">
+          <li *ngIf="canDeleteAgents" (click)="handleAction(item, 'delete')">
             {{ "Delete" | translate }}
           </li>
         </ul>
@@ -174,4 +174,14 @@
       </div>
     </div>
   </div>
+</div>
+
+<!-- Permissions loading message -->
+<div *ngIf="permissionsLoading" class="loading">
+  {{ "Loading permissions..." | translate }}
+</div>
+
+<!-- No access message -->
+<div *ngIf="!permissionsLoading && !canViewAgents" class="no-access-message">
+  {{ "You don't have permission to view agency owners" | translate }}
 </div>

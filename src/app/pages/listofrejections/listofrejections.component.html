@@ -1,4 +1,4 @@
-<div class="table">
+<div class="table" *ngIf="canReadAgents">
   <!-- Table header -->
   <div class="table-header">
     <div class="table-title">{{ "Listofrejections" | translate }}</div>
@@ -153,4 +153,14 @@
       </div>
     </div>
   </div>
+</div>
+
+<!-- Permissions loading message -->
+<div *ngIf="permissionsLoading" class="loading">
+  {{ "Loading permissions..." | translate }}
+</div>
+
+<!-- No access message -->
+<div *ngIf="!permissionsLoading && !canReadAgents" class="no-access-message">
+  {{ "You don't have permission to view agent rejections" | translate }}
 </div>

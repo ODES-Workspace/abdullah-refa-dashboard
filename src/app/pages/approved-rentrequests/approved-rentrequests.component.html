@@ -1,4 +1,4 @@
-<div class="table">
+<div class="table" *ngIf="canReadRentRequests">
   <!-- Table header -->
   <div class="table-header">
     <div class="table-title">{{ "approved" | translate }}</div>
@@ -136,4 +136,9 @@
       </div>
     </div>
   </div>
+</div>
+
+<!-- No access message -->
+<div *ngIf="!isLoading && !canReadRentRequests" class="no-access-message">
+  {{ "You don't have permission to view approved rent requests" | translate }}
 </div>

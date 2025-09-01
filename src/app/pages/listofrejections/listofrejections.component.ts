@@ -2,8 +2,10 @@ import { NgFor, NgIf } from '@angular/common';
 import { Component, OnInit, HostListener } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
+import { UserRoleService } from '../../../services/user-role.service';
 import { AgentsService, Agent } from '../../../services/agents.service';
 import { ToastService } from '../../../services/toast.service';
+import { AdminService } from '../../../services/admin.service';
 
 interface TableItem {
   id: number;
@@ -25,6 +27,25 @@ interface TableItem {
   styleUrl: './listofrejections.component.scss',
 })
 export class ListofrejectionsComponent implements OnInit {
+  // Admin permission properties
+  adminActive: number | null = null;
+  agentPermissions: string[] = [];
+  permissionsLoading = true; // Track permissions loading state
+
+  get canReadAgents(): boolean {
+    // Agents can always view, admins need permissions
+    const userRole = this.userRoleService.getCurrentRole();
+    if (userRole === 'agent') {
+      return true; // Agents can always view
+    }
+    if (userRole === 'admin') {
+      return (
+        this.adminActive === 1 && this.agentPermissions.includes('agent.read')
+      );
+    }
+    return false; // Unknown role
+  }
+
   allItems: TableItem[] = [];
 
   searchTerm = '';
@@ -63,12 +84,51 @@ export class ListofrejectionsComponent implements OnInit {
 
   constructor(
     private agentsService: AgentsService,
-    private toast: ToastService
+    private toast: ToastService,
+    public userRoleService: UserRoleService,
+    private adminService: AdminService
   ) {
     this.updatePagination();
   }
 
   ngOnInit(): void {
+    // Check user role first - only make admin API call if user is admin
+    const userRole = this.userRoleService.getCurrentRole();
+    if (userRole === 'admin') {
+      // Get admin id from user_data in localStorage and fetch admin details
+      try {
+        const userDataStr = localStorage.getItem('user_data');
+        if (userDataStr) {
+          const userData = JSON.parse(userDataStr);
+          if (userData && userData.id) {
+            this.adminService.getAdminById(userData.id).subscribe({
+              next: (adminRes) => {
+                this.adminActive = adminRes.active;
+                this.agentPermissions = (adminRes.permissions || [])
+                  .filter((p) => p.name.startsWith('agent.'))
+                  .map((p) => p.name);
+                console.log('Admin active:', this.adminActive);
+                console.log('Agent permissions:', this.agentPermissions);
+                this.permissionsLoading = false; // Mark permissions as loaded
+              },
+              error: (err) => {
+                console.error('Error fetching admin details:', err);
+                this.permissionsLoading = false; // Mark permissions as loaded even on error
+              },
+            });
+          }
+        }
+      } catch (e) {
+        console.error('Error parsing user_data from localStorage:', e);
+        this.permissionsLoading = false; // Mark permissions as loaded even on error
+      }
+    } else {
+      // User is not admin, set permissions to empty array
+      this.agentPermissions = [];
+      this.adminActive = null;
+      this.permissionsLoading = false; // Mark permissions as loaded for non-admin users
+    }
+
     this.loadRejectedAgents();
   }
 

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { AgentPropertiesService } from '../../../services/agent-properties.service';
 import { ToastService } from '../../../services/toast.service';
 import { PropertiesService } from '../../../services/properties.service';
@@ -7,6 +7,7 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router'; // Add this import
 import { TranslateModule } from '@ngx-translate/core';
 import { UserRoleService } from '../../../services/user-role.service';
+import { AdminService } from '../../../services/admin.service';
 import { ToastComponent } from '../../ui/toast/toast.component';
 
 @Component({
@@ -23,7 +24,56 @@ import { ToastComponent } from '../../ui/toast/toast.component';
   templateUrl: './properties.component.html',
   styleUrl: './properties.component.scss',
 })
-export class PropertiesComponent {
+export class PropertiesComponent implements OnInit {
+  // Admin permission properties
+  adminActive: number | null = null;
+  propertyPermissions: string[] = [];
+
+  get canReadProperties(): boolean {
+    // Agents can always view, admins need permissions
+    const userRole = this.userRoleService.getCurrentRole();
+    if (userRole === 'agent') {
+      return true; // Agents can always view
+    }
+    if (userRole === 'admin') {
+      return (
+        this.adminActive === 1 &&
+        this.propertyPermissions.includes('property.read')
+      );
+    }
+    return false; // Unknown role
+  }
+
+  get canUpdateProperties(): boolean {
+    // Agents can always edit, admins need permissions
+    const userRole = this.userRoleService.getCurrentRole();
+    if (userRole === 'agent') {
+      return true; // Agents can always edit
+    }
+    if (userRole === 'admin') {
+      return (
+        this.adminActive === 1 &&
+        this.propertyPermissions.includes('property.update')
+      );
+    }
+    return false; // Unknown role
+  }
+
+  get canDeleteProperties(): boolean {
+    // Agents can always delete, admins need permissions
+    const userRole = this.userRoleService.getCurrentRole();
+    if (userRole === 'agent') {
+      return true; // Agents can always delete
+    }
+    if (userRole === 'admin') {
+      return (
+        this.adminActive === 1 &&
+        this.propertyPermissions.includes('property.delete')
+      );
+    }
+    return false; // Unknown role
+  }
+
   properties: any[] = [];
   searchTerm: string = '';
   itemsPerPage: number = 10;
@@ -46,10 +96,44 @@ export class PropertiesComponent {
     private router: Router,
     public userRoleService: UserRoleService,
     private agentPropertiesService: AgentPropertiesService,
-    private toastService: ToastService
+    private toastService: ToastService,
+    private adminService: AdminService
   ) {}
 
   ngOnInit(): void {
+    // Check user role first - only make admin API call if user is admin
+    const userRole = this.userRoleService.getCurrentRole();
+    if (userRole === 'admin') {
+      // Get admin id from user_data in localStorage and fetch admin details
+      try {
+        const userDataStr = localStorage.getItem('user_data');
+        if (userDataStr) {
+          const userData = JSON.parse(userDataStr);
+          if (userData && userData.id) {
+            this.adminService.getAdminById(userData.id).subscribe({
+              next: (adminRes) => {
+                this.adminActive = adminRes.active;
+                this.propertyPermissions = (adminRes.permissions || [])
+                  .filter((p) => p.name.startsWith('property.'))
+                  .map((p) => p.name);
+                console.log('Admin active:', this.adminActive);
+                console.log('Property permissions:', this.propertyPermissions);
+              },
+              error: (err) => {
+                console.error('Error fetching admin details:', err);
+              },
+            });
+          }
+        }
+      } catch (e) {
+        console.error('Error parsing user_data from localStorage:', e);
+      }
+    } else {
+      // User is not admin, set permissions to empty array
+      this.propertyPermissions = [];
+      this.adminActive = null;
+    }
+
     this.loadProperties();
   }
 

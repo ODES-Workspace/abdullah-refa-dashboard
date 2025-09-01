@@ -1,4 +1,4 @@
-<div class="table">
+<div class="table" *ngIf="canReadContracts">
   <!-- Table header -->
   <div class="table-header">
     <div class="table-title">{{ "payment" | translate }}</div>
@@ -314,6 +314,11 @@
       </div>
     </div>
   </div>
+</div>
+
+<!-- No access message -->
+<div *ngIf="!isLoading && !canReadContracts" class="no-access-message">
+  {{ "You don't have permission to view payments" | translate }}
 </div>
 
 <app-toast></app-toast>

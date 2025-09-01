@@ -2,12 +2,14 @@ import { NgFor, NgIf } from '@angular/common';
 import { Component, OnInit, HostListener } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
+import { UserRoleService } from '../../../services/user-role.service';
 import {
   AgentsService,
   Agent,
   UpdateAgentPayload,
 } from '../../../services/agents.service';
 import { ToastService } from '../../../services/toast.service';
+import { AdminService } from '../../../services/admin.service';
 
 interface TableItem {
   id: number;
@@ -29,6 +31,70 @@ interface TableItem {
   styleUrl: './listof-agency-owner.component.scss',
 })
 export class ListofAgencyOwnerComponent implements OnInit {
+  // Admin permission properties
+  adminActive: number | null = null;
+  agentPermissions: string[] = [];
+  permissionsLoading = true; // Track permissions loading state
+
+  get canViewAgents(): boolean {
+    // Agents can always view, admins need permissions
+    const userRole = this.userRoleService.getCurrentRole();
+    console.log(
+      'canViewAgents check - userRole:',
+      userRole,
+      'adminActive:',
+      this.adminActive,
+      'permissions:',
+      this.agentPermissions
+    );
+
+    if (userRole === 'agent') {
+      return true; // Agents can always view
+    }
+    if (userRole === 'admin') {
+      const hasPermission =
+        this.adminActive === 1 && this.agentPermissions.includes('agent.read');
+      console.log(
+        'Admin permission check - adminActive:',
+        this.adminActive,
+        'has agent.read:',
+        this.agentPermissions.includes('agent.read'),
+        'result:',
+        hasPermission
+      );
+      return hasPermission;
+    }
+    return false; // Unknown role
+  }
+
+  get canEditAgents(): boolean {
+    // Only admins can edit, and they need permissions
+    const userRole = this.userRoleService.getCurrentRole();
+    if (userRole === 'agent') {
+      return false; // Agents cannot edit
+    }
+    if (userRole === 'admin') {
+      return (
+        this.adminActive === 1 && this.agentPermissions.includes('agent.update')
+      );
+    }
+    return false; // Unknown role
+  }
+
+  get canDeleteAgents(): boolean {
+    // Only admins can delete, and they need permissions
+    const userRole = this.userRoleService.getCurrentRole();
+    if (userRole === 'agent') {
+      return false; // Agents cannot delete
+    }
+    if (userRole === 'admin') {
+      return (
+        this.adminActive === 1 && this.agentPermissions.includes('agent.delete')
+      );
+    }
+    return false; // Unknown role
+  }
+
   allItems: TableItem[] = [];
 
   searchTerm = '';
@@ -67,12 +133,55 @@ export class ListofAgencyOwnerComponent implements OnInit {
 
   constructor(
     private agentsService: AgentsService,
-    private toast: ToastService
+    private toast: ToastService,
+    public userRoleService: UserRoleService,
+    private adminService: AdminService
   ) {
     this.updatePagination();
   }
 
   ngOnInit(): void {
+    // Check user role first - only make admin API call if user is admin
+    const userRole = this.userRoleService.getCurrentRole();
+    if (userRole === 'admin') {
+      // Get admin id from user_data in localStorage and fetch admin details
+      try {
+        const userDataStr = localStorage.getItem('user_data');
+        if (userDataStr) {
+          const userData = JSON.parse(userDataStr);
+          if (userData && userData.id) {
+            this.adminService.getAdminById(userData.id).subscribe({
+              next: (adminRes) => {
+                this.adminActive = adminRes.active;
+                this.agentPermissions = (adminRes.permissions || [])
+                  .filter((p) => p.name.startsWith('agent.'))
+                  .map((p) => p.name);
+                console.log('Admin active:', this.adminActive);
+                console.log('Agent permissions:', this.agentPermissions);
+                this.permissionsLoading = false; // Mark permissions as loaded
+              },
+              error: (err) => {
+                console.error('Error fetching admin details:', err);
+                this.permissionsLoading = false; // Mark permissions as loaded even on error
+              },
+            });
+          } else {
+            this.permissionsLoading = false; // Mark permissions as loaded if no user data
+          }
+        } else {
+          this.permissionsLoading = false; // Mark permissions as loaded if no user data
+        }
+      } catch (e) {
+        console.error('Error parsing user_data from localStorage:', e);
+        this.permissionsLoading = false; // Mark permissions as loaded even on error
+      }
+    } else {
+      // User is not admin, set permissions to empty array
+      this.agentPermissions = [];
+      this.adminActive = null;
+      this.permissionsLoading = false; // Mark permissions as loaded for non-admin users
+    }
+
     this.loadAgents();
   }
 

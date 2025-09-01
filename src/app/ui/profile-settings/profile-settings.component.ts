@@ -191,7 +191,11 @@ export class ProfileSettingsComponent implements OnInit {
 
     this.adminService.updateAdminProfile(updateRequest).subscribe({
       next: (response: UpdateAdminProfileResponse) => {
-        this.toastService.show('Profile updated successfully');
+        if (this.currentLang === 'ar') {
+          this.toastService.show('تم تحديث البيانات بنجاح');
+        } else {
+          this.toastService.show('Profile updated successfully');
+        }
         this.isEditing = false;
         this.isSaving = false;
 

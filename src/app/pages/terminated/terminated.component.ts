@@ -3,8 +3,10 @@ import { Component, HostListener, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { Router } from '@angular/router';
+import { UserRoleService } from '../../../services/user-role.service';
 import { ContractsService } from '../../../services/contracts.service';
 import { CitiesService, City } from '../../../services/cities.service';
+import { AdminService } from '../../../services/admin.service';
 
 interface TableItem {
   id: number;
@@ -26,6 +28,25 @@ interface TableItem {
   styleUrl: './terminated.component.scss',
 })
 export class TerminatedComponent implements OnInit {
+  // Admin permission properties
+  adminActive: number | null = null;
+  contractPermissions: string[] = [];
+
+  get canReadContracts(): boolean {
+    // Agents can always view, admins need permissions
+    const userRole = this.userRoleService.getCurrentRole();
+    if (userRole === 'agent') {
+      return true; // Agents can always view
+    }
+    if (userRole === 'admin') {
+      return (
+        this.adminActive === 1 &&
+        this.contractPermissions.includes('contract.read')
+      );
+    }
+    return false; // Unknown role
+  }
+
   allItems: TableItem[] = [];
 
   searchTerm = '';
@@ -78,14 +99,50 @@ export class TerminatedComponent implements OnInit {
 
   constructor(
     private router: Router,
+    public userRoleService: UserRoleService,
     private contractsService: ContractsService,
-    private citiesService: CitiesService
+    private citiesService: CitiesService,
+    private adminService: AdminService
   ) {
     this.updatePagination();
   }
 
   ngOnInit(): void {
     this.isLoading = true;
+
+    // Check user role first - only make admin API call if user is admin
+    const userRole = this.userRoleService.getCurrentRole();
+    if (userRole === 'admin') {
+      // Get admin id from user_data in localStorage and fetch admin details
+      try {
+        const userDataStr = localStorage.getItem('user_data');
+        if (userDataStr) {
+          const userData = JSON.parse(userDataStr);
+          if (userData && userData.id) {
+            this.adminService.getAdminById(userData.id).subscribe({
+              next: (adminRes) => {
+                this.adminActive = adminRes.active;
+                this.contractPermissions = (adminRes.permissions || [])
+                  .filter((p) => p.name.startsWith('contract.'))
+                  .map((p) => p.name);
+                console.log('Admin active:', this.adminActive);
+                console.log('Contract permissions:', this.contractPermissions);
+              },
+              error: (err) => {
+                console.error('Error fetching admin details:', err);
+              },
+            });
+          }
+        }
+      } catch (e) {
+        console.error('Error parsing user_data from localStorage:', e);
+      }
+    } else {
+      // User is not admin, set permissions to empty array
+      this.contractPermissions = [];
+      this.adminActive = null;
+    }
+
     // Load cities first, then load contracts
     this.citiesService.getCities().subscribe({
       next: (citiesRes) => {

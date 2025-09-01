@@ -1,11 +1,14 @@
 <div class="property-page">
   <div *ngIf="isLoading" class="loading">
-    {{ "ding property details..." | translate }}
+    {{ "Loading property details..." | translate }}
   </div>
 
   <div *ngIf="error" class="error">{{ error }}</div>
 
-  <div class="property-card" *ngIf="property && !isLoading">
+  <div
+    class="property-card"
+    *ngIf="property && !isLoading && canReadProperties"
+  >
     <!-- property details -->
     <div class="property-details">
       <div class="property-info">
@@ -113,5 +116,10 @@
       <h3>{{ "Location" | translate }}</h3>
       <app-map [lat]="property.latitude" [lng]="property.longitude"></app-map>
     </div>
+  </div>
+
+  <!-- No access message -->
+  <div *ngIf="!isLoading && !canReadProperties" class="no-access-message">
+    {{ "You don't have permission to view property details" | translate }}
   </div>
 </div>

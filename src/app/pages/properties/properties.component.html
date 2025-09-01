@@ -1,5 +1,5 @@
 <app-toast></app-toast>
-<div class="table">
+<div class="table" *ngIf="canReadProperties">
   <!-- Table header -->
   <div class="table-header">
     <div class="table-title">{{ "Featured Properties" | translate }}</div>
@@ -36,14 +36,26 @@
     <ng-container *ngIf="!loading">
       <div *ngFor="let item of properties" class="property-item">
         <div class="property-actions">
-          <span class="action-icon" (click)="deleteProperty(item.id)">
+          <span
+            class="action-icon"
+            *ngIf="canDeleteProperties"
+            (click)="deleteProperty(item.id)"
+          >
             <img src="/assets/icons/delete-icon.svg" alt="delete icon" />
           </span>
-          <span class="action-icon" (click)="viewProperty(item.id)">
+          <span
+            class="action-icon"
+            *ngIf="canReadProperties"
+            (click)="viewProperty(item.id)"
+          >
             <img src="/assets/icons/eye-icon.svg" alt="eye icon" />
           </span>
 
-          <span class="action-icon" (click)="editProperty(item.id)">
+          <span
+            class="action-icon"
+            *ngIf="canUpdateProperties"
+            (click)="editProperty(item.id)"
+          >
             <img src="/assets/icons/edit-icon.svg" alt="edit icon" />
           </span>
         </div>
@@ -217,4 +229,9 @@
       </div>
     </div>
   </div>
+</div>
+
+<!-- No access message -->
+<div *ngIf="!loading && !canReadProperties" class="no-access-message">
+  {{ "You don't have permission to view properties" | translate }}
 </div>

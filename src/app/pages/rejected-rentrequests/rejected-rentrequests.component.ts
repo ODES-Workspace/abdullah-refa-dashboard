@@ -8,6 +8,7 @@ import { RentRequestsService } from '../../../services/rent-requests.service';
 import { PropertyCategoriesService } from '../../../services/property-categories.service';
 import { PropertyTypesService } from '../../../services/property-types.service';
 import { CitiesService, City } from '../../../services/cities.service';
+import { AdminService } from '../../../services/admin.service';
 import { forkJoin } from 'rxjs';
 
 interface TableItem {
@@ -37,6 +38,25 @@ interface TableItem {
   styleUrl: './rejected-rentrequests.component.scss',
 })
 export class RejectedRentrequestsComponent implements OnInit {
+  // Admin permission properties
+  adminActive: number | null = null;
+  rentRequestPermissions: string[] = [];
+
+  get canReadRentRequests(): boolean {
+    // Agents can always view, admins need permissions
+    const userRole = this.userRoleService.getCurrentRole();
+    if (userRole === 'agent') {
+      return true; // Agents can always view
+    }
+    if (userRole === 'admin') {
+      return (
+        this.adminActive === 1 &&
+        this.rentRequestPermissions.includes('rent_request.read')
+      );
+    }
+    return false; // Unknown role
+  }
+
   allItems: TableItem[] = [];
 
   searchTerm = '';
@@ -90,6 +110,7 @@ export class RejectedRentrequestsComponent implements OnInit {
     private propertyCategoriesService: PropertyCategoriesService,
     private propertyTypesService: PropertyTypesService,
     private citiesService: CitiesService,
+    private adminService: AdminService,
     private translate: TranslateService
   ) {
     this.updatePagination();
@@ -97,6 +118,43 @@ export class RejectedRentrequestsComponent implements OnInit {
 
   ngOnInit(): void {
     this.isLoading = true;
+
+    // Check user role first - only make admin API call if user is admin
+    const userRole = this.userRoleService.getCurrentRole();
+    if (userRole === 'admin') {
+      // Get admin id from user_data in localStorage and fetch admin details
+      try {
+        const userDataStr = localStorage.getItem('user_data');
+        if (userDataStr) {
+          const userData = JSON.parse(userDataStr);
+          if (userData && userData.id) {
+            this.adminService.getAdminById(userData.id).subscribe({
+              next: (adminRes) => {
+                this.adminActive = adminRes.active;
+                this.rentRequestPermissions = (adminRes.permissions || [])
+                  .filter((p) => p.name.startsWith('rent_request.'))
+                  .map((p) => p.name);
+                console.log('Admin active:', this.adminActive);
+                console.log(
+                  'Rent request permissions:',
+                  this.rentRequestPermissions
+                );
+              },
+              error: (err) => {
+                console.error('Error fetching admin details:', err);
+              },
+            });
+          }
+        }
+      } catch (e) {
+        console.error('Error parsing user_data from localStorage:', e);
+      }
+    } else {
+      // User is not admin, set permissions to empty array
+      this.rentRequestPermissions = [];
+      this.adminActive = null;
+    }
+
     this.loadReferenceData(() => this.loadPage(this.currentPage));
 
     this.translate.onLangChange.subscribe((event) => {

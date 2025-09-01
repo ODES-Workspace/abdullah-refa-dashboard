@@ -10,6 +10,7 @@ import { RentRequestsService } from '../../../services/rent-requests.service';
 import { PropertyCategoriesService } from '../../../services/property-categories.service';
 import { PropertyTypesService } from '../../../services/property-types.service';
 import { CitiesService, City } from '../../../services/cities.service';
+import { AdminService } from '../../../services/admin.service';
 import { forkJoin } from 'rxjs';
 
 interface TableItem {
@@ -38,6 +39,40 @@ interface TableItem {
   styleUrl: './rentrequests-list.component.scss',
 })
 export class RentrequestsListComponent implements OnInit {
+  // Admin permission properties
+  adminActive: number | null = null;
+  rentRequestPermissions: string[] = [];
+
+  get canReadRentRequests(): boolean {
+    // Agents can always view, admins need permissions
+    const userRole = this.userRoleService.getCurrentRole();
+    if (userRole === 'agent') {
+      return true; // Agents can always view
+    }
+    if (userRole === 'admin') {
+      return (
+        this.adminActive === 1 &&
+        this.rentRequestPermissions.includes('rent_request.read')
+      );
+    }
+    return false; // Unknown role
+  }
+
+  get canUpdateRentRequests(): boolean {
+    // Only admins can update, and they need permissions
+    const userRole = this.userRoleService.getCurrentRole();
+    if (userRole === 'agent') {
+      return false; // Agents cannot update
+    }
+    if (userRole === 'admin') {
+      return (
+        this.adminActive === 1 &&
+        this.rentRequestPermissions.includes('rent_request.update')
+      );
+    }
+    return false; // Unknown role
+  }
+
   allItems: TableItem[] = [];
 
   searchTerm = '';
@@ -77,6 +112,7 @@ export class RentrequestsListComponent implements OnInit {
     private propertyCategoriesService: PropertyCategoriesService,
     private propertyTypesService: PropertyTypesService,
     private citiesService: CitiesService,
+    private adminService: AdminService,
     private translate: TranslateService
   ) {
     this.updatePagination();
@@ -84,6 +120,43 @@ export class RentrequestsListComponent implements OnInit {
 
   ngOnInit(): void {
     this.isLoading = true;
+
+    // Check user role first - only make admin API call if user is admin
+    const userRole = this.userRoleService.getCurrentRole();
+    if (userRole === 'admin') {
+      // Get admin id from user_data in localStorage and fetch admin details
+      try {
+        const userDataStr = localStorage.getItem('user_data');
+        if (userDataStr) {
+          const userData = JSON.parse(userDataStr);
+          if (userData && userData.id) {
+            this.adminService.getAdminById(userData.id).subscribe({
+              next: (adminRes) => {
+                this.adminActive = adminRes.active;
+                this.rentRequestPermissions = (adminRes.permissions || [])
+                  .filter((p) => p.name.startsWith('rent_request.'))
+                  .map((p) => p.name);
+                console.log('Admin active:', this.adminActive);
+                console.log(
+                  'Rent request permissions:',
+                  this.rentRequestPermissions
+                );
+              },
+              error: (err) => {
+                console.error('Error fetching admin details:', err);
+              },
+            });
+          }
+        }
+      } catch (e) {
+        console.error('Error parsing user_data from localStorage:', e);
+      }
+    } else {
+      // User is not admin, set permissions to empty array
+      this.rentRequestPermissions = [];
+      this.adminActive = null;
+    }
+
     // Load reference data first, then load the rent requests
     this.loadReferenceData(() => {
       this.loadPage(this.currentPage);
@@ -189,8 +262,6 @@ export class RentrequestsListComponent implements OnInit {
   private fetchRentRequests(page: number): void {
     this.rentRequestsService.getRentRequests(page).subscribe({
       next: (response) => {
-        console.log('Rent requests response:', response);
-
         this.apiTotal = response.total;
         this.apiPerPage = response.per_page;
         this.apiLastPage = response.last_page;
@@ -227,10 +298,6 @@ export class RentrequestsListComponent implements OnInit {
 
     forkJoin([categories$, types$, cities$]).subscribe({
       next: ([catRes, typeRes, citiesRes]) => {
-        console.log('Categories response:', catRes);
-        console.log('Types response:', typeRes);
-        console.log('Cities response:', citiesRes);
-
         this.categoriesRaw = catRes?.data || [];
         this.typesRaw = typeRes?.data || [];
         this.cities = citiesRes || [];
@@ -290,9 +357,6 @@ export class RentrequestsListComponent implements OnInit {
       this.typeIdToName[t.id] =
         typeName || t.name_en || t.name_ar || 'Unknown Type';
     });
-
-    console.log('Rebuilt category map:', this.categoryIdToName);
-    console.log('Rebuilt type map:', this.typeIdToName);
   }
 
   private relocalizeLabels(): void {

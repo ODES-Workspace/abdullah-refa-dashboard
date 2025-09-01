@@ -1,4 +1,4 @@
-<div class="table">
+<div class="table" *ngIf="canReadRentRequests">
   <!-- Table header -->
   <div class="table-header">
     <div class="table-title">{{ "rentrequests" | translate }}</div>
@@ -151,8 +151,8 @@
             {{ "Reject" | translate }}
           </li>
 
-          <li (click)="viewDetails(item)">
-            {{ "View" | translate }}
+          <li *ngIf="canUpdateRentRequests" (click)="viewDetails(item)">
+            {{ "Revise" | translate }}
           </li>
         </ul>
 
@@ -217,6 +217,11 @@
       </div>
     </div>
   </div>
+</div>
+
+<!-- No access message -->
+<div *ngIf="!isLoading && !canReadRentRequests" class="no-access-message">
+  {{ "You don't have permission to view rent requests" | translate }}
 </div>
 
 <app-toast></app-toast>
