@@ -67,6 +67,7 @@ export class PropertiesComponent {
       )
       .subscribe({
         next: (response: any) => {
+          console.log(response);
           this.properties = (response?.data || []).map((item: any) => ({
             id: item.id,
             title: item.name_en,

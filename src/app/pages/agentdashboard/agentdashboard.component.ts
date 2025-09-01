@@ -77,6 +77,7 @@ export class AgentdashboardComponent implements OnInit {
     // Rent requests: total, approved, rejected, and infer total properties from unique property ids (approx)
     this.rentRequestsService.getRentRequests(1).subscribe({
       next: (res) => {
+        console.log(res);
         const items = res.data || [];
         const approved = items.filter(
           (i: any) => i.status === 'approved'
@@ -97,6 +98,7 @@ export class AgentdashboardComponent implements OnInit {
         this.stats[3].value = rejected;
         // Total Properties (approx from current page)
         const currentTotalProps = uniquePropertyIds.size;
+        console.log(currentTotalProps);
         this.stats[0].value = currentTotalProps;
 
         // percentageChange for Total Properties vs last stored value

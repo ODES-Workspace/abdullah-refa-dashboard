@@ -140,6 +140,11 @@ export class ProfileSettingsComponent implements OnInit {
       nationalId: profile.national_id || '',
     };
 
+    // Map city data from the main profile object
+    if (profile.city) {
+      this.profileData.city = String(profile.city.id);
+    }
+
     // If admin_profile contains address information, map it
     if (profile.admin_profile) {
       const adminProfile = profile.admin_profile;
@@ -148,9 +153,6 @@ export class ProfileSettingsComponent implements OnInit {
       this.profileData.building = adminProfile.building || '';
       this.profileData.country = adminProfile.country || '';
       this.profileData.province = adminProfile.province || '';
-      this.profileData.city = adminProfile.city_id
-        ? String(adminProfile.city_id)
-        : '';
       this.profileData.postalCode = adminProfile.postal_code || '';
     }
   }
