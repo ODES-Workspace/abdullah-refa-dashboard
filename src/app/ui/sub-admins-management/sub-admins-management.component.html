@@ -122,6 +122,27 @@
       <div class="permissions-link" (click)="toggleModal('addPermissions')">
         {{ "Adding permissions" | translate }}
       </div>
+
+      <!-- Validation Errors Section -->
+      <div
+        *ngIf="validationMessage || getValidationErrorFields().length > 0"
+        class="validation-errors"
+      >
+        <div *ngIf="validationMessage" class="validation-message">
+          {{ validationMessage }}
+        </div>
+        <div
+          *ngFor="let field of getValidationErrorFields()"
+          class="field-errors"
+        >
+          <div
+            *ngFor="let error of getFieldErrors(field)"
+            class="error-message"
+          >
+            {{ error }}
+          </div>
+        </div>
+      </div>
     </div>
     <div class="modal-footer">
       <div class="button-group">
@@ -210,6 +231,28 @@
         </div>
         <div class="permissions-link" (click)="toggleModal('editPermissions')">
           {{ "Edit permissions" | translate }}
+        </div>
+      </div>
+
+      <!-- Validation Errors Section -->
+      <div
+        *ngIf="validationMessage || getValidationErrorFields().length > 0"
+        class="validation-errors"
+      >
+        <div *ngIf="validationMessage" class="validation-message">
+          {{ validationMessage }}
+        </div>
+        <div
+          *ngFor="let field of getValidationErrorFields()"
+          class="field-errors"
+          dir="ltr"
+        >
+          <div
+            *ngFor="let error of getFieldErrors(field)"
+            class="error-message"
+          >
+            {{ error }}
+          </div>
         </div>
       </div>
     </div>

@@ -400,3 +400,33 @@ input:checked + .slider:before {
 .status-label {
   font-size: 14px;
 }
+
+// Validation Errors Styles
+.validation-errors {
+  margin-top: 16px;
+  padding: 16px;
+  background-color: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 8px;
+  grid-column: 1/-1;
+
+  .validation-message {
+    color: #dc2626;
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 12px;
+  }
+
+  .field-errors {
+    margin-bottom: 8px;
+
+    .error-message {
+      color: #dc2626;
+      direction: ltr;
+      font-size: 13px;
+      margin-bottom: 4px;
+      padding-left: 8px;
+      border-left: 2px solid #dc2626;
+    }
+  }
+}

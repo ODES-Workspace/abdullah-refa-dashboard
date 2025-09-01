@@ -61,6 +61,10 @@ export class SubAdminsManagementComponent implements OnInit {
   searchQuery = '';
   isLoading = false;
 
+  // Validation error properties
+  validationMessage: string | null = null;
+  validationErrors: { [key: string]: string[] } = {};
+
   // Sorting
   sortColumn: string | null = null;
   sortDirection: 'asc' | 'desc' = 'asc';
@@ -118,10 +122,14 @@ export class SubAdminsManagementComponent implements OnInit {
         this.showAddModal = !this.showAddModal;
         if (this.showAddModal) {
           this.selectedSubAdmin = this.getEmptySubAdmin();
+          this.clearValidationErrors();
         }
         break;
       case 'edit':
         this.showEditModal = !this.showEditModal;
+        if (this.showEditModal) {
+          this.clearValidationErrors();
+        }
         break;
       case 'delete':
         this.showDeleteModal = !this.showDeleteModal;
@@ -138,6 +146,7 @@ export class SubAdminsManagementComponent implements OnInit {
   openEditModal(subAdmin: SubAdmin) {
     this.selectedSubAdmin = { ...subAdmin };
     this.showEditModal = true;
+    this.clearValidationErrors();
   }
 
   openDeleteModal(subAdmin: SubAdmin) {
@@ -162,10 +171,8 @@ export class SubAdminsManagementComponent implements OnInit {
   }
 
   private createNewAdmin(): void {
-    if (!this.isFormValid()) {
-      return;
-    }
-
+    // Clear previous validation errors
+    this.clearValidationErrors();
     this.isLoading = true;
 
     // Prepare admin data for API
@@ -193,6 +200,7 @@ export class SubAdminsManagementComponent implements OnInit {
         this.showAddModal = false;
         this.selectedSubAdmin = this.getEmptySubAdmin();
         this.isLoading = false;
+        this.clearValidationErrors();
 
         // You can add success toast/notification here
         alert('Sub-admin created successfully!');
@@ -201,8 +209,20 @@ export class SubAdminsManagementComponent implements OnInit {
         console.error('Error creating admin:', error);
         this.isLoading = false;
 
-        // You can add error toast/notification here
-        alert('Error creating sub-admin: ' + error.message);
+        // Handle validation errors (422 status)
+        if (error.status === 422) {
+          // For 422 errors, we only show field-specific errors, no general message
+          this.validationMessage = null;
+          this.validationErrors = error.error?.errors || {};
+        } else if (error.error?.errors) {
+          // Handle case where error is HttpErrorResponse with validation errors
+          this.validationMessage = null;
+          this.validationErrors = error.error.errors;
+        } else {
+          // For other errors, show general error message
+          this.validationMessage =
+            error.message || 'An error occurred while creating the sub-admin.';
+        }
       },
     });
   }
@@ -297,19 +317,9 @@ export class SubAdminsManagementComponent implements OnInit {
   }
 
   isFormValid(): boolean {
-    if (this.showAddModal) {
-      return !!(
-        this.selectedSubAdmin.firstName &&
-        this.selectedSubAdmin.lastName &&
-        this.selectedSubAdmin.email &&
-        this.selectedSubAdmin.password
-      );
-    }
-    return !!(
-      this.selectedSubAdmin.firstName &&
-      this.selectedSubAdmin.lastName &&
-      this.selectedSubAdmin.email
-    );
+    // Always return true to allow the save button to be clicked
+    // Validation will be handled in the createNewAdmin method and displayed as errors
+    return true;
   }
 
   toggleStatus(event: Event): void {
@@ -358,5 +368,37 @@ export class SubAdminsManagementComponent implements OnInit {
       formatMap[groupName] ||
       groupName.charAt(0).toUpperCase() + groupName.slice(1)
     );
+  }
+
+  /**
+   * Clear validation errors
+   */
+  clearValidationErrors(): void {
+    this.validationMessage = null;
+    this.validationErrors = {};
+  }
+
+  /**
+   * Check if a field has validation errors
+   */
+  hasFieldError(fieldName: string): boolean {
+    return (
+      this.validationErrors[fieldName] &&
+      this.validationErrors[fieldName].length > 0
+    );
+  }
+
+  /**
+   * Get validation error messages for a field
+   */
+  getFieldErrors(fieldName: string): string[] {
+    return this.validationErrors[fieldName] || [];
+  }
+
+  /**
+   * Get validation error field names for template iteration
+   */
+  getValidationErrorFields(): string[] {
+    return Object.keys(this.validationErrors);
   }
 }

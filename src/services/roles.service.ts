@@ -65,6 +65,12 @@ export class RolesService {
    * Handle HTTP errors
    */
   private handleError(error: HttpErrorResponse): Observable<never> {
+    // For 422 validation errors, preserve the original error structure
+    if (error.status === 422) {
+      console.error('RolesService 422 validation error:', error);
+      return throwError(() => error); // Return the original HttpErrorResponse
+    }
+
     let errorMessage = 'An error occurred';
 
     if (error.error instanceof ErrorEvent) {
