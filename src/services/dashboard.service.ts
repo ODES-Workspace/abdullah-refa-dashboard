@@ -13,6 +13,19 @@ export interface AgentDashboardResponse {
   rent_requests: RentRequest[];
 }
 
+// Interfaces for the admin dashboard response
+export interface AdminDashboardResponse {
+  total_properties: number;
+  total_tenants: number;
+  total_users: number;
+  total_agents: number;
+  total_rent_requests: number;
+  total_contracts: number;
+  total_contract_amounts: string;
+  total_refa_fees: number;
+  rent_requests: RentRequest[];
+}
+
 export interface RentRequest {
   id: number;
   created_by: number;
@@ -184,6 +197,16 @@ export class DashboardService {
   getAgentDashboard(): Observable<AgentDashboardResponse> {
     return this.http.get<AgentDashboardResponse>(
       `${environment.baseUrl}/agent/dashboard`
+    );
+  }
+
+  /**
+   * Get admin dashboard data
+   * @returns Observable<AdminDashboardResponse>
+   */
+  getAdminDashboard(): Observable<AdminDashboardResponse> {
+    return this.http.get<AdminDashboardResponse>(
+      `${environment.baseUrl}/admin/dashboard`
     );
   }
 }

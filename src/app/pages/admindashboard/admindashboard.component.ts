@@ -1,45 +1,47 @@
 import { NgClass, NgFor, NgIf } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { RentRequestsComponent } from '../../ui/rent-requests/rent-requests.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { TableComponent } from '../../ui/agent-agencies-table/agent-agencies-table.component';
+import {
+  DashboardService,
+  AdminDashboardResponse,
+  RentRequest,
+} from '../../../services/dashboard.service';
 
 @Component({
   selector: 'app-admindashboard',
-  imports: [
-    NgFor,
-    NgIf,
-    NgClass,
-    RentRequestsComponent,
-    TranslateModule,
-    TableComponent,
-  ],
+  imports: [NgFor, RentRequestsComponent, TranslateModule, TableComponent],
   templateUrl: './admindashboard.component.html',
   styleUrl: './admindashboard.component.scss',
 })
-export class AdmindashboardComponent {
+export class AdmindashboardComponent implements OnInit {
+  rentRequests: RentRequest[] = [];
+
   stats = [
     {
       title: 'Total Properties',
-      value: 8,
+      value: 0,
       icon: '/assets/icons/properties-icon.svg',
-      percentageChange: 8,
     },
     {
       title: 'Total Tenants',
-      value: 1,
+      value: 0,
       icon: '/assets/icons/tenants-icon.svg',
     },
-    { title: 'Total Users', value: 0, icon: '/assets/icons/users-icon.svg' },
+    {
+      title: 'Total Users',
+      value: 0,
+      icon: '/assets/icons/users-icon.svg',
+    },
     {
       title: 'Total Agencies-Owner',
-      value: 8,
+      value: 0,
       icon: '/assets/icons/agenciesowner-icon.svg',
-      percentageChange: -12,
     },
     {
       title: 'Total Rent Request',
-      value: 2,
+      value: 0,
       icon: '/assets/icons/rent-icon.svg',
     },
     {
@@ -52,15 +54,84 @@ export class AdmindashboardComponent {
   financialCards = [
     {
       title: 'CONTRACT AMOUNTS',
-      value: '20,000,000',
+      value: '0',
       icon: '/assets/icons/contract-amounts.svg',
     },
     {
       title: 'REFA FEES',
-      value: '3500',
+      value: '0',
       icon: '/assets/icons/refa-fees.svg',
     },
   ];
+
+  constructor(private dashboardService: DashboardService) {}
+
+  ngOnInit() {
+    this.loadAdminDashboard();
+  }
+
+  loadAdminDashboard() {
+    this.dashboardService.getAdminDashboard().subscribe({
+      next: (data: AdminDashboardResponse) => {
+        console.log('Admin Dashboard Response:', data);
+        this.rentRequests = data.rent_requests;
+        this.updateDashboardData(data);
+      },
+      error: (error: any) => {
+        console.error('Error loading admin dashboard:', error);
+      },
+    });
+  }
+
+  updateDashboardData(data: AdminDashboardResponse) {
+    // Update stats with real data from API
+    this.stats = [
+      {
+        title: 'Total Properties',
+        value: data.total_properties,
+        icon: '/assets/icons/properties-icon.svg',
+      },
+      {
+        title: 'Total Tenants',
+        value: data.total_tenants,
+        icon: '/assets/icons/tenants-icon.svg',
+      },
+      {
+        title: 'Total Users',
+        value: data.total_users,
+        icon: '/assets/icons/users-icon.svg',
+      },
+      {
+        title: 'Total Agencies-Owner',
+        value: data.total_agents,
+        icon: '/assets/icons/agenciesowner-icon.svg',
+      },
+      {
+        title: 'Total Rent Request',
+        value: data.total_rent_requests,
+        icon: '/assets/icons/rent-icon.svg',
+      },
+      {
+        title: 'Total Contracts',
+        value: data.total_contracts,
+        icon: '/assets/icons/contracts-icon.svg',
+      },
+    ];
+
+    // Update financial cards with real data from API
+    this.financialCards = [
+      {
+        title: 'CONTRACT AMOUNTS',
+        value: data.total_contract_amounts,
+        icon: '/assets/icons/contract-amounts.svg',
+      },
+      {
+        title: 'REFA FEES',
+        value: data.total_refa_fees.toString(),
+        icon: '/assets/icons/refa-fees.svg',
+      },
+    ];
+  }
 
   // Helper function to determine percentage color
   getPercentageClass(change: number | undefined): string {

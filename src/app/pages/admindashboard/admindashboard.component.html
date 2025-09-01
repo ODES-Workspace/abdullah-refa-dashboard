@@ -5,13 +5,6 @@
       <div class="stat-details">
         <img src="{{ stat.icon }}" alt="{{ stat.title }}" />
         <h2 class="stat-value">{{ stat.value }}</h2>
-        <div
-          *ngIf="stat.percentageChange !== undefined"
-          class="percentage-badge"
-          [ngClass]="getPercentageClass(stat.percentageChange)"
-        >
-          {{ formatPercentage(stat.percentageChange) }}
-        </div>
       </div>
       <p class="stat-title">{{ stat.title | translate }}</p>
     </div>
@@ -35,7 +28,7 @@
     </div>
   </div>
 
-  <app-rent-requests></app-rent-requests>
+  <app-rent-requests [rentRequests]="rentRequests"></app-rent-requests>
 
   <app-agent-agencies-table></app-agent-agencies-table>
 </div>
