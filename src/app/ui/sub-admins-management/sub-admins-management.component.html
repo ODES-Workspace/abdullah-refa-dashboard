@@ -69,7 +69,6 @@
     <!-- Pagination -->
     <div class="table-pagination" *ngIf="!isLoading">
       <div></div>
-      >
       <div class="pagination-controls">
         <button
           class="pagination-btn"
@@ -260,7 +259,10 @@
         <input
           type="password"
           id="editPassword"
-          [placeholder]="'Enter password' | translate"
+          [placeholder]="
+            'Enter password (leave blank to keep current)' | translate
+          "
+          [(ngModel)]="selectedSubAdmin.password"
         />
       </div>
       <div class="permissions-section">

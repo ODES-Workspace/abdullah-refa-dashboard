@@ -98,6 +98,7 @@
   "Yes delete!": "Yes delete!",
   "Cancel": "Cancel",
   "Are you sure this administrator has been deleted?": "Are you sure you want to delete this administrator?",
+  "Enter password (leave blank to keep current)": "Enter password (leave blank to keep current)",
   "1 month": "1 month",
   "3 months": "3 months",
   "6 months": "6 months",

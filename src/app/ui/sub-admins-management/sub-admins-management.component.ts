@@ -178,6 +178,7 @@ export class SubAdminsManagementComponent implements OnInit {
       firstName: '',
       lastName: '',
       email: '',
+      password: '',
       status: 'active',
       permissions: [],
     };
@@ -217,6 +218,7 @@ export class SubAdminsManagementComponent implements OnInit {
       firstName: subAdmin.firstName,
       lastName: subAdmin.lastName,
       email: subAdmin.email,
+      password: '', // Reset password for security
       status: subAdmin.status,
       permissions: subAdmin.permissions.map((p) => Number(p)), // Ensure permissions are numbers
     };
@@ -309,6 +311,9 @@ export class SubAdminsManagementComponent implements OnInit {
       role: 'sub-admin',
       active: this.selectedSubAdmin.status === 'active',
       permissions: this.selectedSubAdmin.permissions.map((p) => Number(p)), // Ensure permissions are numbers
+      ...(this.selectedSubAdmin.password && {
+        password: this.selectedSubAdmin.password,
+      }), // Only include password if provided
     };
 
     // Try sending permissions as array first, if that fails, try individual fields

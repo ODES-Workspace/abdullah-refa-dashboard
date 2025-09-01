@@ -98,6 +98,7 @@
   "Yes delete!": "نعم احذف!",
   "Cancel": "إلغاء",
   "Are you sure this administrator has been deleted?": "هل أنت متأكد من حذف هذا المسؤول؟",
+  "Enter password (leave blank to keep current)": "أدخل كلمة المرور (اتركها فارغة للاحتفاظ بالحالية)",
   "Request Status": "حالة الطلب",
   "Property Types": "نوع العقار",
   "Accepted applications": "طلبات مقبولة",

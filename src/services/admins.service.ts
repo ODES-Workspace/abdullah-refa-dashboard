@@ -47,6 +47,7 @@ export interface UpdateAdminRequest {
   role: string;
   active: boolean;
   permissions: number[];
+  password?: string; // Optional password for updates
   // Alternative format if API expects different structure
   // permissions?: { [key: string]: number };
 }
