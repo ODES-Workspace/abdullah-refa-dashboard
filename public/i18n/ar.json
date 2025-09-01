@@ -453,5 +453,10 @@
   "List of Agency/Owner": "قائمة وكالة/مالك",
   "LIST OF APPROVALS": "قائمة المقبولين",
   "pending": "معلق",
-  "National ID": "الهوية الوطنية"
+  "National ID": "الهوية الوطنية",
+  "Read": "عرض",
+  "Create": "إنشاء",
+  "Users": "المستخدمين",
+  "Agents": " الوكلاء",
+  "Rent Requests": "طلبات الايجار"
 }
