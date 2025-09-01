@@ -374,12 +374,36 @@ export class SubAdminsManagementComponent implements OnInit {
   }
 
   deleteSubAdmin() {
-    // For now, just close the modal since we're not implementing delete API yet
-    // In the future, you would call a delete API here
-    this.showDeleteModal = false;
+    if (!this.selectedSubAdmin.id) {
+      console.error('No admin selected for deletion');
+      return;
+    }
 
-    // Reload admins from API to ensure data consistency
-    this.loadAdmins(1);
+    this.isLoading = true;
+
+    this.adminsService.deleteAdmin(this.selectedSubAdmin.id).subscribe({
+      next: (response) => {
+        console.log('Admin deleted successfully:', response);
+
+        // Close modal and reset form
+        this.showDeleteModal = false;
+        this.selectedSubAdmin = this.getEmptySubAdmin();
+        this.isLoading = false;
+
+        // Show success toast
+        this.toastService.show('Admin deleted successfully!');
+
+        // Reload admins from API to get the updated list
+        this.loadAdmins(1);
+      },
+      error: (error) => {
+        console.error('Error deleting admin:', error);
+        this.isLoading = false;
+
+        // Show error toast
+        this.toastService.show('Failed to delete admin. Please try again.');
+      },
+    });
   }
 
   toggleSelectAll(event: Event) {

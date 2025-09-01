@@ -56,6 +56,11 @@ export interface UpdateAdminResponse {
   data: Admin;
 }
 
+export interface DeleteAdminResponse {
+  message: string;
+  success: boolean;
+}
+
 export interface AdminsResponse {
   data: Admin[];
   message?: string;
@@ -99,6 +104,17 @@ export class AdminsService {
     const url = `${this.baseUrl}/admin/admins/${id}`;
     return this.http
       .put<UpdateAdminResponse>(url, payload)
+      .pipe(catchError((error: HttpErrorResponse) => this.handleError(error)));
+  }
+
+  /**
+   * Delete (deactivate) an admin
+   * DELETE /api/admin/admins/{id}
+   */
+  deleteAdmin(id: number): Observable<DeleteAdminResponse> {
+    const url = `${this.baseUrl}/admin/admins/${id}`;
+    return this.http
+      .delete<DeleteAdminResponse>(url)
       .pipe(catchError((error: HttpErrorResponse) => this.handleError(error)));
   }
 

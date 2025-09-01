@@ -68,16 +68,8 @@
 
     <!-- Pagination -->
     <div class="table-pagination" *ngIf="!isLoading">
-      <div class="pagination-info">
-        <span
-          >{{ "Showing" | translate }}
-          {{ (currentPage - 1) * itemsPerPage + 1 }}-{{
-            Math.min(currentPage * itemsPerPage, totalItems)
-          }}
-          {{ "of" | translate }} {{ totalItems }}
-          {{ "results" | translate }}</span
-        >
-      </div>
+      <div></div>
+      >
       <div class="pagination-controls">
         <button
           class="pagination-btn"
@@ -346,13 +338,25 @@
       </div>
     </div>
     <div class="button-group">
-      <button class="delete-btn" (click)="deleteSubAdmin()">
-        <img src="/assets/icons/delete-btn-modal.svg" alt="" />
-        {{ "Yes delete!" | translate }}
+      <button
+        class="delete-btn"
+        (click)="deleteSubAdmin()"
+        [disabled]="isLoading"
+      >
+        <img
+          *ngIf="!isLoading"
+          src="/assets/icons/delete-btn-modal.svg"
+          alt=""
+        />
+        <span *ngIf="isLoading">{{ "Deleting..." | translate }}</span>
+        <span *ngIf="!isLoading">{{ "Yes delete!" | translate }}</span>
       </button>
-      <button class="cancel-btn" (click)="toggleModal('delete')">
+      <button
+        class="cancel-btn"
+        (click)="toggleModal('delete')"
+        [disabled]="isLoading"
+      >
         <img src="/assets/icons/cancel-btn-modal.svg" alt="" />
-
         {{ "Cancel" | translate }}
       </button>
     </div>
