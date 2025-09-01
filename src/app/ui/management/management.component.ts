@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule, KeyValuePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import {
   AdminService,
   ApplicationSettings,
@@ -15,13 +15,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 @Component({
   selector: 'app-management',
   standalone: true,
-  imports: [
-    CommonModule,
-    FormsModule,
-    TranslateModule,
-    ToastComponent,
-    KeyValuePipe,
-  ],
+  imports: [CommonModule, FormsModule, TranslateModule],
   templateUrl: './management.component.html',
   styleUrl: './management.component.scss',
 })
@@ -47,13 +41,25 @@ export class ManagementComponent implements OnInit {
   validationErrors: { [key: string]: string[] } = {};
   validationMessage = '';
 
+  // Language tracking
+  currentLang = 'en';
+
   constructor(
     private adminService: AdminService,
-    private toastService: ToastService
+    private toastService: ToastService,
+    private translateService: TranslateService
   ) {}
 
   ngOnInit(): void {
+    this.currentLang = this.translateService.currentLang || 'en';
     this.loadApplicationSettings();
+
+    // Subscribe to language changes
+    this.translateService.onLangChange.subscribe((event) => {
+      this.currentLang = event.lang;
+      // Reload settings to update units with new language
+      this.loadApplicationSettings();
+    });
   }
 
   /**
@@ -79,22 +85,28 @@ export class ManagementComponent implements OnInit {
    */
   mapSettingsToData(settings: ApplicationSettings): void {
     this.paymentData = {
-      ejarFee: `${settings.eijar_fees} SAR`,
-      agentFee: `${settings.agent_fees} %`,
-      refaProcessingFee: `${settings.processing_fees} SAR `,
+      ejarFee: `${settings.eijar_fees} ${this.getFieldUnit('ejarFee')}`,
+      agentFee: `${settings.agent_fees} ${this.getFieldUnit('agentFee')}`,
+      refaProcessingFee: `${settings.processing_fees} ${this.getFieldUnit(
+        'refaProcessingFee'
+      )}`,
     };
   }
 
   /**
-   * Get the unit suffix for each field
+   * Get the unit suffix for each field with localization
    */
   getFieldUnit(field: string): string {
-    const unitMap: { [key: string]: string } = {
-      ejarFee: 'SAR',
-      agentFee: '%',
-      refaProcessingFee: 'SAR',
+    const unitMap: { [key: string]: { en: string; ar: string } } = {
+      ejarFee: { en: 'SAR', ar: 'ريال سعودي' },
+      agentFee: { en: '%', ar: '%' },
+      refaProcessingFee: { en: 'SAR', ar: 'ريال سعودي' },
     };
-    return unitMap[field] || '';
+
+    const units = unitMap[field];
+    if (!units) return '';
+
+    return this.currentLang === 'ar' ? units.ar : units.en;
   }
 
   startEditing(field: string) {
