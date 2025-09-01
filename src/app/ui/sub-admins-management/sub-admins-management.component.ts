@@ -93,7 +93,9 @@ export class SubAdminsManagementComponent implements OnInit {
   // Current user admin details
   currentUserRole: string | null = null;
   currentUserActive: number | null = null;
+  currentUserId: number | null = null;
   canViewSubAdmins = false;
+  userDetailsLoading = true;
 
   constructor(
     private rolesService: RolesService,
@@ -112,6 +114,9 @@ export class SubAdminsManagementComponent implements OnInit {
       this.currentLang = event.lang;
     });
 
+    // Load current user admin details first to determine permissions
+    this.loadCurrentUserAdminDetails();
+
     this.loadPermissions();
     this.loadAdmins(1);
   }
@@ -119,7 +124,6 @@ export class SubAdminsManagementComponent implements OnInit {
   private loadPermissions(): void {
     this.rolesService.getPermissions().subscribe({
       next: (permissions) => {
-        console.log('Permissions API Response:', permissions);
         this.availablePermissions = permissions;
         this.groupPermissions();
       },
@@ -153,11 +157,7 @@ export class SubAdminsManagementComponent implements OnInit {
             : [],
         }));
 
-        console.log('Mapped subAdmins:', this.subAdmins);
-        console.log('First admin permissions:', this.subAdmins[0]?.permissions);
-
-        // After loading admins, fetch details for the current user admin to console log
-        this.loadCurrentUserAdminDetails();
+        // SubAdmins loaded successfully
 
         // Update pagination info
         this.totalItems = response.total || response.data.length;
@@ -183,42 +183,35 @@ export class SubAdminsManagementComponent implements OnInit {
       if (userDataStr) {
         const userData = JSON.parse(userDataStr);
         if (userData && userData.id) {
-          console.log('Current user ID from localStorage:', userData.id);
-
-          // Fetch individual admin details by ID and console log the response
+          // Fetch individual admin details by ID
           this.adminsService.getAdminById(userData.id).subscribe({
             next: (adminDetail: Admin) => {
-              console.log(`Admin Details for ID ${userData.id}:`, adminDetail);
-              console.log('Full admin details response:', adminDetail);
-
               // Set current user details and determine if they can view sub-admins
               this.currentUserRole = adminDetail.role;
               this.currentUserActive = adminDetail.active;
+              this.currentUserId = adminDetail.id;
               this.canViewSubAdmins =
                 adminDetail.role === 'admin' && adminDetail.active === 1;
+              this.userDetailsLoading = false;
 
-              console.log('Current user role:', this.currentUserRole);
-              console.log(
-                'Current user active status:',
-                this.currentUserActive
-              );
-              console.log('Can view sub-admins:', this.canViewSubAdmins);
+              // User details loaded successfully
             },
             error: (error: any) => {
-              console.error(
-                `Error fetching admin details for ID ${userData.id}:`,
-                error
-              );
+              // Error fetching admin details
+              this.userDetailsLoading = false;
             },
           });
         } else {
-          console.log('No user ID found in user_data');
+          // No user ID found in user_data
+          this.userDetailsLoading = false;
         }
       } else {
-        console.log('No user_data found in localStorage');
+        // No user_data found in localStorage
+        this.userDetailsLoading = false;
       }
     } catch (e) {
-      console.error('Error parsing user_data from localStorage:', e);
+      // Error parsing user_data from localStorage
+      this.userDetailsLoading = false;
     }
   }
 
@@ -724,5 +717,24 @@ export class SubAdminsManagementComponent implements OnInit {
     // Since the API returns paginated data, we don't need to slice
     // The subAdmins array already contains only the current page's data
     return this.subAdmins;
+  }
+
+  /**
+   * Check if the current user is editing their own admin account
+   */
+  isEditingOwnAccount(): boolean {
+    return this.currentUserId !== null && 
+           this.selectedSubAdmin.id === this.currentUserId;
+  }
+
+  /**
+   * Check if the current user can edit a specific sub-admin
+   */
+  canEditSubAdmin(subAdminId: number): boolean {
+    // Admin users can edit any sub-admin except themselves
+    // Sub-admin users cannot edit anyone
+    return this.currentUserRole === 'admin' && 
+           this.currentUserActive === 1 && 
+           subAdminId !== this.currentUserId;
   }
 }

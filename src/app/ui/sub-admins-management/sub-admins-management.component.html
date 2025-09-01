@@ -1,7 +1,7 @@
 <app-toast></app-toast>
 
 <!-- Show table only if user is admin and active -->
-<div class="table" *ngIf="canViewSubAdmins">
+<div class="table" *ngIf="!userDetailsLoading && canViewSubAdmins">
   <div class="table-header">
     <div class="table-title">{{ "Sub Admins" | translate }}</div>
     <div class="table-header-group">
@@ -291,7 +291,7 @@
         />
       </div>
 
-      <div class="modal-input">
+      <div class="modal-input" *ngIf="!isEditingOwnAccount()">
         <label for="editRole">{{ "Role" | translate }}</label>
         <select id="editRole" [(ngModel)]="selectedSubAdmin.role" required>
           <option value="sub-admin">{{ "Sub Admin" | translate }}</option>
@@ -399,9 +399,14 @@
   </div>
 </div>
 
+<!-- Loading user details -->
+<div *ngIf="userDetailsLoading" class="loading">
+  {{ "Loading..." | translate }}
+</div>
+
 <!-- No access message for non-admin users -->
 <div
-  *ngIf="!canViewSubAdmins && currentUserRole !== null"
+  *ngIf="!userDetailsLoading && !canViewSubAdmins && currentUserRole !== null"
   class="no-access-message"
 >
   <div *ngIf="currentUserRole === 'sub-admin'">
