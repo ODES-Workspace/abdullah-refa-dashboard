@@ -34,6 +34,7 @@
     "PASSWORD_MIN_LENGTH": "كلمة المرور يجب أن تكون على الأقل 8 أحرف",
     "EMAIL_OR_PHONE_EXISTS": "البريد الإلكتروني أو رقم الهاتف موجود بالفعل",
     "FIELD_ALREADY_IN_USE": "هذا الحقل مستخدم بالفعل",
+    "NATIONAL_ID_ALREADY_REGISTERED": "رقم الهوية الوطنية مسجل بالفعل",
     "FIELD_MUST_BE_NUMERIC": "هذا الحقل يجب أن يكون رقماً",
     "FIELD_TOO_LONG": "هذا الحقل طويل جداً"
   },

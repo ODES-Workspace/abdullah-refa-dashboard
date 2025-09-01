@@ -33,6 +33,7 @@
     "PASSWORD_MIN_LENGTH": "Password must be at least 8 characters",
     "EMAIL_OR_PHONE_EXISTS": "Email or phone number already exists",
     "FIELD_ALREADY_IN_USE": "This field is already in use",
+    "NATIONAL_ID_ALREADY_REGISTERED": "National ID already registered",
     "FIELD_MUST_BE_NUMERIC": "This field must be numeric",
     "FIELD_TOO_LONG": "This field is too long"
   },

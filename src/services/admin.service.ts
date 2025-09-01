@@ -307,6 +307,7 @@ export class AdminService {
       password: 'Password',
       name: 'Name',
       phone_number: 'Phone Number',
+      national_id: 'National ID',
     };
     return labels[field] || field;
   }
@@ -318,6 +319,9 @@ export class AdminService {
       }
       if (field === 'phone_number') {
         return 'ERRORS.PHONE_ALREADY_REGISTERED';
+      }
+      if (field === 'national_id') {
+        return 'ERRORS.NATIONAL_ID_ALREADY_REGISTERED';
       }
       return 'ERRORS.FIELD_ALREADY_IN_USE';
     }

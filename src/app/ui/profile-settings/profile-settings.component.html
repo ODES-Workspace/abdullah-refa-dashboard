@@ -201,5 +201,13 @@
   </div> -->
 </div>
 
+<!-- Error messages at the end of the form -->
+<div *ngIf="errorMessages.length" class="error-messages" dir="ltr">
+  <div class="error-message" *ngFor="let err of errorMessages">
+    {{ err | translate }}
+  </div>
+  <br />
+</div>
+
 <!-- Toast Component -->
 <app-toast></app-toast>

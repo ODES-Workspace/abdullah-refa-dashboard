@@ -14,6 +14,20 @@ import { CitiesService, City } from '../../../services/cities.service';
 import { TranslateService } from '@ngx-translate/core';
 import { HttpErrorResponse } from '@angular/common/http';
 
+interface ProfileData {
+  name: string;
+  email: string;
+  contact: string;
+  nationalId: string;
+  line1: string;
+  line2: string;
+  building: string;
+  country: string;
+  province: string;
+  city: string;
+  postalCode: string;
+}
+
 @Component({
   selector: 'app-profile-settings',
   standalone: true,
@@ -29,14 +43,14 @@ import { HttpErrorResponse } from '@angular/common/http';
 })
 export class ProfileSettingsComponent implements OnInit {
   isEditing = false;
-  showPasswordForm = false;
   isLoading = false;
   isSaving = false;
 
-  profileData = {
+  profileData: ProfileData = {
     name: '',
     email: '',
     contact: '',
+    nationalId: '',
     line1: '',
     line2: '',
     building: '',
@@ -44,17 +58,12 @@ export class ProfileSettingsComponent implements OnInit {
     province: '',
     city: '',
     postalCode: '',
-    nationalId: '',
-  };
-
-  passwordData = {
-    newPassword: '',
-    confirmPassword: '',
   };
 
   // Validation error handling
   validationErrors: { [key: string]: string[] } = {};
   validationMessage = '';
+  errorMessages: string[] = [];
 
   // Cities data
   cities: City[] = [];
@@ -130,14 +139,14 @@ export class ProfileSettingsComponent implements OnInit {
       name: profile.name || '',
       email: profile.email || '',
       contact: profile.phone_number || '',
-      line1: '', // Will be populated if admin_profile has address data
+      nationalId: profile.national_id || '',
+      line1: '',
       line2: '',
       building: '',
       country: '',
       province: '',
       city: '',
       postalCode: '',
-      nationalId: profile.national_id || '',
     };
 
     // Map city data from the main profile object
@@ -164,13 +173,17 @@ export class ProfileSettingsComponent implements OnInit {
     }
   }
 
-  togglePasswordForm() {
-    this.showPasswordForm = !this.showPasswordForm;
-  }
-
   saveProfile() {
-    this.isSaving = true;
+    this.errorMessages = [];
     this.clearValidationErrors();
+
+    const requiredErrors = this.validateRequired();
+    if (requiredErrors.length) {
+      this.errorMessages = requiredErrors;
+      return;
+    }
+
+    this.isSaving = true;
 
     // Map component data to API request format
     const updateRequest: UpdateAdminProfileRequest = {
@@ -199,35 +212,95 @@ export class ProfileSettingsComponent implements OnInit {
         this.isEditing = false;
         this.isSaving = false;
 
+        // Update user_data in localStorage with new name and email
+        this.updateLocalStorageUserData();
+
         // Optionally reload the profile to ensure data consistency
         if (response.admin) {
           this.mapProfileToData(response.admin);
         }
       },
-      error: (error: HttpErrorResponse) => {
+      error: (error: any) => {
         this.isSaving = false;
         console.error('Error updating profile:', error);
 
-        if (error.status === 422 && error.error?.errors) {
-          // Handle validation errors
+        // Handle errors from admin service
+        if (error.message) {
+          // The admin service formats errors into a string with bullet points
+          // Split by <br> and clean up the bullet points
+          const errorMessages = error.message
+            .split('<br>')
+            .map((msg: string) => msg.replace('• ', '').trim())
+            .filter((msg: string) => msg.length > 0);
+
+          this.errorMessages = errorMessages;
+        } else if (error.status === 422 && error.error?.errors) {
+          // Handle validation errors directly if they exist
           this.validationErrors = error.error.errors;
           this.validationMessage =
             error.error.message || 'Please correct the errors below';
         } else {
           // Handle other errors
-          this.toastService.show('Failed to update profile. Please try again.');
+          this.captureErrors(error);
         }
       },
     });
   }
 
-  changePassword() {
-    if (this.passwordData.newPassword === this.passwordData.confirmPassword) {
-      this.showPasswordForm = false;
-      this.passwordData = { newPassword: '', confirmPassword: '' };
-    } else {
-      alert('Passwords do not match!');
+  /**
+   * Validate required fields
+   */
+  private validateRequired(): string[] {
+    const errors: string[] = [];
+    const required: Array<[string, string | undefined]> = [
+      ['Name', this.profileData.name],
+      ['Email', this.profileData.email],
+      ['Contact', this.profileData.contact],
+      ['National ID', this.profileData.nationalId],
+      ['Address Line 1', this.profileData.line1],
+      ['Country', this.profileData.country],
+      ['City', this.profileData.city],
+      ['Postal Code', this.profileData.postalCode],
+    ];
+
+    required.forEach(([label, val]) => {
+      if (val === undefined || val === null || String(val).trim() === '') {
+        errors.push(`${label} is required`);
+      }
+    });
+
+    return errors;
+  }
+
+  /**
+   * Capture and format error messages
+   */
+  private captureErrors(err: any): void {
+    const errors: string[] = [];
+    const payload = err?.error;
+
+    if (payload?.errors && typeof payload.errors === 'object') {
+      Object.keys(payload.errors).forEach((field) => {
+        const msgs = payload.errors[field];
+        if (Array.isArray(msgs)) {
+          msgs.forEach((m) => errors.push(m));
+        }
+      });
     }
+
+    if (errors.length === 0 && payload?.message) {
+      errors.push(payload.message);
+    }
+
+    if (errors.length === 0 && typeof err?.message === 'string') {
+      errors.push(err.message);
+    }
+
+    if (errors.length === 0) {
+      errors.push('An unexpected error occurred');
+    }
+
+    this.errorMessages = errors;
   }
 
   /**
@@ -236,6 +309,7 @@ export class ProfileSettingsComponent implements OnInit {
   clearValidationErrors(): void {
     this.validationErrors = {};
     this.validationMessage = '';
+    this.errorMessages = [];
   }
 
   /**
@@ -250,5 +324,26 @@ export class ProfileSettingsComponent implements OnInit {
    */
   normalizeErrorMessage(message: string): string {
     return message.replace(/_/g, ' ');
+  }
+
+  /**
+   * Update user_data in localStorage with new name and email
+   */
+  private updateLocalStorageUserData(): void {
+    try {
+      const userDataStr = localStorage.getItem('user_data');
+      if (userDataStr) {
+        const userData = JSON.parse(userDataStr);
+
+        // Update name and email in user_data
+        userData.name = this.profileData.name;
+        userData.email = this.profileData.email;
+
+        // Save updated user_data back to localStorage
+        localStorage.setItem('user_data', JSON.stringify(userData));
+      }
+    } catch (error) {
+      console.error('Error updating localStorage user_data:', error);
+    }
   }
 }
