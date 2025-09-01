@@ -5,8 +5,6 @@ import { NgClass } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
 import { TableComponent } from '../../ui/agent-agencies-table/agent-agencies-table.component';
 import { AgentdashboardchartsComponent } from '../../ui/agentdashboardcharts/agentdashboardcharts.component';
-import { RentRequestsService } from '../../../services/rent-requests.service';
-import { ContractsService } from '../../../services/contracts.service';
 
 @Component({
   selector: 'app-agentdashboard',
@@ -64,78 +62,15 @@ export class AgentdashboardComponent implements OnInit {
     return `${change > 0 ? '+' : ''}${change}%`;
   }
 
-  constructor(
-    private rentRequestsService: RentRequestsService,
-    private contractsService: ContractsService
-  ) {}
+  constructor() {}
 
   ngOnInit(): void {
-    this.loadDashboardStats();
-  }
-
-  private loadDashboardStats(): void {
-    // Rent requests: total, approved, rejected, and infer total properties from unique property ids (approx)
-    this.rentRequestsService.getRentRequests(1).subscribe({
-      next: (res) => {
-        console.log(res);
-        const items = res.data || [];
-        const approved = items.filter(
-          (i: any) => i.status === 'approved'
-        ).length;
-        const rejected = items.filter(
-          (i: any) => i.status === 'rejected'
-        ).length;
-        const uniquePropertyIds = new Set<number>();
-        items.forEach((i: any) => {
-          if (i.property_id) uniquePropertyIds.add(i.property_id);
-        });
-
-        // Total Rent Request
-        this.stats[1].value = res.total ?? items.length;
-        // Accepted Requests (from current page)
-        this.stats[2].value = approved;
-        // Rejected Requests (from current page)
-        this.stats[3].value = rejected;
-        // Total Properties (approx from current page)
-        const currentTotalProps = uniquePropertyIds.size;
-        console.log(currentTotalProps);
-        this.stats[0].value = currentTotalProps;
-
-        // percentageChange for Total Properties vs last stored value
-        const prevRaw = localStorage.getItem('agent_prev_total_properties');
-        const prevTotal = prevRaw ? parseInt(prevRaw, 10) : 0;
-        if (!isNaN(prevTotal) && prevTotal > 0 && (this.stats[0] as any)) {
-          const delta = currentTotalProps - prevTotal;
-          const pct = Math.round((delta / prevTotal) * 100);
-          (this.stats[0] as any).percentageChange = pct;
-        } else {
-          // No previous baseline; omit percentage or set 0
-          (this.stats[0] as any).percentageChange = 0;
-        }
-        localStorage.setItem(
-          'agent_prev_total_properties',
-          String(currentTotalProps)
-        );
-      },
-      error: () => {
-        // Leave defaults on error
-      },
-    });
-
-    // Contracts: compute total rent value sum of annual_rent in current page
-    this.contractsService.getContracts(1).subscribe({
-      next: (res) => {
-        const items = res.data || [];
-        const totalRent = items.reduce((sum: number, c: any) => {
-          const rent = Number(c?.rent_request?.property?.annual_rent) || 0;
-          return sum + rent;
-        }, 0);
-        this.stats[4].value = totalRent;
-      },
-      error: () => {
-        // Keep default 0 on error
-      },
-    });
+    // Set static values for stats instead of API calls
+    this.stats[0].value = 25; // Total Properties
+    this.stats[1].value = 150; // Total Rent Request
+    this.stats[2].value = 120; // Accepted Requests
+    this.stats[3].value = 30; // Rejected Requests
+    this.stats[4].value = 450000; // Total Rent Value
   }
 }
 

@@ -19,8 +19,6 @@ import {
   CategoryScale,
 } from 'chart.js';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { RentRequestsService } from '../../../services/rent-requests.service';
-import { PropertyTypesService } from '../../../services/property-types.service';
 Chart.register(
   ArcElement,
   Tooltip,
@@ -291,11 +289,7 @@ export class AgentdashboardchartsComponent implements OnInit {
   // Reference to the chart
   @ViewChild(BaseChartDirective) chartDirective?: BaseChartDirective;
 
-  constructor(
-    private translateService: TranslateService,
-    private rentRequestsService: RentRequestsService,
-    private propertyTypesService: PropertyTypesService
-  ) {}
+  constructor(private translateService: TranslateService) {}
 
   ngOnInit(): void {
     // Initial setup
@@ -305,15 +299,13 @@ export class AgentdashboardchartsComponent implements OnInit {
     // Subscribe to language changes
     this.translateService.onLangChange.subscribe(() => {
       this.translateMonthsAndUpdate();
-      // Rebuild type names for donut when language toggles
-      this.refreshTypeNamesForDonut();
     });
 
     // Initial translation
     this.translateMonthsAndUpdate();
 
-    // Load data from API
-    this.loadFromApi();
+    // Load static data instead of API calls
+    this.loadStaticData();
   }
 
   getRequestMax(): number {
@@ -399,81 +391,25 @@ export class AgentdashboardchartsComponent implements OnInit {
     return months;
   }
 
-  private loadFromApi(): void {
-    // Load type map first
-    this.propertyTypesService.getPropertyTypes().subscribe({
-      next: (res) => {
-        (res?.data || []).forEach((t: any) => {
-          this.typeIdToName[t.id] =
-            this.translateService.currentLang === 'ar' ? t.name_ar : t.name_en;
-        });
-      },
-      error: () => {},
-    });
+  private loadStaticData(): void {
+    // Set static monthly counts for the last 12 months
+    this.monthlyCounts = [15, 22, 18, 25, 30, 28, 35, 32, 40, 38, 45, 42];
+    this.updateLineChartData();
 
-    this.rentRequestsService.getRentRequests(1).subscribe({
-      next: (res) => {
-        const items = res?.data || [];
-        // Monthly counts
-        const months = this.getLast12MonthsDateObjs();
-        const indexMap = new Map<string, number>();
-        months.forEach((m, idx) => indexMap.set(`${m.year}-${m.month}`, idx));
-        const counts = Array(12).fill(0);
-        items.forEach((rr: any) => {
-          const d = new Date(rr.created_at);
-          const key = `${d.getFullYear()}-${d.getMonth()}`;
-          const idx = indexMap.get(key);
-          if (idx !== undefined) counts[idx] += 1;
-        });
-        this.monthlyCounts = counts;
-        this.updateLineChartData();
-
-        // Donut: counts by property_type_id (top 5)
-        const typeCount = new Map<number, number>();
-        items.forEach((rr: any) => {
-          const tid = rr?.property?.property_type_id;
-          if (tid != null) typeCount.set(tid, (typeCount.get(tid) || 0) + 1);
-        });
-        const sorted = Array.from(typeCount.entries())
-          .sort((a, b) => b[1] - a[1])
-          .slice(0, 5);
-        this.donutTypeIds = sorted.map(([id]) => id);
-        this.donutLabels = sorted.map(
-          ([id]) => this.typeIdToName[id] || String(id)
-        );
-        this.donutCounts = sorted.map(([, count]) => count);
-        this.updateChartData();
-      },
-      error: () => {
-        // keep zeros
-      },
-    });
+    // Set static donut chart data
+    this.donutLabels = [
+      'Villa',
+      'Flats',
+      'Apartments',
+      'Independent House',
+      'Gated Community',
+    ];
+    this.donutCounts = [35, 28, 22, 12, 8];
+    this.updateChartData();
   }
 
   private refreshTypeNamesForDonut(): void {
-    // Reload type names and update donut labels without changing counts
-    this.propertyTypesService.getPropertyTypes().subscribe({
-      next: (res) => {
-        const map: { [id: number]: string } = {};
-        (res?.data || []).forEach((t: any) => {
-          map[t.id] =
-            this.translateService.currentLang === 'ar' ? t.name_ar : t.name_en;
-        });
-        this.typeIdToName = map;
-        if (this.donutTypeIds.length) {
-          this.donutLabels = this.donutTypeIds.map(
-            (id) => this.typeIdToName[id] || String(id)
-          );
-          if (this.donutChartData) {
-            this.donutChartData = {
-              ...this.donutChartData,
-              labels: [...this.donutLabels],
-            };
-            this.updateChart();
-          }
-        }
-      },
-      error: () => {},
-    });
+    // No longer needed since we're using static data
+    // This method is kept for compatibility but does nothing
   }
 }
