@@ -365,3 +365,9 @@ html[dir="rtl"] {
   padding: 20px;
   color: #0c1892;
 }
+
+html[dir="rtl"] {
+  img[alt="logout icon"] {
+    transform: rotate(180deg) !important;
+  }
+}
