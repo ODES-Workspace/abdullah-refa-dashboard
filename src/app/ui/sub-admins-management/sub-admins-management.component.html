@@ -201,26 +201,11 @@
       <div class="permissions-section">
         <h3>{{ "Permissions allowed" | translate }}</h3>
         <div class="permissions-allowed">
-          <div
-            *ngIf="hasAnyPermission(selectedSubAdmin.permissions.properties)"
-          >
-            {{ "Properties" | translate }}
+          <div *ngFor="let permissionId of selectedSubAdmin.permissions">
+            {{ formatPermissionName(getPermissionName(permissionId)) }}
           </div>
-          <div *ngIf="hasAnyPermission(selectedSubAdmin.permissions.tenants)">
-            {{ "Tenants" | translate }}
-          </div>
-          <div
-            *ngIf="hasAnyPermission(selectedSubAdmin.permissions.agenciesOwner)"
-          >
-            {{ "Agencies Owner" | translate }}
-          </div>
-          <div
-            *ngIf="hasAnyPermission(selectedSubAdmin.permissions.rentRequest)"
-          >
-            {{ "Rent Request" | translate }}
-          </div>
-          <div *ngIf="hasAnyPermission(selectedSubAdmin.permissions.contracts)">
-            {{ "Contracts" | translate }}
+          <div *ngIf="selectedSubAdmin.permissions.length === 0">
+            {{ "No permissions assigned" | translate }}
           </div>
         </div>
         <div class="permissions-link" (click)="toggleModal('editPermissions')">
@@ -281,190 +266,26 @@
           <input
             type="checkbox"
             id="selectAll"
+            [checked]="isAllSelected()"
+            [indeterminate]="isIndeterminate()"
             (change)="toggleSelectAll($event)"
           />
           <label for="selectAll">{{ "Select all" | translate }}</label>
         </span>
       </div>
-      <div class="permission-group">
-        <div>{{ "Properties" | translate }}</div>
-        <span>
+
+      <div class="permission-group" *ngFor="let group of permissionGroups">
+        <div>{{ formatGroupName(group.name) | translate }}</div>
+        <span *ngFor="let permission of group.permissions">
           <input
             type="checkbox"
-            id="propertiesShow"
-            [(ngModel)]="selectedSubAdmin.permissions.properties.show"
+            [id]="'perm_' + permission.id"
+            [checked]="isPermissionSelected(permission.id)"
+            (change)="togglePermission(permission.id)"
           />
-          <label for="propertiesShow">{{
-            "Show the section" | translate
+          <label [for]="'perm_' + permission.id">{{
+            formatPermissionName(permission.name) | translate
           }}</label>
-        </span>
-        <span>
-          <input
-            type="checkbox"
-            id="propertiesView"
-            [(ngModel)]="selectedSubAdmin.permissions.properties.view"
-          />
-          <label for="propertiesView">{{ "View" | translate }}</label>
-        </span>
-        <span>
-          <input
-            type="checkbox"
-            id="propertiesDelete"
-            [(ngModel)]="selectedSubAdmin.permissions.properties.delete"
-          />
-          <label for="propertiesDelete">{{ "Delete" | translate }}</label>
-        </span>
-        <span>
-          <input
-            type="checkbox"
-            id="propertiesEdit"
-            [(ngModel)]="selectedSubAdmin.permissions.properties.edit"
-          />
-          <label for="propertiesEdit">{{ "Edit" | translate }}</label>
-        </span>
-      </div>
-      <div class="permission-group">
-        <div>{{ "Tenants" | translate }}</div>
-        <span>
-          <input
-            type="checkbox"
-            id="tenantsShow"
-            [(ngModel)]="selectedSubAdmin.permissions.tenants.show"
-          />
-          <label for="tenantsShow">{{ "Show the section" | translate }}</label>
-        </span>
-        <span>
-          <input
-            type="checkbox"
-            id="tenantsView"
-            [(ngModel)]="selectedSubAdmin.permissions.tenants.view"
-          />
-          <label for="tenantsView">{{ "View" | translate }}</label>
-        </span>
-        <span>
-          <input
-            type="checkbox"
-            id="tenantsDelete"
-            [(ngModel)]="selectedSubAdmin.permissions.tenants.delete"
-          />
-          <label for="tenantsDelete">{{ "Delete" | translate }}</label>
-        </span>
-        <span>
-          <input
-            type="checkbox"
-            id="tenantsEdit"
-            [(ngModel)]="selectedSubAdmin.permissions.tenants.edit"
-          />
-          <label for="tenantsEdit">{{ "Edit" | translate }}</label>
-        </span>
-      </div>
-      <div class="permission-group">
-        <div>{{ "Agencies Owner" | translate }}</div>
-        <span>
-          <input
-            type="checkbox"
-            id="agenciesShow"
-            [(ngModel)]="selectedSubAdmin.permissions.agenciesOwner.show"
-          />
-          <label for="agenciesShow">{{ "Show the section" | translate }}</label>
-        </span>
-        <span>
-          <input
-            type="checkbox"
-            id="agenciesView"
-            [(ngModel)]="selectedSubAdmin.permissions.agenciesOwner.view"
-          />
-          <label for="agenciesView">{{ "View" | translate }}</label>
-        </span>
-        <span>
-          <input
-            type="checkbox"
-            id="agenciesDelete"
-            [(ngModel)]="selectedSubAdmin.permissions.agenciesOwner.delete"
-          />
-          <label for="agenciesDelete">{{ "Delete" | translate }}</label>
-        </span>
-        <span>
-          <input
-            type="checkbox"
-            id="agenciesEdit"
-            [(ngModel)]="selectedSubAdmin.permissions.agenciesOwner.edit"
-          />
-          <label for="agenciesEdit">{{ "Edit" | translate }}</label>
-        </span>
-      </div>
-      <div class="permission-group">
-        <div>{{ "Rent Request" | translate }}</div>
-        <span>
-          <input
-            type="checkbox"
-            id="rentRequestShow"
-            [(ngModel)]="selectedSubAdmin.permissions.rentRequest.show"
-          />
-          <label for="rentRequestShow">{{
-            "Show the section" | translate
-          }}</label>
-        </span>
-        <span>
-          <input
-            type="checkbox"
-            id="rentRequestView"
-            [(ngModel)]="selectedSubAdmin.permissions.rentRequest.view"
-          />
-          <label for="rentRequestView">{{ "View" | translate }}</label>
-        </span>
-        <span>
-          <input
-            type="checkbox"
-            id="rentRequestDelete"
-            [(ngModel)]="selectedSubAdmin.permissions.rentRequest.delete"
-          />
-          <label for="rentRequestDelete">{{ "Delete" | translate }}</label>
-        </span>
-        <span>
-          <input
-            type="checkbox"
-            id="rentRequestEdit"
-            [(ngModel)]="selectedSubAdmin.permissions.rentRequest.edit"
-          />
-          <label for="rentRequestEdit">{{ "Edit" | translate }}</label>
-        </span>
-      </div>
-      <div class="permission-group">
-        <div>{{ "Contracts" | translate }}</div>
-        <span>
-          <input
-            type="checkbox"
-            id="contractsShow"
-            [(ngModel)]="selectedSubAdmin.permissions.contracts.show"
-          />
-          <label for="contractsShow">{{
-            "Show the section" | translate
-          }}</label>
-        </span>
-        <span>
-          <input
-            type="checkbox"
-            id="contractsView"
-            [(ngModel)]="selectedSubAdmin.permissions.contracts.view"
-          />
-          <label for="contractsView">{{ "View" | translate }}</label>
-        </span>
-        <span>
-          <input
-            type="checkbox"
-            id="contractsDelete"
-            [(ngModel)]="selectedSubAdmin.permissions.contracts.delete"
-          />
-          <label for="contractsDelete">{{ "Delete" | translate }}</label>
-        </span>
-        <span>
-          <input
-            type="checkbox"
-            id="contractsEdit"
-            [(ngModel)]="selectedSubAdmin.permissions.contracts.edit"
-          />
-          <label for="contractsEdit">{{ "Edit" | translate }}</label>
         </span>
       </div>
     </div>
@@ -493,194 +314,26 @@
           <input
             type="checkbox"
             id="editSelectAll"
+            [checked]="isAllSelected()"
+            [indeterminate]="isIndeterminate()"
             (change)="toggleSelectAll($event)"
           />
           <label for="editSelectAll">{{ "Select all" | translate }}</label>
         </span>
       </div>
-      <div class="permission-group">
-        <div>{{ "Properties" | translate }}</div>
-        <span>
+
+      <div class="permission-group" *ngFor="let group of permissionGroups">
+        <div>{{ formatGroupName(group.name) | translate }}</div>
+        <span *ngFor="let permission of group.permissions">
           <input
             type="checkbox"
-            id="editPropertiesShow"
-            [(ngModel)]="selectedSubAdmin.permissions.properties.show"
+            [id]="'edit_perm_' + permission.id"
+            [checked]="isPermissionSelected(permission.id)"
+            (change)="togglePermission(permission.id)"
           />
-          <label for="editPropertiesShow">{{
-            "Show the section" | translate
+          <label [for]="'edit_perm_' + permission.id">{{
+            formatPermissionName(permission.name) | translate
           }}</label>
-        </span>
-        <span>
-          <input
-            type="checkbox"
-            id="editPropertiesView"
-            [(ngModel)]="selectedSubAdmin.permissions.properties.view"
-          />
-          <label for="editPropertiesView">{{ "View" | translate }}</label>
-        </span>
-        <span>
-          <input
-            type="checkbox"
-            id="editPropertiesDelete"
-            [(ngModel)]="selectedSubAdmin.permissions.properties.delete"
-          />
-          <label for="editPropertiesDelete">{{ "Delete" | translate }}</label>
-        </span>
-        <span>
-          <input
-            type="checkbox"
-            id="editPropertiesEdit"
-            [(ngModel)]="selectedSubAdmin.permissions.properties.edit"
-          />
-          <label for="editPropertiesEdit">{{ "Edit" | translate }}</label>
-        </span>
-      </div>
-      <div class="permission-group">
-        <span>{{ "Tenants" | translate }}</span>
-        <span>
-          <input
-            type="checkbox"
-            id="editTenantsShow"
-            [(ngModel)]="selectedSubAdmin.permissions.tenants.show"
-          />
-          <label for="editTenantsShow">{{
-            "Show the section" | translate
-          }}</label>
-        </span>
-        <span>
-          <input
-            type="checkbox"
-            id="editTenantsView"
-            [(ngModel)]="selectedSubAdmin.permissions.tenants.view"
-          />
-          <label for="editTenantsView">{{ "View" | translate }}</label>
-        </span>
-        <span>
-          <input
-            type="checkbox"
-            id="editTenantsDelete"
-            [(ngModel)]="selectedSubAdmin.permissions.tenants.delete"
-          />
-          <label for="editTenantsDelete">{{ "Delete" | translate }}</label>
-        </span>
-        <span>
-          <input
-            type="checkbox"
-            id="editTenantsEdit"
-            [(ngModel)]="selectedSubAdmin.permissions.tenants.edit"
-          />
-          <label for="editTenantsEdit">{{ "Edit" | translate }}</label>
-        </span>
-      </div>
-      <div class="permission-group">
-        <div>{{ "Agencies Owner" | translate }}</div>
-        <span>
-          <input
-            type="checkbox"
-            id="editAgenciesShow"
-            [(ngModel)]="selectedSubAdmin.permissions.agenciesOwner.show"
-          />
-          <label for="editAgenciesShow">{{
-            "Show the section" | translate
-          }}</label>
-        </span>
-        <span>
-          <input
-            type="checkbox"
-            id="editAgenciesView"
-            [(ngModel)]="selectedSubAdmin.permissions.agenciesOwner.view"
-          />
-          <label for="editAgenciesView">{{ "View" | translate }}</label>
-        </span>
-        <span>
-          <input
-            type="checkbox"
-            id="editAgenciesDelete"
-            [(ngModel)]="selectedSubAdmin.permissions.agenciesOwner.delete"
-          />
-          <label for="editAgenciesDelete">{{ "Delete" | translate }}</label>
-        </span>
-        <span>
-          <input
-            type="checkbox"
-            id="editAgenciesEdit"
-            [(ngModel)]="selectedSubAdmin.permissions.agenciesOwner.edit"
-          />
-          <label for="editAgenciesEdit">{{ "Edit" | translate }}</label>
-        </span>
-      </div>
-      <div class="permission-group">
-        <div>{{ "Rent Request" | translate }}</div>
-        <span>
-          <input
-            type="checkbox"
-            id="editRentRequestShow"
-            [(ngModel)]="selectedSubAdmin.permissions.rentRequest.show"
-          />
-          <label for="editRentRequestShow">{{
-            "Show the section" | translate
-          }}</label>
-        </span>
-        <span>
-          <input
-            type="checkbox"
-            id="editRentRequestView"
-            [(ngModel)]="selectedSubAdmin.permissions.rentRequest.view"
-          />
-          <label for="editRentRequestView">{{ "View" | translate }}</label>
-        </span>
-        <span>
-          <input
-            type="checkbox"
-            id="editRentRequestDelete"
-            [(ngModel)]="selectedSubAdmin.permissions.rentRequest.delete"
-          />
-          <label for="editRentRequestDelete">{{ "Delete" | translate }}</label>
-        </span>
-        <span>
-          <input
-            type="checkbox"
-            id="editRentRequestEdit"
-            [(ngModel)]="selectedSubAdmin.permissions.rentRequest.edit"
-          />
-          <label for="editRentRequestEdit">{{ "Edit" | translate }}</label>
-        </span>
-      </div>
-      <div class="permission-group">
-        <div>{{ "Contracts" | translate }}</div>
-        <span>
-          <input
-            type="checkbox"
-            id="editContractsShow"
-            [(ngModel)]="selectedSubAdmin.permissions.contracts.show"
-          />
-          <label for="editContractsShow">{{
-            "Show the section" | translate
-          }}</label>
-        </span>
-        <span>
-          <input
-            type="checkbox"
-            id="editContractsView"
-            [(ngModel)]="selectedSubAdmin.permissions.contracts.view"
-          />
-          <label for="editContractsView">{{ "View" | translate }}</label>
-        </span>
-        <span>
-          <input
-            type="checkbox"
-            id="editContractsDelete"
-            [(ngModel)]="selectedSubAdmin.permissions.contracts.delete"
-          />
-          <label for="editContractsDelete">{{ "Delete" | translate }}</label>
-        </span>
-        <span>
-          <input
-            type="checkbox"
-            id="editContractsEdit"
-            [(ngModel)]="selectedSubAdmin.permissions.contracts.edit"
-          />
-          <label for="editContractsEdit">{{ "Edit" | translate }}</label>
         </span>
       </div>
     </div>

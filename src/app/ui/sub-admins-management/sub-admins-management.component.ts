@@ -1,7 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
+import { RolesService, Permission } from '../../../services/roles.service';
 
 interface SubAdmin {
   id: number;
@@ -10,45 +11,12 @@ interface SubAdmin {
   email: string;
   password?: string;
   status: 'active' | 'suspended';
-  permissions: {
-    properties: {
-      show: boolean;
-      view: boolean;
-      delete: boolean;
-      edit: boolean;
-    };
-    tenants: {
-      show: boolean;
-      view: boolean;
-      delete: boolean;
-      edit: boolean;
-    };
-    agenciesOwner: {
-      show: boolean;
-      view: boolean;
-      delete: boolean;
-      edit: boolean;
-    };
-    rentRequest: {
-      show: boolean;
-      view: boolean;
-      delete: boolean;
-      edit: boolean;
-    };
-    contracts: {
-      show: boolean;
-      view: boolean;
-      delete: boolean;
-      edit: boolean;
-    };
-  };
+  permissions: number[]; // Array of permission IDs
 }
 
-interface PermissionCategory {
-  show: boolean;
-  view: boolean;
-  delete: boolean;
-  edit: boolean;
+interface PermissionGroup {
+  name: string;
+  permissions: Permission[];
 }
 
 @Component({
@@ -58,7 +26,7 @@ interface PermissionCategory {
   standalone: true,
   imports: [CommonModule, FormsModule, TranslateModule],
 })
-export class SubAdminsManagementComponent {
+export class SubAdminsManagementComponent implements OnInit {
   subAdmins: SubAdmin[] = [
     {
       id: 1,
@@ -66,38 +34,7 @@ export class SubAdminsManagementComponent {
       lastName: 'Bayer',
       email: 'Hamill@gmail.com',
       status: 'active',
-      permissions: {
-        properties: {
-          show: true,
-          view: true,
-          delete: true,
-          edit: true,
-        },
-        tenants: {
-          show: true,
-          view: true,
-          delete: false,
-          edit: true,
-        },
-        agenciesOwner: {
-          show: false,
-          view: false,
-          delete: false,
-          edit: false,
-        },
-        rentRequest: {
-          show: true,
-          view: true,
-          delete: true,
-          edit: true,
-        },
-        contracts: {
-          show: true,
-          view: true,
-          delete: true,
-          edit: true,
-        },
-      },
+      permissions: [15, 16, 17, 18, 20, 21, 22, 23, 24], // Sample permission IDs
     },
     {
       id: 2,
@@ -105,41 +42,12 @@ export class SubAdminsManagementComponent {
       lastName: 'Hamill',
       email: 'sper80@gmail.com',
       status: 'suspended',
-      permissions: {
-        properties: {
-          show: true,
-          view: true,
-          delete: false,
-          edit: true,
-        },
-        tenants: {
-          show: false,
-          view: false,
-          delete: false,
-          edit: false,
-        },
-        agenciesOwner: {
-          show: true,
-          view: true,
-          delete: true,
-          edit: true,
-        },
-        rentRequest: {
-          show: false,
-          view: false,
-          delete: false,
-          edit: false,
-        },
-        contracts: {
-          show: true,
-          view: true,
-          delete: true,
-          edit: true,
-        },
-      },
+      permissions: [15, 16, 17, 25, 26, 27, 28], // Sample permission IDs
     },
   ];
 
+  availablePermissions: Permission[] = [];
+  permissionGroups: PermissionGroup[] = [];
   showAddModal = false;
   showEditModal = false;
   showDeleteModal = false;
@@ -152,6 +60,42 @@ export class SubAdminsManagementComponent {
   sortColumn: string | null = null;
   sortDirection: 'asc' | 'desc' = 'asc';
 
+  constructor(private rolesService: RolesService) {}
+
+  ngOnInit(): void {
+    this.loadPermissions();
+  }
+
+  private loadPermissions(): void {
+    this.rolesService.getPermissions().subscribe({
+      next: (permissions) => {
+        console.log('Permissions API Response:', permissions);
+        this.availablePermissions = permissions;
+        this.groupPermissions();
+      },
+      error: (error) => {
+        console.error('Error loading permissions:', error);
+      },
+    });
+  }
+
+  private groupPermissions(): void {
+    const groups: { [key: string]: Permission[] } = {};
+
+    this.availablePermissions.forEach((permission) => {
+      const [category] = permission.name.split('.');
+      if (!groups[category]) {
+        groups[category] = [];
+      }
+      groups[category].push(permission);
+    });
+
+    this.permissionGroups = Object.keys(groups).map((key) => ({
+      name: key,
+      permissions: groups[key],
+    }));
+  }
+
   private getEmptySubAdmin(): SubAdmin {
     return {
       id: 0,
@@ -159,38 +103,7 @@ export class SubAdminsManagementComponent {
       lastName: '',
       email: '',
       status: 'active',
-      permissions: {
-        properties: {
-          show: false,
-          view: false,
-          delete: false,
-          edit: false,
-        },
-        tenants: {
-          show: false,
-          view: false,
-          delete: false,
-          edit: false,
-        },
-        agenciesOwner: {
-          show: false,
-          view: false,
-          delete: false,
-          edit: false,
-        },
-        rentRequest: {
-          show: false,
-          view: false,
-          delete: false,
-          edit: false,
-        },
-        contracts: {
-          show: false,
-          view: false,
-          delete: false,
-          edit: false,
-        },
-      },
+      permissions: [],
     };
   }
 
@@ -262,16 +175,45 @@ export class SubAdminsManagementComponent {
     const checkbox = event.target as HTMLInputElement;
     if (this.showAddPermissionsModal || this.showEditPermissionsModal) {
       const isChecked = checkbox.checked;
-      Object.keys(this.selectedSubAdmin.permissions).forEach((key) => {
-        const category = key as keyof typeof this.selectedSubAdmin.permissions;
-        this.selectedSubAdmin.permissions[category] = {
-          show: isChecked,
-          view: isChecked,
-          delete: isChecked,
-          edit: isChecked,
-        };
-      });
+      if (isChecked) {
+        // Select all permissions
+        this.selectedSubAdmin.permissions = this.availablePermissions.map(
+          (p) => p.id
+        );
+      } else {
+        // Deselect all permissions
+        this.selectedSubAdmin.permissions = [];
+      }
     }
+  }
+
+  isPermissionSelected(permissionId: number): boolean {
+    return this.selectedSubAdmin.permissions.includes(permissionId);
+  }
+
+  togglePermission(permissionId: number): void {
+    const index = this.selectedSubAdmin.permissions.indexOf(permissionId);
+    if (index > -1) {
+      this.selectedSubAdmin.permissions.splice(index, 1);
+    } else {
+      this.selectedSubAdmin.permissions.push(permissionId);
+    }
+  }
+
+  isAllSelected(): boolean {
+    return (
+      this.availablePermissions.length > 0 &&
+      this.selectedSubAdmin.permissions.length ===
+        this.availablePermissions.length
+    );
+  }
+
+  isIndeterminate(): boolean {
+    return (
+      this.selectedSubAdmin.permissions.length > 0 &&
+      this.selectedSubAdmin.permissions.length <
+        this.availablePermissions.length
+    );
   }
 
   sort(column: string) {
@@ -329,12 +271,46 @@ export class SubAdminsManagementComponent {
     this.selectedSubAdmin.status = checkbox.checked ? 'active' : 'suspended';
   }
 
-  hasAnyPermission(permissions: PermissionCategory): boolean {
+  hasAnyPermission(permissionIds: number[]): boolean {
+    return permissionIds && permissionIds.length > 0;
+  }
+
+  getPermissionName(permissionId: number): string {
+    const permission = this.availablePermissions.find(
+      (p) => p.id === permissionId
+    );
+    return permission ? permission.name : '';
+  }
+
+  getPermissionsByGroup(groupName: string): Permission[] {
+    const group = this.permissionGroups.find((g) => g.name === groupName);
+    return group ? group.permissions : [];
+  }
+
+  formatPermissionName(permissionName: string): string {
+    // Extract the action part from permission name (e.g., "user.create" -> "create")
+    const parts = permissionName.split('.');
+    if (parts.length > 1) {
+      const action = parts[1];
+      // Capitalize first letter and return formatted name
+      return action.charAt(0).toUpperCase() + action.slice(1);
+    }
+    return permissionName;
+  }
+
+  formatGroupName(groupName: string): string {
+    // Format group names for display
+    const formatMap: { [key: string]: string } = {
+      user: 'Users',
+      property: 'Properties',
+      tenant: 'Tenants',
+      contract: 'Contracts',
+      agent: 'Agents',
+      rent_request: 'Rent Requests',
+    };
     return (
-      permissions.show ||
-      permissions.view ||
-      permissions.delete ||
-      permissions.edit
+      formatMap[groupName] ||
+      groupName.charAt(0).toUpperCase() + groupName.slice(1)
     );
   }
 }
