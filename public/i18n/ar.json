@@ -86,6 +86,14 @@
   "Total Contracts": "إجمالي العقود",
   "CONTRACT AMOUNTS": "مبالغ العقود",
   "REFA FEES": "رسوم REFA",
+  "Users": "المستخدمين",
+  "Properties": "العقارات",
+  "Tenants": "المستأجرين",
+  "Contracts": "العقود",
+  "Agents": "الوكلاء",
+  "Rent Requests": "طلبات الإيجار",
+  "permissions": "أذونات",
+  "permission": "إذن",
   "Request Status": "حالة الطلب",
   "Property Types": "نوع العقار",
   "Accepted applications": "طلبات مقبولة",
@@ -460,5 +468,6 @@
   "Agents": " الوكلاء",
   "Rent Requests": "طلبات الايجار",
   "Previous": "السابق",
-  "Next": "التالي"
+  "Next": "التالي",
+  "permissions": "الأذونات"
 }

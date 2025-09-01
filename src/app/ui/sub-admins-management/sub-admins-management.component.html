@@ -1,3 +1,4 @@
+<app-toast></app-toast>
 <div class="table">
   <div class="table-header">
     <div class="table-title">{{ "Sub Admins" | translate }}</div>
@@ -67,9 +68,16 @@
 
     <!-- Pagination -->
     <div class="table-pagination" *ngIf="!isLoading">
-      <!-- Debug: totalPages={{ totalPages }}, totalItems={{ totalItems }}, currentPage={{ currentPage }}, itemsPerPage={{ itemsPerPage }} -->
-
-      <div></div>
+      <div class="pagination-info">
+        <span
+          >{{ "Showing" | translate }}
+          {{ (currentPage - 1) * itemsPerPage + 1 }}-{{
+            Math.min(currentPage * itemsPerPage, totalItems)
+          }}
+          {{ "of" | translate }} {{ totalItems }}
+          {{ "results" | translate }}</span
+        >
+      </div>
       <div class="pagination-controls">
         <button
           class="pagination-btn"
@@ -266,8 +274,19 @@
       <div class="permissions-section">
         <h3>{{ "Permissions allowed" | translate }}</h3>
         <div class="permissions-allowed">
-          <div *ngFor="let permissionId of selectedSubAdmin.permissions">
-            {{ formatPermissionName(getPermissionName(permissionId)) }}
+          <div *ngFor="let category of getPermissionsByCategory() | keyvalue">
+            <div class="permission-category">
+              <strong>{{
+                formatCategoryName(category.key) | translate
+              }}</strong>
+              <span class="permission-actions">
+                {{ category.value.length }}
+                {{
+                  (category.value.length !== 1 ? "permissions" : "permission")
+                    | translate
+                }}
+              </span>
+            </div>
           </div>
           <div *ngIf="selectedSubAdmin.permissions.length === 0">
             {{ "No permissions assigned" | translate }}

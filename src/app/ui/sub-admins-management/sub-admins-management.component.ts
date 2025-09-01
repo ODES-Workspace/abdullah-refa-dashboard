@@ -2,12 +2,19 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
+import { ToastComponent } from '../toast/toast.component';
 import {
   RolesService,
   Permission,
   CreateAdminRequest,
 } from '../../../services/roles.service';
-import { AdminsService, Admin } from '../../../services/admins.service';
+import {
+  AdminsService,
+  Admin,
+  AdminPermission,
+  UpdateAdminRequest,
+} from '../../../services/admins.service';
+import { ToastService } from '../../../services/toast.service';
 
 interface SubAdmin {
   id: number;
@@ -29,7 +36,7 @@ interface PermissionGroup {
   templateUrl: './sub-admins-management.component.html',
   styleUrls: ['./sub-admins-management.component.scss'],
   standalone: true,
-  imports: [CommonModule, FormsModule, TranslateModule],
+  imports: [CommonModule, FormsModule, TranslateModule, ToastComponent],
 })
 export class SubAdminsManagementComponent implements OnInit {
   // Make Math available in template
@@ -81,7 +88,8 @@ export class SubAdminsManagementComponent implements OnInit {
 
   constructor(
     private rolesService: RolesService,
-    private adminsService: AdminsService
+    private adminsService: AdminsService,
+    private toastService: ToastService
   ) {}
 
   ngOnInit(): void {
@@ -120,24 +128,19 @@ export class SubAdminsManagementComponent implements OnInit {
           firstName: admin.name.split(' ')[0] || admin.name,
           lastName: admin.name.split(' ').slice(1).join(' ') || '',
           email: admin.email,
-          status: admin.active ? 'active' : 'suspended',
-          permissions: admin.permissions || [],
+          status: admin.active === 1 ? 'active' : 'suspended',
+          permissions: admin.permissions
+            ? admin.permissions.map((p: AdminPermission) => p.id)
+            : [],
         }));
+
+        console.log('Mapped subAdmins:', this.subAdmins);
+        console.log('First admin permissions:', this.subAdmins[0]?.permissions);
 
         // Update pagination info
         this.totalItems = response.total || response.data.length;
         this.totalPages =
           response.last_page || Math.ceil(this.totalItems / this.itemsPerPage);
-
-        console.log('Pagination values:', {
-          totalItems: this.totalItems,
-          totalPages: this.totalPages,
-          currentPage: this.currentPage,
-          itemsPerPage: this.itemsPerPage,
-          responseTotal: response.total,
-          responseLastPage: response.last_page,
-          dataLength: response.data.length,
-        });
 
         this.isLoading = false;
       },
@@ -148,12 +151,6 @@ export class SubAdminsManagementComponent implements OnInit {
         // Set pagination for hardcoded data as fallback
         this.totalItems = this.subAdmins.length;
         this.totalPages = Math.ceil(this.totalItems / this.itemsPerPage);
-
-        console.log('Using hardcoded data fallback. Pagination:', {
-          totalItems: this.totalItems,
-          totalPages: this.totalPages,
-          itemsPerPage: this.itemsPerPage,
-        });
       },
     });
   }
@@ -214,7 +211,20 @@ export class SubAdminsManagementComponent implements OnInit {
   }
 
   openEditModal(subAdmin: SubAdmin) {
-    this.selectedSubAdmin = { ...subAdmin };
+    // Create a deep copy to avoid modifying the original data
+    this.selectedSubAdmin = {
+      id: subAdmin.id,
+      firstName: subAdmin.firstName,
+      lastName: subAdmin.lastName,
+      email: subAdmin.email,
+      status: subAdmin.status,
+      permissions: subAdmin.permissions.map((p) => Number(p)), // Ensure permissions are numbers
+    };
+
+    console.log('Original permissions:', subAdmin.permissions);
+    console.log('Selected permissions:', this.selectedSubAdmin.permissions);
+    console.log('Available permissions:', this.availablePermissions);
+
     this.showEditModal = true;
     this.clearValidationErrors();
   }
@@ -229,14 +239,8 @@ export class SubAdminsManagementComponent implements OnInit {
       // Add new sub-admin using API
       this.createNewAdmin();
     } else if (this.showEditModal) {
-      // Update existing sub-admin
-      // For now, just close the modal since we're not implementing edit API yet
-      // In the future, you would call an update API here
-      this.showEditModal = false;
-      this.clearValidationErrors();
-
-      // Reload admins from API to ensure data consistency
-      this.loadAdmins(1);
+      // Update existing sub-admin using API
+      this.updateAdmin();
     }
   }
 
@@ -268,8 +272,8 @@ export class SubAdminsManagementComponent implements OnInit {
         // Reload admins from API to get the updated list
         this.loadAdmins(1);
 
-        // You can add success toast/notification here
-        alert('Sub-admin created successfully!');
+        // Show success toast
+        this.toastService.show('Sub-admin created successfully!');
       },
       error: (error) => {
         console.error('Error creating admin:', error);
@@ -293,6 +297,82 @@ export class SubAdminsManagementComponent implements OnInit {
     });
   }
 
+  private updateAdmin(): void {
+    // Clear previous validation errors
+    this.clearValidationErrors();
+    this.isLoading = true;
+
+    // Prepare admin data for API
+    const adminData: UpdateAdminRequest = {
+      name: `${this.selectedSubAdmin.firstName} ${this.selectedSubAdmin.lastName}`,
+      email: this.selectedSubAdmin.email,
+      role: 'sub-admin',
+      active: this.selectedSubAdmin.status === 'active',
+      permissions: this.selectedSubAdmin.permissions.map((p) => Number(p)), // Ensure permissions are numbers
+    };
+
+    // Try sending permissions as array first, if that fails, try individual fields
+    const alternativeData: any = { ...adminData };
+
+    // Keep the original permissions array
+    alternativeData.permissions = this.selectedSubAdmin.permissions.map((p) =>
+      Number(p)
+    );
+
+    // Also add individual fields as backup
+    this.selectedSubAdmin.permissions.forEach((permissionId, index) => {
+      alternativeData[`permissions.${index}`] = Number(permissionId);
+    });
+
+    console.log('Alternative data format:', alternativeData);
+    console.log('Permissions in alternativeData:', alternativeData.permissions);
+    console.log('Permissions type check:', {
+      original: this.selectedSubAdmin.permissions,
+      mapped: adminData.permissions,
+      types: adminData.permissions.map((p) => typeof p),
+    });
+
+    this.adminsService
+      .updateAdmin(this.selectedSubAdmin.id, alternativeData)
+      .subscribe({
+        next: (response) => {
+          console.log('Admin updated successfully:', response);
+
+          // Close modal and reset form
+          this.showEditModal = false;
+          this.selectedSubAdmin = this.getEmptySubAdmin();
+          this.isLoading = false;
+          this.clearValidationErrors();
+
+          // Reload admins from API to get the updated list
+          this.loadAdmins(1);
+
+          // Show success toast
+          this.toastService.show('Sub-admin updated successfully!');
+        },
+        error: (error) => {
+          console.error('Error updating admin:', error);
+          this.isLoading = false;
+
+          // Handle validation errors (422 status)
+          if (error.status === 422) {
+            // For 422 errors, we only show field-specific errors, no general message
+            this.validationMessage = null;
+            this.validationErrors = error.error?.errors || {};
+          } else if (error.error?.errors) {
+            // Handle case where error is HttpErrorResponse with validation errors
+            this.validationMessage = null;
+            this.validationErrors = error.error.errors;
+          } else {
+            // For other errors, show general error message
+            this.validationMessage =
+              error.message ||
+              'An error occurred while updating the sub-admin.';
+          }
+        },
+      });
+  }
+
   deleteSubAdmin() {
     // For now, just close the modal since we're not implementing delete API yet
     // In the future, you would call a delete API here
@@ -308,8 +388,8 @@ export class SubAdminsManagementComponent implements OnInit {
       const isChecked = checkbox.checked;
       if (isChecked) {
         // Select all permissions
-        this.selectedSubAdmin.permissions = this.availablePermissions.map(
-          (p) => p.id
+        this.selectedSubAdmin.permissions = this.availablePermissions.map((p) =>
+          Number(p.id)
         );
       } else {
         // Deselect all permissions
@@ -319,7 +399,9 @@ export class SubAdminsManagementComponent implements OnInit {
   }
 
   isPermissionSelected(permissionId: number): boolean {
-    return this.selectedSubAdmin.permissions.includes(permissionId);
+    return this.selectedSubAdmin.permissions.some(
+      (p) => Number(p) === permissionId
+    );
   }
 
   togglePermission(permissionId: number): void {
@@ -327,7 +409,7 @@ export class SubAdminsManagementComponent implements OnInit {
     if (index > -1) {
       this.selectedSubAdmin.permissions.splice(index, 1);
     } else {
-      this.selectedSubAdmin.permissions.push(permissionId);
+      this.selectedSubAdmin.permissions.push(Number(permissionId)); // Ensure it's a number
     }
   }
 
@@ -417,6 +499,40 @@ export class SubAdminsManagementComponent implements OnInit {
       return action.charAt(0).toUpperCase() + action.slice(1);
     }
     return permissionName;
+  }
+
+  getPermissionsByCategory(): { [key: string]: string[] } {
+    const categories: { [key: string]: string[] } = {};
+
+    this.selectedSubAdmin.permissions.forEach((permissionId) => {
+      const permission = this.availablePermissions.find(
+        (p) => p.id === permissionId
+      );
+      if (permission) {
+        const [category] = permission.name.split('.');
+        if (!categories[category]) {
+          categories[category] = [];
+        }
+        categories[category].push(permission.name);
+      }
+    });
+
+    return categories;
+  }
+
+  formatCategoryName(categoryName: string): string {
+    const formatMap: { [key: string]: string } = {
+      user: 'Users',
+      property: 'Properties',
+      tenant: 'Tenants',
+      contract: 'Contracts',
+      agent: 'Agents',
+      rent_request: 'Rent Requests',
+    };
+    return (
+      formatMap[categoryName] ||
+      categoryName.charAt(0).toUpperCase() + categoryName.slice(1)
+    );
   }
 
   formatGroupName(groupName: string): string {

@@ -168,12 +168,30 @@
 
         .permissions-allowed {
           display: flex;
-          gap: 24px;
+          flex-direction: column;
+          gap: 8px;
           margin-bottom: 24px;
-          flex-wrap: wrap;
           @media (max-width: 500px) {
-            gap: 12px;
+            gap: 6px;
           }
+        }
+
+        .permission-category {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding: 8px 12px;
+          background-color: white;
+          border-radius: 6px;
+          border: 1px solid #e9ecef;
+        }
+
+        .permission-actions {
+          color: #6c757d;
+          font-size: 0.9em;
+          background-color: #e9ecef;
+          padding: 2px 8px;
+          border-radius: 12px;
         }
       }
 
