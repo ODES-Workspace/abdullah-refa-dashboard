@@ -6,6 +6,45 @@ import { UserRoleService } from './user-role.service';
 import { environment } from '../environments/environment';
 
 // Interfaces
+export interface City {
+  id: number;
+  name_en: string;
+  name_ar: string;
+  created_at: string | null;
+  updated_at: string | null;
+}
+
+export interface PermissionPivot {
+  user_id: number;
+  permission_id: number;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface Permission {
+  id: number;
+  name: string;
+  created_at: string;
+  updated_at: string;
+  pivot: PermissionPivot;
+}
+
+export interface AdminDetail {
+  id: number;
+  type: string;
+  name: string;
+  email: string;
+  phone_number: string;
+  national_id: string;
+  city_id: number;
+  email_verified_at: string | null;
+  active: number;
+  role: string;
+  created_at: string;
+  updated_at: string;
+  city: City | null;
+  permissions: Permission[];
+}
 export interface AdminLoginRequest {
   email: string;
   password: string;
@@ -107,6 +146,18 @@ export class AdminService {
     private http: HttpClient,
     private userRoleService: UserRoleService
   ) {}
+
+  /**
+   * Get admin by ID
+   * @param id - Admin ID
+   * @returns Observable of AdminDetail
+   */
+  getAdminById(id: number): Observable<AdminDetail> {
+    const url = `${this.baseUrl}/admin/admins/${id}`;
+    return this.http
+      .get<AdminDetail>(url)
+      .pipe(catchError((error: HttpErrorResponse) => this.handleError(error)));
+  }
 
   loginAdmin(loginData: AdminLoginRequest): Observable<AdminLoginResponse> {
     return this.http

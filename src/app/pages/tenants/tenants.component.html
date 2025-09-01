@@ -1,4 +1,4 @@
-<div class="table">
+<div class="table" *ngIf="canReadTenants">
   <!-- Table header -->
   <div class="table-header">
     <div class="table-title">{{ "tenants" | translate }}</div>
@@ -82,7 +82,7 @@
         <span (click)="openViewModal(item)">
           <img src="/assets/icons/show-icon.svg" alt="show icon" />
         </span>
-        <span (click)="openEditModal(item)">
+        <span *ngIf="canUpdateTenants" (click)="openEditModal(item)">
           <img src="/assets/icons/edit-table-icon.svg" alt="edit icon" />
         </span>
       </div>
@@ -116,6 +116,11 @@
       </div>
     </div>
   </div>
+</div>
+
+<!-- No access message -->
+<div *ngIf="!isLoading && !canReadTenants" class="no-access-message">
+  {{ "You don't have permission to view tenants" | translate }}
 </div>
 
 <!-- View Modal -->

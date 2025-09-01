@@ -12,6 +12,7 @@ import {
 import { CitiesService, City } from '../../../services/cities.service';
 import { ToastService } from '../../../services/toast.service';
 import { ToastComponent } from '../../ui/toast/toast.component';
+import { AdminService } from '../../../services/admin.service';
 
 interface TableItem {
   id: number;
@@ -40,6 +41,19 @@ interface TableItem {
   styleUrl: './tenants.component.scss',
 })
 export class TenantsComponent implements OnInit {
+  get canReadTenants(): boolean {
+    return (
+      this.adminActive === 1 && this.tenantPermissions.includes('tenant.read')
+    );
+  }
+
+  get canUpdateTenants(): boolean {
+    return (
+      this.adminActive === 1 && this.tenantPermissions.includes('tenant.update')
+    );
+  }
+  adminActive: number | null = null;
+  tenantPermissions: string[] = [];
   allItems: TableItem[] = [];
 
   searchTerm = '';
@@ -106,12 +120,38 @@ export class TenantsComponent implements OnInit {
     private tenantsService: TenantsService,
     private citiesService: CitiesService,
     private translate: TranslateService,
-    private toastService: ToastService
+    private toastService: ToastService,
+    private adminService: AdminService
   ) {}
 
   ngOnInit(): void {
     this.isLoading = true;
     this.loadReferenceData(() => this.loadPage(1));
+
+    // Get admin id from user_data in localStorage and fetch admin details
+    try {
+      const userDataStr = localStorage.getItem('user_data');
+      if (userDataStr) {
+        const userData = JSON.parse(userDataStr);
+        if (userData && userData.id) {
+          this.adminService.getAdminById(userData.id).subscribe({
+            next: (adminRes) => {
+              this.adminActive = adminRes.active;
+              this.tenantPermissions = (adminRes.permissions || [])
+                .filter((p) => p.name.startsWith('tenant.'))
+                .map((p) => p.name);
+              console.log('Admin active:', this.adminActive);
+              console.log('Tenant permissions:', this.tenantPermissions);
+            },
+            error: (err) => {
+              console.error('Error fetching admin details:', err);
+            },
+          });
+        }
+      }
+    } catch (e) {
+      console.error('Error parsing user_data from localStorage:', e);
+    }
 
     this.translate.onLangChange.subscribe((event) => {
       const newLang = event.lang === 'ar' ? 'ar' : 'en';
