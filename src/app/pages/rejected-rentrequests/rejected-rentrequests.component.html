@@ -100,44 +100,46 @@
     {{ "No data found" | translate }}
   </div>
   <!-- Table rows -->
-  <div class="table-row" *ngFor="let item of paginatedItems; let i = index">
-    <div class="table-id">{{ i + 1 }}</div>
-    <div>{{ item.propertyName }}</div>
-    <div>{{ item.tenantName }}</div>
-    <div>{{ item.ownerName }}</div>
-    <div>{{ item.city }}</div>
-    <div>{{ item.propertyCategory }}</div>
-    <div>{{ item.propertyType }}</div>
-    <div>{{ item.dateAdded }}</div>
-    <div>{{ item.dateModified }}</div>
+  <ng-container *ngIf="!isLoading">
+    <div class="table-row" *ngFor="let item of paginatedItems; let i = index">
+      <div class="table-id">{{ paginationStart + i + 1 }}</div>
+      <div>{{ item.propertyName }}</div>
+      <div>{{ item.tenantName }}</div>
+      <div>{{ item.ownerName }}</div>
+      <div>{{ item.city }}</div>
+      <div>{{ item.propertyCategory }}</div>
+      <div>{{ item.propertyType }}</div>
+      <div>{{ item.dateAdded }}</div>
+      <div>{{ item.dateModified }}</div>
 
-    <div class="table-actions">
-      <span
-        (click)="toggleDropdown(item.id)"
-        *ngIf="userRoleService.getCurrentRole() === 'admin'"
-      >
-        <img src="/assets/icons/more.svg" alt="more icon" />
-      </span>
+      <div class="table-actions">
+        <span
+          (click)="toggleDropdown(item.id)"
+          *ngIf="userRoleService.getCurrentRole() === 'admin'"
+        >
+          <img src="/assets/icons/more.svg" alt="more icon" />
+        </span>
 
-      <ul
-        *ngIf="
-          activeDropdown === item.id &&
-          userRoleService.getCurrentRole() === 'admin'
-        "
-      >
-        <li (click)="viewRejectReason(item)">
-          {{ "View Rejection Reason" | translate }}
-        </li>
-      </ul>
+        <ul
+          *ngIf="
+            activeDropdown === item.id &&
+            userRoleService.getCurrentRole() === 'admin'
+          "
+        >
+          <li (click)="viewRejectReason(item)">
+            {{ "View Rejection Reason" | translate }}
+          </li>
+        </ul>
 
-      <span
-        (click)="viewRejectReason(item)"
-        *ngIf="userRoleService.getCurrentRole() === 'agent'"
-      >
-        <img src="/assets/icons/show-icon.svg" alt="view icon" />
-      </span>
+        <span
+          (click)="viewRejectReason(item)"
+          *ngIf="userRoleService.getCurrentRole() === 'agent'"
+        >
+          <img src="/assets/icons/show-icon.svg" alt="view icon" />
+        </span>
+      </div>
     </div>
-  </div>
+  </ng-container>
 
   <!-- View Reject Reason Modal -->
   <div class="modal modal-reject" *ngIf="showViewRejectReasonModal">
@@ -263,9 +265,9 @@
 
     <div class="table-pagination--pages">
       <div class="table-pagination--pages--count">
-        {{ filteredItems.length > 0 ? 1 : 0 }}-{{ filteredItems.length }}
+        {{ paginationStart + 1 }}-{{ paginationEnd }}
         {{ "of" | translate }}
-        {{ filteredItems.length }}
+        {{ apiTotal }}
       </div>
 
       <div class="table-pagination--pages--buttons" dir="ltr">
