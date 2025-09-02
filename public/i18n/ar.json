@@ -484,5 +484,7 @@
   "Role": "الدور",
   "Sub Admin": "مسؤول فرعي",
   "Admin": "مسؤول",
-  "You don't have permission to view sub-admins. Only admin users can access this page.": "ليس لديك صلاحية لعرض المسؤولين الفرعيين. يمكن للمسؤولين فقط الوصول إلى هذه الصفحة."
+  "You don't have permission to view sub-admins. Only admin users can access this page.": "ليس لديك صلاحية لعرض المسؤولين الفرعيين. يمكن للمسؤولين فقط الوصول إلى هذه الصفحة.",
+  "Logging out...": "جاري تسجيل الخروج...",
+  "Logging in...": "جاري تسجيل الدخول..."
 }

@@ -100,7 +100,7 @@
           [disabled]="isLoading || loginForm.invalid"
         >
           <span *ngIf="!isLoading">{{ "Login" | translate }}</span>
-          <span *ngIf="isLoading">Logging in...</span>
+          <span *ngIf="isLoading">{{ "Logging in..." | translate }}</span>
         </button>
       </form>
 

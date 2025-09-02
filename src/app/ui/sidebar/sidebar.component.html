@@ -147,7 +147,7 @@
       </button>
       <button class="logout-btn" (click)="logout()" [disabled]="isLoading">
         <span *ngIf="!isLoading">{{ "Logout" | translate }}</span>
-        <span *ngIf="isLoading">Logging out...</span>
+        <span *ngIf="isLoading">{{ "Logging out..." | translate }}</span>
       </button>
     </div>
   </div>
