@@ -622,9 +622,9 @@ export class RentalApplicationDetailsComponent implements OnInit {
     if (!path) return null;
     const trimmed = path.trim();
     if (/^https?:\/\//i.test(trimmed)) return trimmed;
-    // Convert https://dev.refa.sa/api -> https://dev.refa.sa/
+    // Convert https://dev.refa.sa/api -> https://dev.refa.sa/storage/
     const apiBase = environment.baseUrl || '';
-    const filesBase = apiBase.replace(/\/api\/?$/, '/');
+    const filesBase = apiBase.replace(/\/api\/?$/, '/storage/');
     const normalized = trimmed.replace(/^\/?/, '');
     return `${filesBase}${normalized}`;
   }

@@ -7,6 +7,7 @@ import {
   AgentProfileResponse,
 } from '../../../services/profile-agent.service';
 import { UserRoleService } from '../../../services/user-role.service';
+import { environment } from '../../../environments/environment';
 
 interface ProfileData {
   agencyName: string;
@@ -80,7 +81,7 @@ export class ProfileAgentComponent implements OnInit {
         };
 
         // Document link if provided
-        this.falLicenseDocument = p?.fal_document || null;
+        this.falLicenseDocument = this.getDocumentUrl(p?.fal_document) || null;
       },
       error: (err) => {
         console.error('Failed to fetch agent profile:', err);
@@ -121,7 +122,7 @@ export class ProfileAgentComponent implements OnInit {
       next: (res) => {
         const p = res.agent_profile;
         if (p?.fal_document) {
-          this.falLicenseDocument = p.fal_document;
+          this.falLicenseDocument = this.getDocumentUrl(p.fal_document);
         }
         // Overwrite localStorage user_data with latest top-level fields from API
         const updatedUser: any = {
@@ -160,6 +161,18 @@ export class ProfileAgentComponent implements OnInit {
       this.falLicenseDocument = URL.createObjectURL(file);
       this.falDocumentFile = file;
     }
+  }
+
+  // Build absolute URL for backend-served documents
+  private getDocumentUrl(path: string | null | undefined): string | null {
+    if (!path) return null;
+    const trimmed = path.trim();
+    if (/^https?:\/\//i.test(trimmed)) return trimmed;
+    // Convert https://dev.refa.sa/api -> https://dev.refa.sa/storage/
+    const apiBase = environment.baseUrl || '';
+    const filesBase = apiBase.replace(/\/api\/?$/, '/storage/');
+    const normalized = trimmed.replace(/^\/?/, '');
+    return `${filesBase}${normalized}`;
   }
 
   private captureErrors(err: any): void {
