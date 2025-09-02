@@ -144,10 +144,10 @@
         </span>
 
         <ul *ngIf="activeDropdown === item.id">
-          <li (click)="approveRequest(item)">
+          <li *ngIf="canUpdateRentRequests" (click)="approveRequest(item)">
             {{ "Approve" | translate }}
           </li>
-          <li (click)="openRejectModal(item)">
+          <li *ngIf="canUpdateRentRequests" (click)="openRejectModal(item)">
             {{ "Reject" | translate }}
           </li>
 
@@ -183,9 +183,9 @@
 
           {{ "Cancel" | translate }}
         </button>
-        <button class="submit-btn" (click)="submitReject()">
+        <button class="submit-btn" (click)="submitReject()" [disabled]="isLoading">
           <img src="/assets/icons/confirm-icon.svg" alt="" />
-          {{ "Confirm" | translate }}
+          {{ isLoading ? ("Loading..." | translate) : ("Confirm" | translate) }}
         </button>
       </div>
     </div>
