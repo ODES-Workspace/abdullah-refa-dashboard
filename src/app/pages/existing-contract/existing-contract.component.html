@@ -103,25 +103,29 @@
   <div *ngIf="isLoading" class="loading">
     {{ "Loading..." | translate }}
   </div>
+
   <!-- No data -->
   <div *ngIf="!isLoading && filteredItems.length === 0" class="table-no-data">
     {{ "No data found" | translate }}
   </div>
+
   <!-- Table rows -->
-  <div class="table-row" *ngFor="let item of paginatedItems">
-    <div>{{ item.tenantName }}</div>
-    <div>
-      <span dir="ltr" class="p-0">
-        {{ item.tenantMobile }}
-      </span>
+  <ng-container *ngIf="!isLoading">
+    <div class="table-row" *ngFor="let item of paginatedItems">
+      <div>{{ item.tenantName }}</div>
+      <div>
+        <span dir="ltr" class="p-0">
+          {{ item.tenantMobile }}
+        </span>
+      </div>
+      <div>{{ item.ownerName }}</div>
+      <div>{{ item.ownerMobile }}</div>
+      <div>{{ item.propertyType }}</div>
+      <div>{{ item.location }}</div>
+      <div>{{ item.startDate }}</div>
+      <div>{{ item.endOfContract }}</div>
     </div>
-    <div>{{ item.ownerName }}</div>
-    <div>{{ item.ownerMobile }}</div>
-    <div>{{ item.propertyType }}</div>
-    <div>{{ item.location }}</div>
-    <div>{{ item.startDate }}</div>
-    <div>{{ item.endOfContract }}</div>
-  </div>
+  </ng-container>
 
   <!-- Table pagination -->
   <div class="table-pagination" *ngIf="!isLoading && filteredItems.length > 0">

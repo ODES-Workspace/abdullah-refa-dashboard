@@ -157,23 +157,9 @@ export class ExistingContractComponent implements OnInit {
       this.adminActive = null;
     }
 
-    // Load property types and cities for mapping, then load contracts
-    const types$ = this.propertyTypesService.getPropertyTypes();
-    const cities$ = this.citiesService.getCities();
-
-    forkJoin([types$, cities$]).subscribe({
-      next: ([typesRes, citiesRes]) => {
-        this.typesRaw = typesRes?.data || [];
-        this.cities = citiesRes || [];
-        this.rebuildTypeMap();
-        this.loadPage(this.currentPage);
-      },
-      error: () => {
-        this.typesRaw = [];
-        this.cities = [];
-        this.typeIdToName = {};
-        this.loadPage(this.currentPage);
-      },
+    // Load reference data and contracts
+    this.loadReferenceData(() => {
+      this.loadPage(this.currentPage);
     });
 
     // React to language changes
@@ -187,8 +173,47 @@ export class ExistingContractComponent implements OnInit {
     });
   }
 
+  private loadReferenceData(onComplete?: () => void): void {
+    const types$ = this.propertyTypesService.getPropertyTypes();
+    const cities$ = this.citiesService.getCities();
+
+    forkJoin([types$, cities$]).subscribe({
+      next: ([typesRes, citiesRes]) => {
+        this.typesRaw = typesRes?.data || [];
+        this.cities = citiesRes || [];
+        this.rebuildTypeMap();
+        if (onComplete) {
+          onComplete();
+        }
+      },
+      error: () => {
+        this.typesRaw = [];
+        this.cities = [];
+        this.typeIdToName = {};
+        if (onComplete) {
+          onComplete();
+        }
+      },
+    });
+  }
+
   private loadPage(page: number): void {
     this.isLoading = true;
+
+    // If reference data is not loaded yet, load it first
+    if (
+      Object.keys(this.typeIdToName).length === 0 ||
+      this.cities.length === 0
+    ) {
+      this.loadReferenceData(() => {
+        this.fetchContracts(page);
+      });
+    } else {
+      this.fetchContracts(page);
+    }
+  }
+
+  private fetchContracts(page: number): void {
     // If admin, filter active contracts
     const isAdmin =
       (localStorage.getItem('user_data') &&
@@ -228,7 +253,7 @@ export class ExistingContractComponent implements OnInit {
               status: c.status || '-',
             } as TableItem;
           })
-          .reverse();
+          .sort((a, b) => b.id - a.id);
 
         this.allItems = items;
         this.filteredItems = [...items];
