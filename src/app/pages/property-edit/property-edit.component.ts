@@ -2,7 +2,7 @@ import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup } from '@angular/forms';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { PropertiesService } from '../../../services/properties.service';
 import { AmenitiesService, Amenity } from '../../../services/amenities.service';
 import {
@@ -13,6 +13,7 @@ import {
   PropertyTypesService,
   PropertyType,
 } from '../../../services/property-types.service';
+import { UserRoleService } from '../../../services/user-role.service';
 
 declare const L: any;
 
@@ -50,8 +51,10 @@ export class PropertyEditComponent implements OnInit, AfterViewInit {
     private typesService: PropertyTypesService,
     private translate: TranslateService,
     private route: ActivatedRoute,
+    private router: Router,
     private propertiesService: PropertiesService,
-    private amenitiesService: AmenitiesService
+    private amenitiesService: AmenitiesService,
+    private userRoleService: UserRoleService
   ) {
     this.form = this.fb.group({
       propertyCategory: [null],
@@ -563,7 +566,7 @@ export class PropertyEditComponent implements OnInit, AfterViewInit {
   // Legacy image update helpers removed; images are now sent within main update payload
 
   /**
-   * Show success message
+   * Show success message and navigate back to properties page
    */
   private showSuccessMessage(): void {
     if (this.currentLang === 'ar') {
@@ -571,5 +574,9 @@ export class PropertyEditComponent implements OnInit, AfterViewInit {
     } else {
       alert('Property and images updated successfully!');
     }
+
+    // Navigate back to the properties page
+    const basePath = this.userRoleService.isAdmin() ? 'admin' : 'agent';
+    this.router.navigate([`/${basePath}/properties`]);
   }
 }
