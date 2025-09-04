@@ -269,7 +269,9 @@ export class RentrequestsListComponent implements OnInit {
         this.apiTo = response.to ?? null;
         this.currentPage = response.current_page;
 
-        const items = this.mapApiToTableItems(response.data || []).reverse();
+        const items = this.mapApiToTableItems(response.data || []).sort(
+          (a, b) => b.id - a.id
+        );
 
         this.allItems = items;
         this.filteredItems = [...items];
@@ -478,7 +480,7 @@ export class RentrequestsListComponent implements OnInit {
         item.dateModified = new Date().toISOString().split('T')[0];
         this.toastService.show('requestApproved');
         this.isLoading = false;
-        
+
         // Optionally reload the current page to ensure data consistency
         this.loadPage(this.currentPage);
       },
@@ -486,7 +488,7 @@ export class RentrequestsListComponent implements OnInit {
         console.error('Failed to approve rent request:', error);
         this.toastService.show('errorApproving');
         this.isLoading = false;
-      }
+      },
     });
     this.closeDropdown();
   }
@@ -506,32 +508,36 @@ export class RentrequestsListComponent implements OnInit {
   submitReject(): void {
     if (this.selectedItem && this.rejectReason.trim()) {
       this.isLoading = true;
-      
+
       const payload = {
-        reject_reason: this.rejectReason.trim()
+        reject_reason: this.rejectReason.trim(),
       };
-      
-      this.rentRequestsService.rejectRentRequest(this.selectedItem.id, payload).subscribe({
-        next: (response) => {
-          // Update the local item status
-          if (this.selectedItem) {
-            this.selectedItem.status = 'rejected';
-            this.selectedItem.rejectedReason = this.rejectReason;
-            this.selectedItem.dateModified = new Date().toISOString().split('T')[0];
-          }
-          this.toastService.show('requestRejected');
-          this.isLoading = false;
-          this.closeRejectModal();
-          
-          // Optionally reload the current page to ensure data consistency
-          this.loadPage(this.currentPage);
-        },
-        error: (error) => {
-          console.error('Failed to reject rent request:', error);
-          this.toastService.show('errorRejecting');
-          this.isLoading = false;
-        }
-      });
+
+      this.rentRequestsService
+        .rejectRentRequest(this.selectedItem.id, payload)
+        .subscribe({
+          next: (response) => {
+            // Update the local item status
+            if (this.selectedItem) {
+              this.selectedItem.status = 'rejected';
+              this.selectedItem.rejectedReason = this.rejectReason;
+              this.selectedItem.dateModified = new Date()
+                .toISOString()
+                .split('T')[0];
+            }
+            this.toastService.show('requestRejected');
+            this.isLoading = false;
+            this.closeRejectModal();
+
+            // Optionally reload the current page to ensure data consistency
+            this.loadPage(this.currentPage);
+          },
+          error: (error) => {
+            console.error('Failed to reject rent request:', error);
+            this.toastService.show('errorRejecting');
+            this.isLoading = false;
+          },
+        });
     } else {
       this.toastService.show('pleaseEnterReason');
     }
