@@ -371,7 +371,9 @@ export class RejectedRentrequestsComponent implements OnInit {
           this.apiTo = response.to ?? null;
           this.currentPage = response.current_page;
 
-          const items = this.mapApiToTableItems(response.data || []).reverse();
+          const items = this.mapApiToTableItems(response.data || []).sort(
+            (a, b) => b.id - a.id
+          );
           this.allItems = items;
           this.filteredItems = [...items];
           this.paginatedItems = [...items];
