@@ -274,7 +274,7 @@ export class PropertyEditComponent implements OnInit, AfterViewInit {
 
     if (!raw) return '';
 
-    if (raw.includes('semi')) return 'semi-furnished';
+    if (raw.includes('semi')) return 'semi_furnished';
     if (
       raw.includes('unfurnished') ||
       raw.includes('not-furnished') ||
