@@ -251,7 +251,7 @@ export class ExistingContractComponent implements OnInit {
               cityId: c.rent_request?.city_id,
               startDate: c.start_date || '-',
               endOfContract: c.end_date || '-',
-              rentalValue: c.rent_request?.monthly_installment 
+              rentalValue: c.rent_request?.monthly_installment
                 ? Math.round(c.rent_request.monthly_installment).toString()
                 : '-',
               status: c.status || '-',

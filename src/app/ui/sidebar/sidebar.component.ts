@@ -263,10 +263,12 @@ export class SidebarComponent implements OnInit {
       )
       .subscribe((event: NavigationEnd) => {
         this.checkActiveMenuFromRoute(event.urlAfterRedirects);
-        
+
         // Refresh admin profile when navigating away from settings page
-        if (this.userRoleService.getCurrentRole() === 'admin' && 
-            event.urlAfterRedirects.includes('/admin/settings')) {
+        if (
+          this.userRoleService.getCurrentRole() === 'admin' &&
+          event.urlAfterRedirects.includes('/admin/settings')
+        ) {
           // Refresh admin profile after a short delay to allow for any updates
           setTimeout(() => {
             this.fetchAdminProfile();

@@ -142,7 +142,7 @@ export interface AdminUnauthenticatedResponse {
 export class AdminService {
   private baseUrl = environment.baseUrl;
   private profileUpdatedSubject = new Subject<void>();
-  
+
   // Observable that other components can subscribe to
   public profileUpdated$ = this.profileUpdatedSubject.asObservable();
 
@@ -211,16 +211,14 @@ export class AdminService {
   ): Observable<UpdateAdminProfileResponse> {
     const url = `${this.baseUrl}/admin/me`;
 
-    return this.http
-      .post<UpdateAdminProfileResponse>(url, profileData)
-      .pipe(
-        map((response) => {
-          // Notify that profile has been updated
-          this.notifyProfileUpdated();
-          return response;
-        }),
-        catchError((error: HttpErrorResponse) => this.handleError(error))
-      );
+    return this.http.post<UpdateAdminProfileResponse>(url, profileData).pipe(
+      map((response) => {
+        // Notify that profile has been updated
+        this.notifyProfileUpdated();
+        return response;
+      }),
+      catchError((error: HttpErrorResponse) => this.handleError(error))
+    );
   }
 
   /**

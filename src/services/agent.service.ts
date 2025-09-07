@@ -105,7 +105,7 @@ export interface UnauthenticatedResponse {
 export class AgentService {
   private readonly baseUrl = environment.baseUrl;
   private profileUpdatedSubject = new Subject<void>();
-  
+
   // Observable that other components can subscribe to
   public profileUpdated$ = this.profileUpdatedSubject.asObservable();
 
