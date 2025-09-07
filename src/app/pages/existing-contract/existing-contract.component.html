@@ -77,6 +77,16 @@
       </span>
     </div>
     <div>
+      <span>{{ "Rental Value" | translate }}</span>
+      <span>
+        <img
+          src="/assets/icons/sort-img.svg"
+          alt=""
+          (click)="sortBy('rentalValue')"
+        />
+      </span>
+    </div>
+    <div>
       <span>{{ "startDate" | translate }}</span>
       <span>
         <img
@@ -122,6 +132,16 @@
       <div>{{ item.ownerMobile }}</div>
       <div>{{ item.propertyType }}</div>
       <div>{{ item.location }}</div>
+      <div>
+        <div class="turncated-text" title="{{ item.rentalValue }}">
+          {{
+            item.rentalValue !== "-"
+              ? item.rentalValue + " " + ("SAR" | translate)
+              : item.rentalValue
+          }}
+        </div>
+      </div>
+
       <div>{{ item.startDate }}</div>
       <div>{{ item.endOfContract }}</div>
     </div>

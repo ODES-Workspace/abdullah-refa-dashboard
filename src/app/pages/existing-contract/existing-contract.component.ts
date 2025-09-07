@@ -22,6 +22,7 @@ interface TableItem {
   cityId?: number;
   startDate: string;
   endOfContract: string;
+  rentalValue: string;
   status: string;
 }
 @Component({
@@ -250,6 +251,9 @@ export class ExistingContractComponent implements OnInit {
               cityId: c.rent_request?.city_id,
               startDate: c.start_date || '-',
               endOfContract: c.end_date || '-',
+              rentalValue: c.rent_request?.monthly_installment 
+                ? Math.round(c.rent_request.monthly_installment).toString()
+                : '-',
               status: c.status || '-',
             } as TableItem;
           })
@@ -290,6 +294,7 @@ export class ExistingContractComponent implements OnInit {
         (it.propertyTypeId && this.typeIdToName[it.propertyTypeId]) ||
         it.propertyType,
       location: it.cityId ? this.getCityName(it.cityId) : it.location,
+      // rentalValue doesn't need updating from map as it's already formatted
     }));
     this.filteredItems = [...this.allItems];
     this.paginatedItems = [...this.allItems];
