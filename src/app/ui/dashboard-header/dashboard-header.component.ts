@@ -1,4 +1,10 @@
-import { Component, ElementRef, HostListener } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  HostListener,
+  OnInit,
+  OnDestroy,
+} from '@angular/core';
 import { Router } from '@angular/router';
 import { LanguageService } from '../../../services/language.service';
 import { TranslateModule } from '@ngx-translate/core';
@@ -6,6 +12,11 @@ import { Location, NgFor, NgIf } from '@angular/common';
 import { RelativeTimePipe } from '../../../services/relative-time.pipe';
 import { SidebarService } from '../../../services/sidebar.service';
 import { CommonModule } from '@angular/common';
+import {
+  NotificationsService,
+  Notification,
+} from '../../../services/notifications.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-dashboard-header',
@@ -14,18 +25,26 @@ import { CommonModule } from '@angular/common';
   templateUrl: './dashboard-header.component.html',
   styleUrl: './dashboard-header.component.scss',
 })
-export class DashboardHeaderComponent {
+export class DashboardHeaderComponent implements OnInit, OnDestroy {
   headerText: string = '';
   showNotifications = false;
   isPropertyDetailsPage = false;
   isRentalApplicationDetailsPage = false;
   isCreatePropertyPage = false;
+  notifications: Notification[] = [];
+  unreadCount = 0;
+  currentPage = 1;
+  isLoading = false;
+  hasMoreNotifications = true;
+  private subscriptions: Subscription[] = [];
+
   constructor(
     public languageService: LanguageService,
     private router: Router,
     private elementRef: ElementRef,
     private location: Location,
-    private sidebarService: SidebarService
+    private sidebarService: SidebarService,
+    private notificationsService: NotificationsService
   ) {
     this.router.events.subscribe(() => {
       this.setHeaderText();
@@ -33,47 +52,112 @@ export class DashboardHeaderComponent {
     });
   }
 
-  getPastTime(minutesAgo: number): string {
-    const date = new Date(Date.now() - minutesAgo * 60 * 1000);
-    return date.toISOString();
+  ngOnInit() {
+    this.loadNotifications();
+    this.subscribeToNotifications();
   }
 
-  notifications = [
-    {
-      title: 'New Property Listed',
-      description:
-        'A new luxury apartment has been listed in Riyadh city center.',
-      propertyId: 'RYD-2024-001',
-      time: this.getPastTime(5), // 5 minutes ago
-      read: false,
-    },
-    {
-      title: 'New Property Listed',
-      description:
-        'A new luxury apartment has been listed in Riyadh city center.',
-      propertyId: 'RYD-2024-002',
-      time: this.getPastTime(60), // 1 hour ago
-      read: true,
-    },
-    {
-      title: 'New Property Listed',
-      description:
-        'A new luxury apartment has been listed in Riyadh city center.',
-      propertyId: 'RYD-2024-003',
-      time: this.getPastTime(1440), // 1 day ago
-      read: true,
-    },
-    {
-      title: 'New Property Listed',
-      description: 'A user is interested in one of your properties.',
-      propertyId: 'RYD-2024-004',
-      time: this.getPastTime(10080), // 7 days ago
-      read: true,
-    },
-  ];
+  ngOnDestroy() {
+    this.subscriptions.forEach((sub) => sub.unsubscribe());
+  }
+
+  private subscribeToNotifications() {
+    const notificationsSub = this.notificationsService.notifications$.subscribe(
+      (notifications) => {
+        this.notifications = notifications;
+      }
+    );
+
+    const unreadCountSub = this.notificationsService.unreadCount$.subscribe(
+      (count) => {
+        this.unreadCount = count;
+      }
+    );
+
+    this.subscriptions.push(notificationsSub, unreadCountSub);
+  }
+
+  private loadNotifications() {
+    this.isLoading = true;
+    this.notificationsService.getNotifications(this.currentPage).subscribe({
+      next: (response) => {
+        this.notifications = response.data;
+        this.hasMoreNotifications = this.currentPage < response.last_page;
+        this.isLoading = false;
+      },
+      error: (error) => {
+        console.error('Error loading notifications:', error);
+        this.isLoading = false;
+      },
+    });
+  }
+
+  loadMoreNotifications() {
+    if (this.isLoading || !this.hasMoreNotifications) return;
+
+    this.currentPage++;
+    this.isLoading = true;
+
+    this.notificationsService
+      .loadMoreNotifications(this.currentPage - 1)
+      .subscribe({
+        next: (response) => {
+          this.hasMoreNotifications = this.currentPage < response.last_page;
+          this.isLoading = false;
+        },
+        error: (error) => {
+          console.error('Error loading more notifications:', error);
+          this.currentPage--; // Revert page increment on error
+          this.isLoading = false;
+        },
+      });
+  }
 
   markAllAsRead() {
-    this.notifications.forEach((n) => (n.read = true));
+    this.notificationsService.markAllAsRead().subscribe({
+      next: () => {
+        console.log('All notifications marked as read');
+      },
+      error: (error) => {
+        console.error('Error marking all notifications as read:', error);
+      },
+    });
+  }
+
+  markNotificationAsRead(notificationId: string) {
+    this.notificationsService.markAsRead(notificationId).subscribe({
+      next: () => {
+        console.log('Notification marked as read');
+      },
+      error: (error) => {
+        console.error('Error marking notification as read:', error);
+      },
+    });
+  }
+
+  handleNotificationClick(notification: Notification) {
+    // Mark as read first
+    this.markNotificationAsRead(notification.id);
+
+    // Navigate based on notification type
+    if (notification.data.type === 'contract') {
+      // Navigate to existing contracts page
+      const roleSegment = this.router.url.includes('/admin/')
+        ? 'admin'
+        : 'agent';
+      this.router.navigate([`/${roleSegment}/existing-contract`]);
+    } else if (notification.data.type === 'rent_request') {
+      // Navigate to rental application details page
+      const roleSegment = this.router.url.includes('/admin/')
+        ? 'admin'
+        : 'agent';
+      this.router.navigate([
+        `/${roleSegment}/rental-application-details/${notification.data.id}`,
+      ]);
+    }
+
+    // Close notifications dropdown
+    this.showNotifications = false;
   }
 
   setHeaderText() {
@@ -145,10 +229,6 @@ export class DashboardHeaderComponent {
 
   toggleNotifications() {
     this.showNotifications = !this.showNotifications;
-  }
-
-  get unreadCount(): number {
-    return this.notifications.filter((n) => !n.read).length;
   }
 
   @HostListener('document:click', ['$event'])

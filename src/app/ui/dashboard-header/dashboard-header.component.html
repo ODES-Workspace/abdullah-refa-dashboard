@@ -42,20 +42,31 @@
       <div
         class="notification"
         *ngFor="let notif of notifications"
-        [class.unread]="!notif.read"
+        [class.unread]="!notif.read_at"
+        (click)="handleNotificationClick(notif)"
       >
-        <h3 [class.unread-title]="!notif.read">
-          {{ notif.title | translate }}
+        <h3 [class.unread-title]="!notif.read_at">
+          {{ notif.data.title | translate }}
         </h3>
         <div>
-          <p>{{ notif.description }}</p>
-          <p>ID: {{ notif.propertyId }}</p>
+          <p>{{ notif.data.message }}</p>
         </div>
         <div class="time">
           <img src="/assets/icons/time-icon.svg" alt="" />
-          {{ notif.time | relativeTime }}
+          {{ notif.created_at | relativeTime }}
         </div>
       </div>
+    </div>
+
+    <div class="read-more-section" *ngIf="hasMoreNotifications">
+      <button
+        class="read-more-btn"
+        (click)="loadMoreNotifications()"
+        [disabled]="isLoading"
+      >
+        <span *ngIf="!isLoading">{{ "Read More" | translate }}</span>
+        <span *ngIf="isLoading">{{ "Loading..." | translate }}</span>
+      </button>
     </div>
   </div>
 </div>

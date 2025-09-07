@@ -121,10 +121,16 @@
       border-bottom: 1px solid #eee;
       display: flex;
       flex-direction: column;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+
+      &:hover {
+        background-color: #f8f9fa;
+      }
     }
 
     .notification.unread {
-      background-color: #e6e6e6;
+      background-color: #f9f9f9;
     }
 
     .notification h3 {
@@ -155,6 +161,39 @@
 
       img {
         display: flex;
+      }
+    }
+
+    .read-more-section {
+      padding: 16px 24px;
+      display: flex;
+      justify-content: center;
+      background-color: #f8f9fa;
+
+      .read-more-btn {
+        color: #0311d0;
+        border: none;
+        border-radius: 6px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        text-decoration: underline;
+        background-color: transparent;
+
+        &:hover:not(:disabled) {
+          color: #0c1892;
+        }
+
+        &:disabled {
+          color: #999;
+          cursor: not-allowed;
+          text-decoration: none;
+        }
+
+        &:active {
+          transform: translateY(0);
+        }
       }
     }
   }
