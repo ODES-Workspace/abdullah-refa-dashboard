@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { Observable, throwError } from 'rxjs';
+import { Observable, throwError, Subject } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { UserRoleService } from './user-role.service';
 import { environment } from '../environments/environment';
@@ -28,6 +28,41 @@ export interface Agent {
   national_id: string | null;
   active: number;
   role: string | null;
+}
+
+export interface AgentProfile {
+  id: number;
+  user_id: number;
+  agency_name: string;
+  company_registration_id: string;
+  fal_license_number: string;
+  fal_document: string;
+  agency_address_line_1: string;
+  agency_address_line_2: string;
+  city: string;
+  country: string;
+  postal_code: string;
+  account_number: string;
+  bank_name: string;
+  iban_number: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface AgentMeResponse {
+  id: number;
+  type: string;
+  name: string;
+  email: string;
+  phone_number: string;
+  national_id: string | null;
+  active: number;
+  role: string | null;
+  email_verified_at: string | null;
+  created_at: string;
+  updated_at: string;
+  city: string | null;
+  agent_profile: AgentProfile;
 }
 
 export interface AgentRegistrationResponse {
@@ -69,6 +104,10 @@ export interface UnauthenticatedResponse {
 })
 export class AgentService {
   private readonly baseUrl = environment.baseUrl;
+  private profileUpdatedSubject = new Subject<void>();
+  
+  // Observable that other components can subscribe to
+  public profileUpdated$ = this.profileUpdatedSubject.asObservable();
 
   constructor(
     private http: HttpClient,
@@ -161,6 +200,18 @@ export class AgentService {
   }
 
   /**
+   * Get agent profile information
+   * @returns Observable of the agent profile response
+   */
+  getAgentProfile(): Observable<AgentMeResponse> {
+    const url = `${this.baseUrl}/agent/me`;
+
+    return this.http
+      .get<AgentMeResponse>(url)
+      .pipe(catchError((error: HttpErrorResponse) => this.handleError(error)));
+  }
+
+  /**
    * Get the current access token
    * @returns The access token or null if not available
    */
@@ -205,6 +256,13 @@ export class AgentService {
     localStorage.removeItem('access_token');
     localStorage.removeItem('token_type');
     localStorage.removeItem('token_expires_in');
+  }
+
+  /**
+   * Notify components that agent profile has been updated
+   */
+  notifyProfileUpdated(): void {
+    this.profileUpdatedSubject.next();
   }
 
   /**

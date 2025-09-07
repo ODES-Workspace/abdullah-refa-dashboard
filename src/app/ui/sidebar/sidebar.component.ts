@@ -7,7 +7,8 @@ import { SidebarService } from '../../../services/sidebar.service';
 import { CommonModule } from '@angular/common';
 import { Observable } from 'rxjs';
 import { UserRoleService, UserRole } from '../../../services/user-role.service';
-import { AgentService } from '../../../services/agent.service';
+import { AgentService, AgentMeResponse } from '../../../services/agent.service';
+import { AdminService, AdminProfile } from '../../../services/admin.service';
 
 interface SubMenuItem {
   label: string;
@@ -38,12 +39,15 @@ export class SidebarComponent implements OnInit {
   isOpen$!: Observable<boolean>;
   userRole$!: Observable<UserRole>;
   isLoading = false;
+  agentProfileData: AgentMeResponse | null = null;
+  adminProfileData: AdminProfile | null = null;
 
   constructor(
     private router: Router,
     private sidebarService: SidebarService,
     private userRoleService: UserRoleService,
-    private agentService: AgentService
+    private agentService: AgentService,
+    private adminService: AdminService
   ) {}
 
   // Admin menu items
@@ -227,6 +231,29 @@ export class SidebarComponent implements OnInit {
     this.userRole$ = this.userRoleService.userRole$;
     this.checkActiveMenuFromRoute(this.router.url);
 
+    // Fetch agent profile data if user is an agent
+    this.userRole$.subscribe((role) => {
+      if (role === 'agent') {
+        this.fetchAgentProfile();
+      } else if (role === 'admin') {
+        this.fetchAdminProfile();
+      }
+    });
+
+    // Subscribe to admin profile updates
+    this.adminService.profileUpdated$.subscribe(() => {
+      if (this.userRoleService.getCurrentRole() === 'admin') {
+        this.fetchAdminProfile();
+      }
+    });
+
+    // Subscribe to agent profile updates
+    this.agentService.profileUpdated$.subscribe(() => {
+      if (this.userRoleService.getCurrentRole() === 'agent') {
+        this.fetchAgentProfile();
+      }
+    });
+
     this.router.events
       .pipe(
         filter(
@@ -236,6 +263,15 @@ export class SidebarComponent implements OnInit {
       )
       .subscribe((event: NavigationEnd) => {
         this.checkActiveMenuFromRoute(event.urlAfterRedirects);
+        
+        // Refresh admin profile when navigating away from settings page
+        if (this.userRoleService.getCurrentRole() === 'admin' && 
+            event.urlAfterRedirects.includes('/admin/settings')) {
+          // Refresh admin profile after a short delay to allow for any updates
+          setTimeout(() => {
+            this.fetchAdminProfile();
+          }, 500);
+        }
       });
   }
 
@@ -304,12 +340,62 @@ export class SidebarComponent implements OnInit {
     this.sidebarService.toggle();
   }
 
+  // Fetch agent profile data
+  fetchAgentProfile() {
+    this.agentService.getAgentProfile().subscribe({
+      next: (response) => {
+        this.agentProfileData = response;
+      },
+      error: (error) => {
+        console.error('Error fetching agent profile:', error);
+      },
+    });
+  }
+
+  // Fetch admin profile data
+  fetchAdminProfile() {
+    this.adminService.getAdminProfile().subscribe({
+      next: (response) => {
+        this.adminProfileData = response;
+      },
+      error: (error) => {
+        console.error('Error fetching admin profile:', error);
+      },
+    });
+  }
+
+  // Public method to refresh admin profile (can be called from other components)
+  refreshAdminProfile() {
+    if (this.userRoleService.getCurrentRole() === 'admin') {
+      this.fetchAdminProfile();
+    }
+  }
+
+  // Public method to refresh agent profile (can be called from other components)
+  refreshAgentProfile() {
+    if (this.userRoleService.getCurrentRole() === 'agent') {
+      this.fetchAgentProfile();
+    }
+  }
+
   // Get user information for display
   getUserName(): string {
-    return this.userRoleService.getUserName();
+    if (this.userRoleService.getCurrentRole() === 'agent') {
+      return this.agentProfileData
+        ? this.agentProfileData.agent_profile.agency_name
+        : '';
+    } else if (this.userRoleService.getCurrentRole() === 'admin') {
+      return this.adminProfileData ? this.adminProfileData.name : '';
+    }
+    return '';
   }
 
   getUserEmail(): string {
-    return this.userRoleService.getUserEmail();
+    if (this.userRoleService.getCurrentRole() === 'agent') {
+      return this.agentProfileData ? this.agentProfileData.email : '';
+    } else if (this.userRoleService.getCurrentRole() === 'admin') {
+      return this.adminProfileData ? this.adminProfileData.email : '';
+    }
+    return '';
   }
 }

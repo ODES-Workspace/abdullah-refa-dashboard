@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { Observable, throwError } from 'rxjs';
+import { Observable, throwError, Subject } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { UserRoleService } from './user-role.service';
 import { environment } from '../environments/environment';
@@ -141,6 +141,10 @@ export interface AdminUnauthenticatedResponse {
 })
 export class AdminService {
   private baseUrl = environment.baseUrl;
+  private profileUpdatedSubject = new Subject<void>();
+  
+  // Observable that other components can subscribe to
+  public profileUpdated$ = this.profileUpdatedSubject.asObservable();
 
   constructor(
     private http: HttpClient,
@@ -209,7 +213,14 @@ export class AdminService {
 
     return this.http
       .post<UpdateAdminProfileResponse>(url, profileData)
-      .pipe(catchError((error: HttpErrorResponse) => this.handleError(error)));
+      .pipe(
+        map((response) => {
+          // Notify that profile has been updated
+          this.notifyProfileUpdated();
+          return response;
+        }),
+        catchError((error: HttpErrorResponse) => this.handleError(error))
+      );
   }
 
   /**
@@ -383,5 +394,12 @@ export class AdminService {
     localStorage.removeItem('access_token');
     localStorage.removeItem('token_type');
     localStorage.removeItem('token_expires_in');
+  }
+
+  /**
+   * Notify components that admin profile has been updated
+   */
+  notifyProfileUpdated(): void {
+    this.profileUpdatedSubject.next();
   }
 }
