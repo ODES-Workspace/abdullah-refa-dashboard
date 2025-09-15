@@ -2,6 +2,7 @@
   display: grid;
   gap: 24px;
   // stats
+
   &-stats {
     display: flex;
     justify-content: space-between;
@@ -21,6 +22,13 @@
 
     box-shadow: 0px 2px 6.8px rgba(0, 0, 0, 0.1);
     border-radius: 6px;
+    transition: all 0.3s ease-in-out;
+
+    &:hover {
+      box-shadow: 0px 4px 13.6px rgba(0, 0, 0, 0.15);
+      transition: all 0.3s ease-in-out;
+      transform: translateY(-2px) scale(1.01);
+    }
 
     p {
       color: #404040b2;

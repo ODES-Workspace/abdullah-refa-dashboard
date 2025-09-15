@@ -1,3 +1,4 @@
+import { RouterModule } from '@angular/router';
 import { NgFor } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { NgIf } from '@angular/common';
@@ -19,6 +20,7 @@ import {
     TranslateModule,
     TableComponent,
     AgentdashboardchartsComponent,
+    RouterModule,
   ],
   templateUrl: './agentdashboard.component.html',
   styleUrl: './agentdashboard.component.scss',
@@ -30,28 +32,31 @@ export class AgentdashboardComponent implements OnInit {
       title: 'Total Properties',
       value: 0,
       icon: '/assets/icons/properties-icon.svg',
+      route: '/agent/properties',
     },
     {
       title: 'Total Rent Request',
       value: 0,
       icon: '/assets/icons/rent-icon.svg',
+      route: '/agent/rentrequests',
     },
     {
       title: 'Accepted Requests',
       value: 0,
       icon: '/assets/icons/accepted-req.svg',
+      route: '/agent/rentrequests',
     },
-
     {
       title: 'Rejected Requests',
       value: 0,
       icon: '/assets/icons/rejected-req.svg',
+      route: '/agent/rejected-rentrequests',
     },
-
     {
       title: 'Total Rent Value',
       value: 0,
       icon: '/assets/icons/rent-val.svg',
+      route: '/agent/existing-contract',
     },
   ];
 
@@ -108,4 +113,5 @@ interface Stat {
   value: number;
   icon: string;
   percentageChange?: number;
+  route: string;
 }
