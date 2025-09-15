@@ -23,6 +23,107 @@
     </button>
   </div>
 
+  <!-- Filters Section -->
+  <div class="filters-container">
+    <div class="filters-tab" (click)="toggleFilters()">
+      <span class="filters-tab-text">{{ "Filters" | translate }}</span>
+      <img
+        class="filters-tab-icon"
+        [class.rotated]="showFilters"
+        src="/assets/icons/arrow-down-icon.svg"
+        alt="Toggle filters"
+      />
+    </div>
+
+    <div class="table-filters" [class.filters-visible]="showFilters">
+      <!-- Category Filter -->
+      <div class="filter-group">
+        <label>{{ "Category" | translate }}</label>
+        <select [(ngModel)]="filters.category_id" (change)="onCategoryChange()">
+          <option value="">{{ "All Categories" | translate }}</option>
+          <option *ngFor="let category of categories" [value]="category.id">
+            {{ getLocalizedCategoryName(category) }}
+          </option>
+        </select>
+      </div>
+
+      <!-- Type Filter -->
+      <div class="filter-group">
+        <label>{{ "Type" | translate }}</label>
+        <select [(ngModel)]="filters.type_id" (change)="onFilterChange()">
+          <option value="">{{ "All Types" | translate }}</option>
+          <option *ngFor="let type of filteredTypes" [value]="type.id">
+            {{ getLocalizedTypeName(type) }}
+          </option>
+        </select>
+      </div>
+
+      <!-- Price Range -->
+      <div class="filter-group">
+        <label>{{ "Min Price" | translate }}</label>
+        <input
+          type="number"
+          [(ngModel)]="filters.min_price"
+          (input)="onFilterChange()"
+          [placeholder]="'Min Price' | translate"
+        />
+      </div>
+
+      <div class="filter-group">
+        <label>{{ "Max Price" | translate }}</label>
+        <input
+          type="number"
+          [(ngModel)]="filters.max_price"
+          (input)="onFilterChange()"
+          [placeholder]="'Max Price' | translate"
+        />
+      </div>
+
+      <!-- Bedrooms -->
+      <div class="filter-group">
+        <label>{{ "Bedrooms" | translate }}</label>
+        <select [(ngModel)]="filters.bedrooms" (change)="onFilterChange()">
+          <option value="">{{ "Any" | translate }}</option>
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+          <option value="4">4</option>
+          <option value="5">5+</option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <!-- Bathrooms -->
+        <label>{{ "Bathrooms" | translate }}</label>
+        <select [(ngModel)]="filters.bathrooms" (change)="onFilterChange()">
+          <option value="">{{ "Any" | translate }}</option>
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+          <option value="4">4</option>
+          <option value="5">5+</option>
+        </select>
+      </div>
+
+      <!-- Sort By -->
+      <div class="filter-group">
+        <label>{{ "Sort By" | translate }}</label>
+        <select [(ngModel)]="filters.sort_by" (change)="onFilterChange()">
+          <option *ngFor="let option of sortOptions" [value]="option.value">
+            {{ option.label | translate }}
+          </option>
+        </select>
+      </div>
+
+      <!-- Clear Filters Button -->
+      <div class="filter-group">
+        <button class="clear-filters-btn" (click)="clearFilters()">
+          {{ "Clear Filters" | translate }}
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- No data -->
   <div class="table-no-data" *ngIf="!loading && properties.length === 0">
     {{ "No data found" | translate }}

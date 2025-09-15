@@ -58,6 +58,44 @@ export class AgentPropertiesService {
     });
   }
 
+  getAgentPropertiesWithFilters(
+    token: string,
+    filterParams: {
+      search?: string;
+      page?: number;
+      per_page?: number;
+      category_id?: string;
+      type_id?: string;
+      min_price?: string;
+      max_price?: string;
+      bedrooms?: string;
+      bathrooms?: string;
+      sort_by?: string;
+    }
+  ): Observable<PropertiesResponse> {
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`,
+      Accept: 'application/json',
+    });
+
+    let params = new HttpParams()
+      .set('page', (filterParams.page || 1).toString())
+      .set('per_page', (filterParams.per_page || 10).toString());
+
+    // Add filters to params if they exist
+    Object.keys(filterParams).forEach((key) => {
+      const value = filterParams[key as keyof typeof filterParams];
+      if (value && value !== '') {
+        params = params.set(key, value.toString());
+      }
+    });
+
+    return this.http.get<PropertiesResponse>(this.getApiUrl(), {
+      headers,
+      params,
+    });
+  }
+
   deleteAgentProperty(id: number, token: string): Observable<any> {
     const headers = new HttpHeaders({
       Authorization: `Bearer ${token}`,

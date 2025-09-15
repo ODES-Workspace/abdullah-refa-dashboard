@@ -1,7 +1,12 @@
 <div class="overview">
   <!-- Stats -->
   <div class="overview-stats">
-    <a *ngFor="let stat of stats" class="overview-statcard" [routerLink]="stat.route" style="text-decoration: none; color: inherit; cursor: pointer;">
+    <a
+      *ngFor="let stat of stats"
+      class="overview-statcard"
+      [routerLink]="stat.route"
+      style="text-decoration: none; color: inherit; cursor: pointer"
+    >
       <div class="stat-details">
         <img src="{{ stat.icon }}" alt="{{ stat.title }}" />
         <h2 class="stat-value">{{ stat.value }}</h2>

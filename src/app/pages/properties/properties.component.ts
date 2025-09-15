@@ -9,6 +9,14 @@ import { TranslateModule } from '@ngx-translate/core';
 import { UserRoleService } from '../../../services/user-role.service';
 import { AdminService } from '../../../services/admin.service';
 import { ToastComponent } from '../../ui/toast/toast.component';
+import {
+  PropertyCategoriesService,
+  PropertyCategory,
+} from '../../../services/property-categories.service';
+import {
+  PropertyTypesService,
+  PropertyType,
+} from '../../../services/property-types.service';
 
 @Component({
   selector: 'app-properties',
@@ -28,6 +36,9 @@ export class PropertiesComponent implements OnInit {
   // Admin permission properties
   adminActive: number | null = null;
   propertyPermissions: string[] = [];
+
+  // Filter visibility
+  showFilters: boolean = false;
 
   get canReadProperties(): boolean {
     // Agents can always view, admins need permissions
@@ -83,6 +94,27 @@ export class PropertiesComponent implements OnInit {
   Math = Math;
   loading = false;
   error: string | null = null;
+
+  // Filter properties
+  categories: PropertyCategory[] = [];
+  types: PropertyType[] = [];
+  filteredTypes: PropertyType[] = [];
+  filters = {
+    category_id: '',
+    type_id: '',
+    min_price: '',
+    max_price: '',
+    bedrooms: '',
+    bathrooms: '',
+    sort_by: 'created_at',
+  };
+
+  sortOptions = [
+    { value: 'created_at', label: 'Date Created' },
+    { value: 'annual_rent', label: 'Price' },
+    { value: 'area', label: 'Area' },
+    { value: 'bedrooms', label: 'Bedrooms' },
+  ];
   get currentLanguage(): string {
     return localStorage.getItem('lang') || 'en';
   }
@@ -97,7 +129,9 @@ export class PropertiesComponent implements OnInit {
     public userRoleService: UserRoleService,
     private agentPropertiesService: AgentPropertiesService,
     private toastService: ToastService,
-    private adminService: AdminService
+    private adminService: AdminService,
+    private propertyCategoriesService: PropertyCategoriesService,
+    private propertyTypesService: PropertyTypesService
   ) {}
 
   ngOnInit(): void {
@@ -135,6 +169,8 @@ export class PropertiesComponent implements OnInit {
     }
 
     this.loadProperties();
+    this.loadCategories();
+    this.loadTypes();
   }
 
   loadProperties(): void {
@@ -142,16 +178,27 @@ export class PropertiesComponent implements OnInit {
     this.error = null;
 
     const token = localStorage.getItem('access_token') || '';
+
+    // Build filter parameters
+    const filterParams = {
+      search: this.searchTerm,
+      page: this.currentPage,
+      per_page: this.itemsPerPage,
+      category_id: this.filters.category_id || undefined,
+      type_id: this.filters.type_id || undefined,
+      min_price: this.filters.min_price || undefined,
+      max_price: this.filters.max_price || undefined,
+      bedrooms: this.filters.bedrooms || undefined,
+      bathrooms: this.filters.bathrooms || undefined,
+      sort_by: this.filters.sort_by,
+    };
+
     this.agentPropertiesService
-      .getAgentProperties(
-        token,
-        this.searchTerm,
-        this.currentPage,
-        this.itemsPerPage
-      )
+      .getAgentPropertiesWithFilters(token, filterParams)
       .subscribe({
         next: (response: any) => {
-          console.log(response);
+          console.log('Full API Response:', response);
+          console.log('Response meta:', response?.meta);
           this.properties = (response?.data || []).map((item: any) => ({
             id: item.id,
             title: item.name_en,
@@ -181,12 +228,19 @@ export class PropertiesComponent implements OnInit {
             amenities: item.amenities,
           }));
 
-          // Set pagination data from API response
-          this.totalItems = response?.total || response?.data?.length || 0;
-          this.totalPages =
-            response?.last_page ||
-            Math.ceil(this.totalItems / this.itemsPerPage);
-          this.currentPage = response?.current_page || 1;
+          // Set pagination data from API response - check both direct and meta structure
+          this.totalItems =
+            response?.meta?.total?.[0] ||
+            response?.total ||
+            response?.data?.length ||
+            0;
+          this.totalPages = Math.ceil(this.totalItems / this.itemsPerPage);
+          this.currentPage =
+            response?.meta?.current_page?.[0] || response?.current_page || 1;
+
+          console.log('Total Items:', this.totalItems);
+          console.log('Total Pages:', this.totalPages);
+          console.log('Current Page:', this.currentPage);
 
           this.loading = false;
         },
@@ -271,5 +325,73 @@ export class PropertiesComponent implements OnInit {
 
   createProperty(): void {
     this.router.navigate(['/agent/create-property']);
+  }
+
+  loadCategories(): void {
+    this.propertyCategoriesService.getPropertyCategories().subscribe({
+      next: (response) => {
+        this.categories = response.data || [];
+      },
+      error: (err) => {
+        console.error('Error loading categories:', err);
+      },
+    });
+  }
+
+  loadTypes(): void {
+    this.propertyTypesService.getPropertyTypes().subscribe({
+      next: (response) => {
+        this.types = response.data || [];
+        this.filteredTypes = this.types;
+      },
+      error: (err) => {
+        console.error('Error loading types:', err);
+      },
+    });
+  }
+
+  onCategoryChange(): void {
+    if (this.filters.category_id) {
+      this.filteredTypes = this.types.filter(
+        (type) =>
+          type.property_category_id === parseInt(this.filters.category_id)
+      );
+      this.filters.type_id = ''; // Reset type selection
+    } else {
+      this.filteredTypes = this.types;
+    }
+    this.onFilterChange();
+  }
+
+  onFilterChange(): void {
+    this.currentPage = 1;
+    this.loadProperties();
+  }
+
+  clearFilters(): void {
+    this.filters = {
+      category_id: '',
+      type_id: '',
+      min_price: '',
+      max_price: '',
+      bedrooms: '',
+      bathrooms: '',
+      sort_by: 'created_at',
+    };
+    this.filteredTypes = this.types;
+    this.currentPage = 1;
+    this.loadProperties();
+  }
+
+  toggleFilters(): void {
+    this.showFilters = !this.showFilters;
+  }
+
+  getLocalizedCategoryName(category: PropertyCategory): string {
+    return this.currentLanguage === 'ar' ? category.name_ar : category.name_en;
+  }
+
+  getLocalizedTypeName(type: PropertyType): string {
+    return this.currentLanguage === 'ar' ? type.name_ar : type.name_en;
   }
 }

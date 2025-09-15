@@ -39,6 +39,127 @@
     }
   }
 
+  &-filters {
+    padding: 0;
+    border-bottom: 1px solid #f1f1f4;
+    background-color: #f9f9f9;
+    max-height: 0;
+    overflow: hidden;
+    transition: all 0.3s ease-in-out;
+    opacity: 0;
+
+    &.filters-visible {
+      max-height: 300px;
+      padding: 20px;
+      opacity: 1;
+      overflow-y: auto;
+    }
+
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+
+    @media (max-width: 768px) {
+      grid-template-columns: 1fr;
+      gap: 16px;
+    }
+
+    .filter-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+
+      label {
+        font-size: 14px;
+        font-weight: 500;
+        color: #404040;
+      }
+
+      select,
+      input {
+        padding: 10px 12px;
+        border: 1px solid #d1d5db;
+        border-radius: 6px;
+        font-size: 14px;
+        outline: none;
+        transition: border-color 0.2s ease;
+        height: 100%;
+
+        &:focus {
+          border-color: #0311d0;
+          box-shadow: 0 0 0 3px rgba(3, 17, 208, 0.1);
+        }
+
+        &::placeholder {
+          color: #9ca3af;
+        }
+      }
+
+      select {
+        background-color: white;
+        cursor: pointer;
+      }
+
+      .clear-filters-btn {
+        margin-top: 0;
+        padding: 10px 16px;
+        background-color: #ef4444;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: background-color 0.2s ease;
+
+        &:hover {
+          background-color: #dc2626;
+        }
+
+        &:active {
+          background-color: #b91c1c;
+        }
+      }
+    }
+  }
+
+  .filters-container {
+    border-bottom: 1px solid #f1f1f4;
+  }
+
+  .filters-tab {
+    padding: 16px 20px;
+    background-color: #ffffff;
+    border-bottom: 1px solid #f1f1f4;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background-color 0.2s ease;
+
+    &:hover {
+      background-color: #f8f9fa;
+    }
+
+    .filters-tab-text {
+      font-size: 16px;
+      font-weight: 600;
+      color: #0311d0;
+    }
+
+    .filters-tab-icon {
+      width: 20px;
+      height: 20px;
+      transition: transform 0.3s ease;
+      filter: invert(11%) sepia(85%) saturate(6765%) hue-rotate(238deg)
+        brightness(97%) contrast(103%);
+
+      &.rotated {
+        transform: rotate(180deg);
+      }
+    }
+  }
+
   &-properties {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
