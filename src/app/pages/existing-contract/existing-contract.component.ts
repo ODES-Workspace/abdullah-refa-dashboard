@@ -12,6 +12,7 @@ import { forkJoin } from 'rxjs';
 
 interface TableItem {
   id: number;
+  rent_request_id: number;
   tenantName: string;
   ownerName: string;
   propertyType: string;
@@ -236,6 +237,7 @@ export class ExistingContractComponent implements OnInit {
             const typeId = c.rent_request?.property?.property_type_id;
             return {
               id: c.id,
+              rent_request_id: c.rent_request_id || c.rent_request?.id,
               tenantName: c.rent_request?.name || '-',
               tenantMobile: c.rent_request?.phone || '-',
               ownerName: '-',
@@ -373,6 +375,10 @@ export class ExistingContractComponent implements OnInit {
 
   closeDropdown(): void {
     this.activeDropdown = null;
+  }
+
+  viewRentalApplication(rentRequestId: number): void {
+    this.router.navigate(['/admin/rental-application-details', rentRequestId]);
   }
 
   @HostListener('document:click', ['$event'])

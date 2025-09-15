@@ -107,6 +107,9 @@
         />
       </span>
     </div>
+    <div>
+      <span>{{ "Actions" | translate }}</span>
+    </div>
   </div>
 
   <!-- Loading state -->
@@ -144,6 +147,15 @@
 
       <div>{{ item.startDate }}</div>
       <div>{{ item.endOfContract }}</div>
+      <div class="table-actions">
+        <span
+          class="action-icon info-icon"
+          (click)="viewRentalApplication(item.rent_request_id)"
+          [title]="'View Rental Application Details' | translate"
+        >
+          <img src="/assets/icons/eye-icon.svg" alt="View details" />
+        </span>
+      </div>
     </div>
   </ng-container>
 
