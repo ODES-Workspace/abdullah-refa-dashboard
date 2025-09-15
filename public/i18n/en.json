@@ -428,5 +428,15 @@
   "Current": "Current",
   "Show Document": "Show Document",
   "Validation Errors": "Validation Errors",
-  "List of Agency/Owner": "List of Agency/Owner"
+  "List of Agency/Owner": "List of Agency/Owner",
+  "Filters": "Filters",
+  "All Categories": "All Categories",
+  "All Types": "All Types", 
+  "Min Price": "Min Price",
+  "Max Price": "Max Price",
+  "Any": "Any",
+  "Sort By": "Sort By",
+  "Clear Filters": "Clear Filters",
+  "Toggle filters": "Toggle filters",
+  "Date Created": "Date Created"
 }

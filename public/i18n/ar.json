@@ -491,5 +491,16 @@
   "Admin": "مسؤول",
   "You don't have permission to view sub-admins. Only admin users can access this page.": "ليس لديك صلاحية لعرض المسؤولين الفرعيين. يمكن للمسؤولين فقط الوصول إلى هذه الصفحة.",
   "Logging out...": "جاري تسجيل الخروج...",
-  "Logging in...": "جاري تسجيل الدخول..."
+  "Logging in...": "جاري تسجيل الدخول...",
+  "Filters": "المرشحات",
+  "All Categories": "جميع الفئات",
+  "All Types": "جميع الأنواع",
+  "Min Price": "أقل سعر",
+  "Max Price": "أعلى سعر",
+  "Any": "الكل",
+  "Sort By": "ترتيب حسب",
+  "Clear Filters": "مسح المرشحات",
+  "Toggle filters": "تبديل المرشحات",
+  "Date Created": "تاريخ الإنشاء",
+  "Category": "الفئة"
 }
