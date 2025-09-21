@@ -283,12 +283,17 @@ export class AgentService {
         const validationError = error.error as ValidationError;
         errorMessage = this.formatValidationErrors(validationError);
       } else if (error.status === 401) {
-        // Invalid credentials or account not approved
+        // Invalid credentials, account not approved, or pending approval
         const loginError = error.error as LoginError;
         const unauthenticatedResponse = error.error as UnauthenticatedResponse;
 
         if (loginError?.error?.toLowerCase().includes('invalid credentials')) {
           errorMessage = 'ERRORS.INCORRECT_EMAIL_OR_PASSWORD';
+        } else if (
+          loginError?.error?.toLowerCase().includes('pending approval') ||
+          error.error?.message?.toLowerCase().includes('pending approval')
+        ) {
+          errorMessage = 'ERRORS.ACCOUNT_PENDING_APPROVAL';
         } else if (
           unauthenticatedResponse?.message
             ?.toLowerCase()
@@ -297,7 +302,9 @@ export class AgentService {
           errorMessage = 'ERRORS.SESSION_EXPIRED';
         } else {
           errorMessage =
-            loginError?.error || 'ERRORS.INVALID_EMAIL_OR_PASSWORD';
+            loginError?.error || 
+            error.error?.message || 
+            'ERRORS.INVALID_EMAIL_OR_PASSWORD';
         }
       } else if (error.status === 403) {
         // Account not active

@@ -21,6 +21,7 @@
     "INVALID_EMAIL_OR_PASSWORD": "Invalid email or password. Please check your credentials and try again.",
     "SESSION_EXPIRED": "Session expired. Please log in again.",
     "ACCOUNT_NOT_ACTIVE": "Your account is not active. Please contact the administrator.",
+    "ACCOUNT_PENDING_APPROVAL": "Your account is pending approval. Please wait for admin approval.",
     "SERVER_ERROR": "Server error. Please try again later.",
     "GENERIC_ERROR": "An error occurred. Please try again.",
     "EMAIL_REQUIRED": "Email is required",
