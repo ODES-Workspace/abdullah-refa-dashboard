@@ -37,6 +37,7 @@ export class ProfileAgentComponent implements OnInit {
   falLicenseDocument: string | null = null;
   private falDocumentFile: File | null = null;
   errorMessages: string[] = [];
+  isProfileIncomplete = false;
 
   profileData: ProfileData = {
     agencyName: '',
@@ -82,6 +83,9 @@ export class ProfileAgentComponent implements OnInit {
 
         // Document link if provided
         this.falLicenseDocument = this.getDocumentUrl(p?.fal_document) || null;
+
+        // Check if profile is complete
+        this.checkProfileCompleteness();
       },
       error: (err) => {
         console.error('Failed to fetch agent profile:', err);
@@ -236,5 +240,10 @@ export class ProfileAgentComponent implements OnInit {
       this.falLicenseDocument = null;
     }
     this.falDocumentFile = null;
+  }
+
+  private checkProfileCompleteness(): void {
+    const errors = this.validateRequired();
+    this.isProfileIncomplete = errors.length > 0;
   }
 }

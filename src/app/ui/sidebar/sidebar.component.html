@@ -27,7 +27,7 @@
         *ngFor="
           let item of (userRole$ | async) === 'admin'
             ? menuItems
-            : agentMenuItems
+            : getAgentMenuItems()
         "
       >
         <div

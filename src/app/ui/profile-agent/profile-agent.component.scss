@@ -3,6 +3,45 @@
   border: 1px solid #f1f1f4;
   border-radius: 12px;
 
+  &-incomplete-warning {
+    background-color: #fff3cd;
+    border: 1px solid #ffeaa7;
+    border-radius: 8px;
+    margin: 20px;
+    padding: 16px;
+
+    .warning-content {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+
+      .warning-icon {
+        width: 24px;
+        height: 24px;
+        flex-shrink: 0;
+        filter: invert(67%) sepia(60%) saturate(1000%) hue-rotate(350deg) brightness(95%) contrast(95%);
+      }
+
+      .warning-text {
+        flex: 1;
+
+        h4 {
+          margin: 0 0 8px 0;
+          font-size: 16px;
+          font-weight: 600;
+          color: #d68910;
+        }
+
+        p {
+          margin: 0;
+          font-size: 14px;
+          color: #856404;
+          line-height: 1.4;
+        }
+      }
+    }
+  }
+
   &-header {
     gap: 10px;
     flex-wrap: wrap;

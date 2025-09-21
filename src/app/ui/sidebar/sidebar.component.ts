@@ -398,7 +398,9 @@ export class SidebarComponent implements OnInit {
       if (this.agentProfileData) {
         // Fallback to agent name if agency_name is empty or undefined
         const agencyName = this.agentProfileData.agent_profile?.agency_name;
-        return agencyName && agencyName.trim() ? agencyName : this.agentProfileData.name;
+        return agencyName && agencyName.trim()
+          ? agencyName
+          : this.agentProfileData.name;
       }
       // Fallback to user data from UserRoleService if profile data is not loaded yet
       const currentUser = this.userRoleService.getCurrentUser();
@@ -416,5 +418,40 @@ export class SidebarComponent implements OnInit {
       return this.adminProfileData ? this.adminProfileData.email : '';
     }
     return '';
+  }
+
+  // Check if agent profile is complete
+  isAgentProfileComplete(): boolean {
+    if (this.userRoleService.getCurrentRole() !== 'agent' || !this.agentProfileData) {
+      return false;
+    }
+
+    const profile = this.agentProfileData.agent_profile;
+    if (!profile) {
+      return false;
+    }
+
+    // Check if essential profile fields are filled
+    return !!(
+      profile.agency_name &&
+      profile.company_registration_id &&
+      profile.fal_license_number &&
+      profile.agency_address_line_1 &&
+      profile.city &&
+      profile.country &&
+      profile.account_number &&
+      profile.bank_name &&
+      profile.iban_number
+    );
+  }
+
+  // Get appropriate menu items based on profile completeness
+  getAgentMenuItems(): MenuItem[] {
+    if (this.isAgentProfileComplete()) {
+      return this.agentMenuItems;
+    } else {
+      // Return only the Profile menu item if profile is incomplete
+      return this.agentMenuItems.filter(item => item.name === 'Profile');
+    }
   }
 }
