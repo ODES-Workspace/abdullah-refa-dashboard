@@ -40,7 +40,7 @@
           </option>
         </select>
       </div>
-      <div class="input-group">
+      <!-- <div class="input-group">
         <label>{{ "Property Size (m²)" | translate }}</label>
         <input
           formControlName="propertySize"
@@ -66,7 +66,7 @@
             {{ "Semi_furnished" | translate }}
           </option>
         </select>
-      </div>
+      </div> -->
     </div>
   </section>
 
@@ -75,7 +75,7 @@
     <h3>{{ "Property Details" | translate }}</h3>
 
     <div class="section-content grid-3">
-      <div class="input-group">
+      <!-- <div class="input-group">
         <label>{{ "Number of Bedrooms" | translate }}</label>
         <input
           formControlName="bedrooms"
@@ -106,7 +106,7 @@
           type="number"
           placeholder="{{ 'Enter total number of floors' | translate }}"
         />
-      </div>
+      </div> -->
       <div class="input-group">
         <label>{{ "Annual Rent (SAR)" | translate }}</label>
         <input
@@ -123,7 +123,7 @@
           placeholder="{{ 'Enter deposit amount' | translate }}"
         />
       </div>
-      <div class="input-group text-area">
+      <!-- <div class="input-group text-area">
         <label>{{ "Property Description" | translate }}</label>
         <textarea
           formControlName="description"
@@ -136,12 +136,12 @@
           formControlName="descriptionAr"
           placeholder="{{ 'Enter property description in Arabic' | translate }}"
         ></textarea>
-      </div>
+      </div> -->
     </div>
   </section>
 
   <!-- Location Details -->
-  <section>
+  <!-- <section>
     <h3>{{ "Location Details" | translate }}</h3>
     <div class="section-content grid-2">
       <div class="input-group">
@@ -183,10 +183,10 @@
         style="height: 405px; width: 100%; border-radius: 8px; background: #eee"
       ></div>
     </div>
-  </section>
+  </section> -->
 
   <!-- Property Images -->
-  <section>
+  <!-- <section>
     <h3>{{ "Property Images" | translate }}</h3>
     <div class="section-content">
       <div class="file-input-container">
@@ -239,10 +239,10 @@
         </div>
       </div>
     </div>
-  </section>
+  </section> -->
 
   <!-- Property Features -->
-  <section>
+  <!-- <section>
     <h3>{{ "Property Features" | translate }}</h3>
     <div class="section-content grid-5 feature-buttons">
       <label
@@ -275,10 +275,10 @@
         />
       </div>
     </div>
-  </section>
+  </section> -->
 
   <!-- Legal Information -->
-  <section>
+  <!-- <section>
     <h3>{{ "Legal Information" | translate }}</h3>
     <div class="section-content grid-2">
       <div class="input-group">
@@ -297,25 +297,25 @@
           placeholder="{{ 'Enter advertising license number' | translate }}"
         />
       </div>
-
-      <!-- Errors -->
-      <div class="error-messages" *ngIf="errorMessage" dir="ltr">
-        <div class="error-message">
-          {{ errorMessage }}
-        </div>
-      </div>
-
-      <!-- Action Buttons -->
-      <div class="action-buttons">
-        <button
-          type="submit"
-          [disabled]="submitting || form.invalid"
-          class="submit-button"
-        >
-          <span *ngIf="!submitting">{{ "Edit Property" | translate }}</span>
-          <span *ngIf="submitting">{{ "Updating..." | translate }}</span>
-        </button>
-      </div>
     </div>
-  </section>
+  </section> -->
+
+  <!-- Errors -->
+  <div class="error-messages" *ngIf="errorMessage" dir="ltr">
+    <div class="error-message">
+      {{ errorMessage }}
+    </div>
+  </div>
+
+  <!-- Action Buttons -->
+  <div class="action-buttons">
+    <button
+      type="submit"
+      [disabled]="submitting || form.invalid"
+      class="submit-button"
+    >
+      <span *ngIf="!submitting">{{ "Edit Property" | translate }}</span>
+      <span *ngIf="submitting">{{ "Updating..." | translate }}</span>
+    </button>
+  </div>
 </form>

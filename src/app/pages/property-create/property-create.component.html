@@ -70,7 +70,7 @@
           {{ "Property type is required" | translate }}
         </div>
       </div>
-      <div class="input-group">
+      <!-- <div class="input-group">
         <label>{{ "Property Size (m²)" | translate }}</label>
         <input
           formControlName="propertySize"
@@ -82,8 +82,8 @@
         >
           {{ "Property size is required" | translate }}
         </div>
-      </div>
-      <div class="input-group">
+      </div> -->
+      <!-- <div class="input-group">
         <label>{{ "Available From" | translate }}</label>
         <input
           formControlName="availableFrom"
@@ -95,8 +95,8 @@
         >
           {{ "Available date is required" | translate }}
         </div>
-      </div>
-      <div class="input-group">
+      </div> -->
+      <!-- <div class="input-group">
         <label>{{ "Furnishment" | translate }}</label>
         <select formControlName="furnishment">
           <option value="">{{ "Select Furnishment" | translate }}</option>
@@ -111,7 +111,7 @@
         >
           {{ "Furnishment is required" | translate }}
         </div>
-      </div>
+      </div> -->
     </div>
   </section>
 
@@ -120,7 +120,7 @@
     <h3>{{ "Property Details" | translate }}</h3>
 
     <div class="section-content grid-3">
-      <div class="input-group">
+      <!-- <div class="input-group">
         <label>{{ "Number of Bedrooms" | translate }}</label>
         <input
           formControlName="bedrooms"
@@ -171,7 +171,7 @@
         >
           {{ "Total floors is required" | translate }}
         </div>
-      </div>
+      </div> -->
       <div class="input-group">
         <label>{{ "Annual Rent (SAR)" | translate }}</label>
         <input
@@ -198,7 +198,7 @@
           {{ "Deposit amount is required" | translate }}
         </div>
       </div>
-      <div class="input-group text-area">
+      <!-- <div class="input-group text-area">
         <label>{{ "Property Description" | translate }}</label>
         <textarea
           formControlName="description"
@@ -221,12 +221,12 @@
         >
           {{ "Property description is required" | translate }}
         </div>
-      </div>
+      </div> -->
     </div>
   </section>
 
   <!-- Location Details -->
-  <section>
+  <!-- <section>
     <h3>{{ "Location Details" | translate }}</h3>
     <div class="section-content grid-2">
       <div class="input-group">
@@ -262,7 +262,6 @@
           <option value="riyadh">{{ "Riyadh" | translate }}</option>
           <option value="jeddah">{{ "Jeddah" | translate }}</option>
           <option value="dammam">{{ "Dammam" | translate }}</option>
-          <!-- Add more provinces as needed -->
         </select>
         <div
           *ngIf="propertyForm.get('province')?.errors?.['required'] && propertyForm.get('province')?.touched"
@@ -290,10 +289,10 @@
         ></div>
       </div>
     </div>
-  </section>
+  </section> -->
 
   <!-- Property Images -->
-  <section>
+  <!-- <section>
     <h3>{{ "Property Images" | translate }}</h3>
     <div class="section-content">
       <div class="file-input-container">
@@ -356,10 +355,10 @@
         </div>
       </div>
     </div>
-  </section>
+  </section> -->
 
   <!-- Property Features -->
-  <section>
+  <!-- <section>
     <h3>{{ "Property Features" | translate }}</h3>
     <div class="section-content grid-5 feature-buttons">
       <label
@@ -375,11 +374,6 @@
           [id]="'amenity_' + amenity.id"
         />
         <span class="button-content">
-          <!-- <img
-            [src]="getAmenityIcon(amenity.icon)"
-            [alt]="amenity.name_en"
-            (error)="onImageError($event)"
-          /> -->
           {{ getLocalizedAmenityName(amenity) }}
         </span>
       </label>
@@ -395,10 +389,10 @@
         />
       </div>
     </div>
-  </section>
+  </section> -->
 
   <!-- Legal Information -->
-  <section>
+  <!-- <section>
     <h3>{{ "Legal Information" | translate }}</h3>
     <div class="section-content grid-2">
       <div class="input-group">
@@ -442,39 +436,38 @@
           {{ "You must accept the declaration" | translate }}
         </div>
       </div>
-
-      <!-- errors -->
-      <div
-        *ngIf="backendError || backendFieldErrors"
-        class="error-message error-grid-span"
-        style="margin-bottom: 10px"
-      >
-        <!-- Only show field errors, not the main backendError message -->
-        <ul
-          *ngIf="backendFieldErrors && (backendFieldErrors | keyvalue).length"
-          dir="ltr"
-        >
-          <li *ngFor="let err of backendFieldErrors | keyvalue">
-            <strong>{{ formatFieldName(err.key) }}:</strong>
-            <span *ngFor="let msg of err.value; let last = last">
-              {{ msg }}<span *ngIf="!last">, </span>
-            </span>
-          </li>
-        </ul>
-      </div>
-      <!-- Action Buttons -->
-      <div class="action-buttons">
-        <button type="button" (click)="onCancel()">
-          {{ "Cancel" | translate }}
-        </button>
-        <button type="button" (click)="onSaveDraft()">
-          {{ "Save as Draft" | translate }}
-        </button>
-        <button type="submit">
-          <span *ngIf="isLoading">{{ "Loading..." | translate }}</span>
-          <span *ngIf="!isLoading">{{ "Submit Property" | translate }}</span>
-        </button>
-      </div>
     </div>
-  </section>
+  </section> -->
+  <!-- errors -->
+  <div
+    *ngIf="backendError || backendFieldErrors"
+    class="error-message error-grid-span"
+    style="margin-bottom: 10px"
+  >
+    <!-- Only show field errors, not the main backendError message -->
+    <ul
+      *ngIf="backendFieldErrors && (backendFieldErrors | keyvalue).length"
+      dir="ltr"
+    >
+      <li *ngFor="let err of backendFieldErrors | keyvalue">
+        <strong>{{ formatFieldName(err.key) }}:</strong>
+        <span *ngFor="let msg of err.value; let last = last">
+          {{ msg }}<span *ngIf="!last">, </span>
+        </span>
+      </li>
+    </ul>
+  </div>
+  <!-- Action Buttons -->
+  <div class="action-buttons">
+    <!-- <button type="button" (click)="onCancel()">
+      {{ "Cancel" | translate }}
+    </button> -->
+    <!-- <button type="button" (click)="onSaveDraft()">
+      {{ "Save as Draft" | translate }}
+    </button> -->
+    <button type="submit">
+      <span *ngIf="isLoading">{{ "Loading..." | translate }}</span>
+      <span *ngIf="!isLoading">{{ "Submit Property" | translate }}</span>
+    </button>
+  </div>
 </form>
