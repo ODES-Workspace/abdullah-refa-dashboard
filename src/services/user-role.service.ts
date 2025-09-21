@@ -12,10 +12,13 @@ export type User = Agent | Admin;
 export class UserRoleService {
   private userRoleSubject = new BehaviorSubject<UserRole>('agent');
   private userDataSubject = new BehaviorSubject<User | null>(null);
+  private userDataUpdatedSubject = new BehaviorSubject<boolean>(false);
 
   public userRole$: Observable<UserRole> = this.userRoleSubject.asObservable();
   public userData$: Observable<User | null> =
     this.userDataSubject.asObservable();
+  public userDataUpdated$: Observable<boolean> =
+    this.userDataUpdatedSubject.asObservable();
 
   constructor() {
     this.loadUserDataFromStorage();
@@ -60,6 +63,9 @@ export class UserRoleService {
         ? normalizedType
         : 'agent';
     this.userRoleSubject.next(userType);
+    
+    // Notify that user data has been updated
+    this.userDataUpdatedSubject.next(true);
   }
 
   /**
@@ -199,5 +205,12 @@ export class UserRoleService {
         this.setUserData(updatedUser);
       }
     }
+  }
+
+    /**
+   * Trigger sidebar refresh for profile updates
+   */
+  triggerSidebarRefresh(): void {
+    this.userDataUpdatedSubject.next(true);
   }
 }

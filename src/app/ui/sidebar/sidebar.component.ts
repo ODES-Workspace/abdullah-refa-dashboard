@@ -240,6 +240,18 @@ export class SidebarComponent implements OnInit {
       }
     });
 
+    // Subscribe to user data updates
+    this.userRoleService.userDataUpdated$.subscribe((updated) => {
+      if (updated) {
+        const currentRole = this.userRoleService.getCurrentRole();
+        if (currentRole === 'agent') {
+          this.fetchAgentProfile();
+        } else if (currentRole === 'admin') {
+          this.fetchAdminProfile();
+        }
+      }
+    });
+
     // Subscribe to admin profile updates
     this.adminService.profileUpdated$.subscribe(() => {
       if (this.userRoleService.getCurrentRole() === 'admin') {
@@ -383,9 +395,14 @@ export class SidebarComponent implements OnInit {
   // Get user information for display
   getUserName(): string {
     if (this.userRoleService.getCurrentRole() === 'agent') {
-      return this.agentProfileData
-        ? this.agentProfileData.agent_profile.agency_name
-        : '';
+      if (this.agentProfileData) {
+        // Fallback to agent name if agency_name is empty or undefined
+        const agencyName = this.agentProfileData.agent_profile?.agency_name;
+        return agencyName && agencyName.trim() ? agencyName : this.agentProfileData.name;
+      }
+      // Fallback to user data from UserRoleService if profile data is not loaded yet
+      const currentUser = this.userRoleService.getCurrentUser();
+      return currentUser ? currentUser.name : '';
     } else if (this.userRoleService.getCurrentRole() === 'admin') {
       return this.adminProfileData ? this.adminProfileData.name : '';
     }

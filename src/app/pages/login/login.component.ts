@@ -272,6 +272,9 @@ export class LoginComponent implements OnInit {
         };
         this.userRoleService.setUserData(agentUser);
 
+        // Trigger sidebar refresh to show agent information
+        this.userRoleService.triggerSidebarRefresh();
+
         // Save credentials if remember me is checked
         this.saveCredentials();
 
