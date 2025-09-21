@@ -2,10 +2,19 @@
   <!-- Incomplete Profile Warning -->
   <div class="profile-incomplete-warning" *ngIf="isProfileIncomplete">
     <div class="warning-content">
-      <img src="/assets/icons/alert-icon.svg" alt="Warning" class="warning-icon">
+      <img
+        src="/assets/icons/alert-icon.svg"
+        alt="Warning"
+        class="warning-icon"
+      />
       <div class="warning-text">
         <h4>{{ "Profile Incomplete" | translate }}</h4>
-        <p>{{ "Please complete your profile information to access all features and functionality." | translate }}</p>
+        <p>
+          {{
+            "Please complete your profile information to access all features and functionality."
+              | translate
+          }}
+        </p>
       </div>
     </div>
   </div>

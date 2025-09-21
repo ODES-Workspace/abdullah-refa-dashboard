@@ -3,6 +3,7 @@ import { LoginComponent } from './pages/login/login.component';
 import { DashboardLayout } from './ui/dashboardlayout/dashboard-layout.component';
 import { SignupComponent } from './pages/signup/signup.component';
 import { roleGuard, authGuard } from '../services/role.guard';
+import { ProfileCompleteGuard } from '../services/profile-complete.guard';
 
 export const routes: Routes = [
   {
@@ -143,6 +144,7 @@ export const routes: Routes = [
           import('./pages/agentdashboard/agentdashboard.component').then(
             (m) => m.AgentdashboardComponent
           ),
+        canActivate: [ProfileCompleteGuard],
       },
       {
         path: 'profile',
@@ -157,6 +159,7 @@ export const routes: Routes = [
           import('./pages/properties/properties.component').then(
             (m) => m.PropertiesComponent
           ),
+        canActivate: [ProfileCompleteGuard],
       },
       {
         path: 'property/:id',
@@ -164,6 +167,7 @@ export const routes: Routes = [
           import('./pages/property-details/property-details.component').then(
             (m) => m.PropertyDetailsComponent
           ),
+        canActivate: [ProfileCompleteGuard],
       },
       {
         path: 'property/edit/:id',
@@ -171,6 +175,7 @@ export const routes: Routes = [
           import('./pages/property-edit/property-edit.component').then(
             (m) => m.PropertyEditComponent
           ),
+        canActivate: [ProfileCompleteGuard],
       },
       {
         path: 'create-property',
@@ -178,6 +183,7 @@ export const routes: Routes = [
           import('./pages/property-create/property-create.component').then(
             (m) => m.PropertyCreateComponent
           ),
+        canActivate: [ProfileCompleteGuard],
       },
       {
         path: 'rental-application-details/:id',
@@ -185,6 +191,7 @@ export const routes: Routes = [
           import(
             './pages/rental-application-details/rental-application-details.component'
           ).then((m) => m.RentalApplicationDetailsComponent),
+        canActivate: [ProfileCompleteGuard],
       },
       {
         path: 'rentrequests',
@@ -192,6 +199,7 @@ export const routes: Routes = [
           import('./pages/rentrequests-list/rentrequests-list.component').then(
             (m) => m.RentrequestsListComponent
           ),
+        canActivate: [ProfileCompleteGuard],
       },
       {
         path: 'approved-rentrequests',
@@ -199,6 +207,7 @@ export const routes: Routes = [
           import(
             './pages/approved-rentrequests/approved-rentrequests.component'
           ).then((m) => m.ApprovedRentrequestsComponent),
+        canActivate: [ProfileCompleteGuard],
       },
       {
         path: 'rejected-rentrequests',
@@ -206,6 +215,7 @@ export const routes: Routes = [
           import(
             './pages/rejected-rentrequests/rejected-rentrequests.component'
           ).then((m) => m.RejectedRentrequestsComponent),
+        canActivate: [ProfileCompleteGuard],
       },
       {
         path: 'existing-contract',
@@ -213,6 +223,7 @@ export const routes: Routes = [
           import('./pages/existing-contract/existing-contract.component').then(
             (m) => m.ExistingContractComponent
           ),
+        canActivate: [ProfileCompleteGuard],
       },
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
     ],

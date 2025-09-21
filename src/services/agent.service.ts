@@ -302,8 +302,8 @@ export class AgentService {
           errorMessage = 'ERRORS.SESSION_EXPIRED';
         } else {
           errorMessage =
-            loginError?.error || 
-            error.error?.message || 
+            loginError?.error ||
+            error.error?.message ||
             'ERRORS.INVALID_EMAIL_OR_PASSWORD';
         }
       } else if (error.status === 403) {

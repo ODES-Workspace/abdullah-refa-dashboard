@@ -278,12 +278,17 @@ export class LoginComponent implements OnInit {
         // Save credentials if remember me is checked
         this.saveCredentials();
 
-        // Redirect to appropriate dashboard based on user type
+        // Redirect based on user type and profile completeness
         setTimeout(() => {
           if (userType === 'admin') {
             this.router.navigate(['/admin/dashboard']);
           } else {
-            this.router.navigate(['/agent/dashboard']);
+            // For agents, check if profile is complete
+            if (this.isAgentProfileComplete(profile)) {
+              this.router.navigate(['/agent/dashboard']);
+            } else {
+              this.router.navigate(['/agent/profile']);
+            }
           }
         }, 1500);
       },
@@ -317,12 +322,13 @@ export class LoginComponent implements OnInit {
     this.errorMessage =
       'Warning: Could not fetch full profile. Some features may be limited.';
 
-    // Redirect to appropriate dashboard
+    // Redirect to appropriate location
     setTimeout(() => {
       if (userType === 'admin') {
         this.router.navigate(['/admin/dashboard']);
       } else {
-        this.router.navigate(['/agent/dashboard']);
+        // If we can't fetch profile, redirect to profile page to be safe
+        this.router.navigate(['/agent/profile']);
       }
     }, 2000);
   }
@@ -350,5 +356,27 @@ export class LoginComponent implements OnInit {
   isFieldInvalid(fieldName: string): boolean {
     const field = this.loginForm.get(fieldName);
     return !!(field && field.invalid && field.touched);
+  }
+
+  // Check if agent profile is complete
+  private isAgentProfileComplete(profile: any): boolean {
+    if (!profile || !profile.agent_profile) {
+      return false;
+    }
+
+    const agentProfile = profile.agent_profile;
+
+    // Check if essential profile fields are filled
+    return !!(
+      agentProfile.agency_name &&
+      agentProfile.company_registration_id &&
+      agentProfile.fal_license_number &&
+      agentProfile.agency_address_line_1 &&
+      agentProfile.city &&
+      agentProfile.country &&
+      agentProfile.account_number &&
+      agentProfile.bank_name &&
+      agentProfile.iban_number
+    );
   }
 }

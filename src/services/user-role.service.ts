@@ -63,7 +63,7 @@ export class UserRoleService {
         ? normalizedType
         : 'agent';
     this.userRoleSubject.next(userType);
-    
+
     // Notify that user data has been updated
     this.userDataUpdatedSubject.next(true);
   }
@@ -207,7 +207,7 @@ export class UserRoleService {
     }
   }
 
-    /**
+  /**
    * Trigger sidebar refresh for profile updates
    */
   triggerSidebarRefresh(): void {

@@ -422,7 +422,10 @@ export class SidebarComponent implements OnInit {
 
   // Check if agent profile is complete
   isAgentProfileComplete(): boolean {
-    if (this.userRoleService.getCurrentRole() !== 'agent' || !this.agentProfileData) {
+    if (
+      this.userRoleService.getCurrentRole() !== 'agent' ||
+      !this.agentProfileData
+    ) {
       return false;
     }
 
@@ -451,7 +454,7 @@ export class SidebarComponent implements OnInit {
       return this.agentMenuItems;
     } else {
       // Return only the Profile menu item if profile is incomplete
-      return this.agentMenuItems.filter(item => item.name === 'Profile');
+      return this.agentMenuItems.filter((item) => item.name === 'Profile');
     }
   }
 }
