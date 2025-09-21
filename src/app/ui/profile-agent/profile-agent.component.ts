@@ -149,6 +149,9 @@ export class ProfileAgentComponent implements OnInit {
         };
         this.userRoleService.setUserData(updatedUser);
         this.isEditing = false;
+
+        // Check profile completeness after successful save
+        this.checkProfileCompleteness();
       },
       error: (err) => {
         console.error('Failed to update agent profile:', err);

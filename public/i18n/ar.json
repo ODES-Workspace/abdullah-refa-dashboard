@@ -59,7 +59,8 @@
     "settings": "الاعدادات",
     "profile": "الملف الشخصي"
   },
-  "Notifications": "الإشعارات",
+  "Notifications": "الإشعارات",
+  "NO_NOTIFICATIONS": "لا توجد إشعارات",
   "Mark all as read": "عرض كل الإشعارات",
   "New Property Listed": "عقار جديد",
   "time": {
@@ -505,5 +506,8 @@
   "Date Created": "تاريخ الإنشاء",
   "View Rental Application Details": "عرض تفاصيل طلب الإيجار",
   "Profile Incomplete": "الملف الشخصي غير مكتمل",
-  "Please complete your profile information to access all features and functionality.": "يرجى إكمال معلومات ملفك الشخصي للوصول إلى جميع الميزات والوظائف."
+  "Please complete your profile information to access all features and functionality.": "يرجى إكمال معلومات ملفك الشخصي للوصول إلى جميع الميزات والوظائف.",
+
+  "address": "العنوان",
+  "Additional Address": "العنوان الفرعي"
 }

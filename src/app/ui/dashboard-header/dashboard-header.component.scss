@@ -91,9 +91,10 @@
     right: 0;
     box-shadow: 0px 2px 6.8px 0px #0000001a;
     z-index: 100;
+
     .notification-content {
       max-height: 360px;
-      overflow-y: scroll;
+      overflow-y: auto;
     }
 
     .top {
@@ -213,4 +214,12 @@
       cursor: pointer;
     }
   }
+}
+
+.no-notifications {
+  padding: 16px 24px;
+  color: #404040b2;
+  font-size: 14px;
+  line-height: 20px;
+  text-align: center;
 }

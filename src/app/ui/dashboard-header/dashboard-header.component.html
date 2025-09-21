@@ -56,6 +56,9 @@
           {{ notif.created_at | relativeTime }}
         </div>
       </div>
+      <div class="no-notifications" *ngIf="notifications.length === 0">
+        {{ "NO_NOTIFICATIONS" | translate }}
+      </div>
     </div>
 
     <div class="read-more-section" *ngIf="hasMoreNotifications">

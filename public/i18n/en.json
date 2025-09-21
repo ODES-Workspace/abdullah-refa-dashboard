@@ -59,6 +59,7 @@
     "profile": "Profile"
   },
   "Notifications": "Notifications",
+  "NO_NOTIFICATIONS": "No notifications",
   "Mark all as read": "Mark all as read",
   "New Property Listed": "New Property Listed",
   "time": {
@@ -236,8 +237,8 @@
   "settings": "Settings",
   "Profile Information": "Profile Information",
   "Edit Profile": "Edit Profile",
-  "line1": "Line 1",
-  "line2": "Line 2",
+  "address": "Address",
+  "Addtional Address": "Addtional Address",
   "building": "Building",
   "country": "Country",
   "province": "Province",
