@@ -535,5 +535,12 @@
   "Country": "البلد",
   "Type": "النوع",
   "Phone": "الهاتف",
-  "Property": "العقار"
+  "Property": "العقار",
+  "Create Rent Request": "إنشاء طلب إيجار",
+  "Select Property": "اختر العقار",
+  "No properties available": "لا توجد عقارات متاحة",
+  "Loading properties...": "جاري تحميل العقارات...",
+  "Choose a property...": "اختر عقار...",
+  "Selected Property": "العقار المحدد",
+  "Change": "تغيير"
 }

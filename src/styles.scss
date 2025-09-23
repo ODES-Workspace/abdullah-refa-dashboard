@@ -370,4 +370,15 @@ html[dir="rtl"] {
   img[alt="logout icon"] {
     transform: rotate(180deg) !important;
   }
+
+  .property-select {
+    background-position: left 12px center !important;
+    padding-left: 40px !important;
+    padding-right: 12px !important;
+  }
+}
+
+.property-select {
+  background-position: right 12px center !important;
+  padding-right: 40px !important;
 }

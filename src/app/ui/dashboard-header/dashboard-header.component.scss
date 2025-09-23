@@ -42,6 +42,26 @@
     gap: 10px;
   }
 
+  // Rent Request Button Styles
+  .rent-request-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #0311d0;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 8px 12px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    &:hover {
+      background: #0c1892;
+    }
+  }
+
   &-lang-btn {
     display: flex;
     align-items: center;
@@ -222,4 +242,476 @@
   font-size: 14px;
   line-height: 20px;
   text-align: center;
+}
+
+// Modal Styles
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+
+  .modal-content {
+    background: white;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 500px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.2);
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 24px;
+      border-bottom: 1px solid #e0e0e0;
+
+      h2 {
+        margin: 0;
+        font-size: 20px;
+        font-weight: 600;
+        color: #333;
+      }
+
+      .close-button {
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 4px;
+
+        img {
+          width: 20px;
+          height: 20px;
+        }
+      }
+    }
+
+    .modal-body {
+      padding: 24px;
+
+      .form-group {
+        margin-bottom: 20px;
+
+        label {
+          display: block;
+          margin-bottom: 8px;
+          font-weight: 500;
+          color: #333;
+          font-size: 14px;
+        }
+
+        .property-select {
+          width: 100%;
+          padding: 12px 16px;
+          border: 2px solid #e0e0e0;
+          border-radius: 8px;
+          font-size: 14px;
+          background: white;
+          cursor: pointer;
+          transition: border-color 0.2s ease;
+
+          appearance: none;
+          background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6,9 12,15 18,9'%3e%3c/polyline%3e%3c/svg%3e");
+          background-repeat: no-repeat;
+          background-size: 16px;
+
+          &:focus {
+            outline: none;
+            border-color: #0311d0;
+          }
+
+          &:disabled {
+            background: #f5f5f5;
+            cursor: not-allowed;
+            color: #666;
+          }
+
+          option {
+            padding: 8px;
+            font-size: 14px;
+            color: #333;
+
+            &:disabled {
+              color: #999;
+              font-style: italic;
+            }
+          }
+        }
+
+        .phone-input {
+          width: 100%;
+          padding: 12px 16px;
+          border: 2px solid #e0e0e0;
+          border-radius: 8px;
+          font-size: 14px;
+          transition: border-color 0.2s ease;
+
+          &:focus {
+            outline: none;
+            border-color: #0311d0;
+          }
+
+          &:disabled {
+            background: #f5f5f5;
+            cursor: not-allowed;
+          }
+        }
+      }
+
+      .property-info-summary {
+        background: #f8f9fa;
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        padding: 16px;
+        margin-bottom: 20px;
+
+        .selected-property-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: flex-start;
+          margin-bottom: 8px;
+
+          h4 {
+            margin: 0;
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+            flex: 1;
+          }
+
+          .change-property-btn {
+            background: #0311d0;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 6px 12px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+
+            &:hover {
+              background: #0c1892;
+            }
+          }
+        }
+
+        p {
+          margin: 0 0 4px 0;
+          font-size: 14px;
+          color: #0311d0;
+          font-weight: 500;
+        }
+
+        .property-location {
+          font-size: 12px;
+          color: #666;
+        }
+      }
+
+      .modal-actions {
+        display: flex;
+        gap: 12px;
+        margin-bottom: 24px;
+
+        .cancel-btn,
+        .create-btn {
+          flex: 1;
+          padding: 12px 24px;
+          border-radius: 8px;
+          font-size: 14px;
+          font-weight: 500;
+          cursor: pointer;
+          transition: all 0.2s ease;
+
+          &:disabled {
+            cursor: not-allowed;
+            opacity: 0.6;
+          }
+        }
+
+        .cancel-btn {
+          background: #f5f5f5;
+          color: #666;
+          border: 1px solid #ddd;
+
+          &:hover:not(:disabled) {
+            background: #eee;
+          }
+        }
+
+        .create-btn {
+          background: #0311d0;
+          color: white;
+          border: none;
+
+          &:hover:not(:disabled) {
+            background: #0c1892;
+          }
+
+          &.loading {
+            background: #0c1892;
+          }
+        }
+      }
+
+      .invitation-result {
+        background: #f0f8f0;
+        border: 1px solid #d4edda;
+        border-radius: 8px;
+        padding: 16px;
+
+        h4 {
+          margin: 0 0 8px 0;
+          color: #155724;
+          font-size: 16px;
+        }
+
+        p {
+          margin: 0 0 12px 0;
+          color: #155724;
+          font-size: 14px;
+        }
+
+        .deeplink-container {
+          display: flex;
+          gap: 8px;
+
+          .deeplink-input {
+            flex: 1;
+            padding: 8px 12px;
+            border: 1px solid #c3e6cb;
+            border-radius: 6px;
+            font-size: 12px;
+            background: white;
+          }
+
+          .copy-btn {
+            background: #28a745;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 8px 16px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+
+            &:hover {
+              background: #218838;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+// Modal Styles
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+
+  .modal-content {
+    background: white;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 500px;
+    max-height: 80vh;
+    overflow-y: auto;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 24px 24px 20px 24px;
+      border-bottom: 1px solid #e0e0e0;
+
+      h2 {
+        margin: 0;
+        font-size: 20px;
+        font-weight: 600;
+        color: #333;
+      }
+
+      .close-button {
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 4px;
+
+        img {
+          width: 20px;
+          height: 20px;
+        }
+      }
+    }
+
+    .modal-body {
+      padding: 24px;
+
+      .property-info-summary {
+        background: #f8f9fa;
+        border-radius: 8px;
+        padding: 16px;
+        margin-bottom: 24px;
+
+        h4 {
+          margin: 0 0 8px 0;
+          font-size: 16px;
+          font-weight: 600;
+          color: #333;
+        }
+
+        p {
+          margin: 0;
+          font-size: 14px;
+          color: #0311d0;
+          font-weight: 500;
+        }
+      }
+
+      .form-group {
+        margin-bottom: 24px;
+
+        label {
+          display: block;
+          margin-bottom: 8px;
+          font-size: 14px;
+          font-weight: 500;
+          color: #333;
+        }
+
+        .phone-input {
+          width: 100%;
+          padding: 12px 16px;
+          border: 1px solid #ddd;
+          border-radius: 8px;
+          font-size: 14px;
+          transition: border-color 0.2s ease;
+
+          &:focus {
+            outline: none;
+            border-color: #0311d0;
+          }
+
+          &:disabled {
+            background: #f5f5f5;
+            color: #999;
+          }
+        }
+      }
+
+      .modal-actions {
+        display: flex;
+        gap: 12px;
+        margin-bottom: 24px;
+
+        .cancel-btn,
+        .create-btn {
+          flex: 1;
+          padding: 12px 24px;
+          border-radius: 8px;
+          font-size: 14px;
+          font-weight: 500;
+          cursor: pointer;
+          transition: all 0.2s ease;
+
+          &:disabled {
+            cursor: not-allowed;
+            opacity: 0.6;
+          }
+        }
+
+        .cancel-btn {
+          background: #f5f5f5;
+          color: #666;
+          border: 1px solid #ddd;
+
+          &:hover:not(:disabled) {
+            background: #eee;
+          }
+        }
+
+        .create-btn {
+          background: #0311d0;
+          color: white;
+          border: none;
+
+          &:hover:not(:disabled) {
+            background: #0c1892;
+          }
+
+          &.loading {
+            background: #0c1892;
+          }
+        }
+      }
+
+      .invitation-result {
+        background: #f0f8f0;
+        border: 1px solid #d4edda;
+        border-radius: 8px;
+        padding: 20px;
+
+        h4 {
+          margin: 0 0 12px 0;
+          font-size: 16px;
+          font-weight: 600;
+          color: #155724;
+        }
+
+        p {
+          margin: 0 0 16px 0;
+          font-size: 14px;
+          color: #333;
+        }
+
+        .deeplink-container {
+          display: flex;
+          gap: 8px;
+
+          .deeplink-input {
+            flex: 1;
+            padding: 10px 12px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 13px;
+            background: white;
+            color: #333;
+          }
+
+          .copy-btn {
+            background: #28a745;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 10px 16px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+
+            &:hover {
+              background: #218838;
+            }
+          }
+        }
+      }
+    }
+  }
 }

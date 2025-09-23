@@ -468,5 +468,12 @@
   "Share this link with the customer:": "Share this link with the customer:",
   "Copy": "Copy",
   "The customer can use this link to submit their rent request for this property.": "The customer can use this link to submit their rent request for this property.",
-  "Loading property details...": "Loading property details..."
+  "Loading property details...": "Loading property details...",
+  "Create Rent Request": "Create Rent Request",
+  "Select Property": "Select Property",
+  "No properties available": "No properties available",
+  "Loading properties...": "Loading properties...",
+  "Choose a property...": "Choose a property...",
+  "Selected Property": "Selected Property",
+  "Change": "Change"
 }

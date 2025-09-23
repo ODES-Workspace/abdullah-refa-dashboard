@@ -20,6 +20,15 @@
   </div>
   <!-- Header actions -->
   <div class="header-actions">
+    <!-- Rent Request Invitation Button (Agents Only) -->
+    <button
+      *ngIf="isAgent()"
+      class="rent-request-btn"
+      (click)="openRentRequestModal()"
+    >
+      {{ "Create Rent Request" | translate }}
+    </button>
+
     <button (click)="toggleLanguage()" class="header-lang-btn">
       {{ "lang" | translate }}
     </button>
@@ -70,6 +79,145 @@
         <span *ngIf="!isLoading">{{ "Read More" | translate }}</span>
         <span *ngIf="isLoading">{{ "Loading..." | translate }}</span>
       </button>
+    </div>
+  </div>
+</div>
+
+<!-- Rent Request Invitation Modal -->
+<div
+  *ngIf="isInvitationModalOpen"
+  class="modal-overlay"
+  (click)="closeInvitationModal()"
+>
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h2>{{ "Create Rent Request Invitation" | translate }}</h2>
+      <button class="close-button" (click)="closeInvitationModal()">
+        <img src="/assets/icons/close-modal-icon.svg" alt="Close" />
+      </button>
+    </div>
+
+    <div class="modal-body">
+      <!-- Property Selection Section -->
+      <div class="form-group" *ngIf="!selectedProperty">
+        <label for="propertySelect">{{ "Select Property" | translate }}</label>
+        <select
+          id="propertySelect"
+          class="property-select"
+          [(ngModel)]="selectedPropertyId"
+          (change)="onPropertySelect($event)"
+          [disabled]="isLoadingProperties"
+        >
+          <option value="" disabled>
+            {{
+              isLoadingProperties
+                ? ("Loading properties..." | translate)
+                : ("Choose a property..." | translate)
+            }}
+          </option>
+          <option
+            *ngFor="let property of agentProperties"
+            [value]="property.id"
+          >
+            {{ lang === "ar" ? property.name_ar : property.name_en }} -
+            {{ property.annual_rent | number }} {{ "SAR" | translate }} -
+            {{ property.city }}, {{ property.district }}
+          </option>
+          <option
+            value=""
+            disabled
+            *ngIf="agentProperties.length === 0 && !isLoadingProperties"
+          >
+            {{ "No properties available" | translate }}
+          </option>
+        </select>
+      </div>
+
+      <!-- Selected Property Summary -->
+      <div class="property-info-summary" *ngIf="selectedProperty">
+        <div class="selected-property-header">
+          <h4>
+            {{ "Selected Property" | translate }}:
+            {{
+              lang === "ar"
+                ? selectedProperty.name_ar
+                : selectedProperty.name_en
+            }}
+          </h4>
+          <button class="change-property-btn" (click)="changeProperty()">
+            {{ "Change" | translate }}
+          </button>
+        </div>
+        <p>
+          {{ "Annual Rent" | translate }}:
+          {{ selectedProperty.annual_rent | number }} {{ "SAR" | translate }}
+        </p>
+        <span class="property-location">
+          {{ selectedProperty.city }}, {{ selectedProperty.district }}
+        </span>
+      </div>
+
+      <!-- Phone Number Input -->
+      <div class="form-group" *ngIf="selectedProperty">
+        <label for="customerPhone">{{
+          "Customer Phone Number" | translate
+        }}</label>
+        <input
+          type="tel"
+          id="customerPhone"
+          [(ngModel)]="customerPhone"
+          [placeholder]="
+            'Enter customer phone number (e.g., +966501234567)' | translate
+          "
+          class="phone-input"
+          [disabled]="isCreatingInvitation"
+        />
+      </div>
+
+      <!-- Modal Actions -->
+      <div class="modal-actions" *ngIf="selectedProperty">
+        <button
+          class="cancel-btn"
+          (click)="closeInvitationModal()"
+          [disabled]="isCreatingInvitation"
+        >
+          {{ "Cancel" | translate }}
+        </button>
+        <button
+          class="create-btn"
+          (click)="createRentRequestInvitation()"
+          [disabled]="isCreatingInvitation || !customerPhone.trim()"
+          [class.loading]="isCreatingInvitation"
+        >
+          <span *ngIf="!isCreatingInvitation">{{
+            "Create Invitation" | translate
+          }}</span>
+          <span *ngIf="isCreatingInvitation">{{
+            "Creating..." | translate
+          }}</span>
+        </button>
+      </div>
+
+      <!-- Success Result -->
+      <div *ngIf="invitationResult" class="invitation-result">
+        <h4>{{ "Invitation Created Successfully!" | translate }}</h4>
+        <p>{{ "Share this link with the customer:" | translate }}</p>
+        <div class="deeplink-container">
+          <input
+            type="text"
+            [value]="invitationResult"
+            readonly
+            class="deeplink-input"
+          />
+          <button
+            class="copy-btn"
+            (click)="copyToClipboard(invitationResult)"
+            type="button"
+          >
+            {{ "Copy" | translate }}
+          </button>
+        </div>
+      </div>
     </div>
   </div>
 </div>

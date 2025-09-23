@@ -16,12 +16,31 @@ import {
   NotificationsService,
   Notification,
 } from '../../../services/notifications.service';
+import {
+  AgentPropertiesService,
+  PropertiesResponse,
+} from '../../../services/agent-properties.service';
+import {
+  RentRequestsService,
+  RentRequestInvitationPayload,
+} from '../../../services/rent-requests.service';
+import { Property } from '../../../services/dashboard.service';
+import { UserRoleService } from '../../../services/user-role.service';
+import { ToastService } from '../../../services/toast.service';
+import { FormsModule } from '@angular/forms';
 import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-dashboard-header',
   standalone: true,
-  imports: [TranslateModule, NgFor, RelativeTimePipe, NgIf, CommonModule],
+  imports: [
+    TranslateModule,
+    NgFor,
+    RelativeTimePipe,
+    NgIf,
+    CommonModule,
+    FormsModule,
+  ],
   templateUrl: './dashboard-header.component.html',
   styleUrl: './dashboard-header.component.scss',
 })
@@ -36,6 +55,18 @@ export class DashboardHeaderComponent implements OnInit, OnDestroy {
   currentPage = 1;
   isLoading = false;
   hasMoreNotifications = true;
+
+  // Rent Request Invitation Properties
+  agentProperties: Property[] = [];
+  isLoadingProperties = false;
+  selectedProperty: Property | null = null;
+  selectedPropertyId = '';
+  customerPhone = '';
+  isInvitationModalOpen = false;
+  isCreatingInvitation = false;
+  invitationResult = '';
+  lang = 'en';
+
   private subscriptions: Subscription[] = [];
 
   constructor(
@@ -44,7 +75,11 @@ export class DashboardHeaderComponent implements OnInit, OnDestroy {
     private elementRef: ElementRef,
     private location: Location,
     private sidebarService: SidebarService,
-    private notificationsService: NotificationsService
+    private notificationsService: NotificationsService,
+    private agentPropertiesService: AgentPropertiesService,
+    private rentRequestsService: RentRequestsService,
+    private userRoleService: UserRoleService,
+    private toastService: ToastService
   ) {
     this.router.events.subscribe(() => {
       this.setHeaderText();
@@ -55,6 +90,15 @@ export class DashboardHeaderComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.loadNotifications();
     this.subscribeToNotifications();
+    this.lang = this.languageService.translate.currentLang || 'en';
+
+    // Subscribe to language changes
+    const langSub = this.languageService.translate.onLangChange.subscribe(
+      (event: any) => {
+        this.lang = event.lang;
+      }
+    );
+    this.subscriptions.push(langSub);
   }
 
   ngOnDestroy() {
@@ -256,5 +300,121 @@ export class DashboardHeaderComponent implements OnInit, OnDestroy {
 
   toggleSidebar() {
     this.sidebarService.toggle();
+  }
+
+  // Rent Request Invitation Methods
+  isAgent(): boolean {
+    return !this.userRoleService.isAdmin();
+  }
+
+  openRentRequestModal() {
+    if (!this.isAgent()) return;
+
+    this.isInvitationModalOpen = true;
+    this.selectedProperty = null;
+    this.selectedPropertyId = '';
+    this.customerPhone = '';
+    this.invitationResult = '';
+
+    if (this.agentProperties.length === 0) {
+      this.loadAgentProperties();
+    }
+  }
+
+  onPropertySelect(event: Event) {
+    const target = event.target as HTMLSelectElement;
+    const propertyId = parseInt(target.value);
+
+    if (propertyId) {
+      const property = this.agentProperties.find((p) => p.id === propertyId);
+      if (property) {
+        this.selectedProperty = property;
+        this.selectedPropertyId = target.value;
+      }
+    }
+  }
+  loadAgentProperties() {
+    const token = localStorage.getItem('token');
+    if (!token) return;
+
+    this.isLoadingProperties = true;
+    this.agentPropertiesService.getAgentProperties(token, '', 1, 50).subscribe({
+      next: (response: PropertiesResponse) => {
+        this.agentProperties = response.data;
+        this.isLoadingProperties = false;
+      },
+      error: (error) => {
+        console.error('Error loading agent properties:', error);
+        this.isLoadingProperties = false;
+        this.toastService.show('Failed to load properties');
+      },
+    });
+  }
+
+  selectProperty(property: Property) {
+    this.selectedProperty = property;
+  }
+
+  changeProperty() {
+    this.selectedProperty = null;
+    this.selectedPropertyId = '';
+  }
+
+  closeInvitationModal() {
+    this.isInvitationModalOpen = false;
+    this.selectedProperty = null;
+    this.selectedPropertyId = '';
+    this.customerPhone = '';
+    this.invitationResult = '';
+    this.isCreatingInvitation = false;
+  }
+
+  createRentRequestInvitation(): void {
+    if (!this.customerPhone.trim() || !this.selectedProperty) {
+      this.toastService.show('Please enter a valid phone number');
+      return;
+    }
+
+    this.isCreatingInvitation = true;
+
+    const payload: RentRequestInvitationPayload = {
+      property_id: this.selectedProperty.id,
+      customer_phone: this.customerPhone.trim(),
+    };
+
+    this.rentRequestsService.createRentRequestInvitation(payload).subscribe({
+      next: (response) => {
+        this.invitationResult = response.deeplink;
+        this.isCreatingInvitation = false;
+        this.toastService.show('Rent request invitation created successfully!');
+      },
+      error: (error) => {
+        console.error('Error creating rent request invitation:', error);
+        this.isCreatingInvitation = false;
+
+        let errorMessage = 'Failed to create rent request invitation';
+        if (error.error?.message) {
+          errorMessage = error.error.message;
+        } else if (error.status === 422 && error.error?.errors) {
+          const firstError = Object.values(error.error.errors)[0];
+          if (Array.isArray(firstError) && firstError.length > 0) {
+            errorMessage = firstError[0] as string;
+          }
+        }
+
+        this.toastService.show(errorMessage);
+      },
+    });
+  }
+
+  copyToClipboard(text: string): void {
+    navigator.clipboard
+      .writeText(text)
+      .then(() => {
+        this.toastService.show('Link copied to clipboard!');
+      })
+      .catch(() => {
+        this.toastService.show('Failed to copy link');
+      });
   }
 }
