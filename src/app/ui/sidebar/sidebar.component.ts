@@ -402,9 +402,8 @@ export class SidebarComponent implements OnInit {
           ? agencyName
           : this.agentProfileData.name;
       }
-      // Fallback to user data from UserRoleService if profile data is not loaded yet
-      const currentUser = this.userRoleService.getCurrentUser();
-      return currentUser ? currentUser.name : '';
+      // Return empty string if profile data is not loaded yet (will trigger loading state)
+      return '';
     } else if (this.userRoleService.getCurrentRole() === 'admin') {
       return this.adminProfileData ? this.adminProfileData.name : '';
     }

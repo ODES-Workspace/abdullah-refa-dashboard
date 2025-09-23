@@ -48,18 +48,10 @@
   <div class="profile-header">
     <h3>{{ "Profile Information" | translate }}</h3>
     <div>
-      <button
-        *ngIf="!isEditing"
-        (click)="toggleEdit()"
-        class="edit"
-      >
+      <button *ngIf="!isEditing" (click)="toggleEdit()" class="edit">
         {{ "Edit Profile" | translate }}
       </button>
-      <button
-        *ngIf="isEditing"
-        (click)="saveProfile()"
-        class="save-change"
-      >
+      <button *ngIf="isEditing" (click)="saveProfile()" class="save-change">
         {{ "Save Changes" | translate }}
       </button>
     </div>

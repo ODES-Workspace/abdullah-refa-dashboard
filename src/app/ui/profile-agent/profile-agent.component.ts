@@ -136,6 +136,24 @@ export class ProfileAgentComponent implements OnInit {
         if (p?.fal_document) {
           this.falLicenseDocument = this.getDocumentUrl(p.fal_document);
         }
+
+        // Update local profile data with the latest values from API
+        this.profileData = {
+          agencyName: p?.agency_name || res.name || '',
+          Mobile: res.phone_number || '',
+          EmailAddress: res.email || '',
+          CompanyRegistrationID: p?.company_registration_id || '',
+          FALLicenseID: p?.fal_license_number || '',
+          Line1: p?.agency_address_line_1 || '',
+          Line2: p?.agency_address_line_2 || '',
+          Country: p?.country || '',
+          City: p?.city || '',
+          postalCode: p?.postal_code || '',
+          accountNumber: p?.account_number || '',
+          bankName: p?.bank_name || '',
+          IBAN: p?.iban_number || '',
+        };
+
         // Overwrite localStorage user_data with latest top-level fields from API
         const updatedUser: any = {
           id: res.id,
@@ -157,6 +175,9 @@ export class ProfileAgentComponent implements OnInit {
         };
         this.userRoleService.setUserData(updatedUser);
         this.isEditing = false;
+
+        // Trigger sidebar refresh to update displayed name/info from API
+        this.userRoleService.triggerSidebarRefresh();
 
         // Check profile completeness after successful save
         this.checkProfileCompleteness();
