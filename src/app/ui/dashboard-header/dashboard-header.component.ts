@@ -308,7 +308,14 @@ export class DashboardHeaderComponent implements OnInit, OnDestroy {
   }
 
   openRentRequestModal() {
-    if (!this.isAgent()) return;
+    console.log('Opening rent request modal...');
+    console.log('User role:', this.userRoleService.getCurrentRole());
+    console.log('Is agent:', this.isAgent());
+    
+    if (!this.isAgent()) {
+      console.error('User is not an agent, cannot open modal');
+      return;
+    }
 
     this.isInvitationModalOpen = true;
     this.selectedProperty = null;
@@ -335,18 +342,42 @@ export class DashboardHeaderComponent implements OnInit, OnDestroy {
   }
   loadAgentProperties() {
     const token = localStorage.getItem('token');
-    if (!token) return;
+    if (!token) {
+      console.error('No token found in localStorage');
+      this.toastService.show('Authentication token not found. Please login again.');
+      return;
+    }
 
+    console.log('Loading agent properties with token:', token.substring(0, 20) + '...');
     this.isLoadingProperties = true;
+    
     this.agentPropertiesService.getAgentProperties(token, '', 1, 50).subscribe({
       next: (response: PropertiesResponse) => {
-        this.agentProperties = response.data;
+        console.log('Agent properties response:', response);
+        this.agentProperties = response.data || [];
         this.isLoadingProperties = false;
+        
+        if (this.agentProperties.length === 0) {
+          console.warn('No properties found for this agent');
+          this.toastService.show('No properties found. Please add some properties first.');
+        }
       },
       error: (error) => {
         console.error('Error loading agent properties:', error);
         this.isLoadingProperties = false;
-        this.toastService.show('Failed to load properties');
+        
+        // More detailed error handling
+        if (error.status === 401) {
+          this.toastService.show('Authentication failed. Please login again.');
+        } else if (error.status === 403) {
+          this.toastService.show('Access denied. You may not have permission to view properties.');
+        } else if (error.status === 404) {
+          this.toastService.show('Properties endpoint not found.');
+        } else if (error.status === 0) {
+          this.toastService.show('Network error. Please check your connection.');
+        } else {
+          this.toastService.show('Failed to load properties. Please try again.');
+        }
       },
     });
   }

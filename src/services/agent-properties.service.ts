@@ -30,7 +30,9 @@ export class AgentPropertiesService {
       : this.userRoleService.isAdmin()
       ? 'admin'
       : 'agent';
-    return `${this.baseUrl}/${roleSegment}/properties`;
+    const url = `${this.baseUrl}/${roleSegment}/properties`;
+    console.log('API URL for properties:', url, 'Current route:', this.router.url, 'Role:', roleSegment);
+    return url;
   }
 
   getAgentProperties(
