@@ -151,6 +151,17 @@ export interface ReviseRentRequestPayload {
   monthly_installment?: number;
 }
 
+// Interface for rent request invitation
+export interface RentRequestInvitationPayload {
+  property_id: number;
+  customer_phone: string;
+}
+
+export interface RentRequestInvitationResponse {
+  message: string;
+  deeplink: string;
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -255,6 +266,20 @@ export class RentRequestsService {
 
     return this.http
       .put<any>(url, payload)
+      .pipe(catchError((error: HttpErrorResponse) => this.handleError(error)));
+  }
+
+  /**
+   * Create a new rent request invitation (agent only)
+   * @param payload Rent request invitation payload
+   * @returns Observable of the invitation response with deeplink
+   */
+  createRentRequestInvitation(
+    payload: RentRequestInvitationPayload
+  ): Observable<RentRequestInvitationResponse> {
+    const url = `${this.baseUrl}/agent/rent-request-invitations`;
+    return this.http
+      .post<RentRequestInvitationResponse>(url, payload)
       .pipe(catchError((error: HttpErrorResponse) => this.handleError(error)));
   }
 

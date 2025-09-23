@@ -216,3 +216,291 @@
   text-align: center;
   margin: 20px;
 }
+
+// Rent Request Invitation Styles
+.rent-invitation-section {
+  padding: 30px;
+  box-shadow: 0px 3px 4px 0px #00000008;
+  border-radius: 6px;
+  border: 1px solid #f1f1f4;
+  background: #ffffff;
+  display: flex;
+  gap: 16px;
+  justify-content: space-between;
+  flex-wrap: wrap;
+
+  h3 {
+    color: #071437;
+    font-size: 18px;
+    font-weight: 700;
+    margin: 0;
+  }
+
+  p {
+    color: #6b7280;
+    font-size: 14px;
+    margin: 0;
+  }
+
+  .create-invitation-btn {
+    background: #0c1892;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 12px 20px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    align-self: flex-start;
+    transition: background-color 0.2s;
+
+    &:hover {
+      background: #0a1470;
+    }
+
+    img {
+      width: 20px;
+      height: 20px;
+    }
+  }
+}
+
+// Modal styles
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: white;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 500px;
+  max-height: 80vh;
+  overflow-y: auto;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  border-bottom: 1px solid #e5e7eb;
+
+  h2 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+    color: #111827;
+  }
+
+  .close-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 4px;
+
+    img {
+      width: 20px;
+      height: 20px;
+    }
+
+    &:hover {
+      opacity: 0.7;
+    }
+  }
+}
+
+.modal-body {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.property-info-summary {
+  background: #f9fafb;
+  padding: 16px;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+
+  h4 {
+    margin: 0 0 8px 0;
+    font-size: 16px;
+    font-weight: 600;
+    color: #111827;
+  }
+
+  p {
+    margin: 0;
+    color: #6b7280;
+    font-size: 14px;
+  }
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  label {
+    font-size: 14px;
+    font-weight: 500;
+    color: #374151;
+  }
+
+  .phone-input {
+    padding: 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 14px;
+
+    &:focus {
+      outline: none;
+      border-color: #0c1892;
+      box-shadow: 0 0 0 3px rgba(12, 24, 146, 0.1);
+    }
+
+    &:disabled {
+      background-color: #f9fafb;
+      cursor: not-allowed;
+    }
+  }
+}
+
+.modal-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+
+  button {
+    padding: 10px 20px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+  }
+
+  .cancel-btn {
+    background: #f9fafb;
+    color: #374151;
+    border: 1px solid #d1d5db;
+
+    &:hover:not(:disabled) {
+      background: #f3f4f6;
+    }
+  }
+
+  .create-btn {
+    background: #0c1892;
+    color: white;
+    border: none;
+
+    &:hover:not(:disabled) {
+      background: #0a1470;
+    }
+
+    &.loading {
+      opacity: 0.7;
+    }
+  }
+}
+
+.invitation-result {
+  background: #ecfdf5;
+  padding: 20px;
+  border-radius: 8px;
+  border: 1px solid #10b981;
+
+  h4 {
+    margin: 0 0 12px 0;
+    color: #065f46;
+    font-size: 16px;
+    font-weight: 600;
+  }
+
+  p {
+    margin: 0 0 12px 0;
+    color: #047857;
+    font-size: 14px;
+
+    &.note {
+      margin-top: 12px;
+      font-size: 12px;
+      color: #6b7280;
+    }
+  }
+
+  .deeplink-container {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+
+    .deeplink-input {
+      flex: 1;
+      padding: 8px 12px;
+      border: 1px solid #d1d5db;
+      border-radius: 4px;
+      font-size: 12px;
+      background: #f9fafb;
+      color: #374151;
+    }
+
+    .copy-btn {
+      background: #0c1892;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 4px;
+      font-size: 12px;
+      cursor: pointer;
+
+      &:hover {
+        background: #0a1470;
+      }
+    }
+  }
+}
+
+// Responsive adjustments
+@media (max-width: 640px) {
+  .modal-content {
+    width: 95%;
+    margin: 10px;
+  }
+
+  .modal-actions {
+    flex-direction: column;
+
+    button {
+      width: 100%;
+    }
+  }
+
+  .deeplink-container {
+    flex-direction: column;
+
+    .deeplink-input,
+    .copy-btn {
+      width: 100%;
+    }
+  }
+}

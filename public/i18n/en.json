@@ -456,5 +456,17 @@
   "Created At": "Created At",
   "Updated At": "Updated At",
   "Loading profile...": "Loading profile...",
-  "Saving...": "Saving..."
+  "Saving...": "Saving...",
+  "Rent Request Invitation": "Rent Request Invitation",
+  "Send a rent request invitation to a customer for this property": "Send a rent request invitation to a customer for this property",
+  "Create Rent Request Invitation": "Create Rent Request Invitation",
+  "Customer Phone Number": "Customer Phone Number",
+  "Enter customer phone number (e.g., +966501234567)": "Enter customer phone number (e.g., +966501234567)",
+  "Create Invitation": "Create Invitation",
+  "Creating...": "Creating...",
+  "Invitation Created Successfully!": "Invitation Created Successfully!",
+  "Share this link with the customer:": "Share this link with the customer:",
+  "Copy": "Copy",
+  "The customer can use this link to submit their rent request for this property.": "The customer can use this link to submit their rent request for this property.",
+  "Loading property details...": "Loading property details..."
 }

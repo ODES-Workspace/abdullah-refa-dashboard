@@ -520,7 +520,20 @@
   "Additional Address": "العنوان الفرعي",
   "Loading profile...": "جاري تحميل الملف الشخصي...",
   "Saving...": "جاري الحفظ...",
+  "Rent Request Invitation": "دعوة طلب إيجار",
+  "Send a rent request invitation to a customer for this property": "إرسال دعوة طلب إيجار للعميل لهذا العقار",
+  "Create Rent Request Invitation": "إنشاء دعوة طلب إيجار",
+  "Customer Phone Number": "رقم هاتف العميل",
+  "Enter customer phone number (e.g., +966501234567)": "أدخل رقم هاتف العميل (مثال: +966501234567)",
+  "Create Invitation": "إنشاء الدعوة",
+  "Creating...": "جاري الإنشاء...",
+  "Invitation Created Successfully!": "تم إنشاء الدعوة بنجاح!",
+  "Share this link with the customer:": "شارك هذا الرابط مع العميل:",
+  "Copy": "نسخ",
+  "The customer can use this link to submit their rent request for this property.": "يمكن للعميل استخدام هذا الرابط لتقديم طلب الإيجار لهذا العقار.",
+  "Loading property details...": "جاري تحميل تفاصيل العقار...",
   "Country": "البلد",
   "Type": "النوع",
-  "Phone": "الهاتف"
+  "Phone": "الهاتف",
+  "Property": "العقار"
 }
