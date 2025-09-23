@@ -49,14 +49,14 @@
     <h3>{{ "Profile Information" | translate }}</h3>
     <div>
       <button
-        *ngIf="!isEditing && !isPendingApproval"
+        *ngIf="!isEditing"
         (click)="toggleEdit()"
         class="edit"
       >
         {{ "Edit Profile" | translate }}
       </button>
       <button
-        *ngIf="isEditing && !isPendingApproval"
+        *ngIf="isEditing"
         (click)="saveProfile()"
         class="save-change"
       >

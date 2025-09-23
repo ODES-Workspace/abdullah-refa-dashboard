@@ -448,12 +448,13 @@ export class SidebarComponent implements OnInit {
     );
   }
 
-  // Get appropriate menu items based on profile completeness
+  // Get appropriate menu items based on profile completeness and active status
   getAgentMenuItems(): MenuItem[] {
-    if (this.isAgentProfileComplete()) {
+    // Check if agent is active (approved by admin) and profile is complete
+    if (this.userRoleService.isUserActive() && this.isAgentProfileComplete()) {
       return this.agentMenuItems;
     } else {
-      // Return only the Profile menu item if profile is incomplete
+      // Return only the Profile menu item if profile is incomplete or agent is not active
       return this.agentMenuItems.filter((item) => item.name === 'Profile');
     }
   }
