@@ -357,7 +357,7 @@
   "Annual Rent (SAR)": "الإيجار السنوي (ريال)",
   "Property Description": "وصف العقار",
   "Location Details": "تفاصيل الموقع",
-  "Address Line 1": "عنوان السطر 1",
+  "Address Line 1": " العنوان ",
   "Building Name": "اسم المبنى",
   "Select Province": "اختر المحافظة",
   "Riyadh": "الرياض",
@@ -510,7 +510,15 @@
   "View Rental Application Details": "عرض تفاصيل طلب الإيجار",
   "Profile Incomplete": "الملف الشخصي غير مكتمل",
   "Please complete your profile information to access all features and functionality.": "يرجى إكمال معلومات ملفك الشخصي للوصول إلى جميع الميزات والوظائف.",
-
+  "Agent Details": "تفاصيل الوكيل",
+  "Agency Profile Information": "معلومات ملف الوكالة",
+  "Agency Name": "اسم الوكالة",
+  "FAL License Number": "رقم رخصة FAL",
+  "Address Line 2": "العنوان الفرعي",
+  "IBAN Number": "رقم الآيبان",
   "address": "العنوان",
-  "Additional Address": "العنوان الفرعي"
+  "Additional Address": "العنوان الفرعي",
+  "Country": "البلد",
+  "Type": "النوع",
+  "Phone": "الهاتف"
 }

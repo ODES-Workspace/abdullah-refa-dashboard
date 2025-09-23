@@ -21,6 +21,41 @@ export interface Agent {
   city: any | null;
 }
 
+// Interface for Agent with Profile (for detailed view)
+export interface AgentWithProfile {
+  id: number;
+  type: string;
+  name: string;
+  email: string;
+  phone_number: string;
+  national_id: string | null;
+  city_id: number | null;
+  email_verified_at: string | null;
+  active: number;
+  role: string | null;
+  created_at: string;
+  updated_at: string;
+  city: any | null;
+  agent_profile?: {
+    id: number;
+    user_id: number;
+    agency_name: string;
+    company_registration_id: string;
+    fal_license_number: string;
+    fal_document: string;
+    agency_address_line_1: string;
+    agency_address_line_2: string;
+    city: string;
+    country: string;
+    postal_code: string;
+    account_number: string;
+    bank_name: string;
+    iban_number: string;
+    created_at: string;
+    updated_at: string;
+  };
+}
+
 // Interface for updating an agent
 export interface UpdateAgentPayload {
   name?: string;
@@ -58,6 +93,18 @@ export class AgentsService {
     const url = `${this.baseUrl}/admin/agents`;
     return this.http
       .get<Agent[]>(url)
+      .pipe(catchError((error: HttpErrorResponse) => this.handleError(error)));
+  }
+
+  /**
+   * Get a specific agent by ID (admin only)
+   * @param id - Agent ID
+   * @returns Observable of agent with profile details
+   */
+  getAgentById(id: number): Observable<AgentWithProfile> {
+    const url = `${this.baseUrl}/admin/agents/${id}`;
+    return this.http
+      .get<AgentWithProfile>(url)
       .pipe(catchError((error: HttpErrorResponse) => this.handleError(error)));
   }
 

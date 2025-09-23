@@ -6,6 +6,7 @@ import { UserRoleService } from '../../../services/user-role.service';
 import {
   AgentsService,
   Agent,
+  AgentWithProfile,
   UpdateAgentPayload,
 } from '../../../services/agents.service';
 import { ToastService } from '../../../services/toast.service';
@@ -107,6 +108,8 @@ export class ListofAgencyOwnerComponent implements OnInit {
   selectedTenant: TableItem | null = null;
   activeDropdown: number | null = null;
   isLoading = false;
+  isModalOpen = false;
+  selectedAgent: AgentWithProfile | null = null;
 
   // Track sorting state
   currentSortColumn: keyof TableItem | null = null;
@@ -237,6 +240,11 @@ export class ListofAgencyOwnerComponent implements OnInit {
     return date.toLocaleDateString('en-GB'); // DD/MM/YYYY format
   }
 
+  formatDatePublic(dateString: string): string {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-GB'); // DD/MM/YYYY format
+  }
+
   onSearch(): void {
     const searchTermLower = this.searchTerm.toLowerCase();
     this.filteredItems = this.allItems.filter(
@@ -330,6 +338,9 @@ export class ListofAgencyOwnerComponent implements OnInit {
     console.log(`Action: ${action} on item:`, item);
 
     switch (action) {
+      case 'view':
+        this.viewItem(item);
+        break;
       case 'approve':
         this.approveItem(item);
         break;
@@ -345,6 +356,27 @@ export class ListofAgencyOwnerComponent implements OnInit {
 
     // Close dropdown after action
     this.activeDropdown = null;
+  }
+
+  private viewItem(item: TableItem): void {
+    console.log('Viewing item:', item);
+
+    this.agentsService.getAgentById(item.id).subscribe({
+      next: (agentWithProfile) => {
+        console.log('Agent details fetched:', agentWithProfile);
+        this.selectedAgent = agentWithProfile;
+        this.isModalOpen = true;
+      },
+      error: (err) => {
+        console.error('Error fetching agent details:', err);
+        this.toast.show('Failed to load agent details');
+      },
+    });
+  }
+
+  closeModal(): void {
+    this.isModalOpen = false;
+    this.selectedAgent = null;
   }
 
   private approveItem(item: TableItem): void {

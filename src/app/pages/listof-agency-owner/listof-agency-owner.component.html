@@ -126,6 +126,9 @@
         </span>
 
         <ul *ngIf="activeDropdown === item.id">
+          <li (click)="handleAction(item, 'view')">
+            {{ "View" | translate }}
+          </li>
           <li *ngIf="canEditAgents" (click)="handleAction(item, 'approve')">
             {{ "Approve" | translate }}
           </li>
@@ -184,4 +187,174 @@
 <!-- No access message -->
 <div *ngIf="!permissionsLoading && !canViewAgents" class="no-access-message">
   {{ "You don't have permission to view agency owners" | translate }}
+</div>
+
+<!-- Agent Details Modal -->
+<div *ngIf="isModalOpen" class="modal-overlay" (click)="closeModal()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h2>{{ "Agent Details" | translate }}</h2>
+      <button class="close-button" (click)="closeModal()">
+        <img src="/assets/icons/close-modal-icon.svg" alt="Close" />
+      </button>
+    </div>
+
+    <div class="modal-body" *ngIf="selectedAgent">
+      <div class="agent-info-grid">
+        <div class="info-item">
+          <span class="label">{{ "Name" | translate }}:</span>
+          <span class="value">{{ selectedAgent.name }}</span>
+        </div>
+
+        <div class="info-item">
+          <span class="label">{{ "Email" | translate }}:</span>
+          <span class="value">{{ selectedAgent.email }}</span>
+        </div>
+
+        <div class="info-item">
+          <span class="label">{{ "Phone" | translate }}:</span>
+          <span class="value">{{ selectedAgent.phone_number }}</span>
+        </div>
+
+        <div class="info-item">
+          <span class="label">{{ "Type" | translate }}:</span>
+          <span class="value">{{ selectedAgent.type | translate }}</span>
+        </div>
+
+        <div class="info-item">
+          <span class="label">{{ "Status" | translate }}:</span>
+          <span
+            class="value"
+            [class]="
+              getStatusClass(
+                selectedAgent.active === 1 ? 'Approved' : 'Rejected'
+              )
+            "
+          >
+            {{
+              selectedAgent.active === 1 ? "Approved" : ("Rejected" | translate)
+            }}
+          </span>
+        </div>
+
+        <div class="info-item">
+          <span class="label">{{ "Created At" | translate }}:</span>
+          <span class="value">{{
+            formatDatePublic(selectedAgent.created_at)
+          }}</span>
+        </div>
+
+        <div class="info-item">
+          <span class="label">{{ "Updated At" | translate }}:</span>
+          <span class="value">{{
+            formatDatePublic(selectedAgent.updated_at)
+          }}</span>
+        </div>
+
+        <!-- Profile Information -->
+        <div class="info-section" *ngIf="selectedAgent.agent_profile">
+          <h3>{{ "Agency Profile Information" | translate }}</h3>
+
+          <div
+            class="info-item"
+            *ngIf="selectedAgent.agent_profile.agency_name"
+          >
+            <span class="label">{{ "Agency Name" | translate }}:</span>
+            <span class="value">{{
+              selectedAgent.agent_profile.agency_name
+            }}</span>
+          </div>
+
+          <div
+            class="info-item"
+            *ngIf="selectedAgent.agent_profile.company_registration_id"
+          >
+            <span class="label"
+              >{{ "Company Registration ID" | translate }}:</span
+            >
+            <span class="value">{{
+              selectedAgent.agent_profile.company_registration_id
+            }}</span>
+          </div>
+
+          <div
+            class="info-item"
+            *ngIf="selectedAgent.agent_profile.fal_license_number"
+          >
+            <span class="label">{{ "FAL License Number" | translate }}:</span>
+            <span class="value">{{
+              selectedAgent.agent_profile.fal_license_number
+            }}</span>
+          </div>
+
+          <div
+            class="info-item"
+            *ngIf="selectedAgent.agent_profile.agency_address_line_1"
+          >
+            <span class="label">{{ "Address Line 1" | translate }}:</span>
+            <span class="value">{{
+              selectedAgent.agent_profile.agency_address_line_1
+            }}</span>
+          </div>
+
+          <div
+            class="info-item"
+            *ngIf="selectedAgent.agent_profile.agency_address_line_2"
+          >
+            <span class="label">{{ "Address Line 2" | translate }}:</span>
+            <span class="value">{{
+              selectedAgent.agent_profile.agency_address_line_2
+            }}</span>
+          </div>
+
+          <div class="info-item" *ngIf="selectedAgent.agent_profile.city">
+            <span class="label">{{ "City" | translate }}:</span>
+            <span class="value">{{ selectedAgent.agent_profile.city }}</span>
+          </div>
+
+          <div class="info-item" *ngIf="selectedAgent.agent_profile.country">
+            <span class="label">{{ "Country" | translate }}:</span>
+            <span class="value">{{ selectedAgent.agent_profile.country }}</span>
+          </div>
+
+          <div
+            class="info-item"
+            *ngIf="selectedAgent.agent_profile.postal_code"
+          >
+            <span class="label">{{ "Postal Code" | translate }}:</span>
+            <span class="value">{{
+              selectedAgent.agent_profile.postal_code
+            }}</span>
+          </div>
+
+          <div
+            class="info-item"
+            *ngIf="selectedAgent.agent_profile.account_number"
+          >
+            <span class="label">{{ "Account Number" | translate }}:</span>
+            <span class="value">{{
+              selectedAgent.agent_profile.account_number
+            }}</span>
+          </div>
+
+          <div class="info-item" *ngIf="selectedAgent.agent_profile.bank_name">
+            <span class="label">{{ "Bank Name" | translate }}:</span>
+            <span class="value">{{
+              selectedAgent.agent_profile.bank_name
+            }}</span>
+          </div>
+
+          <div
+            class="info-item"
+            *ngIf="selectedAgent.agent_profile.iban_number"
+          >
+            <span class="label">{{ "IBAN Number" | translate }}:</span>
+            <span class="value">{{
+              selectedAgent.agent_profile.iban_number
+            }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
