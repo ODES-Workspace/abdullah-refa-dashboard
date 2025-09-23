@@ -31,15 +31,15 @@ export class ProfileCompleteGuard implements CanActivate {
 
     // For agents, check if they are active and profile is complete
     if (userRole === 'agent') {
-      // Check if agent is active first
-      if (!this.userRoleService.isUserActive()) {
-        // If agent is not active, redirect to profile page
-        this.router.navigate(['/agent/profile']);
-        return of(false);
-      }
-
       return this.profileAgentService.getMyProfile().pipe(
         map((profile) => {
+          // Check if agent is active from API data (not localStorage)
+          if (!profile || profile.active !== 1) {
+            // If agent is not active, redirect to profile page
+            this.router.navigate(['/agent/profile']);
+            return false;
+          }
+
           const isComplete = this.isProfileComplete(profile);
 
           if (!isComplete) {

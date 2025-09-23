@@ -518,6 +518,8 @@
   "IBAN Number": "رقم الآيبان",
   "address": "العنوان",
   "Additional Address": "العنوان الفرعي",
+  "Loading profile...": "جاري تحميل الملف الشخصي...",
+  "Saving...": "جاري الحفظ...",
   "Country": "البلد",
   "Type": "النوع",
   "Phone": "الهاتف"

@@ -34,6 +34,8 @@ interface ProfileData {
 })
 export class ProfileAgentComponent implements OnInit {
   isEditing = false;
+  isLoading = true;
+  isSaving = false;
   falLicenseDocument: string | null = null;
   private falDocumentFile: File | null = null;
   errorMessages: string[] = [];
@@ -94,9 +96,14 @@ export class ProfileAgentComponent implements OnInit {
 
         // Update pending approval status based on fresh data
         this.isPendingApproval = res.active === 0;
+
+        // Set loading to false once everything is loaded
+        this.isLoading = false;
       },
       error: (err) => {
         console.error('Failed to fetch agent profile:', err);
+        // Set loading to false even on error
+        this.isLoading = false;
       },
     });
   }
@@ -112,6 +119,9 @@ export class ProfileAgentComponent implements OnInit {
       this.errorMessages = requiredErrors;
       return;
     }
+
+    this.isSaving = true;
+
     const payload = {
       agency_name: this.profileData.agencyName || undefined,
       company_registration_id:
@@ -191,10 +201,13 @@ export class ProfileAgentComponent implements OnInit {
         } else {
           this.showPendingApprovalMessage = false;
         }
+
+        this.isSaving = false;
       },
       error: (err) => {
         console.error('Failed to update agent profile:', err);
         this.captureErrors(err);
+        this.isSaving = false;
       },
     });
   }

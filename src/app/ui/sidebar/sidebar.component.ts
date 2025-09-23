@@ -447,10 +447,14 @@ export class SidebarComponent implements OnInit {
     );
   }
 
-  // Get appropriate menu items based on profile completeness and active status
+  // Get appropriate menu items based on profile completeness and active status (API only)
   getAgentMenuItems(): MenuItem[] {
-    // Check if agent is active (approved by admin) and profile is complete
-    if (this.userRoleService.isUserActive() && this.isAgentProfileComplete()) {
+    // Use agentProfileData.active from API, not localStorage
+    if (
+      this.agentProfileData &&
+      this.agentProfileData.active === 1 &&
+      this.isAgentProfileComplete()
+    ) {
       return this.agentMenuItems;
     } else {
       // Return only the Profile menu item if profile is incomplete or agent is not active

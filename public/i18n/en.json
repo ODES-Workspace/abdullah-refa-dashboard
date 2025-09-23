@@ -454,5 +454,7 @@
   "Address Line 2": "Address Line 2",
   "IBAN Number": "IBAN Number",
   "Created At": "Created At",
-  "Updated At": "Updated At"
+  "Updated At": "Updated At",
+  "Loading profile...": "Loading profile...",
+  "Saving...": "Saving..."
 }

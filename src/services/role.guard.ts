@@ -26,13 +26,9 @@ export const roleGuard: CanActivateFn = (route, state) => {
 
   // Check if user is active
   // Allow inactive agents to access any agent route, but let route-specific guards handle redirects
-  if (!userRoleService.isUserActive()) {
-    // Allow inactive agents to access any agent route
-    if (currentRole === 'agent' && url.startsWith('/agent')) {
-      return true;
-    }
-
-    // For all other cases, redirect to login
+  // Note: For agents, active status should be checked by ProfileCompleteGuard using API data
+  if (!userRoleService.isUserActive() && currentRole !== 'agent') {
+    // For all non-agent cases, redirect to login
     router.navigate(['/login']);
     return false;
   }
@@ -81,6 +77,7 @@ export const adminGuard: CanActivateFn = (route, state) => {
 
 /**
  * Guard for agent-only routes
+ * Note: Active status is now checked by ProfileCompleteGuard using API data
  */
 export const agentGuard: CanActivateFn = (route, state) => {
   const userRoleService = inject(UserRoleService);
@@ -92,13 +89,7 @@ export const agentGuard: CanActivateFn = (route, state) => {
     return false;
   }
 
-  // Check if user is active
-  if (!userRoleService.isUserActive()) {
-    router.navigate(['/login']);
-    return false;
-  }
-
-  // Check if user is agent
+  // Check if user is agent (don't check active status here - let ProfileCompleteGuard handle it)
   if (!userRoleService.isAgent()) {
     router.navigate(['/admin/dashboard']);
     return false;
