@@ -9,6 +9,17 @@ import { Observable } from 'rxjs';
 import { UserRoleService, UserRole } from '../../../services/user-role.service';
 import { AgentService, AgentMeResponse } from '../../../services/agent.service';
 import { AdminService, AdminProfile } from '../../../services/admin.service';
+import {
+  AgentPropertiesService,
+  PropertiesResponse,
+} from '../../../services/agent-properties.service';
+import {
+  RentRequestsService,
+  RentRequestInvitationPayload,
+} from '../../../services/rent-requests.service';
+import { Property } from '../../../services/dashboard.service';
+import { ToastService } from '../../../services/toast.service';
+import { FormsModule } from '@angular/forms';
 
 interface SubMenuItem {
   label: string;
@@ -29,7 +40,14 @@ interface MenuItem {
 @Component({
   selector: 'app-sidebar',
   standalone: true,
-  imports: [RouterLink, NgFor, NgIf, TranslateModule, CommonModule],
+  imports: [
+    RouterLink,
+    NgFor,
+    NgIf,
+    TranslateModule,
+    CommonModule,
+    FormsModule,
+  ],
   templateUrl: './sidebar.component.html',
   styleUrl: './sidebar.component.scss',
 })
@@ -42,12 +60,26 @@ export class SidebarComponent implements OnInit {
   agentProfileData: AgentMeResponse | null = null;
   adminProfileData: AdminProfile | null = null;
 
+  // Rent Request Invitation Properties
+  agentProperties: Property[] = [];
+  isLoadingProperties = false;
+  selectedProperty: Property | null = null;
+  selectedPropertyId = '';
+  customerPhone = '';
+  isInvitationModalOpen = false;
+  isCreatingInvitation = false;
+  invitationResult = '';
+  lang = 'en';
+
   constructor(
     private router: Router,
     private sidebarService: SidebarService,
     private userRoleService: UserRoleService,
     private agentService: AgentService,
-    private adminService: AdminService
+    private adminService: AdminService,
+    private agentPropertiesService: AgentPropertiesService,
+    private rentRequestsService: RentRequestsService,
+    private toastService: ToastService
   ) {}
 
   // Admin menu items
@@ -460,5 +492,118 @@ export class SidebarComponent implements OnInit {
       // Return only the Profile menu item if profile is incomplete or agent is not active
       return this.agentMenuItems.filter((item) => item.name === 'Profile');
     }
+  }
+
+  // Rent Request Invitation Methods
+  isAgent(): boolean {
+    return this.userRoleService.getCurrentRole() === 'agent';
+  }
+
+  openRentRequestModal() {
+    if (!this.isAgent()) return;
+
+    this.isInvitationModalOpen = true;
+    this.selectedProperty = null;
+    this.selectedPropertyId = '';
+    this.customerPhone = '';
+    this.invitationResult = '';
+
+    if (this.agentProperties.length === 0) {
+      this.loadAgentProperties();
+    }
+  }
+
+  onPropertySelect(event: any) {
+    const target = event.target as HTMLSelectElement;
+    const propertyId = parseInt(target.value);
+
+    if (propertyId) {
+      const property = this.agentProperties.find((p) => p.id === propertyId);
+      if (property) {
+        this.selectedProperty = property;
+        this.selectedPropertyId = target.value;
+      }
+    }
+  }
+
+  loadAgentProperties() {
+    const token = localStorage.getItem('token');
+    if (!token) return;
+
+    this.isLoadingProperties = true;
+    this.agentPropertiesService.getAgentProperties(token, '', 1, 50).subscribe({
+      next: (response: PropertiesResponse) => {
+        this.agentProperties = response.data;
+        this.isLoadingProperties = false;
+      },
+      error: (error) => {
+        console.error('Error loading agent properties:', error);
+        this.isLoadingProperties = false;
+        this.toastService.show('Failed to load properties');
+      },
+    });
+  }
+
+  changeProperty() {
+    this.selectedProperty = null;
+    this.selectedPropertyId = '';
+  }
+
+  closeInvitationModal() {
+    this.isInvitationModalOpen = false;
+    this.selectedProperty = null;
+    this.selectedPropertyId = '';
+    this.customerPhone = '';
+    this.invitationResult = '';
+    this.isCreatingInvitation = false;
+  }
+
+  createRentRequestInvitation(): void {
+    if (!this.customerPhone.trim() || !this.selectedProperty) {
+      this.toastService.show('Please enter a valid phone number');
+      return;
+    }
+
+    this.isCreatingInvitation = true;
+
+    const payload: RentRequestInvitationPayload = {
+      property_id: this.selectedProperty.id,
+      customer_phone: this.customerPhone.trim(),
+    };
+
+    this.rentRequestsService.createRentRequestInvitation(payload).subscribe({
+      next: (response) => {
+        this.invitationResult = response.deeplink;
+        this.isCreatingInvitation = false;
+        this.toastService.show('Rent request invitation created successfully!');
+      },
+      error: (error) => {
+        console.error('Error creating rent request invitation:', error);
+        this.isCreatingInvitation = false;
+
+        let errorMessage = 'Failed to create rent request invitation';
+        if (error.error?.message) {
+          errorMessage = error.error.message;
+        } else if (error.status === 422 && error.error?.errors) {
+          const firstError = Object.values(error.error.errors)[0];
+          if (Array.isArray(firstError) && firstError.length > 0) {
+            errorMessage = firstError[0] as string;
+          }
+        }
+
+        this.toastService.show(errorMessage);
+      },
+    });
+  }
+
+  copyToClipboard(text: string): void {
+    navigator.clipboard
+      .writeText(text)
+      .then(() => {
+        this.toastService.show('Link copied to clipboard!');
+      })
+      .catch(() => {
+        this.toastService.show('Failed to copy link');
+      });
   }
 }

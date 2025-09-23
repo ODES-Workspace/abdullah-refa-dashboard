@@ -62,6 +62,13 @@
     }
   }
 
+  // Hide button on mobile screens
+  .hide-on-mobile {
+    @media (max-width: 768px) {
+      display: none !important;
+    }
+  }
+
   &-lang-btn {
     display: flex;
     align-items: center;

@@ -23,7 +23,7 @@
     <!-- Rent Request Invitation Button (Agents Only) -->
     <button
       *ngIf="isAgent()"
-      class="rent-request-btn"
+      class="rent-request-btn hide-on-mobile"
       (click)="openRentRequestModal()"
     >
       {{ "Create Rent Request" | translate }}
