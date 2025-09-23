@@ -524,7 +524,7 @@
   "Send a rent request invitation to a customer for this property": "إرسال دعوة طلب إيجار للعميل لهذا العقار",
   "Create Rent Request Invitation": "إنشاء دعوة طلب إيجار",
   "Customer Phone Number": "رقم هاتف العميل",
-  "Enter customer phone number (e.g., +966501234567)": "أدخل رقم هاتف العميل (مثال: +966501234567)",
+  "Enter customer phone number (e.g., 05XXXXXXX)": " (05XXXXXXX)  أدخل رقم هاتف العميل  ",
   "Create Invitation": "إنشاء الدعوة",
   "Creating...": "جاري الإنشاء...",
   "Invitation Created Successfully!": "تم إنشاء الدعوة بنجاح!",
