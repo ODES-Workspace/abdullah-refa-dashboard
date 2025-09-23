@@ -18,13 +18,26 @@ export class ProfileCompleteGuard implements CanActivate {
   canActivate(): Observable<boolean> {
     const userRole = this.userRoleService.getCurrentRole();
 
+    // Check if user is authenticated first
+    if (!this.userRoleService.isAuthenticated()) {
+      this.router.navigate(['/login']);
+      return of(false);
+    }
+
     // Allow admins to access all routes
     if (userRole === 'admin') {
       return of(true);
     }
 
-    // For agents, check if profile is complete
+    // For agents, check if they are active and profile is complete
     if (userRole === 'agent') {
+      // Check if agent is active first
+      if (!this.userRoleService.isUserActive()) {
+        // If agent is not active, redirect to profile page
+        this.router.navigate(['/agent/profile']);
+        return of(false);
+      }
+
       return this.profileAgentService.getMyProfile().pipe(
         map((profile) => {
           const isComplete = this.isProfileComplete(profile);

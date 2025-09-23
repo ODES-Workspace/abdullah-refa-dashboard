@@ -12,14 +12,30 @@ export const roleGuard: CanActivateFn = (route, state) => {
     return false;
   }
 
-  // Check if user is active
-  if (!userRoleService.isUserActive()) {
-    router.navigate(['/login']);
+  const currentRole = userRoleService.getCurrentRole();
+  const url = state.url;
+
+  // If user is agent, prevent access to admin routes (regardless of active status)
+  if (currentRole === 'agent' && url.startsWith('/admin')) {
+    // Redirect to the last agent page or fallback to /agent/profile
+    const lastAgentUrl =
+      localStorage.getItem('last_agent_url') || '/agent/profile';
+    router.navigate([lastAgentUrl]);
     return false;
   }
 
-  const currentRole = userRoleService.getCurrentRole();
-  const url = state.url;
+  // Check if user is active
+  // Allow inactive agents to access any agent route, but let route-specific guards handle redirects
+  if (!userRoleService.isUserActive()) {
+    // Allow inactive agents to access any agent route
+    if (currentRole === 'agent' && url.startsWith('/agent')) {
+      return true;
+    }
+
+    // For all other cases, redirect to login
+    router.navigate(['/login']);
+    return false;
+  }
 
   // If user is admin, prevent access to agent routes
   if (currentRole === 'admin' && url.startsWith('/agent')) {
@@ -27,10 +43,9 @@ export const roleGuard: CanActivateFn = (route, state) => {
     return false;
   }
 
-  // If user is agent, prevent access to admin routes
-  if (currentRole === 'agent' && url.startsWith('/admin')) {
-    router.navigate(['/agent/dashboard']);
-    return false;
+  // Store last visited agent page for agent users
+  if (currentRole === 'agent' && url.startsWith('/agent')) {
+    localStorage.setItem('last_agent_url', url);
   }
 
   return true;
@@ -99,14 +114,13 @@ export const authGuard: CanActivateFn = (route, state) => {
   const userRoleService = inject(UserRoleService);
   const router = inject(Router);
 
-  // If user is authenticated, redirect to appropriate dashboard
-  if (userRoleService.isAuthenticated() && userRoleService.isUserActive()) {
-    const currentRole = userRoleService.getCurrentRole();
-
-    if (currentRole === 'admin') {
-      router.navigate(['/admin/dashboard']);
+  // If user is authenticated, always redirect to dashboard (never allow login/signup)
+  if (userRoleService.isAuthenticated()) {
+    const user = userRoleService.getCurrentUser();
+    if (user && user.type === 'admin') {
+      window.location.href = '/admin/dashboard';
     } else {
-      router.navigate(['/agent/dashboard']);
+      window.location.href = '/agent/dashboard';
     }
     return false;
   }

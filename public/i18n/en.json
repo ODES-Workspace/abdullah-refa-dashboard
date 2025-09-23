@@ -60,6 +60,9 @@
   },
   "Notifications": "Notifications",
   "NO_NOTIFICATIONS": "No notifications",
+  "PROFILE_PENDING_APPROVAL": "Your profile has been submitted and is pending admin approval. You will be notified once approved.",
+  "AGENT_PENDING_APPROVAL": "Your account is pending admin approval. Please complete your profile and wait for approval.",
+  "Pending Admin Approval": "Pending Admin Approval",
   "Mark all as read": "Mark all as read",
   "New Property Listed": "New Property Listed",
   "time": {

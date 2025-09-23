@@ -14,6 +14,7 @@ import {
 } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
+import { UserRoleService } from '../../../services/user-role.service';
 
 @Component({
   selector: 'app-signup',
@@ -36,10 +37,20 @@ export class SignupComponent implements OnInit {
     public languageService: LanguageService,
     private agentService: AgentService,
     private formBuilder: FormBuilder,
-    private router: Router
+    private router: Router,
+    private userRoleService: UserRoleService
   ) {}
 
   ngOnInit() {
+    // Force logout and redirect if authenticated (handles page reload)
+    if (this.userRoleService.isAuthenticated()) {
+      this.userRoleService.clearUserData();
+      localStorage.removeItem('access_token');
+      localStorage.removeItem('admin_id');
+      localStorage.removeItem('agent_id');
+      window.location.href = '/login';
+      return;
+    }
     this.initForm();
   }
 

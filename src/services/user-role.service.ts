@@ -112,6 +112,14 @@ export class UserRoleService {
   }
 
   /**
+   * Check if agent is pending approval (active = 0)
+   */
+  isAgentPendingApproval(): boolean {
+    const user = this.getCurrentUser();
+    return !!(user && user.type === 'agent' && user.active === 0);
+  }
+
+  /**
    * Check if user is authenticated
    */
   isAuthenticated(): boolean {

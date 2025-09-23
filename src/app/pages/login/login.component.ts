@@ -48,6 +48,17 @@ export class LoginComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    // Prevent access to login page if already authenticated (even after reload)
+    if (this.userRoleService.isAuthenticated()) {
+      // Redirect to dashboard based on role
+      const user = this.userRoleService.getCurrentUser();
+      if (user && user.type === 'admin') {
+        window.location.href = '/admin/dashboard';
+      } else {
+        window.location.href = '/agent/dashboard';
+      }
+      return;
+    }
     this.initForm();
   }
 
@@ -278,19 +289,50 @@ export class LoginComponent implements OnInit {
         // Save credentials if remember me is checked
         this.saveCredentials();
 
-        // Redirect based on user type and profile completeness
+        // Redirect based on user type and active status
         setTimeout(() => {
           if (userType === 'admin') {
             this.router.navigate(['/admin/dashboard']);
           } else {
-            // For agents, check if profile is complete
-            if (this.isAgentProfileComplete(profile)) {
+            // For agents, check if they are active
+            const isActive = agentUser.active === 1;
+
+            console.log('Agent active status:', agentUser.active);
+            console.log('Is active:', isActive);
+            console.log(
+              'Profile complete:',
+              this.isAgentProfileComplete(profile)
+            );
+
+            if (!isActive) {
+              // If agent is not active, redirect to profile only
+              console.log('Redirecting to profile - agent not active');
+              this.router.navigate(['/agent/profile']).then(
+                (success) => {
+                  console.log(
+                    'Navigation to /agent/profile successful:',
+                    success
+                  );
+                },
+                (error) => {
+                  console.error('Navigation to /agent/profile failed:', error);
+                }
+              );
+            } else if (this.isAgentProfileComplete(profile)) {
+              // If active and profile complete, go to dashboard
+              console.log(
+                'Redirecting to dashboard - agent active and profile complete'
+              );
               this.router.navigate(['/agent/dashboard']);
             } else {
+              // If active but profile incomplete, go to profile
+              console.log(
+                'Redirecting to profile - agent active but profile incomplete'
+              );
               this.router.navigate(['/agent/profile']);
             }
           }
-        }, 1500);
+        }, 500);
       },
       error: (error) => {
         console.error('Error fetching agent profile:', error);

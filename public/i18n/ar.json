@@ -61,6 +61,9 @@
   },
   "Notifications": "الإشعارات",
   "NO_NOTIFICATIONS": "لا توجد إشعارات",
+  "PROFILE_PENDING_APPROVAL": "تم إرسال ملفك الشخصي وهو في انتظار موافقة المسؤول. سيتم إشعارك بمجرد الموافقة.",
+  "AGENT_PENDING_APPROVAL": "حسابك في انتظار موافقة المسؤول. يرجى إكمال ملفك الشخصي وانتظار الموافقة.",
+  "Pending Admin Approval": "في انتظار موافقة المسؤول",
   "Mark all as read": "عرض كل الإشعارات",
   "New Property Listed": "عقار جديد",
   "time": {

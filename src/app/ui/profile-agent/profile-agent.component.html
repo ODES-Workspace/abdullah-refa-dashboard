@@ -1,6 +1,32 @@
 <div class="profile">
+  <!-- Pending Approval Message -->
+  <div
+    class="profile-pending-approval"
+    *ngIf="showPendingApprovalMessage || isPendingApproval"
+  >
+    <div class="approval-content">
+      <img
+        src="/assets/icons/time-icon.svg"
+        alt="Pending"
+        class="pending-icon"
+      />
+      <div class="approval-text">
+        <h4>{{ "Pending Admin Approval" | translate }}</h4>
+        <p *ngIf="showPendingApprovalMessage">
+          {{ "PROFILE_PENDING_APPROVAL" | translate }}
+        </p>
+        <p *ngIf="isPendingApproval && !showPendingApprovalMessage">
+          {{ "AGENT_PENDING_APPROVAL" | translate }}
+        </p>
+      </div>
+    </div>
+  </div>
+
   <!-- Incomplete Profile Warning -->
-  <div class="profile-incomplete-warning" *ngIf="isProfileIncomplete">
+  <div
+    class="profile-incomplete-warning"
+    *ngIf="isProfileIncomplete && !isPendingApproval"
+  >
     <div class="warning-content">
       <img
         src="/assets/icons/alert-icon.svg"
@@ -22,10 +48,18 @@
   <div class="profile-header">
     <h3>{{ "Profile Information" | translate }}</h3>
     <div>
-      <button *ngIf="!isEditing" (click)="toggleEdit()" class="edit">
+      <button
+        *ngIf="!isEditing && !isPendingApproval"
+        (click)="toggleEdit()"
+        class="edit"
+      >
         {{ "Edit Profile" | translate }}
       </button>
-      <button *ngIf="isEditing" (click)="saveProfile()" class="save-change">
+      <button
+        *ngIf="isEditing && !isPendingApproval"
+        (click)="saveProfile()"
+        class="save-change"
+      >
         {{ "Save Changes" | translate }}
       </button>
     </div>

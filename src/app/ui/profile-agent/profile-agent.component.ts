@@ -38,6 +38,8 @@ export class ProfileAgentComponent implements OnInit {
   private falDocumentFile: File | null = null;
   errorMessages: string[] = [];
   isProfileIncomplete = false;
+  isPendingApproval = false;
+  showPendingApprovalMessage = false;
 
   profileData: ProfileData = {
     agencyName: '',
@@ -61,6 +63,9 @@ export class ProfileAgentComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    // Check if agent is pending approval
+    this.isPendingApproval = this.userRoleService.isAgentPendingApproval();
+
     this.profileAgentService.getMyProfile().subscribe({
       next: (res: AgentProfileResponse) => {
         const p = res.agent_profile;
@@ -86,6 +91,9 @@ export class ProfileAgentComponent implements OnInit {
 
         // Check if profile is complete
         this.checkProfileCompleteness();
+
+        // Update pending approval status based on fresh data
+        this.isPendingApproval = res.active === 0;
       },
       error: (err) => {
         console.error('Failed to fetch agent profile:', err);
@@ -152,6 +160,16 @@ export class ProfileAgentComponent implements OnInit {
 
         // Check profile completeness after successful save
         this.checkProfileCompleteness();
+
+        // Check if profile is complete and user is still inactive
+        const isComplete = this.validateRequired().length === 0;
+        if (isComplete && updatedUser.active === 0) {
+          // Show pending approval message if profile is complete but user is inactive
+          this.showPendingApprovalMessage = true;
+          this.isPendingApproval = true;
+        } else {
+          this.showPendingApprovalMessage = false;
+        }
       },
       error: (err) => {
         console.error('Failed to update agent profile:', err);
