@@ -168,7 +168,7 @@
       </div>
 
       <!-- Modal Actions -->
-      <div class="modal-actions" *ngIf="selectedProperty">
+      <div class="modal-actions" *ngIf="selectedProperty && !invitationResult">
         <button
           class="cancel-btn"
           (click)="closeInvitationModal()"

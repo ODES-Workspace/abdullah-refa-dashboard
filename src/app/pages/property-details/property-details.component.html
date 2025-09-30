@@ -185,7 +185,7 @@
           />
         </div>
 
-        <div class="modal-actions">
+        <div class="modal-actions" *ngIf="!invitationResult">
           <button
             class="cancel-btn"
             (click)="closeInvitationModal()"
@@ -234,7 +234,4 @@
             }}
           </p>
         </div>
-      </div>
-    </div>
-  </div>
-</div>
+
