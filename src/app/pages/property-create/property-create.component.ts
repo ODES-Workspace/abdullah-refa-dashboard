@@ -73,6 +73,7 @@ export class PropertyCreateComponent implements OnInit, AfterViewInit {
       propertyNameAr: ['', Validators.required],
       propertyCategory: ['', Validators.required],
       propertyType: ['', Validators.required],
+        city: ['', Validators.required],
       // propertySize: ['', [Validators.required, Validators.min(0)]],
       // availableFrom: ['', Validators.required],
       // furnishment: ['', Validators.required],
@@ -456,7 +457,7 @@ export class PropertyCreateComponent implements OnInit, AfterViewInit {
       building_number: formValue.buildingName,
       country: 'Saudi Arabia', // You might want to make this dynamic
       region: formValue.province,
-      city: formValue.province, // You might want to add separate city field
+  city: formValue.city,
       district: formValue.addressLine1,
       postal_code: formValue.postalCode,
       latitude: formValue.latitude,

@@ -198,6 +198,19 @@
           {{ "Deposit amount is required" | translate }}
         </div>
       </div>
+      <div class="input-group">
+        <label>{{ "City" | translate }}</label>
+        <input
+          formControlName="city"
+          type="text"
+          placeholder="{{ 'Enter city' | translate }}"
+        />
+        <div
+          *ngIf="propertyForm.get('city')?.errors?.['required'] && propertyForm.get('city')?.touched"
+        >
+          {{ "City is required" | translate }}
+        </div>
+      </div>
       <!-- <div class="input-group text-area">
         <label>{{ "Property Description" | translate }}</label>
         <textarea
@@ -269,6 +282,20 @@
           {{ "Province is required" | translate }}
         </div>
       </div>
+
+        <div class="input-group">
+          <label>{{ "City" | translate }}</label>
+          <input
+            formControlName="city"
+            type="text"
+            placeholder="{{ 'Enter city' | translate }}"
+          />
+          <div
+            *ngIf="propertyForm.get('city')?.errors?.['required'] && propertyForm.get('city')?.touched"
+          >
+            {{ "City is required" | translate }}
+          </div>
+        </div>
       <div class="input-group">
         <label>{{ "Postal Code" | translate }}</label>
         <input
