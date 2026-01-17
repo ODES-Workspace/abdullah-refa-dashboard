@@ -137,9 +137,9 @@ export class ListofrejectionsComponent implements OnInit {
     this.agentsService.getAgents().subscribe({
       next: (res) => {
         console.log('Agents API Response:', res);
-        // Filter to show only rejected agents (active = 0 and not admin)
+        // Filter to show only rejected agents
         const rejectedAgents = res.filter(
-          (agent) => agent.active === 0 && agent.role !== 'admin'
+          (agent) => agent.agent_status === 'rejected' && agent.role !== 'admin'
         );
         this.allItems = this.mapAgentsToTableItems(rejectedAgents);
         this.filteredItems = [...this.allItems];

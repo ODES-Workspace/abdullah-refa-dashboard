@@ -5,6 +5,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import {
   ProfileAgentService,
   AgentProfileResponse,
+  AgentStatus,
 } from '../../../services/profile-agent.service';
 import { UserRoleService } from '../../../services/user-role.service';
 import { environment } from '../../../environments/environment';
@@ -39,9 +40,7 @@ export class ProfileAgentComponent implements OnInit {
   falLicenseDocument: string | null = null;
   private falDocumentFile: File | null = null;
   errorMessages: string[] = [];
-  isProfileIncomplete = false;
-  isPendingApproval = false;
-  showPendingApprovalMessage = false;
+  agentStatus: AgentStatus = 'incomplete_profile';
 
   profileData: ProfileData = {
     agencyName: '',
@@ -65,9 +64,6 @@ export class ProfileAgentComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    // Check if agent is pending approval
-    this.isPendingApproval = this.userRoleService.isAgentPendingApproval();
-
     this.profileAgentService.getMyProfile().subscribe({
       next: (res: AgentProfileResponse) => {
         const p = res.agent_profile;
@@ -91,11 +87,8 @@ export class ProfileAgentComponent implements OnInit {
         // Document link if provided
         this.falLicenseDocument = this.getDocumentUrl(p?.fal_document) || null;
 
-        // Check if profile is complete
-        this.checkProfileCompleteness();
-
-        // Update pending approval status based on fresh data
-        this.isPendingApproval = res.active === 0;
+        // Set agent status from API response
+        this.agentStatus = res.agent_status;
 
         // Set loading to false once everything is loaded
         this.isLoading = false;
@@ -180,6 +173,7 @@ export class ProfileAgentComponent implements OnInit {
                 ? 1
                 : 0
               : res.active) ?? 0,
+          agent_status: res.agent_status,
           role: res.role,
           city: res.city,
         };
@@ -189,18 +183,8 @@ export class ProfileAgentComponent implements OnInit {
         // Trigger sidebar refresh to update displayed name/info from API
         this.userRoleService.triggerSidebarRefresh();
 
-        // Check profile completeness after successful save
-        this.checkProfileCompleteness();
-
-        // Check if profile is complete and user is still inactive
-        const isComplete = this.validateRequired().length === 0;
-        if (isComplete && updatedUser.active === 0) {
-          // Show pending approval message if profile is complete but user is inactive
-          this.showPendingApprovalMessage = true;
-          this.isPendingApproval = true;
-        } else {
-          this.showPendingApprovalMessage = false;
-        }
+        // Update agent status from API response
+        this.agentStatus = res.agent_status;
 
         this.isSaving = false;
       },
@@ -297,8 +281,4 @@ export class ProfileAgentComponent implements OnInit {
     this.falDocumentFile = null;
   }
 
-  private checkProfileCompleteness(): void {
-    const errors = this.validateRequired();
-    this.isProfileIncomplete = errors.length > 0;
-  }
 }

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { Agent } from './agent.service';
+import { Agent, AgentStatus } from './agent.service';
 import { Admin } from './admin.service';
 
 export type UserRole = 'admin' | 'agent';
@@ -112,11 +112,42 @@ export class UserRoleService {
   }
 
   /**
-   * Check if agent is pending approval (active = 0)
+   * Get agent status
+   */
+  getAgentStatus(): AgentStatus | null {
+    const user = this.getCurrentUser();
+    if (user && user.type === 'agent' && 'agent_status' in user) {
+      return (user as Agent).agent_status;
+    }
+    return null;
+  }
+
+  /**
+   * Check if agent is pending approval
    */
   isAgentPendingApproval(): boolean {
-    const user = this.getCurrentUser();
-    return !!(user && user.type === 'agent' && user.active === 0);
+    return this.getAgentStatus() === 'pending';
+  }
+
+  /**
+   * Check if agent is approved
+   */
+  isAgentApproved(): boolean {
+    return this.getAgentStatus() === 'approved';
+  }
+
+  /**
+   * Check if agent is rejected
+   */
+  isAgentRejected(): boolean {
+    return this.getAgentStatus() === 'rejected';
+  }
+
+  /**
+   * Check if agent has incomplete profile
+   */
+  isAgentIncomplete(): boolean {
+    return this.getAgentStatus() === 'incomplete_profile';
   }
 
   /**

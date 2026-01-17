@@ -7,7 +7,6 @@ import {
   AgentsService,
   Agent,
   AgentWithProfile,
-  UpdateAgentPayload,
 } from '../../../services/agents.service';
 import { ToastService } from '../../../services/toast.service';
 import { AdminService } from '../../../services/admin.service';
@@ -222,16 +221,20 @@ export class ListofAgencyOwnerComponent implements OnInit {
   }
 
   private getAgentStatus(agent: Agent): string {
-    if (agent.active === 1) {
+    if (agent.role === 'admin') {
       return 'Approved';
-    } else if (agent.role === 'admin') {
-      return 'Approved';
-    } else if (agent.active === 0) {
-      // If agent is inactive, we'll assume they were rejected
-      // This is based on the backend behavior where reject action sets active = 0
-      return 'Rejected';
-    } else {
-      return 'Under Review';
+    }
+    switch (agent.agent_status) {
+      case 'approved':
+        return 'Approved';
+      case 'rejected':
+        return 'Rejected';
+      case 'pending':
+        return 'Pending';
+      case 'incomplete_profile':
+        return 'Incomplete Profile';
+      default:
+        return 'Under Review';
     }
   }
 
@@ -313,8 +316,11 @@ export class ListofAgencyOwnerComponent implements OnInit {
         return 'status-approved';
       case 'rejected':
         return 'status-rejected';
+      case 'pending':
       case 'under review':
         return 'status-pending';
+      case 'incomplete profile':
+        return 'status-incomplete';
       default:
         return '';
     }
@@ -382,9 +388,7 @@ export class ListofAgencyOwnerComponent implements OnInit {
   private approveItem(item: TableItem): void {
     console.log('Approving item:', item);
 
-    const payload: UpdateAgentPayload = { active: true };
-
-    this.agentsService.updateAgent(item.id, payload).subscribe({
+    this.agentsService.approveAgent(item.id).subscribe({
       next: (response) => {
         console.log('Agent approved successfully:', response);
         // Update local item with server response
@@ -398,7 +402,7 @@ export class ListofAgencyOwnerComponent implements OnInit {
         if (err.status === 404) {
           this.toast.show('Agent not found');
         } else if (err.status === 422) {
-          this.toast.show('Validation error occurred');
+          this.toast.show('Agent has not completed their profile yet');
         } else {
           this.toast.show('Failed to approve agent');
         }
@@ -409,9 +413,7 @@ export class ListofAgencyOwnerComponent implements OnInit {
   private rejectItem(item: TableItem): void {
     console.log('Rejecting item:', item);
 
-    const payload: UpdateAgentPayload = { active: false };
-
-    this.agentsService.updateAgent(item.id, payload).subscribe({
+    this.agentsService.rejectAgent(item.id).subscribe({
       next: (response) => {
         console.log('Agent rejected successfully:', response);
         // Update local item with server response

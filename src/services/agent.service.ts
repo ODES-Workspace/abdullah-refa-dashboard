@@ -19,6 +19,9 @@ export interface AgentLoginRequest {
   password: string;
 }
 
+// Agent status type
+export type AgentStatus = 'incomplete_profile' | 'pending' | 'approved' | 'rejected';
+
 export interface Agent {
   id: number;
   type: string;
@@ -27,6 +30,7 @@ export interface Agent {
   phone_number: string;
   national_id: string | null;
   active: number;
+  agent_status: AgentStatus;
   role: string | null;
 }
 
@@ -57,6 +61,7 @@ export interface AgentMeResponse {
   phone_number: string;
   national_id: string | null;
   active: number;
+  agent_status: AgentStatus;
   role: string | null;
   email_verified_at: string | null;
   created_at: string;

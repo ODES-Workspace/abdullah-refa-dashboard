@@ -139,7 +139,7 @@ export class AdminaprovalsComponent implements OnInit {
         console.log('Agents API Response:', res);
         // Filter to show only approved agents
         const approvedAgents = res.filter(
-          (agent) => agent.active === 1 || agent.role === 'admin'
+          (agent) => agent.agent_status === 'approved' || agent.role === 'admin'
         );
         this.allItems = this.mapAgentsToTableItems(approvedAgents);
         this.filteredItems = [...this.allItems];

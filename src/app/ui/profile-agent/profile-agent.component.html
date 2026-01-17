@@ -8,41 +8,20 @@
 
 <!-- Profile Content -->
 <div class="profile" *ngIf="!isLoading">
-  <!-- Pending Approval Message -->
+  <!-- Status Banners based on agent_status -->
+  
+  <!-- Incomplete Profile Banner -->
   <div
-    class="profile-pending-approval"
-    *ngIf="showPendingApprovalMessage || isPendingApproval"
+    class="profile-status-banner status-incomplete"
+    *ngIf="agentStatus === 'incomplete_profile'"
   >
-    <div class="approval-content">
-      <img
-        src="/assets/icons/time-icon.svg"
-        alt="Pending"
-        class="pending-icon"
-      />
-      <div class="approval-text">
-        <h4>{{ "Pending Admin Approval" | translate }}</h4>
-        <p *ngIf="showPendingApprovalMessage">
-          {{ "PROFILE_PENDING_APPROVAL" | translate }}
-        </p>
-        <p *ngIf="isPendingApproval && !showPendingApprovalMessage">
-          {{ "AGENT_PENDING_APPROVAL" | translate }}
-        </p>
-      </div>
-    </div>
-  </div>
-
-  <!-- Incomplete Profile Warning -->
-  <div
-    class="profile-incomplete-warning"
-    *ngIf="isProfileIncomplete && !isPendingApproval"
-  >
-    <div class="warning-content">
+    <div class="banner-content">
       <img
         src="/assets/icons/alert-icon.svg"
-        alt="Warning"
-        class="warning-icon"
+        alt="Incomplete"
+        class="banner-icon"
       />
-      <div class="warning-text">
+      <div class="banner-text">
         <h4>{{ "Profile Incomplete" | translate }}</h4>
         <p>
           {{
@@ -50,6 +29,60 @@
               | translate
           }}
         </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pending Approval Banner -->
+  <div
+    class="profile-status-banner status-pending"
+    *ngIf="agentStatus === 'pending'"
+  >
+    <div class="banner-content">
+      <img
+        src="/assets/icons/time-icon.svg"
+        alt="Pending"
+        class="banner-icon"
+      />
+      <div class="banner-text">
+        <h4>{{ "Pending Admin Approval" | translate }}</h4>
+        <p>{{ "PROFILE_PENDING_APPROVAL" | translate }}</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Approved Banner -->
+  <div
+    class="profile-status-banner status-approved"
+    *ngIf="agentStatus === 'approved'"
+  >
+    <div class="banner-content">
+      <img
+        src="/assets/icons/confirm-icon.svg"
+        alt="Approved"
+        class="banner-icon"
+      />
+      <div class="banner-text">
+        <h4>{{ "Profile Approved" | translate }}</h4>
+        <p>{{ "Your profile is approved. You have full access." | translate }}</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Rejected Banner -->
+  <div
+    class="profile-status-banner status-rejected"
+    *ngIf="agentStatus === 'rejected'"
+  >
+    <div class="banner-content">
+      <img
+        src="/assets/icons/reject-icon.svg"
+        alt="Rejected"
+        class="banner-icon"
+      />
+      <div class="banner-text">
+        <h4>{{ "Profile Rejected" | translate }}</h4>
+        <p>{{ "Your profile has been rejected. Please contact support." | translate }}</p>
       </div>
     </div>
   </div>

@@ -4,6 +4,9 @@ import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { environment } from '../environments/environment';
 
+// Agent status type
+export type AgentStatus = 'incomplete_profile' | 'pending' | 'approved' | 'rejected';
+
 export interface AgentProfileResponse {
   id: number;
   type: string;
@@ -14,6 +17,7 @@ export interface AgentProfileResponse {
   city_id: number | null;
   email_verified_at: string | null;
   active: number | boolean;
+  agent_status: AgentStatus;
   role: string | null;
   created_at: string;
   updated_at: string;

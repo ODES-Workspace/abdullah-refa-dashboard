@@ -4,6 +4,9 @@ import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { environment } from '../environments/environment';
 
+// Agent status type
+export type AgentStatus = 'incomplete_profile' | 'pending' | 'approved' | 'rejected';
+
 // Interface for Agent entity
 export interface Agent {
   id: number;
@@ -15,6 +18,7 @@ export interface Agent {
   city_id: number | null;
   email_verified_at: string | null;
   active: number;
+  agent_status: AgentStatus;
   role: string | null;
   created_at: string;
   updated_at: string;
@@ -32,6 +36,7 @@ export interface AgentWithProfile {
   city_id: number | null;
   email_verified_at: string | null;
   active: number;
+  agent_status: AgentStatus;
   role: string | null;
   created_at: string;
   updated_at: string;
@@ -73,6 +78,18 @@ export interface UpdateAgentResponse {
 
 // Interface for delete agent response
 export interface DeleteAgentResponse {
+  message: string;
+  agent: Agent;
+}
+
+// Interface for approve agent response
+export interface ApproveAgentResponse {
+  message: string;
+  agent: Agent;
+}
+
+// Interface for reject agent response
+export interface RejectAgentResponse {
   message: string;
   agent: Agent;
 }
@@ -133,6 +150,32 @@ export class AgentsService {
     const url = `${this.baseUrl}/admin/agents/${id}`;
     return this.http
       .delete<DeleteAgentResponse>(url)
+      .pipe(catchError((error: HttpErrorResponse) => this.handleError(error)));
+  }
+
+  /**
+   * Approve an agent (admin only)
+   * Sets agent_status = 'approved' and active = true
+   * @param id - Agent ID
+   * @returns Observable of the approve response
+   */
+  approveAgent(id: number): Observable<ApproveAgentResponse> {
+    const url = `${this.baseUrl}/admin/agents/${id}/activate`;
+    return this.http
+      .post<ApproveAgentResponse>(url, {})
+      .pipe(catchError((error: HttpErrorResponse) => this.handleError(error)));
+  }
+
+  /**
+   * Reject an agent (admin only)
+   * Sets agent_status = 'rejected' and active = false
+   * @param id - Agent ID
+   * @returns Observable of the reject response
+   */
+  rejectAgent(id: number): Observable<RejectAgentResponse> {
+    const url = `${this.baseUrl}/admin/agents/${id}/reject`;
+    return this.http
+      .post<RejectAgentResponse>(url, {})
       .pipe(catchError((error: HttpErrorResponse) => this.handleError(error)));
   }
 

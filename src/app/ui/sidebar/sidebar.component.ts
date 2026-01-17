@@ -483,17 +483,16 @@ export class SidebarComponent implements OnInit {
     );
   }
 
-  // Get appropriate menu items based on profile completeness and active status (API only)
+  // Get appropriate menu items based on agent_status from API
   getAgentMenuItems(): MenuItem[] {
-    // Use agentProfileData.active from API, not localStorage
+    // Only show full menu if agent is approved
     if (
       this.agentProfileData &&
-      this.agentProfileData.active === 1 &&
-      this.isAgentProfileComplete()
+      this.agentProfileData.agent_status === 'approved'
     ) {
       return this.agentMenuItems;
     } else {
-      // Return only the Profile menu item if profile is incomplete or agent is not active
+      // Return only the Profile menu item for incomplete_profile, pending, or rejected status
       return this.agentMenuItems.filter((item) => item.name === 'Profile');
     }
   }

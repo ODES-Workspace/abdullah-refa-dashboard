@@ -7,7 +7,6 @@ import {
   AgentsService,
   Agent,
   AgentWithProfile,
-  UpdateAgentPayload,
 } from '../../../services/agents.service';
 import { ToastService } from '../../../services/toast.service';
 import { AdminService } from '../../../services/admin.service';
@@ -177,9 +176,9 @@ export class ListofpendingComponent implements OnInit {
     this.agentsService.getAgents().subscribe({
       next: (res) => {
         console.log('Agents API Response:', res);
-        // Filter to show only pending agents (active = 2 or any value other than 0 and 1, and not admin)
+        // Filter to show only pending agents
         const pendingAgents = res.filter(
-          (agent) => agent.active === 2 && agent.role !== 'admin'
+          (agent) => agent.agent_status === 'pending' && agent.role !== 'admin'
         );
         this.allItems = this.mapAgentsToTableItems(pendingAgents);
         this.filteredItems = [...this.allItems];
@@ -357,9 +356,7 @@ export class ListofpendingComponent implements OnInit {
   private approveItem(item: TableItem): void {
     console.log('Approving item:', item);
 
-    const payload: UpdateAgentPayload = { active: true };
-
-    this.agentsService.updateAgent(item.id, payload).subscribe({
+    this.agentsService.approveAgent(item.id).subscribe({
       next: (response) => {
         console.log('Agent approved successfully:', response);
         // Remove from pending list since it's now approved
@@ -375,7 +372,7 @@ export class ListofpendingComponent implements OnInit {
         if (err.status === 404) {
           this.toast.show('Agent not found');
         } else if (err.status === 422) {
-          this.toast.show('Validation error occurred');
+          this.toast.show('Agent has not completed their profile yet');
         } else {
           this.toast.show('Failed to approve agent');
         }
@@ -386,9 +383,7 @@ export class ListofpendingComponent implements OnInit {
   private rejectItem(item: TableItem): void {
     console.log('Rejecting item:', item);
 
-    const payload: UpdateAgentPayload = { active: false };
-
-    this.agentsService.updateAgent(item.id, payload).subscribe({
+    this.agentsService.rejectAgent(item.id).subscribe({
       next: (response) => {
         console.log('Agent rejected successfully:', response);
         // Remove from pending list since it's now rejected

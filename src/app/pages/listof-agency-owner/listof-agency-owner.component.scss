@@ -53,6 +53,17 @@
   }
 }
 
+.status-incomplete {
+  span {
+    color: #6b7280;
+    background-color: #f3f4f6;
+    border-radius: 4px;
+    padding: 8px;
+    border: 1px solid #d1d5db;
+    font-size: 11px;
+  }
+}
+
 .angency {
   color: #056ee9;
   padding: 8px;
