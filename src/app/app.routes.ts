@@ -75,6 +75,13 @@ export const routes: Routes = [
           ),
       },
       {
+        path: 'agencies-owner-pending',
+        loadComponent: () =>
+          import('./pages/listofpending/listofpending.component').then(
+            (m) => m.ListofpendingComponent
+          ),
+      },
+      {
         path: 'rentrequests',
         loadComponent: () =>
           import('./pages/rentrequests-list/rentrequests-list.component').then(

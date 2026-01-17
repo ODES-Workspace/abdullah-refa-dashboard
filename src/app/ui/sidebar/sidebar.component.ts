@@ -128,6 +128,10 @@ export class SidebarComponent implements OnInit {
           label: 'sidebar.ListofRejections',
           route: '/admin/agencies-owner-rejections',
         },
+        {
+          label: 'sidebar.ListofPending',
+          route: '/admin/agencies-owner-pending',
+        },
       ],
       icon: {
         active: '/assets/icons/agenciesowner-active.svg',
