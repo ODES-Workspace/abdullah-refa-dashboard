@@ -55,6 +55,23 @@
   }
 }
 
+// Document link styling
+.document-link {
+  color: #1951fd;
+  text-decoration: none;
+  font-weight: 500;
+  padding: 6px 12px;
+  background-color: #eff6ff;
+  border-radius: 4px;
+  border: 1px solid #1951fd33;
+  display: inline-block;
+
+  &:hover {
+    background-color: #dbeafe;
+    text-decoration: underline;
+  }
+}
+
 .angency {
   color: #056ee9;
   padding: 8px;

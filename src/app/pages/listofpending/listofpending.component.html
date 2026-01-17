@@ -280,6 +280,22 @@
 
           <div
             class="info-item"
+            *ngIf="selectedAgent.agent_profile.fal_document"
+          >
+            <span class="label">{{ "FAL License Document" | translate }}:</span>
+            <span class="value">
+              <a
+                [href]="getDocumentUrl(selectedAgent.agent_profile.fal_document)"
+                target="_blank"
+                class="document-link"
+              >
+                {{ "View Document" | translate }}
+              </a>
+            </span>
+          </div>
+
+          <div
+            class="info-item"
             *ngIf="selectedAgent.agent_profile.agency_address_line_1"
           >
             <span class="label">{{ "Address Line 1" | translate }}:</span>

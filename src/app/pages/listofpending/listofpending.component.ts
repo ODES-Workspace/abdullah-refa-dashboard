@@ -10,6 +10,7 @@ import {
 } from '../../../services/agents.service';
 import { ToastService } from '../../../services/toast.service';
 import { AdminService } from '../../../services/admin.service';
+import { environment } from '../../../environments/environment';
 
 interface TableItem {
   id: number;
@@ -432,6 +433,18 @@ export class ListofpendingComponent implements OnInit {
         }
       },
     });
+  }
+
+  // Build absolute URL for backend-served documents
+  getDocumentUrl(path: string | null | undefined): string | null {
+    if (!path) return null;
+    const trimmed = path.trim();
+    if (/^https?:\/\//i.test(trimmed)) return trimmed;
+    // Convert https://dev.refa.sa/api -> https://dev.refa.sa/storage/
+    const apiBase = environment.baseUrl || '';
+    const filesBase = apiBase.replace(/\/api\/?$/, '/storage/');
+    const normalized = trimmed.replace(/^\/?/, '');
+    return `${filesBase}${normalized}`;
   }
 }
 
