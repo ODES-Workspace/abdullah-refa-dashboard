@@ -516,5 +516,8 @@
   "Property Category Id": "Property Category",
   "Property Type Id": "Property Type",
   "Annual Rent": "Annual Rent",
-  "Deposit Amount": "Deposit Amount"
+  "Deposit Amount": "Deposit Amount",
+  "Agent Information": "Agent Information",
+  "Agent Name": "Agent Name",
+  "Agency Address": "Agency Address"
 }

@@ -136,6 +136,76 @@
       <h3>{{ "Location" | translate }}</h3>
       <app-map [lat]="property.latitude" [lng]="property.longitude"></app-map>
     </div>
+
+    <!-- Agent Information Section -->
+    <div *ngIf="property.creator" class="agent-info-section">
+      <h3>{{ "Agent Information" | translate }}</h3>
+      <div class="agent-info-grid">
+        <div class="agent-info-item">
+          <span class="info-label">{{ "Agent Name" | translate }}</span>
+          <span class="info-value">{{ property.creator.name }}</span>
+        </div>
+        <div class="agent-info-item">
+          <span class="info-label">{{ "Email" | translate }}</span>
+          <span class="info-value">{{ property.creator.email }}</span>
+        </div>
+        <div class="agent-info-item">
+          <span class="info-label">{{ "Phone" | translate }}</span>
+          <span class="info-value">{{ property.creator.phone_number }}</span>
+        </div>
+        <div class="agent-info-item">
+          <span class="info-label">{{ "Status" | translate }}</span>
+          <span class="info-value status-badge" [ngClass]="'status-' + property.creator.agent_status">
+            {{ property.creator.agent_status | translate }}
+          </span>
+        </div>
+
+        <!-- Agent Profile Details -->
+        <ng-container *ngIf="property.creator.agent_profile">
+          <div class="agent-info-item">
+            <span class="info-label">{{ "Agency Name" | translate }}</span>
+            <span class="info-value">{{ property.creator.agent_profile.agency_name }}</span>
+          </div>
+          <div class="agent-info-item">
+            <span class="info-label">{{ "Company Registration ID" | translate }}</span>
+            <span class="info-value">{{ property.creator.agent_profile.company_registration_id }}</span>
+          </div>
+          <div class="agent-info-item">
+            <span class="info-label">{{ "FAL License Number" | translate }}</span>
+            <span class="info-value">{{ property.creator.agent_profile.fal_license_number }}</span>
+          </div>
+          <div class="agent-info-item" *ngIf="property.creator.agent_profile.fal_document">
+            <span class="info-label">{{ "FAL License Document" | translate }}</span>
+            <a [href]="property.creator.agent_profile.fal_document" target="_blank" class="document-link">
+              {{ "View Document" | translate }}
+            </a>
+          </div>
+          <div class="agent-info-item">
+            <span class="info-label">{{ "Agency Address" | translate }}</span>
+            <span class="info-value">
+              {{ property.creator.agent_profile.agency_address_line_1 }}
+              <span *ngIf="property.creator.agent_profile.agency_address_line_2">, {{ property.creator.agent_profile.agency_address_line_2 }}</span>
+            </span>
+          </div>
+          <div class="agent-info-item">
+            <span class="info-label">{{ "City" | translate }}</span>
+            <span class="info-value">{{ property.creator.agent_profile.city }}</span>
+          </div>
+          <div class="agent-info-item">
+            <span class="info-label">{{ "Country" | translate }}</span>
+            <span class="info-value">{{ property.creator.agent_profile.country }}</span>
+          </div>
+          <div class="agent-info-item">
+            <span class="info-label">{{ "Bank Name" | translate }}</span>
+            <span class="info-value">{{ property.creator.agent_profile.bank_name }}</span>
+          </div>
+          <div class="agent-info-item">
+            <span class="info-label">{{ "IBAN" | translate }}</span>
+            <span class="info-value">{{ property.creator.agent_profile.iban_number }}</span>
+          </div>
+        </ng-container>
+      </div>
+    </div>
   </div>
 
   <!-- No access message -->

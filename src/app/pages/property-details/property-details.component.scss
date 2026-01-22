@@ -480,6 +480,100 @@
   }
 }
 
+// Agent Information Section
+.agent-info-section {
+  padding: 30px;
+  background: #ffffff;
+  border: 1px solid #f1f1f4;
+  box-shadow: 0px 3px 4px rgba(0, 0, 0, 0.03);
+  border-radius: 12px;
+
+  h3 {
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #f1f1f4;
+    font-size: 18px;
+    font-weight: 700;
+    color: #071437;
+  }
+
+  .agent-info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+  }
+
+  .agent-info-item {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 16px;
+    background: #f9fafb;
+    border-radius: 8px;
+    border: 1px solid #e5e7eb;
+
+    .info-label {
+      font-size: 13px;
+      color: #6b7280;
+      font-weight: 500;
+    }
+
+    .info-value {
+      font-size: 15px;
+      color: #111827;
+      font-weight: 600;
+    }
+
+    .status-badge {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: capitalize;
+      width: fit-content;
+
+      &.status-approved {
+        background: #dcfce7;
+        color: #166534;
+      }
+
+      &.status-pending {
+        background: #fef3c7;
+        color: #92400e;
+      }
+
+      &.status-rejected {
+        background: #fee2e2;
+        color: #991b1b;
+      }
+
+      &.status-incomplete_profile {
+        background: #e5e7eb;
+        color: #374151;
+      }
+    }
+
+    .document-link {
+      color: #0c1892;
+      font-weight: 600;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+
+      &:hover {
+        text-decoration: underline;
+      }
+
+      &::after {
+        content: '↗';
+        font-size: 12px;
+      }
+    }
+  }
+}
+
 // Responsive adjustments
 @media (max-width: 640px) {
   .modal-content {
@@ -501,6 +595,14 @@
     .deeplink-input,
     .copy-btn {
       width: 100%;
+    }
+  }
+
+  .agent-info-section {
+    padding: 20px;
+
+    .agent-info-grid {
+      grid-template-columns: 1fr;
     }
   }
 }
