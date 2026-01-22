@@ -31,93 +31,55 @@
   >
     <!-- property details -->
     <div class="property-details">
-      <div class="property-info">
-        <div class="property-title-location">
-          <span class="property-title">{{
-            lang == "ar" ? property.name_ar : property.name_en
-          }}</span>
-          <!-- <span class="property-location">
-            <img src="/assets/icons/property-location.svg" alt="" />
-            <span> {{ property.district }},{{ property.city }} </span>
-          </span> -->
-        </div>
-
-        <div class="property-rent-date">
-          <span class="property-rent">
-            {{ property.annual_rent | number }}
-            <span>{{ "SAR" | translate }}</span>
-          </span>
-          <span class="property-date">
-            <img src="/assets/icons/date-icon.svg" alt="date-icon" />
-            {{ "Posted on" | translate }}
-            {{ property.created_at }}
-          </span>
-        </div>
+      <div class="property-header">
+        <span class="property-title">{{
+          lang == "ar" ? property.name_ar : property.name_en
+        }}</span>
       </div>
 
-      <!-- <div class="property-includes">
-        <div class="property-includes-item">
-          <img src="/assets/icons/bed.svg" alt="bed icon" />
-          {{ property?.bedrooms }} {{ "Bed" | translate }}
-        </div>
-        <div class="property-includes-item">
-          <img src="/assets/icons/bath.svg" alt="bath icon" />
-          {{ property?.bathrooms }} {{ "Bath" | translate }}
-        </div>
-        <div class="property-includes-item">
-          <img src="/assets/icons/location.svg" alt="location icon" />
-          {{ property.area }}
-          {{ "m²" | translate }}
-        </div>
-        <div class="property-includes-item">
-          <img src="/assets/icons/parking.svg" alt="" />
-          {{
-            hasParking() ? ("Parking" | translate) : ("No Parking" | translate)
-          }}
-        </div>
-      </div> -->
-
-      <div class="property-deposit-license">
-        <div class="property-deposit-license-item">
+      <div class="property-info-grid">
+        <!-- Deposit Amount -->
+        <div class="property-info-item">
           <img src="/assets/icons/deposit.svg" alt="deposit icon" />
           <div>
-            <span class="deposit-label">{{
-              "Deposit Amount" | translate
-            }}</span>
-            <span class="deposit-value">
+            <span class="info-label">{{ "Deposit Amount" | translate }}</span>
+            <span class="info-value">
               {{ property.deposit_amount | number }}
               {{ "SAR" | translate }}
             </span>
           </div>
         </div>
-        <div class="property-deposit-license-item">
-          <img src="/assets/icons/adv.svg" alt="adv icon" />
+
+        <!-- Annual Rent (Price) -->
+        <div class="property-info-item">
+          <img src="/assets/icons/fal.svg" alt="rent icon" />
           <div>
-            <span class="license-label">{{ "Adv. License" | translate }}</span>
-            <span class="license-value">
-              {{ property.ad_number }}
+            <span class="info-label">{{ "Annual Rent" | translate }}</span>
+            <span class="info-value highlight">
+              {{ property.annual_rent | number }}
+              {{ "SAR" | translate }}
             </span>
           </div>
         </div>
-        <div class="property-deposit-license-item">
-          <img src="/assets/icons/fal.svg" alt="" />
+
+        <!-- Publication Date -->
+        <div class="property-info-item">
+          <img src="/assets/icons/date-icon.svg" alt="date-icon" />
           <div>
-            <span class="license-label">{{
-              "FAL License ID" | translate
-            }}</span>
-            <span class="license-value">
+            <span class="info-label">{{ "Posted on" | translate }}</span>
+            <span class="info-value">
+              {{ property.created_at | date:'yyyy-MM-dd' }}
+            </span>
+          </div>
+        </div>
+
+        <!-- FAL License -->
+        <div class="property-info-item">
+          <img src="/assets/icons/fal.svg" alt="fal icon" />
+          <div>
+            <span class="info-label">{{ "FAL License ID" | translate }}</span>
+            <span class="info-value">
               {{ property.fal_number }}
-            </span>
-          </div>
-        </div>
-        <div class="property-deposit-license-item">
-          <img src="/assets/icons/date-blue.svg" alt="" />
-          <div>
-            <span class="availability-label">{{
-              "Available From" | translate
-            }}</span>
-            <span class="availability-value">
-              {{ property.available_from }}
             </span>
           </div>
         </div>
@@ -129,12 +91,6 @@
       <div *ngFor="let image of property.images" class="property-image">
         <img [src]="image.url" [alt]="property.title + ' image'" />
       </div>
-    </div>
-
-    <!-- property map -->
-    <div class="property-map">
-      <h3>{{ "Location" | translate }}</h3>
-      <app-map [lat]="property.latitude" [lng]="property.longitude"></app-map>
     </div>
 
     <!-- Agent Information Section -->
