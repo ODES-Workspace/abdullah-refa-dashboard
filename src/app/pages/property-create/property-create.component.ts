@@ -7,7 +7,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { Router } from '@angular/router';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import * as L from 'leaflet';
 import {
   PropertiesService,
@@ -38,7 +38,16 @@ export class PropertyCreateComponent implements OnInit, AfterViewInit {
   imageUploadError: string | null = null;
   formatFieldName(field: string): string {
     // Replace underscores with spaces and capitalize each word
-    return field.replace(/_/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
+    const formatted = field.replace(/_/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
+    // Try to get translation for the formatted field name
+    const translated = this.translateService.instant(formatted);
+    return translated !== formatted ? translated : formatted;
+  }
+
+  translateErrorMessage(message: string): string {
+    // Try to get translation for the error message
+    const translated = this.translateService.instant(message);
+    return translated !== message ? translated : message;
   }
   backendError: string | null = null;
   backendFieldErrors: { [key: string]: string[] } = {};
@@ -66,7 +75,8 @@ export class PropertyCreateComponent implements OnInit, AfterViewInit {
     private propertyCategoriesService: PropertyCategoriesService,
     private amenitiesService: AmenitiesService,
     private languageService: LanguageService,
-    private toastService: ToastService
+    private toastService: ToastService,
+    private translateService: TranslateService
   ) {
     this.propertyForm = this.fb.group({
       propertyName: [''],
@@ -500,18 +510,24 @@ export class PropertyCreateComponent implements OnInit, AfterViewInit {
           },
           error: (error) => {
             console.error('Error creating property:', error);
-            this.backendError =
-              error?.error?.message ||
+            const errorMessage = error?.error?.message ||
               'Failed to create property. Please try again.';
-            this.backendFieldErrors = error?.error?.errors || {};
-            // this.toastService.showError('Failed to create property. Please try again.');
+            this.backendError = this.translateErrorMessage(errorMessage);
+            // Translate field errors
+            const rawErrors = error?.error?.errors || {};
+            this.backendFieldErrors = {};
+            for (const key of Object.keys(rawErrors)) {
+              this.backendFieldErrors[key] = rawErrors[key].map((msg: string) => 
+                this.translateErrorMessage(msg)
+              );
+            }
           },
         });
       } catch (error) {
         console.error('Error preparing form data:', error);
-        this.backendError =
-          'Failed to prepare property data. Please try again.';
-        // this.toastService.showError('Failed to prepare property data. Please try again.');
+        this.backendError = this.translateErrorMessage(
+          'Failed to prepare property data. Please try again.'
+        );
       }
     } else {
       // Mark all controls as touched to show validation errors

@@ -382,6 +382,12 @@ export class PropertyEditComponent implements OnInit, AfterViewInit {
     this.errorMessage = '';
   }
 
+  translateErrorMessage(message: string): string {
+    // Try to get translation for the error message
+    const translated = this.translate.instant(message);
+    return translated !== message ? translated : message;
+  }
+
   onSubmit(): void {
     // Clear previous error messages
     this.clearError();
@@ -514,8 +520,8 @@ export class PropertyEditComponent implements OnInit, AfterViewInit {
                 const fieldErrorMessages = fieldErrors[firstField];
 
                 if (fieldErrorMessages && fieldErrorMessages.length > 0) {
-                  // Display the specific field error message
-                  errorMessage = fieldErrorMessages[0];
+                  // Display the specific field error message (translated)
+                  errorMessage = this.translateErrorMessage(fieldErrorMessages[0]);
                 } else {
                   errorMessage =
                     this.currentLang === 'ar'
@@ -529,8 +535,8 @@ export class PropertyEditComponent implements OnInit, AfterViewInit {
                     : 'Please check your input. Some fields may be invalid';
               }
             } else if (error.error && error.error.message) {
-              // Use the general error message from API
-              errorMessage = error.error.message;
+              // Use the general error message from API (translated)
+              errorMessage = this.translateErrorMessage(error.error.message);
             } else {
               errorMessage =
                 this.currentLang === 'ar'

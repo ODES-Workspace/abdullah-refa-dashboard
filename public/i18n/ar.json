@@ -572,5 +572,21 @@
   "Loading properties...": "جاري تحميل العقارات...",
   "Choose a property...": "اختر عقار...",
   "Selected Property": "العقار المحدد",
-  "Change": "تغيير"
+  "Change": "تغيير",
+  "Annual Rent (SAR)": "الإيجار السنوي (ريال)",
+  "Enter city": "أدخل المدينة",
+  "City is required": "المدينة مطلوبة",
+  "Failed to create property. Please try again.": "فشل في إنشاء العقار. يرجى المحاولة مرة أخرى.",
+  "Failed to prepare property data. Please try again.": "فشل في تجهيز بيانات العقار. يرجى المحاولة مرة أخرى.",
+  "Name En": "اسم العقار (بالإنجليزية)",
+  "Name Ar": "اسم العقار (بالعربية)",
+  "Property Category Id": "فئة العقار",
+  "Property Type Id": "نوع العقار",
+  "The name en field is required.": "حقل اسم العقار بالإنجليزية مطلوب.",
+  "The name ar field is required.": "حقل اسم العقار بالعربية مطلوب.",
+  "The property category id field is required.": "حقل فئة العقار مطلوب.",
+  "The property type id field is required.": "حقل نوع العقار مطلوب.",
+  "The annual rent field is required.": "حقل الإيجار السنوي مطلوب.",
+  "The deposit amount field is required.": "حقل مبلغ الوديعة مطلوب.",
+  "The city field is required.": "حقل المدينة مطلوب."
 }
