@@ -315,6 +315,17 @@
               </div>
             </div>
           </div>
+          <!-- Debt details shown only if has_debts is true -->
+          <ng-container *ngIf="rentRequest?.has_debts === true">
+            <div class="application-assessment-card--content--item">
+              <span> {{ "Monthly Debt Amount" | translate }} </span>
+              {{ rentRequest?.debts_monthly_amount || "-" }} {{ "SAR" | translate }}
+            </div>
+            <div class="application-assessment-card--content--item">
+              <span> {{ "Remaining Debt Months" | translate }} </span>
+              {{ rentRequest?.debts_remaining_months || "-" }} {{ "Months" | translate }}
+            </div>
+          </ng-container>
         </div>
         <ng-template #employmentEdit>
           <div class="application-assessment-card--content">
