@@ -434,9 +434,18 @@ export class PropertyEditComponent implements OnInit, AfterViewInit {
       .filter((img) => img.isNew && !!img.url && img.url.startsWith('data:'))
       .map((img) => img.url);
 
+    // Handle name duplication: if one is empty, use the other
+    let nameEn = formValue.propertyName?.trim() || '';
+    let nameAr = formValue.propertyNameAr?.trim() || '';
+    if (!nameEn && nameAr) {
+      nameEn = nameAr;
+    } else if (!nameAr && nameEn) {
+      nameAr = nameEn;
+    }
+
     const propertyData: any = {
-      name_en: formValue.propertyName,
-      name_ar: formValue.propertyNameAr,
+      name_en: nameEn,
+      name_ar: nameAr,
       description_en: formValue.description,
       description_ar: formValue.descriptionAr,
       property_category_id: formValue.propertyCategory,
