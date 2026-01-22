@@ -232,8 +232,13 @@ export class ProfileAgentComponent implements OnInit {
     if (errors.length === 0 && payload?.message) {
       errors.push(payload.message);
     }
+    // Check for HTTP error messages and replace with user-friendly message
     if (errors.length === 0 && typeof err?.message === 'string') {
-      errors.push(err.message);
+      if (err.message.startsWith('Http failure response')) {
+        errors.push('Connection error. Please check your internet and try again.');
+      } else {
+        errors.push(err.message);
+      }
     }
     if (errors.length === 0) {
       errors.push('An unexpected error occurred');
