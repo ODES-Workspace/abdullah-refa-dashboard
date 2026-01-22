@@ -600,3 +600,11 @@
 a {
   color: white;
 }
+
+// Readonly field styling
+.readonly-field {
+  background-color: #f5f5f5 !important;
+  color: #6b7280 !important;
+  cursor: not-allowed !important;
+  border-color: #e5e7eb !important;
+}

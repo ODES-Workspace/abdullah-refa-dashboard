@@ -525,21 +525,27 @@
               <span>{{ "Agent Fees" | translate }} </span>
               <input
                 type="number"
-                [(ngModel)]="reviseForm!.additional_charges.agent_fees"
+                [ngModel]="reviseForm!.additional_charges.agent_fees"
+                readonly
+                class="readonly-field"
               />
             </div>
             <div class="application-assessment-card--content--item">
               <span>{{ "Eijar Fees" | translate }} </span>
               <input
                 type="number"
-                [(ngModel)]="reviseForm!.additional_charges.eijar_fees"
+                [ngModel]="reviseForm!.additional_charges.eijar_fees"
+                readonly
+                class="readonly-field"
               />
             </div>
             <div class="application-assessment-card--content--item">
               <span>{{ "Processing Fees" | translate }} </span>
               <input
                 type="number"
-                [(ngModel)]="reviseForm!.additional_charges.processing_fees"
+                [ngModel]="reviseForm!.additional_charges.processing_fees"
+                readonly
+                class="readonly-field"
               />
             </div>
           </div>
