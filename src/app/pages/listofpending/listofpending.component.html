@@ -401,7 +401,7 @@
           >
             <span class="label">{{ "IBAN Verification Remarks" | translate }}:</span>
             <span class="value iban-remarks">{{
-              selectedAgent.agent_profile.latest_iban_request.remarks
+              selectedAgent.agent_profile.latest_iban_request?.remarks
             }}</span>
           </div>
         </div>
