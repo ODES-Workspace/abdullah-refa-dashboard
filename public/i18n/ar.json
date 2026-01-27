@@ -591,5 +591,11 @@
   "The city field is required.": "حقل المدينة مطلوب.",
   "Agent Information": "معلومات مكتب العقار",
   "Agent Name": "اسم مكتب العقار",
-  "Agency Address": "عنوان مكتب العقار"
+  "Agency Address": "عنوان مكتب العقار",
+  "IBAN Status": "حالة الآيبان",
+  "IBAN Verified": "صحيح",
+  "IBAN Not Verified": "غير صحيح",
+  "IBAN Verification Status": "حالة التحقق من الآيبان",
+  "IBAN Verification Remarks": "ملاحظات التحقق من الآيبان",
+  "N/A": "غير متاح"
 }

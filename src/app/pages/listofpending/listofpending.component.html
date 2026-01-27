@@ -67,6 +67,16 @@
       </span>
     </div>
     <div>
+      <span>{{ "IBAN Status" | translate }}</span>
+      <span>
+        <img
+          src="/assets/icons/sort-img.svg"
+          alt=""
+          (click)="sortBy('ibanVerificationStatus')"
+        />
+      </span>
+    </div>
+    <div>
       <span>{{ "Date added" | translate }}</span>
       <span>
         <img
@@ -115,6 +125,11 @@
       <div [class]="getStatusClass(item.status)">
         <span>
           {{ item.status | translate }}
+        </span>
+      </div>
+      <div [class]="getIbanStatusClass(item.ibanVerificationStatus)">
+        <span [title]="item.ibanRemarks || ''">
+          {{ getIbanStatusLabel(item.ibanVerificationStatus) | translate }}
         </span>
       </div>
       <div>{{ item.DateAdded }}</div>
@@ -358,6 +373,35 @@
             <span class="label">{{ "IBAN Number" | translate }}:</span>
             <span class="value">{{
               selectedAgent.agent_profile.iban_number
+            }}</span>
+          </div>
+
+          <!-- IBAN Verification Status -->
+          <div class="info-item">
+            <span class="label">{{ "IBAN Verification Status" | translate }}:</span>
+            <span
+              class="value"
+              [ngClass]="{
+                'iban-status-verified': selectedAgent.agent_profile.latest_iban_request?.is_valid === 1,
+                'iban-status-not-verified': selectedAgent.agent_profile.latest_iban_request?.is_valid === 0,
+                'iban-status-na': !selectedAgent.agent_profile.latest_iban_request
+              }"
+            >
+              <ng-container *ngIf="selectedAgent.agent_profile.latest_iban_request; else noIbanRequest">
+                {{ selectedAgent.agent_profile.latest_iban_request.is_valid === 1 ? ('IBAN Verified' | translate) : ('IBAN Not Verified' | translate) }}
+              </ng-container>
+              <ng-template #noIbanRequest>{{ "N/A" | translate }}</ng-template>
+            </span>
+          </div>
+
+          <!-- IBAN Verification Remarks -->
+          <div
+            class="info-item"
+            *ngIf="selectedAgent.agent_profile.latest_iban_request?.remarks"
+          >
+            <span class="label">{{ "IBAN Verification Remarks" | translate }}:</span>
+            <span class="value iban-remarks">{{
+              selectedAgent.agent_profile.latest_iban_request.remarks
             }}</span>
           </div>
         </div>

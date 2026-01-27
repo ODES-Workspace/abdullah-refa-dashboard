@@ -1,4 +1,4 @@
-import { NgFor, NgIf } from '@angular/common';
+import { NgFor, NgIf, NgClass } from '@angular/common';
 import { Component, OnInit, HostListener } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
@@ -24,11 +24,13 @@ interface TableItem {
   active: number;
   role: string | null;
   type: string;
+  ibanVerificationStatus: 'verified' | 'not_verified' | 'not_available';
+  ibanRemarks: string | null;
 }
 
 @Component({
   selector: 'app-listofpending',
-  imports: [FormsModule, NgFor, NgIf, TranslateModule],
+  imports: [FormsModule, NgFor, NgIf, NgClass, TranslateModule],
   templateUrl: './listofpending.component.html',
   styleUrl: './listofpending.component.scss',
 })
@@ -194,19 +196,35 @@ export class ListofpendingComponent implements OnInit {
   }
 
   private mapAgentsToTableItems(agents: Agent[]): TableItem[] {
-    return agents.map((agent) => ({
-      id: agent.id,
-      name: agent.name,
-      mobile: agent.phone_number,
-      email: agent.email,
-      status: 'Pending', // All agents here are pending
-      angency: agent.type === 'agent' ? 'Agency' : agent.type,
-      DateAdded: this.formatDate(agent.created_at),
-      DateModified: this.formatDate(agent.updated_at),
-      active: agent.active,
-      role: agent.role,
-      type: agent.type,
-    }));
+    return agents.map((agent) => {
+      // Determine IBAN verification status
+      let ibanVerificationStatus: 'verified' | 'not_verified' | 'not_available' =
+        'not_available';
+      let ibanRemarks: string | null = null;
+
+      if (agent.agent_profile?.latest_iban_request) {
+        const ibanRequest = agent.agent_profile.latest_iban_request;
+        ibanVerificationStatus =
+          ibanRequest.is_valid === 1 ? 'verified' : 'not_verified';
+        ibanRemarks = ibanRequest.remarks;
+      }
+
+      return {
+        id: agent.id,
+        name: agent.name,
+        mobile: agent.phone_number,
+        email: agent.email,
+        status: 'Pending', // All agents here are pending
+        angency: agent.type === 'agent' ? 'Agency' : agent.type,
+        DateAdded: this.formatDate(agent.created_at),
+        DateModified: this.formatDate(agent.updated_at),
+        active: agent.active,
+        role: agent.role,
+        type: agent.type,
+        ibanVerificationStatus,
+        ibanRemarks,
+      };
+    });
   }
 
   private formatDate(dateString: string): string {
@@ -292,6 +310,30 @@ export class ListofpendingComponent implements OnInit {
         return 'status-pending';
       default:
         return '';
+    }
+  }
+
+  getIbanStatusClass(status: string): string {
+    switch (status) {
+      case 'verified':
+        return 'iban-verified';
+      case 'not_verified':
+        return 'iban-not-verified';
+      case 'not_available':
+      default:
+        return 'iban-not-available';
+    }
+  }
+
+  getIbanStatusLabel(status: string): string {
+    switch (status) {
+      case 'verified':
+        return 'IBAN Verified';
+      case 'not_verified':
+        return 'IBAN Not Verified';
+      case 'not_available':
+      default:
+        return 'N/A';
     }
   }
 

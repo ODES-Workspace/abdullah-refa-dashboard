@@ -1,22 +1,22 @@
 .table {
   &-titles {
     grid-template-columns:
-      minmax(74px, 1fr) minmax(144px, 1fr) minmax(150px, 1fr)
-      minmax(150px, 1fr) minmax(140px, 1fr) minmax(118px, 1fr) minmax(
-        131px,
-        1fr
+      minmax(60px, 0.5fr) minmax(130px, 1fr) minmax(130px, 1fr)
+      minmax(140px, 1fr) minmax(100px, 0.8fr) minmax(90px, 0.7fr) minmax(
+        110px,
+        0.9fr
       )
-      minmax(150px, 1fr) minmax(80px, 1fr);
+      minmax(100px, 0.8fr) minmax(100px, 0.8fr) minmax(70px, 0.5fr);
   }
 
   &-row {
     grid-template-columns:
-      minmax(74px, 1fr) minmax(144px, 1fr) minmax(150px, 1fr)
-      minmax(150px, 1fr) minmax(140px, 1fr) minmax(118px, 1fr) minmax(
-        131px,
-        1fr
+      minmax(60px, 0.5fr) minmax(130px, 1fr) minmax(130px, 1fr)
+      minmax(140px, 1fr) minmax(100px, 0.8fr) minmax(90px, 0.7fr) minmax(
+        110px,
+        0.9fr
       )
-      minmax(150px, 1fr) minmax(80px, 1fr);
+      minmax(100px, 0.8fr) minmax(100px, 0.8fr) minmax(70px, 0.5fr);
   }
 }
 
@@ -53,6 +53,62 @@
     border: 1px solid #f6b10033;
     font-size: 11px;
   }
+}
+
+// IBAN verification status colors
+.iban-verified {
+  span {
+    color: #059669;
+    background-color: #ecfdf5;
+    border-radius: 4px;
+    padding: 8px;
+    border: 1px solid #05966827;
+    font-size: 11px;
+    cursor: default;
+  }
+}
+
+.iban-not-verified {
+  span {
+    color: #dc2626;
+    background-color: #fef2f2;
+    border-radius: 4px;
+    padding: 8px;
+    border: 1px solid #dc262621;
+    font-size: 11px;
+    cursor: help;
+  }
+}
+
+.iban-not-available {
+  span {
+    color: #6c757d;
+    background-color: #f8f9fa;
+    border-radius: 4px;
+    padding: 8px;
+    border: 1px solid #6c757d33;
+    font-size: 11px;
+  }
+}
+
+// Modal IBAN status styles
+.iban-status-verified {
+  color: #059669 !important;
+  font-weight: 500;
+}
+
+.iban-status-not-verified {
+  color: #dc2626 !important;
+  font-weight: 500;
+}
+
+.iban-status-na {
+  color: #6c757d !important;
+}
+
+.iban-remarks {
+  color: #dc2626 !important;
+  font-style: italic;
 }
 
 // Document link styling

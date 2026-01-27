@@ -23,6 +23,36 @@ export interface Agent {
   created_at: string;
   updated_at: string;
   city: any | null;
+  agent_profile?: {
+    id: number;
+    user_id: number;
+    agency_name: string;
+    company_registration_id: string;
+    fal_license_number: string;
+    fal_document: string;
+    agency_address_line_1: string;
+    agency_address_line_2: string;
+    city: string;
+    country: string;
+    postal_code: string;
+    account_number: string;
+    bank_name: string;
+    iban_number: string;
+    created_at: string;
+    updated_at: string;
+    latest_iban_request?: IbanRequest;
+  } | null;
+}
+
+// Interface for IBAN verification request
+export interface IbanRequest {
+  id: number;
+  agent_profile_id: number;
+  iban_number: string;
+  is_valid: number;
+  remarks: string | null;
+  created_at: string;
+  updated_at: string;
 }
 
 // Interface for Agent with Profile (for detailed view)
@@ -58,6 +88,7 @@ export interface AgentWithProfile {
     iban_number: string;
     created_at: string;
     updated_at: string;
+    latest_iban_request?: IbanRequest;
   };
 }
 

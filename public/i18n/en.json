@@ -519,5 +519,11 @@
   "Deposit Amount": "Deposit Amount",
   "Agent Information": "Agent Information",
   "Agent Name": "Agent Name",
-  "Agency Address": "Agency Address"
+  "Agency Address": "Agency Address",
+  "IBAN Status": "IBAN Status",
+  "IBAN Verified": "Valid",
+  "IBAN Not Verified": "Invalid",
+  "IBAN Verification Status": "IBAN Verification Status",
+  "IBAN Verification Remarks": "IBAN Verification Remarks",
+  "N/A": "N/A"
 }
