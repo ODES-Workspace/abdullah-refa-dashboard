@@ -23,7 +23,8 @@ interface TableItem {
   cityId?: number;
   startDate: string;
   endOfContract: string;
-  rentalValue: string;
+  annualRent: string;
+  monthlyRentAmount: string;
   status: string;
 }
 @Component({
@@ -253,7 +254,10 @@ export class ExistingContractComponent implements OnInit {
               cityId: c.rent_request?.city_id,
               startDate: c.start_date || '-',
               endOfContract: c.end_date || '-',
-              rentalValue: c.rent_request?.monthly_installment
+              annualRent: c.rent_request?.property?.annual_rent
+                ? Math.round(c.rent_request.property.annual_rent).toString()
+                : '-',
+              monthlyRentAmount: c.rent_request?.monthly_installment
                 ? Math.round(c.rent_request.monthly_installment).toString()
                 : '-',
               status: c.status || '-',

@@ -3,30 +3,32 @@
 
   &-titles {
     grid-template-columns:
-      minmax(113px, 1fr)
-      minmax(147px, 1fr)
-      minmax(149px, 1fr)
-      minmax(140px, 1fr)
-      minmax(115px, 1fr)
-      minmax(115px, 1fr)
-      minmax(200px, 1fr)
-      minmax(125px, 1fr)
-      minmax(141px, 1fr)
-      minmax(80px, 80px);
+      minmax(100px, 1fr)
+      minmax(120px, 1fr)
+      minmax(100px, 1fr)
+      minmax(110px, 1fr)
+      minmax(100px, 1fr)
+      minmax(100px, 1fr)
+      minmax(110px, 1fr)
+      minmax(130px, 1fr)
+      minmax(100px, 1fr)
+      minmax(110px, 1fr)
+      minmax(70px, 70px);
   }
 
   &-row {
     grid-template-columns:
-      minmax(113px, 1fr)
-      minmax(147px, 1fr)
-      minmax(149px, 1fr)
-      minmax(140px, 1fr)
-      minmax(115px, 1fr)
-      minmax(115px, 1fr)
-      minmax(200px, 1fr)
-      minmax(125px, 1fr)
-      minmax(141px, 1fr)
-      minmax(80px, 80px);
+      minmax(100px, 1fr)
+      minmax(120px, 1fr)
+      minmax(100px, 1fr)
+      minmax(110px, 1fr)
+      minmax(100px, 1fr)
+      minmax(100px, 1fr)
+      minmax(110px, 1fr)
+      minmax(130px, 1fr)
+      minmax(100px, 1fr)
+      minmax(110px, 1fr)
+      minmax(70px, 70px);
     position: relative;
   }
 

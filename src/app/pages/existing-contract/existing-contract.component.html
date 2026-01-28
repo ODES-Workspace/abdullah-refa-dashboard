@@ -77,12 +77,22 @@
       </span>
     </div>
     <div>
-      <span>{{ "Rental Value" | translate }}</span>
+      <span>{{ "Annual Rent" | translate }}</span>
       <span>
         <img
           src="/assets/icons/sort-img.svg"
           alt=""
-          (click)="sortBy('rentalValue')"
+          (click)="sortBy('annualRent')"
+        />
+      </span>
+    </div>
+    <div>
+      <span>{{ "Monthly Rent Amount" | translate }}</span>
+      <span>
+        <img
+          src="/assets/icons/sort-img.svg"
+          alt=""
+          (click)="sortBy('monthlyRentAmount')"
         />
       </span>
     </div>
@@ -136,11 +146,20 @@
       <div>{{ item.propertyType }}</div>
       <div>{{ item.location }}</div>
       <div>
-        <div class="turncated-text" title="{{ item.rentalValue }}">
+        <div class="turncated-text" title="{{ item.annualRent }}">
           {{
-            item.rentalValue !== "-"
-              ? item.rentalValue + " " + ("SAR" | translate)
-              : item.rentalValue
+            item.annualRent !== "-"
+              ? item.annualRent + " " + ("SAR" | translate)
+              : item.annualRent
+          }}
+        </div>
+      </div>
+      <div>
+        <div class="turncated-text" title="{{ item.monthlyRentAmount }}">
+          {{
+            item.monthlyRentAmount !== "-"
+              ? item.monthlyRentAmount + " " + ("SAR" | translate)
+              : item.monthlyRentAmount
           }}
         </div>
       </div>
