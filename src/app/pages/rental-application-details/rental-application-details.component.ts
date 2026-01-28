@@ -238,54 +238,56 @@ export class RentalApplicationDetailsComponent implements OnInit {
     const numInstallments: number = Number(rr.number_of_installments) || 0;
     const monthlyInstallment: number =
       Number(rr.monthly_installment || rr.expected_monthly_cost) || 0;
-    const downPayment: number = Number(rr.down_payment) || 0;
     const annualRent: number = Number(rr.property?.annual_rent) || 0;
-
-    // Calculate sum of additional charges
-    const additionalCharges = rr.additional_charges || {};
-    const agentFees = Number(additionalCharges.agent_fees) || 0;
-    const eijarFees = Number(additionalCharges.eijar_fees) || 0;
-    const processingFees = Number(additionalCharges.processing_fees) || 0;
-    const sumAdditionalCharges = agentFees + eijarFees + processingFees;
-
-    // Total amount to be paid = annual rent + additional charges
-    const totalAmount = annualRent + sumAdditionalCharges;
 
     const createdAt: Date = rr.created_at
       ? new Date(rr.created_at)
       : new Date();
 
     const schedule: ScheduleItem[] = [];
-    let remainingBalance = totalAmount;
 
-    // First row: Down payment (immediate due date)
-    if (downPayment > 0) {
-      remainingBalance = Math.max(0, totalAmount - downPayment);
-      schedule.push({
-        dueDate: createdAt.toISOString().split('T')[0],
-        amount: downPayment,
-        balance: remainingBalance,
-        status: 'upcoming',
-      });
-    }
+    // Calculate first month payment based on the formula:
+    // If annual_rent - (monthly_installment * 12) = 0, first month = monthly_installment
+    // If annual_rent - (monthly_installment * 12) > 0, first month = remainder + monthly_installment
+    const remainder = annualRent - (monthlyInstallment * 12);
+    const firstMonthPayment = remainder > 0 
+      ? remainder + monthlyInstallment 
+      : monthlyInstallment;
 
-    // Subsequent rows: Monthly installments
+    // Total amount for the loan is the annual rent (not including one-time fees)
+    let remainingBalance = annualRent;
+
+    // Start from the first month (creation date)
     let currentDate = new Date(createdAt);
-    currentDate.setMonth(currentDate.getMonth() + 1); // Start from next month
 
-    while (remainingBalance > 0 && schedule.length < numInstallments + 1) {
-      const paymentAmount = Math.min(monthlyInstallment, remainingBalance);
-      remainingBalance = Math.max(0, remainingBalance - paymentAmount);
-
+    // First month payment
+    if (numInstallments > 0 && monthlyInstallment > 0) {
+      remainingBalance = Math.max(0, remainingBalance - firstMonthPayment);
       schedule.push({
         dueDate: currentDate.toISOString().split('T')[0],
-        amount: paymentAmount,
+        amount: firstMonthPayment,
         balance: remainingBalance,
         status: 'upcoming',
       });
 
       // Move to next month
       currentDate.setMonth(currentDate.getMonth() + 1);
+
+      // Subsequent months: regular monthly installments
+      while (remainingBalance > 0 && schedule.length < numInstallments) {
+        const paymentAmount = Math.min(monthlyInstallment, remainingBalance);
+        remainingBalance = Math.max(0, remainingBalance - paymentAmount);
+
+        schedule.push({
+          dueDate: currentDate.toISOString().split('T')[0],
+          amount: paymentAmount,
+          balance: remainingBalance,
+          status: 'upcoming',
+        });
+
+        // Move to next month
+        currentDate.setMonth(currentDate.getMonth() + 1);
+      }
     }
 
     // Build a minimal application model for the schedule tab

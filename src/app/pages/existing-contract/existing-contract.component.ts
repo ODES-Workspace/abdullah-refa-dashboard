@@ -252,8 +252,8 @@ export class ExistingContractComponent implements OnInit {
                 ? this.getCityName(c.rent_request.city_id)
                 : c.rent_request?.property?.city || '-',
               cityId: c.rent_request?.city_id,
-              startDate: c.start_date || '-',
-              endOfContract: c.end_date || '-',
+              startDate: this.formatDate(c.start_date),
+              endOfContract: this.formatDate(c.end_date),
               annualRent: c.rent_request?.property?.annual_rent
                 ? Math.round(c.rent_request.property.annual_rent).toString()
                 : '-',
@@ -311,6 +311,13 @@ export class ExistingContractComponent implements OnInit {
     if (!city) return '-';
 
     return this.currentLang === 'ar' ? city.name_ar : city.name_en;
+  }
+
+  private formatDate(dateString: string | null): string {
+    if (!dateString) return '-';
+    const date = new Date(dateString);
+    if (isNaN(date.getTime())) return '-';
+    return date.toLocaleDateString('en-GB'); // DD/MM/YYYY format
   }
 
   onSearch(): void {
