@@ -39,7 +39,7 @@ export class AdmindashboardComponent implements OnInit {
       route: '/admin/tenants',
     },
     {
-      title: 'Total Users',
+      title: 'Total Customers',
       value: 0,
       icon: '/assets/icons/users-icon.svg',
       route: '/admin/users',
@@ -112,7 +112,7 @@ export class AdmindashboardComponent implements OnInit {
         route: '/admin/tenants',
       },
       {
-        title: 'Total Users',
+        title: 'Total Customers',
         value: data.total_users,
         icon: '/assets/icons/users-icon.svg',
         route: '/admin/users',
