@@ -104,13 +104,21 @@
 
   <!-- Table pagination -->
   <div class="table-pagination" *ngIf="!isLoading && filteredItems.length > 0">
-    <div></div>
+    <div class="table-pagination--show">
+      <span>{{ "Show" | translate }}</span>
+      <select [(ngModel)]="itemsPerPage" (change)="updatePagination()">
+        <option *ngFor="let num of [10, 20, 30]" [value]="num">
+          {{ num }}
+        </option>
+      </select>
+      <span>{{ "per page" | translate }}</span>
+    </div>
 
     <div class="table-pagination--pages">
       <div class="table-pagination--pages--count">
-        {{ apiFrom || 0 }}-{{ apiTo || 0 }}
+        {{ paginationStart + 1 }}-{{ paginationEnd }}
         {{ "of" | translate }}
-        {{ apiTotal }}
+        {{ filteredItems.length }}
       </div>
 
       <div class="table-pagination--pages--buttons" dir="ltr">

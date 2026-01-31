@@ -5,9 +5,7 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import {
   CustomersService,
   Customer,
-  CustomersResponse,
 } from '../../../services/customers.service';
-import { CitiesService, City } from '../../../services/cities.service';
 import { AdminService } from '../../../services/admin.service';
 
 interface TableItem {
@@ -38,7 +36,6 @@ export class UsersComponent implements OnInit {
 
   get canReadUsers(): boolean {
     // For now, allow all admins to read users
-    // Can be updated later if specific permissions are needed
     return this.adminActive === 1;
   }
 
@@ -47,17 +44,9 @@ export class UsersComponent implements OnInit {
   filteredItems: TableItem[] = [];
   paginatedItems: TableItem[] = [];
   currentPage = 1;
+  itemsPerPage = 10;
   isLoading = false;
 
-  // Server-side pagination metadata
-  apiTotal: number = 0;
-  apiPerPage: number = 10;
-  apiLastPage: number = 1;
-  apiFrom: number | null = null;
-  apiTo: number | null = null;
-
-  // Cities data
-  cities: City[] = [];
   currentLang: 'en' | 'ar' =
     (localStorage.getItem('lang') as 'en' | 'ar') || 'en';
 
@@ -70,7 +59,7 @@ export class UsersComponent implements OnInit {
   selectedUser: TableItem | null = null;
 
   get totalPages(): number {
-    return this.apiLastPage || 1;
+    return Math.ceil(this.filteredItems.length / this.itemsPerPage);
   }
 
   get totalPagesArray(): number[] {
@@ -78,23 +67,25 @@ export class UsersComponent implements OnInit {
   }
 
   get paginationStart(): number {
-    return this.apiFrom ? this.apiFrom - 1 : 0;
+    return (this.currentPage - 1) * this.itemsPerPage;
   }
 
   get paginationEnd(): number {
-    return this.apiTo ?? this.paginatedItems.length;
+    return Math.min(
+      this.paginationStart + this.itemsPerPage,
+      this.filteredItems.length
+    );
   }
 
   constructor(
     private customersService: CustomersService,
-    private citiesService: CitiesService,
     private translate: TranslateService,
     private adminService: AdminService
   ) {}
 
   ngOnInit(): void {
     this.isLoading = true;
-    this.loadReferenceData(() => this.loadPage(1));
+    this.loadCustomers();
 
     // Get admin id from user_data in localStorage and fetch admin details
     try {
@@ -130,30 +121,22 @@ export class UsersComponent implements OnInit {
       const newLang = event.lang === 'ar' ? 'ar' : 'en';
       if (newLang !== this.currentLang) {
         this.currentLang = newLang;
-        this.applyCityNamesFromMaps();
+        this.applyCityNames();
       }
     });
   }
 
-  private loadPage(page: number): void {
+  private loadCustomers(): void {
     this.isLoading = true;
-    this.customersService.getCustomers(page, this.apiPerPage).subscribe({
-      next: (response: CustomersResponse) => {
-        console.log('Customers API Response:', response);
-
-        // Update pagination metadata
-        this.apiTotal = response.total;
-        this.apiPerPage = response.per_page;
-        this.apiLastPage = response.last_page;
-        this.apiFrom = response.from ?? null;
-        this.apiTo = response.to ?? null;
-        this.currentPage = response.current_page;
+    this.customersService.getCustomers().subscribe({
+      next: (customers: Customer[]) => {
+        console.log('Customers API Response:', customers);
 
         // Map and assign data
-        const items = this.mapCustomersToTableItems(response.data);
+        const items = this.mapCustomersToTableItems(customers);
         this.allItems = items;
         this.filteredItems = [...items];
-        this.paginatedItems = [...items];
+        this.updatePagination();
         this.isLoading = false;
       },
       error: (error) => {
@@ -161,43 +144,21 @@ export class UsersComponent implements OnInit {
         this.allItems = [];
         this.filteredItems = [];
         this.paginatedItems = [];
-        this.apiTotal = 0;
-        this.apiLastPage = 1;
-        this.apiFrom = null;
-        this.apiTo = null;
         this.isLoading = false;
       },
     });
   }
 
-  private loadReferenceData(onComplete?: () => void): void {
-    this.citiesService.getCities().subscribe({
-      next: (citiesRes) => {
-        this.cities = citiesRes || [];
-        if (this.allItems && this.allItems.length > 0) {
-          this.applyCityNamesFromMaps();
-        }
-        if (onComplete) onComplete();
-      },
-      error: () => {
-        if (onComplete) onComplete();
-      },
-    });
+  private getCityName(customer: Customer): string {
+    if (!customer.city) return '-';
+    return this.currentLang === 'ar'
+      ? customer.city.name_ar
+      : customer.city.name_en;
   }
 
-  private getCityName(cityId: number): string {
-    const city = this.cities.find((c) => c.id === cityId);
-    if (!city) return '-';
-    return this.currentLang === 'ar' ? city.name_ar : city.name_en;
-  }
-
-  private applyCityNamesFromMaps(): void {
-    this.allItems = this.allItems.map((it) => ({
-      ...it,
-      city: it.cityId ? this.getCityName(it.cityId) : it.city,
-    }));
-    this.filteredItems = [...this.allItems];
-    this.paginatedItems = [...this.allItems];
+  private applyCityNames(): void {
+    // Re-load to get fresh city names based on language
+    this.loadCustomers();
   }
 
   private mapCustomersToTableItems(customers: Customer[]): TableItem[] {
@@ -206,9 +167,7 @@ export class UsersComponent implements OnInit {
       name: customer.name,
       mobile: customer.phone_number || '-',
       email: customer.email,
-      city: customer.city_id
-        ? this.getCityName(customer.city_id)
-        : customer.city?.name_en || '-',
+      city: this.getCityName(customer),
       cityId: customer.city_id ?? undefined,
       type: customer.type || '-',
       status: customer.active === 1 ? 'Active' : 'Inactive',
@@ -232,7 +191,8 @@ export class UsersComponent implements OnInit {
         item.mobile.toLowerCase().includes(searchTermLower) ||
         item.email.toLowerCase().includes(searchTermLower)
     );
-    this.paginatedItems = [...this.filteredItems];
+    this.currentPage = 1;
+    this.updatePagination();
   }
 
   sortBy(key: keyof TableItem): void {
@@ -256,24 +216,34 @@ export class UsersComponent implements OnInit {
       return 0;
     });
 
-    this.paginatedItems = [...this.filteredItems];
+    this.updatePagination();
+  }
+
+  updatePagination(): void {
+    this.paginatedItems = this.filteredItems.slice(
+      this.paginationStart,
+      this.paginationEnd
+    );
   }
 
   prevPage(): void {
     if (this.currentPage > 1) {
-      this.loadPage(this.currentPage - 1);
+      this.currentPage--;
+      this.updatePagination();
     }
   }
 
   nextPage(): void {
     if (this.currentPage < this.totalPages) {
-      this.loadPage(this.currentPage + 1);
+      this.currentPage++;
+      this.updatePagination();
     }
   }
 
   goToPage(page: number): void {
     if (page >= 1 && page <= this.totalPages) {
-      this.loadPage(page);
+      this.currentPage = page;
+      this.updatePagination();
     }
   }
 

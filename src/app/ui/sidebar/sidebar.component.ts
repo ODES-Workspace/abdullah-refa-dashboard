@@ -112,6 +112,15 @@ export class SidebarComponent implements OnInit {
       },
     },
     {
+      name: 'customers',
+      label: 'sidebar.customers',
+      route: '/admin/users',
+      icon: {
+        active: '/assets/icons/user-icon.svg',
+        inactive: '/assets/icons/user-icon.svg',
+      },
+    },
+    {
       name: 'agencies-owner',
       label: 'sidebar.agenciesOwner',
       route: '',

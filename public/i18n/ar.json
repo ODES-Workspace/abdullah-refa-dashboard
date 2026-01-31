@@ -58,7 +58,8 @@
     "terminated": "منتهي",
     "existing-contracts": "العقود الحالية",
     "settings": "الاعدادات",
-    "profile": "الملف الشخصي"
+    "profile": "الملف الشخصي",
+    "customers": "العملاء"
   },
   "Notifications": "الإشعارات",
   "NO_NOTIFICATIONS": "لا توجد إشعارات",
@@ -93,10 +94,8 @@
   "Total Contracts": "إجمالي العقود",
   "CONTRACT AMOUNTS": "مبالغ العقود",
   "REFA FEES": "رسوم REFA",
-
   "permission": "إذن",
   "Deleting...": "جاري الحذف...",
-
   "Enter password (leave blank to keep current)": "أدخل كلمة المرور (اتركها فارغة للاحتفاظ بالحالية)",
   "Request Status": "حالة الطلب",
   "Property Types": "نوع العقار",

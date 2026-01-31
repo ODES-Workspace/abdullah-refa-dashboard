@@ -1,8 +1,16 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { environment } from '../environments/environment';
+
+export interface CustomerCity {
+  id: number;
+  name_en: string;
+  name_ar: string;
+  created_at: string | null;
+  updated_at: string | null;
+}
 
 export interface Customer {
   id: number;
@@ -14,26 +22,11 @@ export interface Customer {
   city_id: number | null;
   email_verified_at: string | null;
   active: number;
+  agent_status: string | null;
   role: string | null;
   created_at: string;
   updated_at: string;
-  city: any | null;
-}
-
-export interface CustomersResponse {
-  current_page: number;
-  data: Customer[];
-  first_page_url: string;
-  from: number | null;
-  last_page: number;
-  last_page_url: string;
-  links: Array<{ url: string | null; label: string; active: boolean }>;
-  next_page_url: string | null;
-  path: string;
-  per_page: number;
-  prev_page_url: string | null;
-  to: number | null;
-  total: number;
+  city: CustomerCity | null;
 }
 
 @Injectable({
@@ -46,18 +39,12 @@ export class CustomersService {
 
   /**
    * Get list of customers (admin only)
-   * @param page - Page number
-   * @param perPage - Items per page
-   * @returns Observable of customers response
+   * @returns Observable of customers array
    */
-  getCustomers(page: number = 1, perPage: number = 10): Observable<CustomersResponse> {
+  getCustomers(): Observable<Customer[]> {
     const url = `${this.baseUrl}/admin/customers`;
-    let params = new HttpParams()
-      .set('page', page.toString())
-      .set('per_page', perPage.toString());
-
     return this.http
-      .get<CustomersResponse>(url, { params })
+      .get<Customer[]>(url)
       .pipe(catchError((error: HttpErrorResponse) => this.handleError(error)));
   }
 
