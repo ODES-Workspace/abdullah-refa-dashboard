@@ -1,0 +1,184 @@
+<div class="table" *ngIf="canReadUsers">
+  <!-- Table header -->
+  <div class="table-header">
+    <div class="table-title">{{ "Users" | translate }}</div>
+    <div class="table-search">
+      <img src="/assets/icons/search-icon.svg" alt="" />
+      <input
+        type="text"
+        [placeholder]="'Search by name or phone number' | translate"
+        [(ngModel)]="searchTerm"
+        (input)="onSearch()"
+      />
+    </div>
+  </div>
+  <!-- Table titles -->
+  <div class="table-titles">
+    <div>
+      <span>{{ "Name" | translate }}</span>
+      <span>
+        <img src="/assets/icons/sort-img.svg" alt="" (click)="sortBy('name')" />
+      </span>
+    </div>
+    <div>
+      <span>{{ "Mobile Number" | translate }}</span>
+      <span>
+        <img
+          src="/assets/icons/sort-img.svg"
+          alt=""
+          (click)="sortBy('mobile')"
+        />
+      </span>
+    </div>
+    <div>
+      <span>{{ "Email" | translate }}</span>
+      <span>
+        <img
+          src="/assets/icons/sort-img.svg"
+          alt=""
+          (click)="sortBy('email')"
+        />
+      </span>
+    </div>
+    <div>
+      <span>{{ "City" | translate }}</span>
+      <span>
+        <img src="/assets/icons/sort-img.svg" alt="" (click)="sortBy('city')" />
+      </span>
+    </div>
+    <div>
+      <span>{{ "Status" | translate }}</span>
+      <span>
+        <img
+          src="/assets/icons/sort-img.svg"
+          alt=""
+          (click)="sortBy('status')"
+        />
+      </span>
+    </div>
+    <div>
+      <span>{{ "Date added" | translate }}</span>
+      <span>
+        <img
+          src="/assets/icons/sort-img.svg"
+          alt=""
+          (click)="sortBy('dateAdded')"
+        />
+      </span>
+    </div>
+    <div>
+      <span>{{ "Actions" | translate }}</span>
+    </div>
+  </div>
+
+  <!-- Loading state -->
+  <div *ngIf="isLoading" class="loading">
+    {{ "Loading..." | translate }}
+  </div>
+
+  <!-- No data -->
+  <div *ngIf="!isLoading && filteredItems.length === 0" class="table-no-data">
+    {{ "No data found" | translate }}
+  </div>
+
+  <!-- Table rows -->
+  <ng-container *ngIf="!isLoading">
+    <div class="table-row" *ngFor="let item of paginatedItems">
+      <div>{{ item.name }}</div>
+      <div>
+        <span dir="ltr">{{ item.mobile }}</span>
+      </div>
+      <div>{{ item.email }}</div>
+      <div>{{ item.city }}</div>
+      <div [class]="getStatusClass(item.status)">
+        <span>{{ item.status | translate }}</span>
+      </div>
+      <div>{{ item.dateAdded }}</div>
+      <div class="table-actions">
+        <span (click)="openViewModal(item)">
+          <img src="/assets/icons/show-icon.svg" alt="show icon" />
+        </span>
+      </div>
+    </div>
+  </ng-container>
+
+  <!-- Table pagination -->
+  <div class="table-pagination" *ngIf="!isLoading && filteredItems.length > 0">
+    <div></div>
+
+    <div class="table-pagination--pages">
+      <div class="table-pagination--pages--count">
+        {{ apiFrom || 0 }}-{{ apiTo || 0 }}
+        {{ "of" | translate }}
+        {{ apiTotal }}
+      </div>
+
+      <div class="table-pagination--pages--buttons" dir="ltr">
+        <button (click)="prevPage()" [disabled]="currentPage === 1">
+          <img src="/assets/icons/arrow-left.svg" alt="prev icon" />
+        </button>
+        <span
+          *ngFor="let page of totalPagesArray"
+          (click)="goToPage(page)"
+          [class.active]="page === currentPage"
+          >{{ page }}</span
+        >
+        <button (click)="nextPage()" [disabled]="currentPage === totalPages">
+          <img src="/assets/icons/arrow-right.svg" alt=" next icon " />
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Permissions loading message -->
+<div *ngIf="permissionsLoading" class="loading">
+  {{ "Loading..." | translate }}
+</div>
+
+<!-- No access message -->
+<div *ngIf="!permissionsLoading && !canReadUsers" class="no-access-message">
+  {{ "You don't have permission to view users" | translate }}
+</div>
+
+<!-- View Modal -->
+<div class="modal" *ngIf="showViewModal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2>{{ "User Details" | translate }}</h2>
+      <span class="close" (click)="closeViewModal()">&times;</span>
+    </div>
+    <div class="modal-body">
+      <div class="modal-row">
+        <span class="label">{{ "Name" | translate }}:</span>
+        <span class="value">{{ selectedUser?.name }}</span>
+      </div>
+      <div class="modal-row">
+        <span class="label">{{ "Mobile Number" | translate }}:</span>
+        <span class="value" dir="ltr">{{ selectedUser?.mobile }}</span>
+      </div>
+      <div class="modal-row">
+        <span class="label">{{ "Email" | translate }}:</span>
+        <span class="value">{{ selectedUser?.email }}</span>
+      </div>
+      <div class="modal-row">
+        <span class="label">{{ "City" | translate }}:</span>
+        <span class="value">{{ selectedUser?.city }}</span>
+      </div>
+      <div class="modal-row">
+        <span class="label">{{ "Type" | translate }}:</span>
+        <span class="value">{{ (selectedUser?.type || '') | translate }}</span>
+      </div>
+      <div class="modal-row">
+        <span class="label">{{ "Status" | translate }}:</span>
+        <span class="value" [class]="getStatusClass(selectedUser?.status || '')">
+          {{ (selectedUser?.status || '') | translate }}
+        </span>
+      </div>
+      <div class="modal-row">
+        <span class="label">{{ "Date added" | translate }}:</span>
+        <span class="value">{{ selectedUser?.dateAdded }}</span>
+      </div>
+    </div>
+  </div>
+</div>

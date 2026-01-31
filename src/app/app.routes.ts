@@ -54,6 +54,13 @@ export const routes: Routes = [
           ),
       },
       {
+        path: 'users',
+        loadComponent: () =>
+          import('./pages/users/users.component').then(
+            (m) => m.UsersComponent
+          ),
+      },
+      {
         path: 'agencies-owner-approvals',
         loadComponent: () =>
           import('./pages/adminaprovals/adminaprovals.component').then(
