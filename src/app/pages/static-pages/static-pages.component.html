@@ -1,0 +1,136 @@
+<div class="static-pages-container">
+  <!-- Header -->
+  <div class="page-header">
+    <h1>{{ "Static Pages" | translate }}</h1>
+    <button
+      *ngIf="!permissionsLoading && canManagePages && !editMode && !createMode"
+      class="btn-create"
+      (click)="createNewPage()"
+    >
+      + {{ "Create New Page" | translate }}
+    </button>
+  </div>
+
+  <!-- Permission check -->
+  <div *ngIf="permissionsLoading" class="loading-container">
+    <p>{{ "Loading" | translate }}...</p>
+  </div>
+
+  <div *ngIf="!permissionsLoading && !canManagePages" class="no-permission">
+    <p>{{ "You don't have permission to manage static pages" | translate }}</p>
+  </div>
+
+  <!-- Main content -->
+  <div *ngIf="!permissionsLoading && canManagePages" class="content-wrapper">
+    <!-- Pages list view -->
+    <div *ngIf="!editMode && !createMode" class="pages-list">
+      <div *ngIf="isLoading" class="loading-container">
+        <p>{{ "Loading" | translate }}...</p>
+      </div>
+
+      <!-- Empty state -->
+      <div *ngIf="!isLoading && pages.length === 0" class="empty-state">
+        <p>{{ "No static pages found" | translate }}</p>
+        <p class="empty-hint">{{ "Click 'Create New Page' to add your first static page" | translate }}</p>
+      </div>
+
+      <!-- Pages table -->
+      <div *ngIf="!isLoading && pages.length > 0" class="pages-table">
+        <div class="table-header">
+          <div class="col-title">{{ "Title" | translate }}</div>
+          <div class="col-slug">{{ "Slug" | translate }}</div>
+          <div class="col-updated">{{ "Last Updated" | translate }}</div>
+          <div class="col-actions">{{ "Actions" | translate }}</div>
+        </div>
+
+        <div class="table-body">
+          <div *ngFor="let page of pages" class="table-row">
+            <div class="col-title">{{ page.title }}</div>
+            <div class="col-slug">
+              <span class="slug-badge">{{ page.slug }}</span>
+            </div>
+            <div class="col-updated">{{ formatDate(page.updated_at) }}</div>
+            <div class="col-actions">
+              <button class="btn-edit" (click)="editPage(page)">
+                {{ "Edit" | translate }}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Edit/Create form -->
+    <div *ngIf="editMode || createMode" class="edit-form">
+      <div class="form-header">
+        <h2>
+          {{
+            createMode
+              ? ("Create New Page" | translate)
+              : ("Edit Page" | translate)
+          }}
+        </h2>
+        <button class="btn-cancel" (click)="cancelEdit()">
+          {{ "Cancel" | translate }}
+        </button>
+      </div>
+
+      <div class="form-body">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="pageTitle">{{ "Title" | translate }} *</label>
+            <input
+              type="text"
+              id="pageTitle"
+              [(ngModel)]="formTitle"
+              (ngModelChange)="onTitleChange()"
+              class="form-control"
+              [placeholder]="'Enter page title' | translate"
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="pageSlug">{{ "Slug" | translate }} *</label>
+            <input
+              type="text"
+              id="pageSlug"
+              [(ngModel)]="formSlug"
+              class="form-control"
+              [placeholder]="'Enter page slug' | translate"
+            />
+            <small class="form-hint">{{
+              "URL-friendly identifier (e.g., terms-and-conditions)" | translate
+            }}</small>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="pageContent">{{ "Content" | translate }}</label>
+          <quill-editor
+            [(ngModel)]="formContent"
+            [modules]="quillModules"
+            [placeholder]="'Enter page content' | translate"
+            [styles]="{ height: '400px' }"
+          ></quill-editor>
+        </div>
+      </div>
+
+      <div class="form-footer">
+        <button class="btn-cancel" (click)="cancelEdit()">
+          {{ "Cancel" | translate }}
+        </button>
+        <button
+          class="btn-save"
+          (click)="savePage()"
+          [disabled]="isSaving"
+        >
+          {{
+            isSaving
+              ? ("Saving" | translate) + "..."
+              : ("Save" | translate)
+          }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

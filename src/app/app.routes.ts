@@ -144,6 +144,13 @@ export const routes: Routes = [
             (m) => m.SettingsComponent
           ),
       },
+      {
+        path: 'static-pages',
+        loadComponent: () =>
+          import('./pages/static-pages/static-pages.component').then(
+            (m) => m.StaticPagesComponent
+          ),
+      },
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
     ],
   },

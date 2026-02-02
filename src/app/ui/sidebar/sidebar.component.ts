@@ -116,8 +116,8 @@ export class SidebarComponent implements OnInit {
       label: 'sidebar.customers',
       route: '/admin/users',
       icon: {
-        active: '/assets/icons/user-icon.svg',
-        inactive: '/assets/icons/user-icon.svg',
+        active: '/assets/icons/customers-active.svg',
+        inactive: '/assets/icons/customers-inactive.svg',
       },
     },
     {
@@ -204,6 +204,15 @@ export class SidebarComponent implements OnInit {
       icon: {
         active: '/assets/icons/settings-active.svg',
         inactive: '/assets/icons/settings-inactive.svg',
+      },
+    },
+    {
+      name: 'static-pages',
+      label: 'sidebar.staticPages',
+      route: '/admin/static-pages',
+      icon: {
+        active: '/assets/icons/overview-active.svg',
+        inactive: '/assets/icons/overview-inactive.svg',
       },
     },
   ];
