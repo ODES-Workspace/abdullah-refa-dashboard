@@ -18,14 +18,20 @@ import {
   Validators,
 } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { ProfileAgentService } from '../../../services/profile-agent.service';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [TranslateModule, CommonModule, FormsModule, ReactiveFormsModule],
+  imports: [
+    TranslateModule,
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    RouterLink,
+  ],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss'],
 })

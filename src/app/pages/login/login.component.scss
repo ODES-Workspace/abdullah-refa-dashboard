@@ -179,6 +179,20 @@
   padding-left: 4px;
 }
 
+.forgot-password-link {
+  text-align: end;
+  font-size: 13px;
+
+  a {
+    color: #0311d0;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
 @media screen and (max-width: 1000px) {
   .auth {
     &-img {

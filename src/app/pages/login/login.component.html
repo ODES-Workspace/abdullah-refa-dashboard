@@ -79,6 +79,11 @@
           <div *ngIf="getFieldError('password')" class="field-error">
             {{ getFieldError("password") | translate }}
           </div>
+          <div class="forgot-password-link">
+            <a routerLink="/forgot-password">{{
+              "FORGOT_PASSWORD_LINK" | translate
+            }}</a>
+          </div>
         </div>
         <!-- Save login info -->
         <div class="auth-form--group2">

@@ -252,5 +252,21 @@ export const routes: Routes = [
   { path: '', component: LoginComponent, canActivate: [authGuard] },
   { path: 'login', component: LoginComponent, canActivate: [authGuard] },
   { path: 'signup', component: SignupComponent, canActivate: [authGuard] },
+  {
+    path: 'forgot-password',
+    loadComponent: () =>
+      import('./pages/forgot-password/forgot-password.component').then(
+        (m) => m.ForgotPasswordComponent
+      ),
+    canActivate: [authGuard],
+  },
+  {
+    path: 'reset-password',
+    loadComponent: () =>
+      import('./pages/reset-password/reset-password.component').then(
+        (m) => m.ResetPasswordComponent
+      ),
+    canActivate: [authGuard],
+  },
   { path: '**', redirectTo: '/login' },
 ];
