@@ -5,7 +5,7 @@ import {
   HttpParams,
 } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { catchError, map } from 'rxjs/operators';
 import { environment } from '../environments/environment';
 import { UserRoleService } from './user-role.service';
 
@@ -48,6 +48,22 @@ export interface Contract {
   created_at: string;
   updated_at: string;
   rent_request: ContractRentRequest;
+  // Appended by the API on contract responses
+  payment_schedule?: PaymentScheduleItem[];
+  next_installment_date?: string;
+  is_down_payment_made?: boolean;
+}
+
+// One row of the contract's payment schedule as returned by the API
+// (computed server-side; carries the real paid state and due date).
+export interface PaymentScheduleItem {
+  installment_number: number;
+  type: 'down_payment' | 'installment' | string;
+  due_date: string;
+  amount: number;
+  is_paid: boolean;
+  paid_at: string | null;
+  transaction_id: number | null;
 }
 
 export interface ContractsResponse {
@@ -99,6 +115,24 @@ export class ContractsService {
     return this.http
       .get<ContractsResponse>(url, { params })
       .pipe(catchError((error: HttpErrorResponse) => this.handleError(error)));
+  }
+
+  /**
+   * Find the contract belonging to a given rent request. The API has no
+   * "contract by rent request" route, but the contracts list embeds
+   * `rent_request_id` and the appended `payment_schedule`, so we fetch a large
+   * page and match locally. Resolves to null when no contract exists yet
+   * (e.g. the rent request has not been approved).
+   */
+  getContractByRentRequestId(
+    rentRequestId: number
+  ): Observable<Contract | null> {
+    return this.getContracts(1, 1000).pipe(
+      map(
+        (res) =>
+          res.data?.find((c) => c.rent_request_id === rentRequestId) ?? null
+      )
+    );
   }
 
   private handleError = (error: HttpErrorResponse): Observable<never> => {

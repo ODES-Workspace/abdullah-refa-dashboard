@@ -612,14 +612,35 @@
             <img src="/assets/icons/sort-img.svg" alt="" />
           </span>
         </div>
+        <div>
+          <span>{{ "Status" | translate }}</span>
+          <span (click)="sortSchedule('status')">
+            <img src="/assets/icons/sort-img.svg" alt="" />
+          </span>
+        </div>
       </div>
       <div
         class="table-row"
-        *ngFor="let item of application?.schedule; let i = index"
+        *ngFor="let item of scheduleRows; let i = index"
       >
         <div>{{ item.dueDate }}</div>
         <div>{{ item.amount | number : "1.2-2" }} {{ "SAR" | translate }}</div>
         <div>{{ item.balance | number : "1.2-2" }} {{ "SAR" | translate }}</div>
+        <div>
+          <span class="status-badge" [ngClass]="'status-' + item.status">
+            <ng-container [ngSwitch]="item.status">
+              <ng-container *ngSwitchCase="'paid'">{{
+                "Paid" | translate
+              }}</ng-container>
+              <ng-container *ngSwitchCase="'overdue'">{{
+                "Late" | translate
+              }}</ng-container>
+              <ng-container *ngSwitchDefault>{{
+                "Upcoming" | translate
+              }}</ng-container>
+            </ng-container>
+          </span>
+        </div>
       </div>
     </div>
   </div>

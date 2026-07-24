@@ -417,10 +417,37 @@
 
     .table-row,
     .table-titles {
-      grid-template-columns: minmax(180px, 259px) minmax(180px, 270px) minmax(
-          200px,
-          309px
-        );
+      grid-template-columns: minmax(160px, 240px) minmax(150px, 240px) minmax(
+          150px,
+          260px
+        ) minmax(120px, 160px);
+    }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 4px 12px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 600;
+      line-height: 18px;
+      white-space: nowrap;
+
+      &.status-paid {
+        color: #1a7f37;
+        background: #e6f4ea;
+      }
+
+      &.status-overdue {
+        color: #b42318;
+        background: #fdecea;
+      }
+
+      &.status-upcoming {
+        color: #b54708;
+        background: #fef3e6;
+      }
     }
 
     .table-settings {

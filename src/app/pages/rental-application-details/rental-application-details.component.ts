@@ -11,6 +11,10 @@ import { UserRoleService } from '../../../services/user-role.service';
 import { PropertyTypesService } from '../../../services/property-types.service';
 import { CitiesService, City } from '../../../services/cities.service';
 import { ToastService } from '../../../services/toast.service';
+import {
+  ContractsService,
+  Contract,
+} from '../../../services/contracts.service';
 import { environment } from '../../../environments/environment';
 
 interface ScheduleItem {
@@ -18,6 +22,19 @@ interface ScheduleItem {
   amount: number;
   balance: number;
   status: 'upcoming' | 'approved' | 'rejected';
+}
+
+// Display row for the Payment Schedule tab. Payment status is derived from the
+// API's real `is_paid` + `due_date` (see deriveInstallmentStatus).
+type InstallmentStatus = 'paid' | 'overdue' | 'upcoming';
+interface PaymentScheduleRow {
+  installmentNumber: number;
+  type: string;
+  dueDate: string;
+  amount: number;
+  balance: number;
+  isPaid: boolean;
+  status: InstallmentStatus;
 }
 
 interface RentalApplication {
@@ -66,6 +83,9 @@ export class RentalApplicationDetailsComponent implements OnInit {
   private currentLang: 'en' | 'ar' =
     (localStorage.getItem('lang') as 'en' | 'ar') || 'en';
   activeTab: 'overview' | 'assessment' | 'schedule' = this.getStoredActiveTab();
+  // Rows rendered in the Payment Schedule tab (real paid/late/upcoming status
+  // when a contract exists; otherwise a computed preview).
+  scheduleRows: PaymentScheduleRow[] = [];
   showReviseModal = false;
   editedSchedule: ScheduleItem[] = [];
   statusOptions: ('upcoming' | 'approved' | 'rejected')[] = [
@@ -96,7 +116,8 @@ export class RentalApplicationDetailsComponent implements OnInit {
     private propertyTypesService: PropertyTypesService,
     private translate: TranslateService,
     private citiesService: CitiesService,
-    private toast: ToastService
+    private toast: ToastService,
+    private contractsService: ContractsService
   ) {}
 
   ngOnInit(): void {
@@ -143,6 +164,7 @@ export class RentalApplicationDetailsComponent implements OnInit {
               console.error('Failed to fetch rent request details:', err);
             },
           });
+        this.loadPaymentSchedule(this.applicationId);
       }
     });
 
@@ -305,6 +327,78 @@ export class RentalApplicationDetailsComponent implements OnInit {
       scheduleStatus: 'upcoming',
       schedule,
     } as RentalApplication;
+
+    // If the contract schedule hasn't arrived yet, show the computed preview.
+    this.ensureFallbackSchedule();
+  }
+
+  /**
+   * Load the real payment schedule for this rent request's contract and render
+   * paid / late / upcoming from the API's `is_paid` + `due_date`. Falls back to
+   * the computed preview when the request has no contract yet.
+   */
+  private loadPaymentSchedule(rentRequestId: number): void {
+    this.contractsService.getContractByRentRequestId(rentRequestId).subscribe({
+      next: (contract) => {
+        if (contract?.payment_schedule?.length) {
+          this.scheduleRows = this.buildRowsFromContract(contract);
+        } else {
+          this.ensureFallbackSchedule();
+        }
+      },
+      error: (err) => {
+        console.error('Failed to fetch contract payment schedule:', err);
+        this.ensureFallbackSchedule();
+      },
+    });
+  }
+
+  private buildRowsFromContract(contract: Contract): PaymentScheduleRow[] {
+    const items = contract.payment_schedule ?? [];
+    const total = items.reduce((sum, it) => sum + Number(it.amount || 0), 0);
+    let cumulative = 0;
+    return items.map((it) => {
+      const amount = Number(it.amount || 0);
+      cumulative += amount;
+      return {
+        installmentNumber: it.installment_number,
+        type: it.type,
+        dueDate: it.due_date,
+        amount,
+        balance: Math.max(0, total - cumulative),
+        isPaid: !!it.is_paid,
+        status: this.deriveInstallmentStatus(!!it.is_paid, it.due_date),
+      };
+    });
+  }
+
+  // paid = already registered as a transaction; overdue = unpaid and past due;
+  // upcoming = unpaid and due today or later.
+  private deriveInstallmentStatus(
+    isPaid: boolean,
+    dueDate: string
+  ): InstallmentStatus {
+    if (isPaid) return 'paid';
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const due = new Date(dueDate);
+    return due < today ? 'overdue' : 'upcoming';
+  }
+
+  // Preview rows (all "upcoming") from the client-computed schedule, used only
+  // until/unless a real contract schedule is available.
+  private ensureFallbackSchedule(): void {
+    if (this.scheduleRows.length > 0) return;
+    const computed = this.application?.schedule ?? [];
+    this.scheduleRows = computed.map((s, idx) => ({
+      installmentNumber: idx,
+      type: idx === 0 ? 'down_payment' : 'installment',
+      dueDate: s.dueDate,
+      amount: s.amount,
+      balance: s.balance,
+      isPaid: false,
+      status: 'upcoming' as InstallmentStatus,
+    }));
   }
 
   updateScheduleItem(
@@ -318,7 +412,7 @@ export class RentalApplicationDetailsComponent implements OnInit {
   }
 
   sortSchedule(field: SortField): void {
-    if (!this.application?.schedule) return;
+    if (!this.scheduleRows.length) return;
 
     if (this.currentSortField === field) {
       this.currentSortDirection =
@@ -328,14 +422,14 @@ export class RentalApplicationDetailsComponent implements OnInit {
       this.currentSortDirection = 'asc';
     }
 
-    this.application.schedule.sort((a, b) => {
-      let valueA = a[field];
-      let valueB = b[field];
+    this.scheduleRows.sort((a, b) => {
+      let valueA: any = a[field as keyof PaymentScheduleRow];
+      let valueB: any = b[field as keyof PaymentScheduleRow];
 
       // Handle date comparison
       if (field === 'dueDate') {
-        valueA = new Date(valueA).getTime();
-        valueB = new Date(valueB).getTime();
+        valueA = new Date(a.dueDate).getTime();
+        valueB = new Date(b.dueDate).getTime();
       }
 
       if (valueA < valueB) {
