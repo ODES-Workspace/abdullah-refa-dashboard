@@ -410,9 +410,31 @@
       font-weight: 600;
       display: flex;
       align-items: center;
+      justify-content: space-between;
       padding-bottom: 10px;
       gap: 5px;
       margin-bottom: 10px;
+
+      &-left {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+      }
+
+      .mark-paid-btn {
+        border: 1px solid #1951fd;
+        background-color: #1951fd;
+        color: #ffffff;
+        font-size: 14px;
+        font-weight: 500;
+        padding: 8px 16px;
+        border-radius: 6px;
+        cursor: pointer;
+
+        &:hover {
+          background-color: #1543d6;
+        }
+      }
     }
 
     .table-row,
@@ -634,4 +656,64 @@ a {
   color: #6b7280 !important;
   cursor: not-allowed !important;
   border-color: #e5e7eb !important;
+}
+
+// Mark-as-paid confirmation dialog (compact centered variant of .modal-content)
+.confirm-modal {
+  width: 420px !important;
+  max-width: 90% !important;
+  display: block !important;
+  padding: 24px;
+
+  .confirm-modal-body {
+    text-align: center;
+  }
+
+  .confirm-modal-message {
+    font-size: 16px;
+    font-weight: 600;
+    color: #404040;
+    margin-bottom: 12px;
+  }
+
+  .confirm-modal-details {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    font-size: 14px;
+    color: #6b7280;
+    margin-bottom: 8px;
+  }
+
+  .confirm-modal-actions {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 20px;
+
+    button {
+      padding: 8px 20px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 500;
+      font-size: 14px;
+
+      &:disabled {
+        opacity: 0.7;
+        cursor: not-allowed;
+      }
+    }
+
+    .cancel-btn {
+      background-color: transparent;
+      border: 1px solid #40404033;
+      color: #404040;
+    }
+
+    .confirm-btn {
+      background-color: #1951fd;
+      border: 1px solid #1951fd;
+      color: #ffffff;
+    }
+  }
 }

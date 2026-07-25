@@ -135,6 +135,17 @@ export class ContractsService {
     );
   }
 
+  /**
+   * Admin-only: mark the next due payment of a contract as paid (records a
+   * transaction server-side; payments settle sequentially).
+   */
+  markContractPaymentPaid(contractId: number): Observable<any> {
+    const url = `${this.baseUrl}/admin/contracts/${contractId}/mark-paid`;
+    return this.http
+      .post<any>(url, {})
+      .pipe(catchError((error: HttpErrorResponse) => this.handleError(error)));
+  }
+
   private handleError = (error: HttpErrorResponse): Observable<never> => {
     let errorMessage = 'An error occurred';
     if (error.error instanceof ErrorEvent) {

@@ -588,8 +588,18 @@
     "
   >
     <div class="application-schedule-title">
-      <img src="/assets/icons/payment-icon.svg" alt="" />
-      <span> {{ "Payment Schedule" | translate }} </span>
+      <div class="application-schedule-title-left">
+        <img src="/assets/icons/payment-icon.svg" alt="" />
+        <span> {{ "Payment Schedule" | translate }} </span>
+      </div>
+      <button
+        type="button"
+        class="mark-paid-btn"
+        *ngIf="canMarkPaid"
+        (click)="openMarkPaidModal()"
+      >
+        {{ "Mark as Paid" | translate }}
+      </button>
     </div>
 
     <div class="application-schedule-table table">
@@ -709,6 +719,40 @@
           {{ "Submit" | translate }}
         </button>
       </div>
+    </div>
+  </div>
+</div>
+
+<!-- Mark as Paid Confirmation Modal -->
+<div class="modal" *ngIf="showMarkPaidModal">
+  <div class="modal-content confirm-modal">
+    <div class="confirm-modal-body">
+      <div class="confirm-modal-message">
+        {{ "Are you sure you want to mark this payment as paid?" | translate }}
+      </div>
+      <div class="confirm-modal-details" *ngIf="nextUnpaidRow">
+        <span>{{ nextUnpaidRow.dueDate }}</span>
+        <span>
+          {{ nextUnpaidRow.amount | number : "1.2-2" }} {{ "SAR" | translate }}
+        </span>
+      </div>
+    </div>
+    <div class="confirm-modal-actions">
+      <button
+        class="cancel-btn"
+        (click)="closeMarkPaidModal()"
+        [disabled]="markPaidLoading"
+      >
+        {{ "Cancel" | translate }}
+      </button>
+      <button
+        class="confirm-btn"
+        (click)="confirmMarkPaid()"
+        [disabled]="markPaidLoading"
+      >
+        <span *ngIf="!markPaidLoading">{{ "Yes, mark as paid" | translate }}</span>
+        <span *ngIf="markPaidLoading">{{ "Processing..." | translate }}</span>
+      </button>
     </div>
   </div>
 </div>

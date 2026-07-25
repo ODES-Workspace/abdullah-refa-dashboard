@@ -86,6 +86,11 @@ export class RentalApplicationDetailsComponent implements OnInit {
   // Rows rendered in the Payment Schedule tab (real paid/late/upcoming status
   // when a contract exists; otherwise a computed preview).
   scheduleRows: PaymentScheduleRow[] = [];
+  // Contract backing this schedule (set once its data is loaded).
+  contractId: number | null = null;
+  // "Mark as Paid" confirmation state.
+  showMarkPaidModal = false;
+  markPaidLoading = false;
   showReviseModal = false;
   editedSchedule: ScheduleItem[] = [];
   statusOptions: ('upcoming' | 'approved' | 'rejected')[] = [
@@ -340,6 +345,7 @@ export class RentalApplicationDetailsComponent implements OnInit {
   private loadPaymentSchedule(rentRequestId: number): void {
     this.contractsService.getContractByRentRequestId(rentRequestId).subscribe({
       next: (contract) => {
+        this.contractId = contract?.id ?? null;
         if (contract?.payment_schedule?.length) {
           this.scheduleRows = this.buildRowsFromContract(contract);
         } else {
@@ -349,6 +355,52 @@ export class RentalApplicationDetailsComponent implements OnInit {
       error: (err) => {
         console.error('Failed to fetch contract payment schedule:', err);
         this.ensureFallbackSchedule();
+      },
+    });
+  }
+
+  // The next payment that would be settled by "Mark as Paid" (first unpaid).
+  get nextUnpaidRow(): PaymentScheduleRow | null {
+    return this.scheduleRows.find((r) => !r.isPaid) ?? null;
+  }
+
+  // Admins can mark a payment paid only when a real contract exists and there
+  // is still an unpaid entry.
+  get canMarkPaid(): boolean {
+    return (
+      this.userRoleService.getCurrentRole() === 'admin' &&
+      this.contractId !== null &&
+      this.nextUnpaidRow !== null
+    );
+  }
+
+  openMarkPaidModal(): void {
+    if (!this.canMarkPaid) return;
+    this.showMarkPaidModal = true;
+  }
+
+  closeMarkPaidModal(): void {
+    if (this.markPaidLoading) return;
+    this.showMarkPaidModal = false;
+  }
+
+  confirmMarkPaid(): void {
+    if (this.contractId === null) return;
+    this.markPaidLoading = true;
+    this.contractsService.markContractPaymentPaid(this.contractId).subscribe({
+      next: () => {
+        this.markPaidLoading = false;
+        this.showMarkPaidModal = false;
+        this.toast.show('Payment marked as paid');
+        if (this.applicationId) {
+          this.loadPaymentSchedule(this.applicationId);
+        }
+      },
+      error: (err) => {
+        this.markPaidLoading = false;
+        this.showMarkPaidModal = false;
+        console.error('Failed to mark payment as paid:', err);
+        this.toast.show('Failed to mark payment as paid');
       },
     });
   }
