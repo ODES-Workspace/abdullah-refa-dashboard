@@ -1,4 +1,4 @@
-import { NgClass, NgFor, NgIf } from '@angular/common';
+import { DecimalPipe, NgClass, NgFor, NgIf } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { Component, OnInit } from '@angular/core';
 import { RentRequestsComponent } from '../../ui/rent-requests/rent-requests.component';
@@ -9,11 +9,25 @@ import {
   AdminDashboardResponse,
   RentRequest,
 } from '../../../services/dashboard.service';
+import { ContractsService, Contract } from '../../../services/contracts.service';
+
+// A single unpaid installment (or down payment) surfaced on the dashboard.
+interface DuePaymentRow {
+  rentRequestId: number;
+  tenantName: string;
+  propertyName: string;
+  dueDate: string;
+  amount: number;
+  status: 'overdue' | 'upcoming';
+}
 
 @Component({
   selector: 'app-admindashboard',
   imports: [
     NgFor,
+    NgClass,
+    NgIf,
+    DecimalPipe,
     RentRequestsComponent,
     TranslateModule,
     TableComponent,
@@ -24,6 +38,8 @@ import {
 })
 export class AdmindashboardComponent implements OnInit {
   rentRequests: RentRequest[] = [];
+  // Upcoming + late payments across all contracts (unpaid schedule entries).
+  duePayments: DuePaymentRow[] = [];
 
   stats = [
     {
@@ -77,10 +93,68 @@ export class AdmindashboardComponent implements OnInit {
     },
   ];
 
-  constructor(private dashboardService: DashboardService) {}
+  constructor(
+    private dashboardService: DashboardService,
+    private contractsService: ContractsService
+  ) {}
 
   ngOnInit() {
     this.loadAdminDashboard();
+    this.loadDuePayments();
+  }
+
+  // Build the "Upcoming & Late Payments" table from every contract's
+  // payment_schedule (API data). We keep only unpaid entries and derive the
+  // status the same way as the schedule tab: late = past due, else upcoming.
+  loadDuePayments() {
+    this.contractsService.getContracts(1, 1000).subscribe({
+      next: (res) => {
+        const rows: DuePaymentRow[] = [];
+        (res.data || []).forEach((contract: Contract) => {
+          const tenantName = contract.rent_request?.name || '-';
+          const propertyName =
+            contract.rent_request?.property?.name_en ||
+            contract.rent_request?.property?.name_ar ||
+            '-';
+          // Schedule is chronological. Surface every overdue (unpaid, past due)
+          // entry plus only the single next upcoming one per contract, so the
+          // table stays a concise "what needs attention" view.
+          let nextUpcomingTaken = false;
+          (contract.payment_schedule || []).forEach((item) => {
+            if (item.is_paid) return;
+            const overdue = this.isPastDue(item.due_date);
+            if (!overdue) {
+              if (nextUpcomingTaken) return;
+              nextUpcomingTaken = true;
+            }
+            rows.push({
+              rentRequestId: contract.rent_request_id,
+              tenantName,
+              propertyName,
+              dueDate: item.due_date,
+              amount: Number(item.amount || 0),
+              status: overdue ? 'overdue' : 'upcoming',
+            });
+          });
+        });
+        // Most urgent first (oldest due date at the top).
+        rows.sort(
+          (a, b) =>
+            new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime()
+        );
+        this.duePayments = rows;
+      },
+      error: (error: any) => {
+        console.error('Error loading due payments:', error);
+        this.duePayments = [];
+      },
+    });
+  }
+
+  private isPastDue(dueDate: string): boolean {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    return new Date(dueDate) < today;
   }
 
   loadAdminDashboard() {

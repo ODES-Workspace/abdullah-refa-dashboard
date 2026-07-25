@@ -33,6 +33,44 @@
     </div>
   </div>
 
+  <!-- Upcoming & Late Payments -->
+  <div class="overview-payments">
+    <div class="overview-payments-title">
+      {{ "Upcoming & Late Payments" | translate }}
+    </div>
+    <div class="overview-payments-table table">
+      <div class="table-titles">
+        <div>{{ "Tenant" | translate }}</div>
+        <div>{{ "Property" | translate }}</div>
+        <div>{{ "Due Date" | translate }}</div>
+        <div>{{ "Amount" | translate }}</div>
+        <div>{{ "Status" | translate }}</div>
+      </div>
+      <a
+        class="table-row"
+        *ngFor="let item of duePayments"
+        [routerLink]="['/admin/rental-application-details', item.rentRequestId]"
+      >
+        <div class="turncated-text" title="{{ item.tenantName }}">
+          {{ item.tenantName }}
+        </div>
+        <div class="turncated-text" title="{{ item.propertyName }}">
+          {{ item.propertyName }}
+        </div>
+        <div>{{ item.dueDate }}</div>
+        <div>{{ item.amount | number : "1.2-2" }} {{ "SAR" | translate }}</div>
+        <div>
+          <span class="status-badge" [ngClass]="'status-' + item.status">
+            {{ (item.status === "overdue" ? "Late" : "Upcoming") | translate }}
+          </span>
+        </div>
+      </a>
+      <div class="overview-payments-empty" *ngIf="duePayments.length === 0">
+        {{ "No upcoming or late payments" | translate }}
+      </div>
+    </div>
+  </div>
+
   <app-rent-requests [rentRequests]="rentRequests"></app-rent-requests>
 
   <app-agent-agencies-table></app-agent-agencies-table>

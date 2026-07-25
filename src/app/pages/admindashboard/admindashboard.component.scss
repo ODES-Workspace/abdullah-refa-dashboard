@@ -136,3 +136,66 @@
 app-agent-agencies-table {
   overflow-x: auto;
 }
+
+.overview-payments {
+  margin-top: 24px;
+
+  &-title {
+    font-size: 16px;
+    line-height: 20px;
+    font-weight: 700;
+    color: #404040;
+    margin-bottom: 12px;
+  }
+
+  &-table {
+    .table-titles,
+    .table-row {
+      grid-template-columns:
+        minmax(120px, 1.4fr)
+        minmax(140px, 1.6fr)
+        minmax(110px, 1fr)
+        minmax(110px, 1fr)
+        minmax(110px, 120px);
+    }
+
+    .table-row {
+      text-decoration: none;
+      color: inherit;
+      cursor: pointer;
+
+      &:hover {
+        background-color: #b7b7b733;
+      }
+    }
+  }
+
+  &-empty {
+    padding: 20px;
+    text-align: center;
+    color: #404040b2;
+    font-size: 14px;
+  }
+
+  .status-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px 12px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 18px;
+    white-space: nowrap;
+
+    &.status-overdue {
+      color: #b42318;
+      background: #fdecea;
+    }
+
+    &.status-upcoming {
+      color: #b54708;
+      background: #fef3e6;
+    }
+  }
+}

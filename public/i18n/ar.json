@@ -238,6 +238,8 @@
   "Paid": "مدفوع",
   "Late": "متأخر",
   "Upcoming": "قادم",
+  "Upcoming & Late Payments": "المدفوعات القادمة والمتأخرة",
+  "No upcoming or late payments": "لا توجد مدفوعات قادمة أو متأخرة",
   "Revise Schedule": "تعديل الجدول",
   "Payment": "دفع",
   "View Rejection Reason": "عرض سبب الرفض",
