@@ -410,39 +410,33 @@
       font-weight: 600;
       display: flex;
       align-items: center;
-      justify-content: space-between;
       padding-bottom: 10px;
       gap: 5px;
       margin-bottom: 10px;
+    }
 
-      &-left {
-        display: flex;
-        align-items: center;
-        gap: 5px;
-      }
+    .mark-paid-btn {
+      border: 1px solid #1951fd;
+      background-color: #1951fd;
+      color: #ffffff;
+      font-size: 13px;
+      font-weight: 500;
+      padding: 6px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      white-space: nowrap;
 
-      .mark-paid-btn {
-        border: 1px solid #1951fd;
-        background-color: #1951fd;
-        color: #ffffff;
-        font-size: 14px;
-        font-weight: 500;
-        padding: 8px 16px;
-        border-radius: 6px;
-        cursor: pointer;
-
-        &:hover {
-          background-color: #1543d6;
-        }
+      &:hover {
+        background-color: #1543d6;
       }
     }
 
     .table-row,
     .table-titles {
-      grid-template-columns: minmax(160px, 240px) minmax(150px, 240px) minmax(
-          150px,
-          260px
-        ) minmax(120px, 160px);
+      grid-template-columns: minmax(140px, 1fr) minmax(130px, 1fr) minmax(
+          130px,
+          1fr
+        ) minmax(110px, 130px) minmax(130px, 150px);
     }
 
     .status-badge {

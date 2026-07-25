@@ -91,6 +91,8 @@ export class RentalApplicationDetailsComponent implements OnInit {
   // "Mark as Paid" confirmation state.
   showMarkPaidModal = false;
   markPaidLoading = false;
+  // The specific schedule row the admin chose to mark as paid.
+  selectedPayment: PaymentScheduleRow | null = null;
   showReviseModal = false;
   editedSchedule: ScheduleItem[] = [];
   statusOptions: ('upcoming' | 'approved' | 'rejected')[] = [
@@ -359,50 +361,51 @@ export class RentalApplicationDetailsComponent implements OnInit {
     });
   }
 
-  // The next payment that would be settled by "Mark as Paid" (first unpaid).
-  get nextUnpaidRow(): PaymentScheduleRow | null {
-    return this.scheduleRows.find((r) => !r.isPaid) ?? null;
+  get isAdmin(): boolean {
+    return this.userRoleService.getCurrentRole() === 'admin';
   }
 
-  // Admins can mark a payment paid only when a real contract exists and there
-  // is still an unpaid entry.
-  get canMarkPaid(): boolean {
-    return (
-      this.userRoleService.getCurrentRole() === 'admin' &&
-      this.contractId !== null &&
-      this.nextUnpaidRow !== null
-    );
+  // An unpaid row can be marked as paid by an admin once a real contract exists.
+  canMarkRow(row: PaymentScheduleRow): boolean {
+    return this.isAdmin && this.contractId !== null && !row.isPaid;
   }
 
-  openMarkPaidModal(): void {
-    if (!this.canMarkPaid) return;
+  openMarkPaidModal(row: PaymentScheduleRow): void {
+    if (!this.canMarkRow(row)) return;
+    this.selectedPayment = row;
     this.showMarkPaidModal = true;
   }
 
   closeMarkPaidModal(): void {
     if (this.markPaidLoading) return;
     this.showMarkPaidModal = false;
+    this.selectedPayment = null;
   }
 
   confirmMarkPaid(): void {
-    if (this.contractId === null) return;
+    if (this.contractId === null || !this.selectedPayment) return;
+    const installmentNumber = this.selectedPayment.installmentNumber;
     this.markPaidLoading = true;
-    this.contractsService.markContractPaymentPaid(this.contractId).subscribe({
-      next: () => {
-        this.markPaidLoading = false;
-        this.showMarkPaidModal = false;
-        this.toast.show('Payment marked as paid');
-        if (this.applicationId) {
-          this.loadPaymentSchedule(this.applicationId);
-        }
-      },
-      error: (err) => {
-        this.markPaidLoading = false;
-        this.showMarkPaidModal = false;
-        console.error('Failed to mark payment as paid:', err);
-        this.toast.show('Failed to mark payment as paid');
-      },
-    });
+    this.contractsService
+      .markContractPaymentPaid(this.contractId, installmentNumber)
+      .subscribe({
+        next: () => {
+          this.markPaidLoading = false;
+          this.showMarkPaidModal = false;
+          this.selectedPayment = null;
+          this.toast.show('Payment marked as paid');
+          if (this.applicationId) {
+            this.loadPaymentSchedule(this.applicationId);
+          }
+        },
+        error: (err) => {
+          this.markPaidLoading = false;
+          this.showMarkPaidModal = false;
+          this.selectedPayment = null;
+          console.error('Failed to mark payment as paid:', err);
+          this.toast.show('Failed to mark payment as paid');
+        },
+      });
   }
 
   private buildRowsFromContract(contract: Contract): PaymentScheduleRow[] {

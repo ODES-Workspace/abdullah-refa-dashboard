@@ -588,18 +588,8 @@
     "
   >
     <div class="application-schedule-title">
-      <div class="application-schedule-title-left">
-        <img src="/assets/icons/payment-icon.svg" alt="" />
-        <span> {{ "Payment Schedule" | translate }} </span>
-      </div>
-      <button
-        type="button"
-        class="mark-paid-btn"
-        *ngIf="canMarkPaid"
-        (click)="openMarkPaidModal()"
-      >
-        {{ "Mark as Paid" | translate }}
-      </button>
+      <img src="/assets/icons/payment-icon.svg" alt="" />
+      <span> {{ "Payment Schedule" | translate }} </span>
     </div>
 
     <div class="application-schedule-table table">
@@ -628,6 +618,9 @@
             <img src="/assets/icons/sort-img.svg" alt="" />
           </span>
         </div>
+        <div>
+          <span>{{ "Action" | translate }}</span>
+        </div>
       </div>
       <div
         class="table-row"
@@ -650,6 +643,16 @@
               }}</ng-container>
             </ng-container>
           </span>
+        </div>
+        <div>
+          <button
+            type="button"
+            class="mark-paid-btn"
+            *ngIf="canMarkRow(item)"
+            (click)="openMarkPaidModal(item)"
+          >
+            {{ "Mark as Paid" | translate }}
+          </button>
         </div>
       </div>
     </div>
@@ -730,10 +733,11 @@
       <div class="confirm-modal-message">
         {{ "Are you sure you want to mark this payment as paid?" | translate }}
       </div>
-      <div class="confirm-modal-details" *ngIf="nextUnpaidRow">
-        <span>{{ nextUnpaidRow.dueDate }}</span>
+      <div class="confirm-modal-details" *ngIf="selectedPayment">
+        <span>{{ selectedPayment.dueDate }}</span>
         <span>
-          {{ nextUnpaidRow.amount | number : "1.2-2" }} {{ "SAR" | translate }}
+          {{ selectedPayment.amount | number : "1.2-2" }}
+          {{ "SAR" | translate }}
         </span>
       </div>
     </div>

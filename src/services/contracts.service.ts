@@ -136,13 +136,17 @@ export class ContractsService {
   }
 
   /**
-   * Admin-only: mark the next due payment of a contract as paid (records a
-   * transaction server-side; payments settle sequentially).
+   * Admin-only: mark a specific installment of a contract as paid (records a
+   * transaction server-side). installmentNumber 0 = down payment, 1..N = an
+   * installment.
    */
-  markContractPaymentPaid(contractId: number): Observable<any> {
+  markContractPaymentPaid(
+    contractId: number,
+    installmentNumber: number
+  ): Observable<any> {
     const url = `${this.baseUrl}/admin/contracts/${contractId}/mark-paid`;
     return this.http
-      .post<any>(url, {})
+      .post<any>(url, { installment_number: installmentNumber })
       .pipe(catchError((error: HttpErrorResponse) => this.handleError(error)));
   }
 
